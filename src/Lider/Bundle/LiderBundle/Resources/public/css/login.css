@@ -1,0 +1,24 @@
+.login{
+	border: solid 1px #EEE;
+	background-color: rgba(255, 255, 255, 0.7);
+	position: absolute;
+	width: 450px;
+	height: 410px;
+	border-radius: 8px;
+	left: 50%;
+	top: 50%;
+	margin-top: -205px;
+	margin-left: -225px;
+	text-align: center;	
+	padding: 15px;
+}
+
+.login-form{
+	margin-top: 50px;
+	padding-left: 50px;
+	padding-right: 50px;
+}
+
+.login-form > form > div > input {
+	text-align: center;
+}

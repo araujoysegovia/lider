@@ -5,3 +5,6 @@ lider_homepage:
 lider_index_page:
     path:     /
     defaults: { _controller: LiderBundle:Routing:loginPage }
+
+login_check:
+    path: /login_check
