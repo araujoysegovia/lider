@@ -1,0 +1,4 @@
+lider:
+    resource: "@LiderBundle/Resources/config/routing.yml"
+    prefix:   /
+
