@@ -1,3 +1,7 @@
 lider_homepage:
     path:     /hello/{name}
     defaults: { _controller: LiderBundle:Default:index }
+
+lider_index_page:
+    path:     /
+    defaults: { _controller: LiderBundle:Routing:loginPage }
