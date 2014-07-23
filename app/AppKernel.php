@@ -3,6 +3,9 @@
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+error_reporting(E_ALL ^ E_DEPRECATED ^ E_USER_DEPRECATED);
+date_default_timezone_set('America/Bogota');
+
 class AppKernel extends Kernel
 {
     public function registerBundles()
