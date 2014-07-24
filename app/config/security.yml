@@ -10,24 +10,29 @@ security:
 #        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
-        main:
-            entity: { class: Lider\Bundle\LiderBundle\Entity\Player, property: email }
+        userprovider:
+            id: my_user_provider
 
     firewalls:
         admin_area:
             pattern:   ^/admin
             anonymous: ~
-            form_login:
-                login_path: admin_index_page
-                check_path: admin_login_check
-                
+            oauth:
+                resource_owners:
+                    google: /login/check-google
+                    
+                login_path: /admin/
+                check_path: /admin/login_check
                 default_target_path: admin_home_page
-                use_forward: true
-                
+                use_forward: true                
                 always_use_default_target_path: true
+                                
+                failure_path: /admin/
                 
-                failure_path: admin_index_page
                 failure_forward: true
+                
+                oauth_user_provider:
+                    service: my_user_provider
                 
             logout:
                  path:   admin_logout

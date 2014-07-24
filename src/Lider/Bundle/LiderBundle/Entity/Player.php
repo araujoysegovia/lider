@@ -4,6 +4,8 @@ namespace Lider\Bundle\LiderBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUser as BaseOAuthUser;
+use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 
 /**
  * Player class
@@ -65,9 +67,10 @@ class Player implements AdvancedUserInterface, \Serializable{
 	/**
 	 * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"})
 	 * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
-	 * @Assert\NotBlank()
 	 */
 	private $team;
+	
+	protected $data;
 	
 	
 	public function serialize()
@@ -144,6 +147,33 @@ class Player implements AdvancedUserInterface, \Serializable{
     public function __construct()
     {
         $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    
+    public function getDataFromResponse(UserResponseInterface $response){
+    	parent::__construct($response->getUsername());
+    	$this->data = array(
+    			'provider'=>$response->getResourceOwner()->getName(),
+    			'providerId'=>$response->getUsername()
+    	);
+    	$vars = array(
+    			'nickname',
+    			'realname',
+    			'email',
+    			'profilePicture',
+    			'accessToken',
+    			'refreshToken',
+    			'tokenSecret',
+    			'expiresIn',
+    	);
+    	foreach($vars as $v) {
+    		$fct = 'get'.ucfirst($v);
+    		$this->data[$v] = $response->$fct();
+    	}
+    }
+    
+    public function getData() {
+    	return $this->data;
     }
 
     /**

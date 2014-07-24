@@ -1,6 +1,19 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    
+parameters:
+    user_provider.class: Lider\Bundle\LiderBundle\Security\UserProvider
+
+services:
+    hwi_oauth.user.provider.entity:
+        class: HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider
+        
+    my_user_provider:
+        class: "%user_provider.class%"
+        arguments:
+              entityManager: "@doctrine.orm.entity_manager"
+              container: "@service_container"
 
 framework:
     #esi:             ~
@@ -67,3 +80,13 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+    
+hwi_oauth:
+    firewall_name: admin_area 
+    resource_owners:
+        google:
+            type:                google
+            client_id:           <client_id>
+            client_secret:       <client_secret>
+            scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"

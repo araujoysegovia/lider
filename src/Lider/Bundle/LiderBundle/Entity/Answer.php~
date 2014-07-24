@@ -35,4 +35,83 @@ class Answer extends Entity
 	 * @ORM\Column(type="boolean")
 	 */
 	private $selected = true;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set answer
+     *
+     * @param string $answer
+     * @return Answer
+     */
+    public function setAnswer($answer)
+    {
+        $this->answer = $answer;
+
+        return $this;
+    }
+
+    /**
+     * Get answer
+     *
+     * @return string 
+     */
+    public function getAnswer()
+    {
+        return $this->answer;
+    }
+
+    /**
+     * Set selected
+     *
+     * @param boolean $selected
+     * @return Answer
+     */
+    public function setSelected($selected)
+    {
+        $this->selected = $selected;
+
+        return $this;
+    }
+
+    /**
+     * Get selected
+     *
+     * @return boolean 
+     */
+    public function getSelected()
+    {
+        return $this->selected;
+    }
+
+    /**
+     * Set question
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Question $question
+     * @return Answer
+     */
+    public function setQuestion(\Lider\Bundle\LiderBundle\Entity\Question $question = null)
+    {
+        $this->question = $question;
+
+        return $this;
+    }
+
+    /**
+     * Get question
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Question 
+     */
+    public function getQuestion()
+    {
+        return $this->question;
+    }
 }
