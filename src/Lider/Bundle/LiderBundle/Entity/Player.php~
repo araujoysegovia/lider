@@ -1,0 +1,141 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+
+/**
+ * Player class
+ * @ORM\Table(name="player")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ */
+class Player implements AdvancedUserInterface, \Serializable{
+	
+	/**
+	 * @ORM\Id
+	 * @ORM\Column(type="integer")
+	 * @ORM\GeneratedValue(strategy="IDENTITY")
+	 */
+	private $id;
+	
+	/**
+	 * @var string
+	 * @ORM\Column(type="string", length=100)
+	 * @Assert\Length(max=100)
+	 * @Assert\Email()
+	 */
+	private $email;
+	
+	/**
+	 * @ORM\Column(type="string", nullable=true, length=100)
+	 * @Assert\Length(max=100)
+	 */
+	private $name;
+	
+	/**
+	 * @ORM\Column(type="string", nullable=true, length=100)
+	 * @Assert\Length(max=100)
+	 */
+	private $lastname;
+	
+	/**
+	 * @ORM\Column(type="string", nullable=true, length=100)
+	 * @Assert\Length(max=100)
+	 */
+	private $image;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Office",cascade={"persist"})
+	 * @ORM\JoinColumn(name="office_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $office;
+	
+	/**
+	 * @ORM\ManyToMany(targetEntity="Role",cascade={"persist"})
+	 * @ORM\JoinTable(name="users_role",
+	 *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+	 *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+	 * )
+	 * @Assert\NotBlank()
+	 */
+	private $roles;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"})
+	 * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $team;
+	
+	
+	public function serialize()
+	{
+		return serialize(array($this->getId(), $this->getUsername()));
+	}
+	
+	public function unserialize($data)
+	{
+		list($this->id, $this->username)= unserialize($data);
+	}
+	
+	public function getSalt()
+	{
+		return "dialboxes";
+	}
+	
+	public function eraseCredentials()
+	{
+		return false;
+	}
+	
+	public function equals(UserInterface $user)
+	{
+		return $user->getUsername() == $this->getUsername();
+	}
+	
+	public function isAccountNonExpired()
+	{
+		return true;
+	}
+	
+	public function isAccountNonLocked()
+	{
+		return true;
+	}
+	
+	public function isCredentialsNonExpired()
+	{
+		return true;
+	}
+	
+	public function isEnabled()
+	{
+		return true;
+	}
+	
+	public function getRoles()
+	{
+		/*if(is_array($this->roles))
+		{
+			return $this->roles;
+		}
+		elseif(is_object($this->roles))
+		{
+			return $this->roles->toArray();
+		}*/
+		return $this->roles->toArray();
+	}
+	
+	public function getPassword()
+	{
+		return $this->password;
+	}
+	
+	public function getUsername()
+	{
+		return $this->email;
+	}
+	
+}

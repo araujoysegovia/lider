@@ -1,0 +1,38 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Answer class
+ * @ORM\Table(name="answer")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ */
+class Answer extends Entity
+{
+	/**
+	 * @ORM\Id
+	 * @ORM\Column(type="integer")
+	 * @ORM\GeneratedValue(strategy="IDENTITY")
+	 */
+	private $id;
+	
+	/**
+	 * @ORM\Column(type="string")
+	 * @Assert\NotBlank()
+	 */
+	private $answer;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"})
+	 * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $question;
+	
+	/**
+	 * @ORM\Column(type="boolean")
+	 */
+	private $selected = true;
+}

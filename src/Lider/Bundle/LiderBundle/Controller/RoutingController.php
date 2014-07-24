@@ -4,6 +4,7 @@ namespace Lider\Bundle\LiderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\SecurityContext;
 
@@ -13,6 +14,7 @@ class RoutingController extends Controller
     {
         return $this->render('LiderBundle:Default:index.html.twig', array('name' => $name));
     }
+
 
     /**   
      * @Template("LiderBundle:Lider:index.html.twig")

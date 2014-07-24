@@ -1,0 +1,47 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Team class
+ * @ORM\Table(name="team")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ */
+class Team extends Entity
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+	 * @ORM\Column(type="string", length=100)
+	 * @Assert\NotBlank()
+     * @Assert\Length(max=100)
+	 */
+	private $name;
+	
+	
+	/**
+	 * @ORM\Column(type="string")
+	 * @Assert\NotBlank()
+	 */
+	private $image;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"})
+	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $group;
+	
+	/**
+	 * @ORM\Column(type="boolean")
+	 */
+	private $active = true;
+
+}
