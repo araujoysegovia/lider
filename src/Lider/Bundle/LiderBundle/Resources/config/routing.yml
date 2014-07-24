@@ -13,8 +13,10 @@ lider:
     resource: "@LiderBundle/Resources/config/admin_routes/routing.yml"
     prefix:   /admin
 
-lider_home_administrator_page:
-    path:     /home
+default_data:
+    pattern:  /default
+    defaults: { _controller: LiderBundle:Default:createDefaultData }
+
+admin_home:
+    path: /admin/home
     defaults: { _controller: LiderBundle:Routing:homeAdministratorPage }
-
-

@@ -5,6 +5,8 @@
 		<script src= "{{ asset('bundles/lider/js/underscore.js') }}"></script>
 		<script src= "{{ asset('bundles/lider/js/backbone.js') }}"></script>		
 		<script src= "{{ asset('bundles/lider/js/bootstrap.min.js') }}"></script>		
+		<script src= "{{ asset('bundles/lider/js/login.js') }}"></script>	
+		<script src= "{{ asset('bundles/lider/js/notify.min.js') }}"></script>	
 		<link rel="stylesheet" href="{{asset('bundles/lider/css/bootstrap.css')}}" />		
 		<link rel="stylesheet" href="{{asset('bundles/lider/css/login.css')}}" />		
 	</head>
@@ -15,7 +17,7 @@
 					<img src="{{asset('bundles/lider/images/logoAyS.png')}}" alt="Araujo & Segovia"/>
 				</div>
 				<div class= "login-form">
-					<form role="form">
+					<form role="form"  enctype="multipart/form-data" >
 					  <div class="form-group">				    
 					    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Correo electr&oacute;nico">
 					  </div>

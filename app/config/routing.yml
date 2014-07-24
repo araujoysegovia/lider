@@ -2,3 +2,10 @@ lider:
     resource: "@LiderBundle/Resources/config/routing.yml"
     prefix:   /
 
+hwi_oauth_login:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix:   /admin/login
+
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /admin/connect

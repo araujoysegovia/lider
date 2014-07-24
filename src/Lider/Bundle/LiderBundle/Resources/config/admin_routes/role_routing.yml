@@ -2,7 +2,7 @@ admin_role:
     pattern:  /
     defaults: { _controller: LiderBundle:Role:checkRoute }
     methods:  [GET]
-     
+
 admin_role_getbyid:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Role:list }

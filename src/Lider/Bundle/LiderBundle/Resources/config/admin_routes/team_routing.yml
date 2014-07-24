@@ -1,21 +1,21 @@
 admin_team:
     pattern:  /
     defaults: { _controller: LiderBundle:Team:checkRoute }
-    
+
 admin_team_delete:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Team:delete }
     methods:  [DELETE]
     requirements:
       id: \d+
-      
+
 admin_team_update:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Team:update }
     methods:  [PUT]
     requirements:
       id: \d+
-      
+
 admin_team_getbyid:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Team:list }

@@ -13,6 +13,8 @@
 
     <link href="{{asset('bundles/lider/js/kendo/styles/kendo.common.min.css')}}"rel="stylesheet" />
     <link href="{{asset('bundles/lider/js/kendo/styles/kendo.bootstrap.min.css')}}"rel="stylesheet" />
+    
+    <script type="text/javascript" src= "{{ asset('bundles/lider/js/homeAdministrator.js') }}"></script>
 	</head>
 	<body>
     <div class="body">
@@ -52,75 +54,11 @@
         </div><!-- /.container-fluid -->
       </nav>
 
-      <div class ="tournaments">
+      <div id="tournaments" class ="tournaments" >
 
           <p><b>Torneos</b></p>
           <div id="gridTournaments"></div>
-            <script>
-                $(document).ready(function () {
-                    // var crudServiceBaseUrl = "http://localhost/lider/web/app_dev.php",
-                        dataSource = new kendo.data.DataSource({
-                            transport: {
-                                read:  {
-                                    url:  "admin/tournament",
-                                    dataType: "json",
-                                    type: "GET"
-                                },
-                                update: {
-                                    url: "admin/tournament",
-                                    dataType: "json",
-                                    type: "PUT"
-                                },
-                                destroy: {
-                                    url: "admin/tournament",
-                                    dataType: "json",
-                                    type: "DELETE"
-                                },
-                                create: {
-                                    url: "admin/tournament",
-                                    dataType: "POST"
-                                },
-                                parameterMap: function(options, operation) {
-                                    if (operation !== "read" && options.models) {
-                                        return {models: kendo.stringify(options.models)};
-                                    }
-                                }
-                            },
-                            batch: true,
-                            pageSize: 20,
-                            schema: {
-                                model: {
-                                    id: "id",
-                                    fields: {
-                                        tournamentId: { editable: false, nullable: true },
-                                        name: { validation: { required: true } },
-                                        startDate: { type: "date", },
-                                        endDate: { type: "date" },
-                                        active: { type: "boolena" }
-                                    }
-                                }
-                            }
-                        });
-
-
-
-                    $("#gridTournaments").kendoGrid({
-                        dataSource: dataSource,
-                        pageable: true,
-                        height: 550,
-                        toolbar: ["create"],
-                        columns: [
-                            { field:"name", title: "Nombre" },
-                            { field: "startDate", title:"Fecha de inicio" },
-                            { field: "endDate", title:"Fecha de fin"},
-                            { field: "active", title: "Activo"},
-                            { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }],
-                        editable: "popup"
-                    });
-
-
-                });
-            </script>          
+                  
       </div>
 
     </div>
