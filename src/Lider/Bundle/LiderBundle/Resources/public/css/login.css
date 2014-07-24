@@ -12,8 +12,11 @@
 	text-align: center;	
 	padding: 15px;
 }
+.login > .logo {
+	margin-top: 30px;
+}
 
-.login-form{
+.login > .login-form{
 	margin-top: 50px;
 	padding-left: 50px;
 	padding-right: 50px;

@@ -8,3 +8,7 @@ lider_index_page:
 
 login_check:
     path: /login_check
+
+lider_home_administrator_page:
+    path:     /home
+    defaults: { _controller: LiderBundle:Routing:homeAdministratorPage }

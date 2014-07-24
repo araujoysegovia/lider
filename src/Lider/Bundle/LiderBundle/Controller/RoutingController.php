@@ -32,4 +32,13 @@ class RoutingController extends Controller
 
     	//return $this->render('LiderBundle:Lider:index.html.twig');
     }
+
+    /**   
+     * @Template("LiderBundle:Lider:homeAdministrator.html.twig")
+     */
+    public function homeAdministratorPageAction(Request $request)
+    {
+        
+        return $this->render('LiderBundle:Lider:homeAdministrator.html.twig');
+    }    
 }
