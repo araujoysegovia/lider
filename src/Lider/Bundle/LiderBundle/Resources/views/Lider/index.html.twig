@@ -2,13 +2,32 @@
 <html>
 	<head>		
 		<meta charset="UTF-8">
-		<script src= "{{ asset('bundles/lider/js/jquery.mobile-1.4.3/jquery.mobile-1.4.3.min.js') }}"></script>	
-		<script src= "{{ asset('bundles/lider/js/backbone.js') }}"></script>	
-		<script src= "{{ asset('bundles/lider/js/underscore.js') }}"></script>	
-		<script src= "{{ asset('bundles/lider/js/bootstrap.min.js') }}"></script>	
-		<link rel="stylesheet" href="{{asset('bundles/lider/css/bootstrap-3.2.0-dist/bootstrap.css')}}">		
+		<script src= "{{ asset('bundles/lider/js/jquery.min.js') }}"></script>	
+		<script src= "{{ asset('bundles/lider/js/underscore.js') }}"></script>
+		<script src= "{{ asset('bundles/lider/js/backbone.js') }}"></script>		
+		<script src= "{{ asset('bundles/lider/js/bootstrap.min.js') }}"></script>		
+		<link rel="stylesheet" href="{{asset('bundles/lider/css/bootstrap.css')}}" />		
+		<link rel="stylesheet" href="{{asset('bundles/lider/css/login.css')}}" />		
 	</head>
-	<body>
-		
+	<body>	
+		<div class="body">	
+			<div class="login">
+				<div class="logo">
+					<img src="{{asset('bundles/lider/images/logoAyS.png')}}" alt="Araujo & Segovia"/>
+				</div>
+				<div class= "login-form">
+					<form role="form">
+					  <div class="form-group">				    
+					    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Correo electr&oacute;nico">
+					  </div>
+					  <div class="form-group">
+					    
+					    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Contrase&ntilde;a">
+					  </div>				 
+					  <button type="submit" class="btn btn-primary">Ingresar</button>
+					</form>					
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

@@ -1,0 +1,45 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Tournament class
+ * @ORM\Table(name="tournament")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ */
+class Tournament extends Entity
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+	 * @ORM\Column(type="string", length=100)
+	 * @Assert\NotBlank()
+     * @Assert\Length(max=100)
+	 */
+	private $name;
+
+	/**
+	 * @ORM\Column(type="date")
+	 * @Assert\NotBlank()
+	 */
+	private $startdate;
+	
+	/**
+	 * @ORM\Column(type="date")
+	 * @Assert\NotBlank()
+	 */
+	private $enddate;
+	
+	/**
+	 * @ORM\Column(type="boolean")
+	 */
+	private $active = true;
+
+}

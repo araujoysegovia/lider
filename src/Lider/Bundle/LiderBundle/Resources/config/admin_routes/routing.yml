@@ -1,0 +1,38 @@
+admin_index_page:
+    path:     /
+    defaults: { _controller: LiderBundle:Routing:loginPage }
+
+admin_login_check:
+    path: /login_check
+    
+admin_answer:
+    resource: "@LiderBundle/Resources/config/admin_routes/answer_routing.yml"
+    prefix:   /admin/answer
+    
+admin_category:
+    resource: "@LiderBundle/Resources/config/admin_routes/category_routing.yml"
+    prefix:   /admin/category
+
+admin_group:
+    resource: "@LiderBundle/Resources/config/admin_routes/group_routing.yml"
+    prefix:   /admin/group
+    
+admin_team:
+    resource: "@LiderBundle/Resources/config/admin_routes/team_routing.yml"
+    prefix:   /admin/team
+    
+admin_tournament:
+    resource: "@LiderBundle/Resources/config/admin_routes/tournament_routing.yml"
+    prefix:   /admin/tournament
+    
+admin_question:
+    resource: "@LiderBundle/Resources/config/admin_routes/question_routing.yml"
+    prefix:   /admin/question
+    
+admin_office:
+    resource: "@LiderBundle/Resources/config/admin_routes/office_routing.yml"
+    prefix:   /admin/office
+    
+admin_role:
+    resource: "@LiderBundle/Resources/config/admin_routes/role_routing.yml"
+    prefix:   /admin/role

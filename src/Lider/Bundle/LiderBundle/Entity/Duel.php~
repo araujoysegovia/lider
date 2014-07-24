@@ -1,0 +1,78 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Duel class
+ * @ORM\Table(name="duel")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ */
+class Duel extends Entity
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"})
+	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $group;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Game",cascade={"persist"})
+	 * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $game;
+	
+	/**
+	 * @ORM\Column(type="datetime")
+	 * @Assert\NotBlank()
+	 */
+	private $startdate;
+	
+	/**
+	 * @ORM\Column(type="datetime")
+	 * @Assert\NotBlank()
+	 */
+	private $enddate;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
+	 * @ORM\JoinColumn(name="playerone_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $player_one;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
+	 * @ORM\JoinColumn(name="playertwo_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $player_two;
+	
+	/**
+	 * @ORM\Column(type="integer")
+	 * @Assert\NotBlank()
+	 */
+	private $point_one = 0;
+	
+	/**
+	 * @ORM\Column(type="integer")
+	 * @Assert\NotBlank()
+	 */
+	private $point_two = 0;
+	
+	/**
+	 * @ORM\Column(type="boolean")
+	 */
+	private $active = true;
+
+}

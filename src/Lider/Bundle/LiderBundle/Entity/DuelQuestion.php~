@@ -1,0 +1,92 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * DuelQuestion class
+ * @ORM\Table(name="duelquestion")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ */
+class DuelQuestion extends Entity
+{
+	/**
+	 * @ORM\Id
+	 * @ORM\Column(type="integer")
+	 * @ORM\GeneratedValue(strategy="IDENTITY")
+	 */
+	private $id;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"})
+	 * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $question;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Duel",cascade={"persist"})
+	 * @ORM\JoinColumn(name="duel_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $duel;
+	
+	/**
+	 * @ORM\Column(type="time")
+	 * @Assert\NotBlank()
+	 */
+	private $starttime;
+	
+	/**
+	 * @ORM\Column(type="time")
+	 * @Assert\NotBlank()
+	 */
+	private $endtime;
+	
+	/**
+	 * @ORM\Column(type="boolean")
+	 */
+	private $usehelp = false;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
+	 * @ORM\JoinColumn(name="playerone_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $player_one;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
+	 * @ORM\JoinColumn(name="playertwo_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $player_two;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Answer",cascade={"persist"})
+	 * @ORM\JoinColumn(name="answerone_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $answer_one;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Answer",cascade={"persist"})
+	 * @ORM\JoinColumn(name="answertwo_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $answer_two;
+	
+	/**
+	 * @ORM\Column(type="integer")
+	 * @Assert\NotBlank()
+	 */
+	private $point_one = 0;
+	
+	/**
+	 * @ORM\Column(type="integer")
+	 * @Assert\NotBlank()
+	 */
+	private $point_two = 0;
+	
+}

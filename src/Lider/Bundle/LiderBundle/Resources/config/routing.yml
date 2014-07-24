@@ -1,7 +1,3 @@
-lider_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: LiderBundle:Default:index }
-
-lider_index_page:
-    path:     /
-    defaults: { _controller: LiderBundle:Routing:loginPage }
+lider:
+    resource: "@LiderBundle/Resources/config/admin_routes/routing.yml"
+    prefix:   /admin

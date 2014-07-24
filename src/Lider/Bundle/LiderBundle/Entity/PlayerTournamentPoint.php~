@@ -1,0 +1,47 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Player Tournament Point class
+ * @ORM\Table(name="playertournamentpoint")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ */
+class PlayerTournamentPoint extends Entity
+{
+	/**
+	 * @ORM\Id
+	 * @ORM\Column(type="integer")
+	 * @ORM\GeneratedValue(strategy="IDENTITY")
+	 */
+	private $id;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
+	 * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $player;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"})
+	 * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $team;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"})
+	 * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $tournament;
+	
+	/**
+	 * @ORM\Column(type="integer")
+	 * @Assert\NotBlank()
+	 */
+	private $point = 0;
+}
