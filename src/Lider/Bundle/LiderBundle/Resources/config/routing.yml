@@ -6,9 +6,6 @@ lider_index_page:
     path:     /
     defaults: { _controller: LiderBundle:Routing:loginPage }
 
-login_check:
-    path: /login_check
-
 lider:
     resource: "@LiderBundle/Resources/config/admin_routes/routing.yml"
     prefix:   /admin

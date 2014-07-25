@@ -21,6 +21,30 @@
 }
 
 .body > .tournaments {
-	padding: 25px;
-	/*display: none;*/
+	padding: 10px 25px;
+	display: none;
+}
+
+.body > .players{
+	padding: 10px 25px;
+	display: none;	
+}
+
+.body > .groups{
+	padding: 10px 25px;
+	display: none;	
+}
+.body > .categories{
+	padding: 10px 25px;
+	display: none;	
+}
+
+.body > .questions{
+	padding: 10px 25px;
+	display: none;	
+}
+
+.body > div > .title{
+	color: #428BCA;
+
 }

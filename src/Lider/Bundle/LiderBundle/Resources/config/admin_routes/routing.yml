@@ -2,9 +2,6 @@ admin_index_page:
     path:     /
     defaults: { _controller: LiderBundle:Routing:loginPage }
 
-admin_login_check:
-    path: /login_check
-
 admin_answer:
     resource: "@LiderBundle/Resources/config/admin_routes/answer_routing.yml"
     prefix:   /admin/answer
