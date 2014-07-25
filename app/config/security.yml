@@ -41,7 +41,7 @@ security:
                                 
                 oauth_user_provider:
                     service: my_user_provider
-                
+
             logout:
                  path:   admin_logout
                  target: admin_index_page

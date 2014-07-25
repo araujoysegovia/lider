@@ -128,7 +128,7 @@ abstract class Controller extends SymfonyController {
 		return $newClass;
 	}
 	
-	public function listAction($id = null) {
+	public function listAction($id = null) {		
 		$em = $this->getDoctrine()->getEntityManager();
 		$request = $this->get("request");
 		if(is_null($id)){

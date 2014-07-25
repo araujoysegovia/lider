@@ -1,21 +1,21 @@
 admin_answer:
     pattern:  /
     defaults: { _controller: LiderBundle:Answer:checkRoute }
-    
+
 admin_answer_delete:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Answer:delete }
     methods:  [DELETE]
     requirements:
       id: \d+
-      
+
 admin_answer_update:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Answer:update }
     methods:  [PUT]
     requirements:
       id: \d+
-      
+
 admin_answer_getbyid:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Answer:list }

@@ -1,21 +1,21 @@
 admin_tournament:
     pattern:  /
     defaults: { _controller: LiderBundle:Tournament:checkRoute }
-    
+
 admin_tournament_delete:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Tournament:delete }
     methods:  [DELETE]
     requirements:
       id: \d+
-      
+
 admin_tournament_update:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Tournament:update }
     methods:  [PUT]
     requirements:
       id: \d+
-      
+
 admin_tournament_getbyid:
     pattern:  /{id}
     defaults: { _controller: LiderBundle:Tournament:list }
