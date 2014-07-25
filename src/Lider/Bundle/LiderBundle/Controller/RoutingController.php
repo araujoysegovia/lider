@@ -34,4 +34,15 @@ class RoutingController extends Controller
 
     	//return $this->render('LiderBundle:Lider:index.html.twig');
     }
+    
+    public function loginFailureAction(Request $request)
+    {
+    	if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
+    		$error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+    		throw new \Exception($error);
+    	} else {
+    		$error = $request->getSession()->get(SecurityContext::AUTHENTICATION_ERROR);
+    		throw new \Exception($error);
+    	}
+    }
 }

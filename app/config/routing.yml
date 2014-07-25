@@ -7,10 +7,10 @@ hwi_oauth_redirect:
     prefix:   /admin/connect
     
 google_login_check:
-    pattern: /admin/login/check-google
+    pattern: /admin/login-check/google
 
 admin_login_check:
-    pattern:  /admin/login/check
+    pattern: /admin/login-check
     
 admin_logout:
     path:   /admin/logout
