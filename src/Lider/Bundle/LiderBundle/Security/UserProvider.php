@@ -22,7 +22,8 @@ class UserProvider extends OAuthUserProvider //implements UserProviderInterface,
 	
     public function loadUserByUsername($username)
     {
-    	throw new \Exception('loadByUsername not implemented');
+    	echo "Entro";
+    	//throw new \Exception('loadByUsername not implemented');
     	$user = $this->em->getRepository("LiderBundle:Player")->findOneByEmail($username);
         if ($user) {
 			
@@ -51,6 +52,7 @@ class UserProvider extends OAuthUserProvider //implements UserProviderInterface,
     }
     
     public function loadUserByOAuthUserResponse(UserResponseInterface $response) {
+    	print_r($response);
     	$username = $response->getUsername(); /* An ID like: 112259658235204980084 */
     	$email = $response->getEmail();
     	$nickname = $response->getNickname();
