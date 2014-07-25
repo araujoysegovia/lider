@@ -34,13 +34,15 @@ class RoutingController extends Controller
 
     	//return $this->render('LiderBundle:Lider:index.html.twig');
     }
-
-    /**   
-     * @Template("LiderBundle:Lider:homeAdministrator.html.twig")
-     */
-    public function homeAdministratorPageAction(Request $request)
+    
+    public function loginFailureAction(Request $request)
     {
-        
-        return $this->render('LiderBundle:Lider:homeAdministrator.html.twig');
-    }    
+    	if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
+    		$error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+    		throw new \Exception($error);
+    	} else {
+    		$error = $request->getSession()->get(SecurityContext::AUTHENTICATION_ERROR);
+    		throw new \Exception($error);
+    	}
+    }
 }

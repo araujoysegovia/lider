@@ -1,9 +1,5 @@
 $(document).ready(function () {
 
-	
-
-	
-	
 	var form = $("form[role=form]");
 
 	form.submit(function(e){
@@ -22,7 +18,7 @@ $(document).ready(function () {
 
 		$.ajax({
 			type: "POST",     
-			url: "admin/login",
+			url: "login-check",
 	        data: formData,
 	        contentType: false,
 	        processData: false,

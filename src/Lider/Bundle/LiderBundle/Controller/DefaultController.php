@@ -33,6 +33,13 @@ class DefaultController extends SymfonyController
     	$user->setName("Deiner");
     	$user->setLastname("Mejia");
     	$user->addRole($role);
+    	
+    	$factory = $this->container->get('security.encoder_factory');
+    	$codificador = $factory->getEncoder($user);
+    	$password = $codificador->encodePassword("araujo123", $user->getSalt());
+    	
+    	$user->setPassword($password);
+    	
     	$em->persist($user);
     	
     	$user1 = new Player();
@@ -40,6 +47,13 @@ class DefaultController extends SymfonyController
     	$user1->setName("Lizeth");
     	$user1->setLastname("Rodriguez");
     	$user1->addRole($role);
+    	
+    	$factory = $this->container->get('security.encoder_factory');
+    	$codificador = $factory->getEncoder($user1);
+    	$password = $codificador->encodePassword("araujo123", $user1->getSalt());
+    	 
+    	$user1->setPassword($password);
+    	
     	$em->persist($user1);
     }
     

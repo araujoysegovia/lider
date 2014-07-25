@@ -70,7 +70,12 @@ class Player implements AdvancedUserInterface, \Serializable{
 	 */
 	private $team;
 	
-	protected $data;
+	/**
+	 * @ORM\Column(type="string", length=40)
+     * @Assert\Length(max=40)
+	 * @Assert\NotBlank()
+	 */
+	private $password;
 	
 	
 	public function serialize()
@@ -147,33 +152,6 @@ class Player implements AdvancedUserInterface, \Serializable{
     public function __construct()
     {
         $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
-    
-    public function getDataFromResponse(UserResponseInterface $response){
-    	parent::__construct($response->getUsername());
-    	$this->data = array(
-    			'provider'=>$response->getResourceOwner()->getName(),
-    			'providerId'=>$response->getUsername()
-    	);
-    	$vars = array(
-    			'nickname',
-    			'realname',
-    			'email',
-    			'profilePicture',
-    			'accessToken',
-    			'refreshToken',
-    			'tokenSecret',
-    			'expiresIn',
-    	);
-    	foreach($vars as $v) {
-    		$fct = 'get'.ucfirst($v);
-    		$this->data[$v] = $response->$fct();
-    	}
-    }
-    
-    public function getData() {
-    	return $this->data;
     }
 
     /**
@@ -345,5 +323,18 @@ class Player implements AdvancedUserInterface, \Serializable{
     public function getTeam()
     {
         return $this->team;
+    }
+
+    /**
+     * Set password
+     *
+     * @param string $password
+     * @return Player
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
     }
 }

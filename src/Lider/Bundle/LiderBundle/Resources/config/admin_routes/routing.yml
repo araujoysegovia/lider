@@ -2,6 +2,10 @@ admin_index_page:
     path:     /
     defaults: { _controller: LiderBundle:Routing:loginPage }
 
+admin_check_failure:
+    path:     /admin/logincheck/failure
+    defaults: { _controller: LiderBundle:Routing:loginFailure }
+
 admin_answer:
     resource: "@LiderBundle/Resources/config/admin_routes/answer_routing.yml"
     prefix:   /admin/answer
