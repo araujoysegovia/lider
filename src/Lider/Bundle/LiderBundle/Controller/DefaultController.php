@@ -25,6 +25,10 @@ class DefaultController extends SymfonyController
     }
     
     
+    public function getHomeAction()
+    {
+         return $this->render('LiderBundle:Default:homeAdministrator.html.twig');
+    }    
 
     
     private function createDefaultUser($em, $role){

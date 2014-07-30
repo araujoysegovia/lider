@@ -7,6 +7,7 @@
 		<script src= "{{ asset('bundles/lider/js/bootstrap.min.js') }}"></script>		
 		<script src= "{{ asset('bundles/lider/js/login.js') }}"></script>	
 		<script src= "{{ asset('bundles/lider/js/notify.min.js') }}"></script>	
+		
 		<link rel="stylesheet" href="{{asset('bundles/lider/css/bootstrap.css')}}" />		
 		<link rel="stylesheet" href="{{asset('bundles/lider/css/login.css')}}" />		
 	</head>
@@ -16,19 +17,37 @@
 				<div class="logo">
 					<img src="{{asset('bundles/lider/images/logoAyS.png')}}" alt="Araujo & Segovia"/>
 				</div>
-				<div class= "login-form">
-					<form role="form"  enctype="multipart/form-data" >
-					  <div class="form-group">				    
-					    <input type="email" class="form-control" id="email" placeholder="Correo electr&oacute;nico">
-					  </div>
-					  <div class="form-group">
-
-					    <input type="password" class="form-control" id="password" placeholder="Contrase&ntilde;a">
-					  </div>				 
-					  <button type="submit" class="btn btn-primary">Ingresar</button>
-					</form>					
+				<div class= "login-form">	
+					<form role="form" class="form-class" action="{{ path("admin_login_check") }}" method="POST">
+						  <div class="form-group">				    
+						    <input type="email" class="form-control" id="email" placeholder="Correo electr&oacute;nico">
+						  </div>
+						  <div class="form-group">
+						    <input type="password" class="form-control" id="password" placeholder="Contrase&ntilde;a">
+						  </div>				 
+						  <button type="submit" class="btn btn-primary btn-ingresar">Ingresar</button>
+						  
+						  {% if error %}
+							<div class="alert alert-danger">
+							 	{{ error.message}}
+							</div>
+						  {% endif %}	
+						 <span id="signinButton">
+						 	<span
+    							class="g-signin"
+								data-callback="signinCallback"
+    							data-clientid="409288717107-h73ade2t3homia8e8r6o4dg3bmuingn3.apps.googleusercontent.com"
+    							data-cookiepolicy="single_host_origin"
+    							data-requestvisibleactions="http://schemas.google.com/AddActivity"
+    							data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email">
+  							</span>
+						</span>		  
+					</form>							
 				</div>
 			</div>
 		</div>
-	</body>
+	<script type="text/javascript">
+
+    </script>		
+	</body>	
 </html>

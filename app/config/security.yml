@@ -1,7 +1,6 @@
 security:
     acl:
        connection: default
-        
     encoders:
         Lider\Bundle\LiderBundle\Entity\Player:
              algorithm: sha1
@@ -13,9 +12,8 @@ security:
 #        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
-        main:
-            entity: { class: Lider\Bundle\LiderBundle\Entity\Player, property: email }
-            
+#        main:
+#            entity: { class: Lider\Bundle\LiderBundle\Entity\Player, property: email }
         userprovider:
             id: my_user_provider
 
@@ -23,24 +21,21 @@ security:
         admin_area:
             pattern:   ^/admin
             anonymous: ~
-            oauth:
-                resource_owners:
-                    google: /admin/login-check/google
-#                    custom: /admin/login/check
-                                        
-                login_path: /admin/
-                use_forward: false
+            form_login:
+                login_path: admin_index_page
                 check_path: /admin/login-check
-                always_use_default_target_path: true
-                
-                use_referer: false
-                
-                
-                failure_forward: true                         
-                failure_path: admin_check_failure
-                                
-                oauth_user_provider:
-                    service: my_user_provider
+                default_target_path: admin_home_page                
+                use_forward: false
+#				username_parameter:             _username
+#               password_parameter:             _password
+
+                #Redirigir en ingreso satisfactorio
+                #always_use_default_target_path: false
+
+
+                #opciones para redirigir en ingreso fallido
+                failure_path: admin_index_page
+                failure_forward: true                
 
             logout:
                  path:   admin_logout

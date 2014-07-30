@@ -22,6 +22,8 @@ class UserProvider extends OAuthUserProvider //implements UserProviderInterface,
 	
     public function loadUserByUsername($username)
     {
+    	$request = $this->cont->get("request");
+    	
     	//throw new \Exception('loadByUsername not implemented');
     	$user = $this->em->getRepository("LiderBundle:Player")->findOneByEmail($username);
         if ($user) {

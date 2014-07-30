@@ -1,0 +1,17 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_pgsql
+    database_host: 10.102.1.21
+    database_port: 5432
+    database_name: lider
+    database_user: postgres
+    database_password: postgres
+    mailer_transport: smtp
+    mailer_host: smtp.sendgrid.net
+    mailer_user: araujoysegovia
+    mailer_password: araujo123
+    locale: en
+    secret: ThisTokenIsNotSoSecretChangeIt
+    debug_toolbar: true
+    debug_redirects: false
+    use_assetic_controller: true

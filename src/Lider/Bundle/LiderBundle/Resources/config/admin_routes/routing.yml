@@ -1,6 +1,16 @@
+admin_login_check:
+    pattern: /login-check
+
+admin_logout:
+    path:   /admin/logout
+
 admin_index_page:
     path:     /
     defaults: { _controller: LiderBundle:Routing:loginPage }
+
+admin_home_page:
+    path:	/admin/home
+    defaults: { _controller: LiderBundle:Routing:homePage }
 
 admin_check_failure:
     path:     /admin/logincheck/failure
