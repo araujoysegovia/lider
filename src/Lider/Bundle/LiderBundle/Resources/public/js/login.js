@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-	var form = $("form[role=form]");
+	/*var form = $("form[role=form]");
 
 	form.submit(function(e){
 		
@@ -53,5 +53,5 @@ $(document).ready(function () {
 			}
 
 		});
-	})
+	})*/
 })

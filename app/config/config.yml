@@ -14,8 +14,6 @@ services:
         arguments:
               entityManager: "@doctrine.orm.entity_manager"
               container: "@service_container"
-    authentication_handler:
-               class: Lider\Bundle\LiderBundle\Security\AuthenticationHandler
 
 framework:
     #esi:             ~

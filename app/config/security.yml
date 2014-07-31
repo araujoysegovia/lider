@@ -23,22 +23,31 @@ security:
         admin_area:
             pattern:   ^/admin
             anonymous: ~
-            oauth:
-                resource_owners:
-                    google: /admin/login-check/google
-#                    custom: /admin/login/check
-                                        
-                login_path: /admin/
-                use_forward: false
-                check_path: /admin/login-check
-                always_use_default_target_path: true
-                
-                use_referer: false
-                
+            form_login:
+                check_path: admin_login_check
+                login_path: admin_index_page
                 
                 failure_forward: true                         
                 failure_path: admin_check_failure
-                                
+                
+                default_target_path: admin_home_page
+                use_forward: true
+                
+            oauth:                                        
+                login_path: admin_index_page
+                check_path: admin_login_check
+                
+                failure_forward: true                         
+                failure_path: admin_check_failure
+                
+                default_target_path: admin_home_page
+                use_forward: true
+                
+                use_referer: false
+                
+                resource_owners:
+                    google: /admin/login-check/google
+                                    
                 oauth_user_provider:
                     service: my_user_provider
 
