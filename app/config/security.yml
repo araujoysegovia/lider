@@ -1,7 +1,6 @@
 security:
     acl:
        connection: default
-        
     encoders:
         Lider\Bundle\LiderBundle\Entity\Player:
              algorithm: sha1
@@ -13,9 +12,8 @@ security:
 #        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
-        main:
-            entity: { class: Lider\Bundle\LiderBundle\Entity\Player, property: email }
-            
+#        main:
+#            entity: { class: Lider\Bundle\LiderBundle\Entity\Player, property: email }
         userprovider:
             id: my_user_provider
 
@@ -24,32 +22,20 @@ security:
             pattern:   ^/admin
             anonymous: ~
             form_login:
-                check_path: admin_login_check
                 login_path: admin_index_page
-                
-                failure_forward: true                         
-                failure_path: admin_check_failure
-                
-                default_target_path: admin_home_page
-                use_forward: true
-                
-            oauth:                                        
-                login_path: admin_index_page
-                check_path: admin_login_check
-                
-                failure_forward: true                         
-                failure_path: admin_check_failure
-                
-                default_target_path: admin_home_page
-                use_forward: true
-                
-                use_referer: false
-                
-                resource_owners:
-                    google: /admin/login-check/google
-                                    
-                oauth_user_provider:
-                    service: my_user_provider
+                check_path: /admin/login-check
+                default_target_path: admin_home_page                
+                use_forward: false
+#				username_parameter:             _username
+#               password_parameter:             _password
+
+                #Redirigir en ingreso satisfactorio
+                #always_use_default_target_path: false
+
+
+                #opciones para redirigir en ingreso fallido
+                failure_path: admin_index_page
+                failure_forward: true
 
             logout:
                  path:   admin_logout

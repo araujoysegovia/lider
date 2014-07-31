@@ -82,13 +82,11 @@ swiftmailer:
     spool:     { type: memory }
 
 
-hwi_oauth:
-    firewall_name: admin_area 
-    resource_owners:
-        google:
-            type:                google
-            client_id:           288359316941-s2dfput5g4q4lrngm51l3njvfa5r1mae.apps.googleusercontent.com
-            client_secret:       a752b6be598c1b56bc3e7650b898cbfb1d95fed9
-            scope:               "https://www.googleapis.com/auth/userinfo.email"
-#            options:
-#                access_type:     offline
+#hwi_oauth:
+#    firewall_name: admin_area 
+#    resource_owners:
+#        google:
+#            type:                google
+#            client_id:           409288717107-h73ade2t3homia8e8r6o4dg3bmuingn3.apps.googleusercontent.com  
+#            client_secret:       E4OBnryE-9dRSlMOYAvxXePm
+#            scope:               "email profile"

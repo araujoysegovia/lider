@@ -45,4 +45,13 @@ class RoutingController extends Controller
     		throw new \Exception($error);
     	}
     }
+    
+    /**   
+     * @Template("LiderBundle:Lider:home.html.twig")
+     */
+    public function homePageAction(Request $request)
+    {    	
+		return array();
+    	//return $this->render('LiderBundle:Lider:index.html.twig');
+    }
 }

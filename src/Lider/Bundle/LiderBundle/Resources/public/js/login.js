@@ -1,57 +1,34 @@
 $(document).ready(function () {
+	 var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	    po.src = 'https://apis.google.com/js/client:plusone.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	
+});
 
-	/*var form = $("form[role=form]");
-
-	form.submit(function(e){
-		
-		e.preventDefault();
-
-		formData = new FormData();
-
- 		var name = form.find("#email").val();
- 		var password = form.find("#password").val();
-
-
-		formData.append("_username", name);
-		formData.append("_password", password);
-		
-
-		$.ajax({
-			type: "POST",     
-			url: "login-check",
-	        data: formData,
-	        contentType: false,
-	        processData: false,
-
-			success : function(obj, textStatus, jqXHR){
-				if(obj["message"]){
-			    	notification.show({
-		                title: "Success",
-	                    message: obj.message
-	                }, "success");
+function signinCallback(authResult) {
+	
+	  if(authResult['access_token']) {
+		  console.log(authResult)
+		  $.ajax({
+			  	type: "POST",     
+				url: "login-check",
+				data: {
+					code: authResult['code'] 
+				},
+				contentType: 'application/json',
+				dataType: "json",
+				success: function(){
+					
+				},
+				error: function(){
+					
 				}
-			},
-			
-			error : function(xhr, textStatus, jqXHR){
-				try{
-			    	var obj = jQuery.parseJSON(xhr.responseText);
-			    	notification.show({
-	                    title: "Error",
-	                    message: obj.message
-	                }, "error");
-		    	}catch(ex){
-		    		notification.show({
-	                    title: "Error",
-	                    message: "Server error"
-	                }, "error");
-		    	}
-
-		    	if(xhr.status == 401){
-					  window.location= "/index";
-				}
-
-			}
-
-		});
-	})*/
-})
+		});		  
+	  } else if (authResult['error']) {
+	    // Se ha producido un error.
+	    // Posibles códigos de error:
+	    //   "access_denied": el usuario ha denegado el acceso a la aplicación.
+	    //   "immediate_failed": no se ha podido dar acceso al usuario de forma automática.
+	    // console.log('There was an error: ' + authResult['error']);
+	  }
+}
