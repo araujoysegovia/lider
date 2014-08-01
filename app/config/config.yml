@@ -2,20 +2,9 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
 
-parameters:
-    user_provider.class: Lider\Bundle\LiderBundle\Security\UserProvider
+#parameters:
 
-services:
-    hwi_oauth.user.provider.entity:
-        class: HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider
-
-    my_user_provider:
-        class: "%user_provider.class%"
-        arguments:
-              entityManager: "@doctrine.orm.entity_manager"
-              container: "@service_container"
-    authentication_handler:
-               class: Lider\Bundle\LiderBundle\Security\AuthenticationHandler
+#services:                
 
 framework:
     #esi:             ~
@@ -84,11 +73,11 @@ swiftmailer:
     spool:     { type: memory }
 
 
-#hwi_oauth:
-#    firewall_name: admin_area 
-#    resource_owners:
-#        google:
-#            type:                google
-#            client_id:           409288717107-h73ade2t3homia8e8r6o4dg3bmuingn3.apps.googleusercontent.com  
-#            client_secret:       E4OBnryE-9dRSlMOYAvxXePm
-#            scope:               "email profile"
+hwi_oauth:
+    firewall_name: admin_area 
+    resource_owners:
+        google:
+            type:                google
+            client_id:           409288717107-h73ade2t3homia8e8r6o4dg3bmuingn3.apps.googleusercontent.com  
+            client_secret:       E4OBnryE-9dRSlMOYAvxXePm
+            scope:               "email profile"

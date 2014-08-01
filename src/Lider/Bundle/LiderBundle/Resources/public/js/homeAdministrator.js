@@ -51,22 +51,22 @@ $(document).ready(function () {
     dataSourceTournaments = new kendo.data.DataSource({
         transport: {
             read:  {
-                url:  "admin/tournament",
+                url:  "tournament",
                 dataType: "json",
                 type: "GET"
             },
             update: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "PUT"
             },
             destroy: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "DELETE"
             },
             create: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "POST"
             },
             parameterMap: function(options, operation) {
@@ -109,22 +109,22 @@ $(document).ready(function () {
     dataSourcePlayers = new kendo.data.DataSource({
         transport: {
             read:  {
-                url:  "admin/tournament",
+                url:  "tournament",
                 dataType: "json",
                 type: "GET"
             },
             update: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "PUT"
             },
             destroy: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "DELETE"
             },
             create: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "POST"
             },
             parameterMap: function(options, operation) {
@@ -166,22 +166,22 @@ $(document).ready(function () {
     dataSourceGroups = new kendo.data.DataSource({
         transport: {
             read:  {
-                url:  "admin/tournament",
+                url:  "tournament",
                 dataType: "json",
                 type: "GET"
             },
             update: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "PUT"
             },
             destroy: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "DELETE"
             },
             create: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "POST"
             },
             parameterMap: function(options, operation) {
@@ -225,22 +225,22 @@ $(document).ready(function () {
     dataSourceCategories = new kendo.data.DataSource({
         transport: {
             read:  {
-                url:  "admin/tournament",
+                url:  "tournament",
                 dataType: "json",
                 type: "GET"
             },
             update: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "PUT"
             },
             destroy: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "DELETE"
             },
             create: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "POST"
             },
             parameterMap: function(options, operation) {
@@ -282,22 +282,22 @@ $(document).ready(function () {
     dataSourceQuestions = new kendo.data.DataSource({
         transport: {
             read:  {
-                url:  "admin/tournament",
+                url:  "tournament",
                 dataType: "json",
                 type: "GET"
             },
             update: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "PUT"
             },
             destroy: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "json",
                 type: "DELETE"
             },
             create: {
-                url: "admin/tournament",
+                url: "tournament",
                 dataType: "POST"
             },
             parameterMap: function(options, operation) {

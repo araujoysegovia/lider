@@ -27,7 +27,7 @@ class DefaultController extends SymfonyController
     
     public function getHomeAction()
     {
-         return $this->render('LiderBundle:Default:homeAdministrator.html.twig');
+         return $this->render('LiderBundle:Default:home.html.twig');
     }    
 
     

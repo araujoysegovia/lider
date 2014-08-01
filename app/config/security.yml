@@ -1,6 +1,5 @@
 security:
-    acl:
-       connection: default
+       
     encoders:
         Lider\Bundle\LiderBundle\Entity\Player:
              algorithm: sha1
@@ -15,31 +14,49 @@ security:
 #        main:
 #            entity: { class: Lider\Bundle\LiderBundle\Entity\Player, property: email }
         userprovider:
-            id: my_user_provider
+            id: lider_user_provider
 
     firewalls:
         admin_area:
             pattern:   ^/admin
             anonymous: ~
+ #           elogin: 
+ #               login_path: admin_index_page
+ #               check_path: /admin/login-check/google
+ #               failure_path: admin_index_page
+                
+            provider: userprovider
+            oauth:
+                resource_owners:
+                    google:             "/admin/login-check/google"
+                
+                check_path:   /admin/login-check
+                login_path:   /admin
+
+                failure_path: /admin
+                oauth_user_provider:
+                    service: lider_user_provider
+                    
             form_login:
                 login_path: admin_index_page
                 check_path: /admin/login-check
-                default_target_path: admin_home_page                
+                default_target_path: admin_home_page            
                 use_forward: false
-#				username_parameter:             _username
+#				        username_parameter:             _username
 #               password_parameter:             _password
 
                 #Redirigir en ingreso satisfactorio
                 #always_use_default_target_path: false
 
 
-                #opciones para redirigir en ingreso fallido
+                #opciones para redirigir en ingreso fallido 
                 failure_path: admin_index_page
-                failure_forward: true                
+                failure_forward: false                
 
             logout:
                  path:   admin_logout
                  target: admin_index_page
 
     access_control:
-        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        - { path: /admin, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/*, roles: IS_AUTHENTICATED_FULLY }

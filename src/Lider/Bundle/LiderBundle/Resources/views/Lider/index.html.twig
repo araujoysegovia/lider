@@ -20,10 +20,10 @@
 				<div class= "login-form">	
 					<form role="form" class="form-class" action="{{ path("admin_login_check") }}" method="POST">
 						  <div class="form-group">				    
-						    <input type="email" class="form-control" id="email" placeholder="Correo electr&oacute;nico">
+						    <input type="email" name="_username" class="form-control" id="email" placeholder="Correo electr&oacute;nico">
 						  </div>
 						  <div class="form-group">
-						    <input type="password" class="form-control" id="password" placeholder="Contrase&ntilde;a">
+						    <input type="password" name="_password" class="form-control" id="password" placeholder="Contrase&ntilde;a">
 						  </div>				 
 						  <button type="submit" class="btn btn-primary btn-ingresar">Ingresar</button>
 						  

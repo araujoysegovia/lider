@@ -1,32 +1,35 @@
+admin_google_login_check:
+    pattern: /login-check/google
+
 admin_login_check:
     pattern: /login-check
 
 admin_logout:
-    path:   /admin/logout
+    path:   /logout
 
 admin_index_page:
     path:     /
     defaults: { _controller: LiderBundle:Routing:loginPage }
 
 admin_home_page:
-    path:	/admin/home
+    path:	/home
     defaults: { _controller: LiderBundle:Routing:homePage }
 
 admin_check_failure:
-    path:     /admin/logincheck/failure
+    path:     /logincheck/failure
     defaults: { _controller: LiderBundle:Routing:loginFailure }
 
 admin_answer:
     resource: "@LiderBundle/Resources/config/admin_routes/answer_routing.yml"
-    prefix:   /admin/answer
+    prefix:   /answer
 
 admin_category:
     resource: "@LiderBundle/Resources/config/admin_routes/category_routing.yml"
-    prefix:   /admin/category
+    prefix:   /category
 
 admin_group:
     resource: "@LiderBundle/Resources/config/admin_routes/group_routing.yml"
-    prefix:   /admin/group
+    prefix:   /group
 
 admin_team:
     resource: "@LiderBundle/Resources/config/admin_routes/team_routing.yml"
@@ -34,16 +37,16 @@ admin_team:
 
 admin_tournament:
     resource: "@LiderBundle/Resources/config/admin_routes/tournament_routing.yml"
-    prefix:   /admin/tournament
+    prefix:   /tournament
 
 admin_question:
     resource: "@LiderBundle/Resources/config/admin_routes/question_routing.yml"
-    prefix:   /admin/question
+    prefix:   /question
 
 admin_office:
     resource: "@LiderBundle/Resources/config/admin_routes/office_routing.yml"
-    prefix:   /admin/office
+    prefix:   /office
 
 admin_role:
     resource: "@LiderBundle/Resources/config/admin_routes/role_routing.yml"
-    prefix:   /admin/role
+    prefix:   /role

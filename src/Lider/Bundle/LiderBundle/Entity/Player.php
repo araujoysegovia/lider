@@ -12,7 +12,7 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
  * @ORM\Table(name="player")
  * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
-class Player implements AdvancedUserInterface, \Serializable{
+class Player extends Entity implements AdvancedUserInterface, \Serializable{
 	
 	/**
 	 * @ORM\Id

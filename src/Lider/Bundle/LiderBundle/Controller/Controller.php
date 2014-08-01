@@ -155,14 +155,14 @@ abstract class Controller extends SymfonyController {
 			}
 			
 			$user = $this->container->get('security.context')->getToken()->getUser();
+
 			$roles = $user->getRoles();
 			$role = $roles[0];
 			
 			if($role->getId() > 1 && array_key_exists("company", $associations)){
 				$criteria["company"] = $user->getCompany()->getId();
 			}
-			
-			
+						
 			$filter = $request->get('filter');
 			if($filter){
 				$filter = json_decode($filter, true);
