@@ -26,6 +26,25 @@ class LoginFactory extends AbstractFactory
 		return array($providerId, $listenerId, $defaultEntryPoint);
 	}*/
 	
+	public function create(ContainerBuilder $container, $id, $config, $userProviderId, $defaultEntryPointId)
+	{
+		if($config["check_path"]){
+			$this->addOption("check_path", $config["check_path"]);
+		}
+		if($config["default_target_path"]){
+			$this->addOption("default_target_path", $config["default_target_path"]);
+		}
+		//$this->addOption($name, $value);
+		
+		// authentication provider
+		$authProviderId = $this->createAuthProvider($container, $id, $config, $userProviderId);
+	
+		// authentication listener
+		$listenerId = $this->createListener($container, $id, $config, $userProviderId);
+	
+		return array($authProviderId, $listenerId, $defaultEntryPointId);
+	}
+	
 	public function getPosition()
 	{
 		return 'http';
@@ -43,6 +62,7 @@ class LoginFactory extends AbstractFactory
 		$builder = $node->children();
 		$builder->scalarNode('login_path')->cannotBeEmpty()->isRequired()->end();
 		$builder->scalarNode('check_path')->cannotBeEmpty()->isRequired()->end();
+		$builder->scalarNode('default_target_path')->cannotBeEmpty()->isRequired()->end();
 	}
 	
 	
@@ -52,12 +72,11 @@ class LoginFactory extends AbstractFactory
 	protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
 	{
 		$providerId = 'security.authentication.provider.login.'.$id;
-		
+				
 		$container
 		->setDefinition($providerId, new DefinitionDecorator('login.security.authentication.provider'))
 			->addArgument(new Reference($userProviderId))
-			->addArgument(new Reference("security.encoder_factory"))
-		;
+			->addArgument(new Reference("security.encoder_factory"));
 	
 		/*$this->createResourceOwnerMap($container, $id, $config);
 	
@@ -77,8 +96,8 @@ class LoginFactory extends AbstractFactory
 	protected function createListener($container, $id, $config, $userProvider)
 	{
 		$listenerId = parent::createListener($container, $id, $config, $userProvider);
-		$listener = $container->getDefinition($listenerId)
-			->addMethodCall('setCheckPath', array($config["check_path"]));
+		/*$listener = $container->getDefinition($listenerId)
+			->addMethodCall('setCheckPath', array($config["check_path"]));*/
 	
 		return $listenerId;
 	}

@@ -23,7 +23,7 @@ class UserProvider extends OAuthUserProvider
 	public function loadUserByUsername($username)
 	{
 		$request = $this->container->get("request");	
-			
+		
 		$user = $this->container->get("doctrine")->getEntityManager()
 						->getRepository("LiderBundle:Player")
 						->findOneBy(array("email"=>$username, "deleted" => false));

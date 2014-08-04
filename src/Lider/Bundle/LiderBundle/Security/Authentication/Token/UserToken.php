@@ -7,24 +7,17 @@ class UserToken extends AbstractToken
 {
 	private $digest;	
 	private $externalLogin = false;
+	private $accessToken;
 	
 	public function __construct(array $roles = array())
 	{
 		parent::__construct($roles);
-		$this->setAuthenticated(count($roles) > 0);
+		//$this->setAuthenticated(count($roles) > 0);
 	}
 	
 	public function getCredentials()
 	{
 		return '';
-	}
-	
-	public function setExternalLogin($elogin){
-		$this->externalLogin = $elogin;
-	}
-	
-	public function isExternalLogin(){
-		return $this->externalLogin;
 	}
 	
 	public function setDigest($digest){
@@ -33,6 +26,47 @@ class UserToken extends AbstractToken
 	
 	public function getDigest(){
 		return $this->digest;
+	}
+	
+	/**
+	 * @param string $accessToken The OAuth access token
+	 */
+	public function setAccessToken($accessToken)
+	{
+		$this->accessToken = $accessToken;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getAccessToken()
+	{
+		return $this->accessToken;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public function serialize()
+	{
+		return serialize(array(
+				$this->accessToken,
+				parent::serialize()
+		));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public function unserialize($serialized)
+	{
+		$data = unserialize($serialized);
+		list(
+			$this->accessToken,
+			$parent,
+		) = $data;
+	
+		parent::unserialize($parent);
 	}
 	
 }

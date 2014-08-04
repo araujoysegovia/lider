@@ -21,32 +21,32 @@ admin_check_failure:
 
 admin_answer:
     resource: "@LiderBundle/Resources/config/admin_routes/answer_routing.yml"
-    prefix:   /answer
+    prefix:   /home/answer
 
 admin_category:
     resource: "@LiderBundle/Resources/config/admin_routes/category_routing.yml"
-    prefix:   /category
+    prefix:   /home/category
 
 admin_group:
     resource: "@LiderBundle/Resources/config/admin_routes/group_routing.yml"
-    prefix:   /group
+    prefix:   /home/group
 
 admin_team:
     resource: "@LiderBundle/Resources/config/admin_routes/team_routing.yml"
-    prefix:   /admin/team
+    prefix:   /home/team
 
 admin_tournament:
     resource: "@LiderBundle/Resources/config/admin_routes/tournament_routing.yml"
-    prefix:   /tournament
+    prefix:   /home/tournament
 
 admin_question:
     resource: "@LiderBundle/Resources/config/admin_routes/question_routing.yml"
-    prefix:   /question
+    prefix:   /home/question
 
 admin_office:
     resource: "@LiderBundle/Resources/config/admin_routes/office_routing.yml"
-    prefix:   /office
+    prefix:   /home/office
 
 admin_role:
     resource: "@LiderBundle/Resources/config/admin_routes/role_routing.yml"
-    prefix:   /role
+    prefix:   /home/role

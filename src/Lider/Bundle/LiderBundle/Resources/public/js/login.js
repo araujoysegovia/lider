@@ -15,21 +15,32 @@ function signinCallback(authResult) {
 	
 	  if(authResult['access_token']) {
 		  console.log(authResult)
-		  /*var formData = new FormData();
+		  var formData = new FormData();
 		  formData.append("access_token", authResult['access_token']);
 		  formData.append("code", authResult['code']);
-		  formData.append("authenticated", true)*/
-		  $.ajax({
-		  	type: "GET",     
+		  formData.append("authenticated", true)
+		  
+		  var form = $("form", ".login-form");
+		  form.attr("action", "login-check/google");
+		  form.append($("<input>")
+				  .attr("type", "hidden")
+				  .attr("name", "access_token")
+				  .attr("value", authResult['access_token']));
+		  form.append($("<input>")
+				  .attr("type", "hidden")
+				  .attr("name", "code")
+				  .attr("value", authResult['code']));
+		  
+		  form.submit();
+		  
+		  /*$.ajax({
+		  	type: "POST",     
 			url: "login-check/google",
-			data: {
-				code: authResult['code'],
-				authenticated: true
-			},
-			//contentType: false,
-            //processData: false,
-			contentType: 'application/json',
-            dataType: "json",
+			data: formData,
+			contentType: false,
+            processData: false,
+			//contentType: 'application/json',
+            //dataType: "json",
             statusCode: {
                 302: function(jqXHR) {
                     console.log(jqXHR)
@@ -55,7 +66,7 @@ function signinCallback(authResult) {
 	            	});
 		    	}
 	    	}
-		});
+		});*/
 		  
 	  } else if (authResult['error']) {
 	    // Se ha producido un error.

@@ -8,11 +8,11 @@ use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
-use Lider\Bundle\LiderBundle\Security\Authentication\Token\UserToken;
 use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
+use Lider\Bundle\LiderBundle\Security\Authentication\Token\UserToken;
 
 class Listener extends AbstractAuthenticationListener
 {
@@ -45,7 +45,8 @@ class Listener extends AbstractAuthenticationListener
 		return $data;
 	}
 	
-/*	public function handle(GetResponseEvent $event)
+/*	
+ * 	public function handle(GetResponseEvent $event)
 	{
 		$request = $event->getRequest();		
 		$token = $request->get("access_token");
@@ -92,8 +93,7 @@ class Listener extends AbstractAuthenticationListener
 	 * {@inheritdoc}
 	 */
 	protected function attemptAuthentication(Request $request)
-	{
-		echo "Entro";	
+	{	
 		$token = $request->get("access_token");
 		$code = $request->get("code");	
 		if($token && $code){
@@ -104,19 +104,19 @@ class Listener extends AbstractAuthenticationListener
 				
 			$userName = $data["email"];			
 			$token = new UserToken();
-			$token->setExternalLogin(true);
-		}else{
-			$userName = $request->get("_username");
-			$password = $request->get("_password");
+			$token->setAccessToken($token);
 			
-			$token = new UserToken();
-			$token->setExternalLogin(false);
-			$token->setDigest($password);
+		}else{
+			throw new \Exception("Missing access token parameters");
 		}
-		echo "username = ".$userName;
+		
+		$token->setUser($userName);
+		
 		$request->getSession()->set(SecurityContextInterface::LAST_USERNAME, $userName);
-	
-		return $this->authenticationManager->authenticate($token);
+
+		$t = $this->authenticationManager->authenticate($token);
+		
+		return $t;
 	}
 	
 	public function setCheckPath($check){

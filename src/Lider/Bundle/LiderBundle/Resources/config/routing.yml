@@ -5,7 +5,3 @@ default_data:
 admin_module:
     resource: "@LiderBundle/Resources/config/admin_routes/routing.yml"
     prefix:   /admin
-
-admin_home:
-    pattern:  /admin/home
-    defaults: { _controller: LiderBundle:Default:getHome }

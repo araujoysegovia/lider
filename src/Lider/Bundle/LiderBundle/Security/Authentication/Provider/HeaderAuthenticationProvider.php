@@ -10,11 +10,10 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 use Lider\Bundle\LiderBundle\Security\Authentication\Token\UserToken;
 
-class Provider implements AuthenticationProviderInterface
+class HeaderAuthenticationProvider implements AuthenticationProviderInterface
 {
 	private $userProvider;
 	private $encoderFactory;
-	private $cacheDir;
 	
 	public function __construct(UserProviderInterface $userProvider, $encoderFactory)
 	{
@@ -25,12 +24,24 @@ class Provider implements AuthenticationProviderInterface
 	public function authenticate(TokenInterface $token)
 	{	
 		$user = $this->userProvider->loadUserByUsername($token->getUsername());
-		
 		if($user){
+			$atoken = $token->getAccessToken();
 			$authenticatedToken = new UserToken();
 			$authenticatedToken->setUser($user);
 			$authenticatedToken->setAttributes($token->getAttributes());
-			return $authenticatedToken;
+			
+			if($atoken){
+				throw new AuthenticationException('The authentication failed.');
+				//checkerar la session en la BD
+			}else{
+				$codificador = $this->encoderFactory->getEncoder($user);
+				$password = $codificador->encodePassword($token->getDigest(), $user->getSalt());
+				if($password != $user->getPassword()){
+					throw new AuthenticationException('The authentication failed.');
+				}
+				$authenticatedToken->setRoles($user->getRoles());
+				return $authenticatedToken;
+			}
 		}
 	
 		throw new AuthenticationException('The authentication failed.');

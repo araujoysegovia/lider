@@ -63,6 +63,8 @@ doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
+        mappings:
+          LiderBundle: ~
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -73,11 +75,11 @@ swiftmailer:
     spool:     { type: memory }
 
 
-hwi_oauth:
-    firewall_name: admin_area 
-    resource_owners:
-        google:
-            type:                google
-            client_id:           409288717107-h73ade2t3homia8e8r6o4dg3bmuingn3.apps.googleusercontent.com  
-            client_secret:       E4OBnryE-9dRSlMOYAvxXePm
-            scope:               "email profile"
+#hwi_oauth:
+#    firewall_name: admin_area 
+#    resource_owners:
+#        google:
+#            type:                google
+#            client_id:           409288717107-h73ade2t3homia8e8r6o4dg3bmuingn3.apps.googleusercontent.com  
+#            client_secret:       E4OBnryE-9dRSlMOYAvxXePm
+#            scope:               "email profile"

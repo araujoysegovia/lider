@@ -15,7 +15,18 @@ services:
         class: Lider\Bundle\LiderBundle\Security\Firewall\Listener
         parent: security.authentication.listener.abstract
         abstract: true
-        //arguments: ["@security.context", "@security.authentication.manager", "@talker"]
+        #arguments: ["@security.context", "@security.authentication.manager", "@talker"]
+        
+    
+    hauth.security.authentication.provider:
+        class: Lider\Bundle\LiderBundle\Security\Authentication\Provider\HeaderAuthenticationProvider
+        arguments: ["", "@security.encoder_factory"]
+
+    hauth.security.authentication.listener:
+        class: Lider\Bundle\LiderBundle\Security\Firewall\HeaderAuthenticationListener
+        parent: security.authentication.listener.abstract
+        abstract: true
+         #arguments: ["@security.context", "@security.authentication.manager", "@talker"]
         
     lider_user_provider:
         class: "%lider.security.core.provider.class%"
