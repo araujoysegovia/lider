@@ -27,7 +27,7 @@ class Provider implements AuthenticationProviderInterface
 		$user = $this->userProvider->loadUserByUsername($token->getUsername());
 		
 		if($user){
-			$authenticatedToken = new UserToken();
+			$authenticatedToken = new UserToken($user->getRoles());
 			$authenticatedToken->setUser($user);
 			$authenticatedToken->setAttributes($token->getAttributes());
 			return $authenticatedToken;

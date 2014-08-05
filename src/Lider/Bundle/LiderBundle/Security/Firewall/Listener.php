@@ -93,7 +93,7 @@ class Listener extends AbstractAuthenticationListener
 	 * {@inheritdoc}
 	 */
 	protected function attemptAuthentication(Request $request)
-	{	
+	{
 		$token = $request->get("access_token");
 		$code = $request->get("code");	
 		if($token && $code){

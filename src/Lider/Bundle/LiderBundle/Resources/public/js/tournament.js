@@ -1,24 +1,34 @@
-$(document).ready(function () {
- 
-	var url = "home/tournament/";
-	
-	dataSourceTournaments = new kendo.data.DataSource({
-			  autoSync: false,
+function parseDate (rec){
+	console.log("fecha : "+rec)
+	if(_.isString(rec)){
+		console.log("es string")
+		return new Date(rec);		                	
+	}else if(_.isDate(rec)){
+		console.log("es date")
+		return rec;
+	}else if(_.isObject(rec)){
+		console.log("es objeto")
+		return new Date(rec.date);		                	
+	}	
+}
+
+$(document).ready(function () { 	
+	var kurl = "home/tournament/";
+	var dataSourceTournaments = new kendo.data.DataSource({			  
 			  transport: {
 				    read:  {
-				    	url: url,
-				    	dataType: "json",
-				    	type: 'GET',
+				    	url: kurl,
+				    	dataType: "json"
 				    },
 				    create: {
-			            url: url,
+			            url: kurl,
 			            type: "POST",
 			            contentType: "application/json",
 			            dataType: "json"
 			        },
 			        update: {
 			            url: function (e) {
-			                return url + e.id;
+			                return kurl + e.id;
 			            },
 			            type: "PUT",
 			            contentType: "application/json",
@@ -26,98 +36,72 @@ $(document).ready(function () {
 			        },
 				    destroy: {
 				    	url: function (e) {
-			                return url + e.id;
+			                return kurl + e.id;
 			            },
-	                    dataType: "json",
-	                    contentType: "application/json",
-	                    type: 'DELETE',  
-	                },
-	                parameterMap: function (data, type) {
-	  			        if (type !== "read") {
-	  			            return kendo.stringify(data);
-	  			        }
+		                dataType: "json",
+		                contentType: "application/json",
+		                type: 'DELETE',  
+		            },
+		            parameterMap: function (data, type) {
+				        if (type !== "read") {
+				        	
+				        	data.startdate = kendo.toString(new Date(data.startdate), "MM/dd/yyyy");
+				        	console.log(data.startdate)
+			                data.enddate = kendo.toString(new Date(data.enddate), "MM/dd/yyyy");
+				            return kendo.stringify(data);
+				        }
+				       
 		  			}
-			  },
-			  error: function(e, x, y) {
-				  //console.log(e.xhr.status);
-				  try{
-				     var json = JSON.parse(e.xhr.responseText);
-				     console.error("Error: " + json.message);
-				     notification.show({
-                       title: "Error",
-                       message: json.message
-                   }, "error");
-				  }catch(e){
-//					 notification.show({
-//                       title: "Error",
-//                       message: "Server Error"
-//                   }, "error");
-				  }
-				  if(e.xhr.status == 401){
-					  window.location= "/index";
-				  }
-			  },
-			  requestEnd: function(e) {
-				  if(e.type && e.response){
-					  var msg = null;
-					  switch (e.type) {
-						case "create":
-							msg = "Create Successful";
-							break;
-						case "update":
-							msg = "Update Successful";
-							break;
-						case "destroy":
-							msg = "Delete Successful";
-							break;
-						/*case "read":
-							msg = "Read Successful";
-							break;
-						default:
-							break;*/
-					  }
-					  if(msg){
-					  	 notification.show({
-	                         message: msg
-	                     }, "success"); 
-					  }
-				  }
 			  },
 			  schema: {
 			  	total: "total",
-	        	data: "data",
-	            model: {
-	                id: "id",
-	                fields: {
-	                	id: { editable: false, nullable: true },
-	                    name: { type: "string" },
-	                    startdate: { type: "date"},
-	                    enddate: { type: "date"},
-	                    active: { type: "boolean" }
-	                }
-	            }
-			  },
-			  pageSize: 20,
-		      serverPaging: true,		      
-		      serverFiltering: true,
-		      serverSorting: true
-				
-		
+		    	data: "data",
+		        model: {
+		            id: "id",
+		            fields: {
+		            	id: { editable: false, nullable: true },
+		                name: { type: "string" },
+		                startdate: { type: "date", parse: parseDate},
+		                enddate: { type: "date", parse: parseDate},
+		                active: { type: "boolean" }
+		            }
+		        }
+			  },			  
+			  pageSize: 20,	
+			  groupable: false,			  
+			  sortable: true,   
+			  selectable: "row",
+			  filterable: false,          
+			  pageable: {
+			    refresh: true,
+			    pageSizes: false,               
+			    buttonCount: 5,
+			    info: true,
+			    messages: {
+			      display: "Mostrando {0}-{1} de {2} datos"
+			    }
+	 		  },
+	 		  requestEnd: function (e){
+	 			  if(e.type && e.response && e.type !="read"){	 		        
+		         	$('#gridTournaments').data('kendoGrid').dataSource.read();
+ 		        	$('#gridTournaments').data('kendoGrid').refresh(); 
+	 			  }
+	 		  }
+			  
     });
 
     $("#gridTournaments").kendoGrid({
-    	autoBind: true,
-        dataSource: dataSourceTournaments,
+      	dataSource: dataSourceTournaments,        
         pageable: true,
         height: 500,
         toolbar: ["create"],
         columns: [
             { field:"name", title: "Nombre" },
-            { field: "startdate", title:"Fecha de inicio",  format: "{0:dd-MM-yyyy}", parseFormats: ["yyyy-MM-dd"] },
-            { field: "enddate", title:"Fecha de fin",  format: "{0:dd-MM-yyyy}", parseFormats: ["yyyy-MM-dd"] },
-            { field: "active", title: "Activo"},
+            { field: "startdate", title:"Fecha de inicio", template: "#= kendo.toString(kendo.parseDate(startdate, 'yyyy-MM-dd'), 'dd/MM/yyyy') #"},
+            { field: "enddate", title:"Fecha de fin", template: "#= kendo.toString(kendo.parseDate(startdate, 'yyyy-MM-dd'), 'dd/MM/yyyy') #"},
+            { field: "active", title: "Activo" },            //
             { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }],
-        editable: "popup"
+        editable: "popup",
     });
 
 });

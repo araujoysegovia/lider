@@ -25,7 +25,7 @@ class Answer extends Entity
 	private $answer;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"}, inversedBy="answers")
 	 * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
 	 * @Assert\NotBlank()
 	 */

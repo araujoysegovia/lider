@@ -1749,6 +1749,7 @@
     "stability-flags": {
         "hwi/oauth-bundle": 20
     },
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.3.3"
     },

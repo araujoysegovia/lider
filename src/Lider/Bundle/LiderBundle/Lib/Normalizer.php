@@ -215,7 +215,7 @@ class Normalizer extends GetSetMethodNormalizer
 					}
 					
 				} elseif (array_key_exists ( $key, $fieldMapping )) {
-					if ($fieldMapping [$key] ["type"] == "datetime") {
+					if ($fieldMapping [$key] ["type"] == "datetime" || $fieldMapping [$key] ["type"] == "date") {
 						$date = $value;
 						if(is_array($date) && array_key_exists("date", $date)){
 							$value = new \DateTime ( $date["date"] );

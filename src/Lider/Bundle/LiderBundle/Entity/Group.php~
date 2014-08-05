@@ -6,8 +6,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Group class
- * @ORM\Table(name="group")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Table(name="team_group")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class Group extends Entity
 {

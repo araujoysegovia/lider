@@ -64,12 +64,12 @@ class DefaultController extends SymfonyController
     
     private function createDefaultRole($em){    	
     	$adminrole = new Role();    	
-    	$adminrole->setName("ROLE_ADMIN");
+    	$adminrole->setName("ADMIN");
     	$adminrole->setDescription("Administrator role");
     	$em->persist($adminrole);    	
     	
     	$userrole = new Role();
-    	$userrole->setName("ROLE_USER");
+    	$userrole->setName("USER");
     	$userrole->setDescription("Usuario role");
     	$em->persist($userrole);
     	

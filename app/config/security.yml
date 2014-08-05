@@ -43,7 +43,7 @@ security:
                 login_path: admin_index_page
                 check_path: /admin/login-check
                 default_target_path: admin_home_page            
-                use_forward: false
+                use_forward: true
 #				        username_parameter:             _username
 #               password_parameter:             _password
 
@@ -53,12 +53,12 @@ security:
 
                 #opciones para redirigir en ingreso fallido 
                 failure_path: admin_index_page
-                failure_forward: false                
+                failure_forward: true                
 
             logout:
                  path:   admin_logout
                  target: admin_index_page
 
     access_control:
+        - { path: ^/admin/home, roles: [ROLE_ADMIN] }
         - { path: ^/admin, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/home, roles: IS_AUTHENTICATED_FULLY }

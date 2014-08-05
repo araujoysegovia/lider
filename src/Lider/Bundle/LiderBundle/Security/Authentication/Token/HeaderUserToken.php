@@ -3,8 +3,9 @@ namespace Lider\Bundle\LiderBundle\Security\Authentication\Token;
 
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
-class UserToken extends AbstractToken
+class HeaderUserToken extends AbstractToken
 {
+	public $digest;	
 	public $accessToken;
 	
 	public function __construct(array $roles = array())
@@ -41,6 +42,7 @@ class UserToken extends AbstractToken
 	public function serialize()
 	{
 		return serialize(array(
+				$this->digest, 
 				$this->accessToken,
 				parent::serialize()
 		));
@@ -51,10 +53,36 @@ class UserToken extends AbstractToken
 	 */
 	public function unserialize($serialized)
 	{
-		list($this->accessToken,
+		list($this->digest,
+			$this->accessToken,
 			$parentStr) = unserialize($serialized);
 		parent::unserialize($parentStr);
-	}	
+	}
+	
+	/**
+	 * {@inheritDoc}
+
+	public function serialize()
+	{
+		return serialize(array(
+				$this->accessToken,
+				parent::serialize()
+		));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	public function unserialize($serialized)
+	{
+		$data = unserialize($serialized);
+		list(
+			$this->accessToken,
+			$parent,
+		) = $data;
+	
+		parent::unserialize($parent);
+	} */
+	
 }
 
 ?>
