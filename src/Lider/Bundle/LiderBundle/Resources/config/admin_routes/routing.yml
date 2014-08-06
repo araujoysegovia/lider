@@ -50,3 +50,7 @@ admin_office:
 admin_role:
     resource: "@LiderBundle/Resources/config/admin_routes/role_routing.yml"
     prefix:   /home/role
+
+admin_player:
+    resource: "@LiderBundle/Resources/config/admin_routes/player_routing.yml"
+    prefix:   /home/player

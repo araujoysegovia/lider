@@ -9,7 +9,7 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 
 /**
  * Player class
- * @ORM\Table(name="player")
+ * @ORM\Table(name="player", uniqueConstraints={@ORM\UniqueConstraint(name="player_email", columns={"email"})}))
  * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class Player extends Entity implements AdvancedUserInterface, \Serializable{
@@ -152,6 +152,7 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
     public function __construct()
     {
         $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->password = "araujo123";
     }
 
     /**
