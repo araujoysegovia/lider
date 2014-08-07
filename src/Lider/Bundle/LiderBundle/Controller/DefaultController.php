@@ -24,9 +24,6 @@ class DefaultController extends SymfonyController
     	return new Response("Default data is created");
     }
     
-    
-
-    
     private function createDefaultUser($em, $role){
     	$user = new Player();
     	$user->setEmail("dmejia@araujoysegovia.com");
