@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Answer class
  * @ORM\Table(name="answer")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class Answer extends Entity
 {
@@ -25,7 +25,7 @@ class Answer extends Entity
 	private $answer;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"}, inversedBy="answers")
 	 * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
 	 * @Assert\NotBlank()
 	 */

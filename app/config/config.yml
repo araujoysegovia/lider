@@ -2,20 +2,9 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
 
-parameters:
-    user_provider.class: Lider\Bundle\LiderBundle\Security\UserProvider
+#parameters:
 
-services:
-    hwi_oauth.user.provider.entity:
-        class: HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider
-
-    my_user_provider:
-        class: "%user_provider.class%"
-        arguments:
-              entityManager: "@doctrine.orm.entity_manager"
-              container: "@service_container"
-    authentication_handler:
-               class: Lider\Bundle\LiderBundle\Security\AuthenticationHandler
+#services:                
 
 framework:
     #esi:             ~
@@ -74,6 +63,8 @@ doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
+        mappings:
+          LiderBundle: ~
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -84,13 +75,11 @@ swiftmailer:
     spool:     { type: memory }
 
 
-hwi_oauth:
-    firewall_name: admin_area 
-    resource_owners:
-        google:
-            type:                google
-            client_id:           288359316941-s2dfput5g4q4lrngm51l3njvfa5r1mae.apps.googleusercontent.com
-            client_secret:       a752b6be598c1b56bc3e7650b898cbfb1d95fed9
-            scope:               "https://www.googleapis.com/auth/userinfo.email"
-#            options:
-#                access_type:     offline
+#hwi_oauth:
+#    firewall_name: admin_area 
+#    resource_owners:
+#        google:
+#            type:                google
+#            client_id:           409288717107-h73ade2t3homia8e8r6o4dg3bmuingn3.apps.googleusercontent.com  
+#            client_secret:       E4OBnryE-9dRSlMOYAvxXePm
+#            scope:               "email profile"

@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Question class
  * @ORM\Table(name="question")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class Question extends Entity
 {
@@ -19,9 +19,8 @@ class Question extends Entity
 	private $id;
 	
 	/**
-	 * @ORM\Column(type="text", length=100)
+	 * @ORM\Column(type="text")
 	 * @Assert\NotBlank()
-	 * @Assert\Length(max=100)
 	 */
 	private $question;
 	
@@ -36,6 +35,11 @@ class Question extends Entity
 	 * @Assert\NotBlank()
 	 */
 	private $category;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Answer", mappedBy="question")
+	 */
+	private $answers;
 
     /**
      * Get id
@@ -114,5 +118,45 @@ class Question extends Entity
     public function getCategory()
     {
         return $this->category;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add answers
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Answer $answers
+     * @return Question
+     */
+    public function addAnswer(\Lider\Bundle\LiderBundle\Entity\Answer $answers)
+    {
+        $this->answers[] = $answers;
+
+        return $this;
+    }
+
+    /**
+     * Remove answers
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Answer $answers
+     */
+    public function removeAnswer(\Lider\Bundle\LiderBundle\Entity\Answer $answers)
+    {
+        $this->answers->removeElement($answers);
+    }
+
+    /**
+     * Get answers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAnswers()
+    {
+        return $this->answers;
     }
 }

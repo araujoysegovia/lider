@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Game class
  * @ORM\Table(name="game")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class Game extends Entity
 {

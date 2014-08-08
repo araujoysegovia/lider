@@ -45,4 +45,15 @@ class RoutingController extends Controller
     		throw new \Exception($error);
     	}
     }
+    
+    /**   
+     * @Template("LiderBundle:Lider:home.html.twig")
+     */
+    public function homePageAction(Request $request)
+    {    
+    	$em = $this->getDoctrine()->getEntityManager();
+    	$user = $this->container->get('security.context')->getToken()->getUser();
+		return array("user" => $user);
+    	//return $this->render('LiderBundle:Lider:index.html.twig');
+    }
 }

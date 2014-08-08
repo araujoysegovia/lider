@@ -155,14 +155,14 @@ abstract class Controller extends SymfonyController {
 			}
 			
 			$user = $this->container->get('security.context')->getToken()->getUser();
+
 			$roles = $user->getRoles();
 			$role = $roles[0];
 			
 			if($role->getId() > 1 && array_key_exists("company", $associations)){
 				$criteria["company"] = $user->getCompany()->getId();
 			}
-			
-			
+						
 			$filter = $request->get('filter');
 			if($filter){
 				$filter = json_decode($filter, true);
@@ -195,10 +195,10 @@ abstract class Controller extends SymfonyController {
 	
 	protected function getBundleName(){
 		$request = $this->get("request");
-		$controller = $request->attributes->get('_controller');
-		$matches    = explode("\\", $controller);
+		$controller = $request->attributes->get('_controller');		
+		$matches    = explode("\\", $controller);		
 		if(count($matches) > 1)
-			return  $matches[1];
+			return  $matches[2];
 		else{
 			$matches = explode(":", $controller);
 			return  $matches[0];
@@ -214,7 +214,7 @@ abstract class Controller extends SymfonyController {
 			case 'GET':
 				return $this->listAction();
 				break;
-			case 'POST':
+			case 'POST':				
 				return $this->saveAction();
 				break;
 			case 'PUT':
