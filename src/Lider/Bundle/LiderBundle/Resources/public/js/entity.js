@@ -41,6 +41,8 @@ Entity.prototype = {
 			        },
 			        update: {
 			            url: function (e) {
+			            	console.log(e)
+			            	console.log("url: "+me.url + e.id)
 			                return me.url + e.id;
 			            },
 			            type: "PUT",
@@ -89,10 +91,10 @@ Entity.prototype = {
 			    }
 	 		  },
 	 		  requestEnd: function (e){
-	 			  console.log(e)
+//	 			  console.log(e)
 	 			  if(e.type && e.response && e.type !="read"){	 	 			
 		         	me.grid.data('kendoGrid').dataSource.read();
-		        	me.grid.data('kendoGrid').refresh(); 
+		        	//me.grid.data('kendoGrid').refresh(); 
 	 			  }
 	 		  }
 			  
@@ -111,9 +113,9 @@ Entity.prototype = {
             		{
 				        name: "edit",
 				        text: { 
-				            edit: "Editar",               // This is the localization for Edit button
-				            update: "Actualizar",             // This is the localization for Update button
-				            cancel: "Cancelar"    // This is the localization for Cancel button
+				            edit: "Editar",  // This is the localization for Edit button
+				            update: "Actualizar",  // This is the localization for Update button
+				            cancel: "Cancelar"  // This is the localization for Cancel button
 				        },
 				        
 				    },

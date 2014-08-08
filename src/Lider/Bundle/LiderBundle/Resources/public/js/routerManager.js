@@ -261,7 +261,7 @@ var routerManager = Backbone.Router.extend({
 				    tournament: {
 						type: "string", 
 						parse: function(rec){
-							console.log(rec)
+//							console.log(rec)
 							if(_.isObject(rec)){
 								return rec.name;
 							}
@@ -286,7 +286,7 @@ var routerManager = Backbone.Router.extend({
 					    $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 				        .appendTo(container)
 				        .kendoDropDownList({
-				            autoBind: false,		                
+				            autoBind: true,		                
 				            dataSource: {		                	
 				                transport: {
 				                    read: "home/tournament/"
@@ -304,7 +304,7 @@ var routerManager = Backbone.Router.extend({
 				                },
 				            },
 				            dataTextField: "name",
-				            dataValueField:"id"
+				            dataValueField:"id",				            
 				        });
 					}  
 				},				
