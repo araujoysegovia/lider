@@ -35,6 +35,11 @@ class Answer extends Entity
 	 * @ORM\Column(type="boolean")
 	 */
 	private $selected = true;
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=true)
+	 */
+	private $help = true;
 
     /**
      * Get id
@@ -113,5 +118,28 @@ class Answer extends Entity
     public function getQuestion()
     {
         return $this->question;
+    }
+
+    /**
+     * Set help
+     *
+     * @param boolean $help
+     * @return Answer
+     */
+    public function setHelp($help)
+    {
+        $this->help = $help;
+
+        return $this;
+    }
+
+    /**
+     * Get help
+     *
+     * @return boolean 
+     */
+    public function getHelp()
+    {
+        return $this->help;
     }
 }

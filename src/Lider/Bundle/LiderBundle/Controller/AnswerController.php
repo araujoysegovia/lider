@@ -9,4 +9,8 @@ class AnswerController extends Controller
     public function getName(){
     	return "Answer";
     }
+    
+    public function listByQuestionAction($id){
+    	
+    }
 }
