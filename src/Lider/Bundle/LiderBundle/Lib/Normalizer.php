@@ -291,12 +291,16 @@ class Normalizer extends GetSetMethodNormalizer
     		if($count > 0 && !is_null($entity->getId())){
     			//echo "<br>Voy a buscar ".$entity->getId();
     			$found = false;
-    			foreach ($coll->toArray() as $item){
-    				if($item->getId() == $entity->getId()){
-    					$found = true;
-    					break;
+    			//echo $coll;
+    			if(!is_array($coll)){
+    				foreach ($coll->toArray() as $item){
+    					if($item->getId() == $entity->getId()){
+    						$found = true;
+    						break;
+    					}
     				}
     			}
+    			
     			//echo $found ? "true" : "false";
     			return $found;
     			//$item = $coll->get($entity->getId());

@@ -143,9 +143,30 @@ var routerManager = Backbone.Router.extend({
 					value["answerThree"] = c.answer;
 					value["answerFour"] = d.answer;
 					
+					if(a.selected){
+						value["selected"] = 1;
+					}else if(b.selected){
+						value["selected"] = 2;
+					}else if(c.selected){
+						value["selected"] = 3;
+					}else if(d.selected){
+						value["selected"] = 4;
+					}
+
+					if(a.help){
+						value["help"] = 1;
+					}else if(b.help){
+						value["help"] = 2;
+					}else if(c.help){
+						value["help"] = 3;
+					}else if(d.help){
+						value["help"] = 4;
+					}
+					
 				})
 			},
 			parameterMap: function (data, type) {
+				
 				
 		        if (type !== "read") {	      
 		        	
@@ -162,9 +183,12 @@ var routerManager = Backbone.Router.extend({
 		        	delete data.answerFour;
 		        	
 		        	_.each(data.answers, function(value){
+		        		
 		        		value.selected = false;
 		        		value.help = false;
 		        	})
+		        	
+		        	
 		        	
 		        	data.answers[parseInt(data.selected) - 1].selected = true;
 		        	data.answers[parseInt(data.help) - 1].help = true;
@@ -175,11 +199,21 @@ var routerManager = Backbone.Router.extend({
 				
 			},
 			detailInit: function(e){
+				var grid = null;
 				
 				var kdataSource = new kendo.data.DataSource({
-					autoSync: true,
+					//autoSync: true,
+					//batch: true,
                     transport: {
                         read: "home/answer?question=" + e.data.id,
+                        update: {
+                                url: function (e) {            	                                
+                                    return "home/answer/" + e.id;
+                                },
+                                type: "PUT",
+                                contentType: "application/json",
+                                dataType: "json"
+                            },
                         parameterMap: function (data, type) {
                  			//console.log(data)
                  	        if (type !== "read") {	        	
@@ -212,21 +246,36 @@ var routerManager = Backbone.Router.extend({
 				  	   }, 					  	
 				    },
 				    change: function(e) {
-				    					  				        
-				        if(e.field == "selected"){
-				        	console.log(this)
-				        	console.log(e)
-//				        	 var data = this.data();
-//				        	var id = e.items[0].id;
-//				        	_.each(data, function(value){
-//					        	if(value.id != id){
-//					        		value[e.field] = false;
-//					        	}else{
-//					        		value[e.field] = true;
-//					        	}
-//					        })
+				    					    	
+//				    	console.log("DataSource changed");				    	
+				    	
+				        if((e.field == "selected" || e.field == "help") && (e.action != "sync")) {
+//				        	console.log(this)
+//				        	console.log(e)
+				        	var data = this.data();				        	
+				        	var id = e.items[0].id;
+				        	_.each(data, function(value){
+					        	if(value.id != id){
+					        		if(value[e.field] == true){
+					        			value[e.field] = false;
+					        			value.dirty = true;
+//					        			kdataSource.sync();
+//					        			grid.data('kendoGrid').dataSource.read();
+//					        			grid.data('kendoGrid').refresh();
+					        		}else{
+					        			value[e.field] = false;
+					        		}
+					        		
+					        	}else{
+					        		value[e.field] = true;
+					        	}
+					        })
+					        kdataSource.sync();
+					        grid.data('kendoGrid').dataSource.read();
+		 					grid.data('kendoGrid').refresh();
+		 					
 				        }
-				       
+				        
 				    },
                     serverPaging: true,
                     serverSorting: true,
@@ -234,7 +283,7 @@ var routerManager = Backbone.Router.extend({
                     pageSize: 10,  
 				});
 				
-				$("<div/>").appendTo(e.detailCell).kendoGrid({
+				grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
                     dataSource: kdataSource,
                     scrollable: false,
                     sortable: true,
@@ -246,7 +295,7 @@ var routerManager = Backbone.Router.extend({
                         },
                         {
                         	field: "selected",
-                        	title: "Correcta"
+                        	title: "Correcta",
                         },
                         {
                         	field: "help",
@@ -346,8 +395,6 @@ var routerManager = Backbone.Router.extend({
 			    		$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
 			    		 .appendTo(container)
 			    		 .val(ans.answer);
-			    		
-			    		//console.log(ans)
 			    	}
 			    },
 			    {
@@ -427,15 +474,9 @@ var routerManager = Backbone.Router.extend({
 						type: "string" 
 					},
 					office: {
-//						type: "string", 
-//						parse: function(rec){
-//							console.log(rec)
-//							if(_.isObject(rec)){
-//								return rec.name;
-//							}
-//							return rec;
-//						}
-					}			   
+					},
+					roles: {						
+					}
 				}
 		  	},
 			columns: [
@@ -483,6 +524,41 @@ var routerManager = Backbone.Router.extend({
 				        });
 					}  
 				},
+				{ 
+					field: "roles",
+					title:"Role",
+					width: "150px",
+					template:  function(e){
+//						console.log(e)
+						return e.roles[0].name;
+					},
+					editor:	function DropDownEditor(container, options) {
+						//console.log(options)
+					    $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+				        .appendTo(container)
+				        .kendoDropDownList({
+				            autoBind: false,		                
+				            dataSource: {		                	
+				                transport: {
+				                    read: "home/role/"
+				                },
+				                schema: {
+				    			  	total: "total",
+				    		    	data: "data",
+				    		        model: {
+				    				    id: "id",
+				    				    fields: {
+				    				    	id: { editable: false, nullable: true },
+				    				        name: { type: "string" },		        				        
+				    				    }
+				    		        }
+				                },
+				            },
+				            dataTextField: "name",
+				            dataValueField:"id"
+				        });
+					}  
+				},								
 			]
 		})
 	},
@@ -524,7 +600,11 @@ var routerManager = Backbone.Router.extend({
 					field: "tournament",
 					title:"Torneo",
 					width: "150px",
-					template:  "#: tournament.name #", 
+					template:  "#: tournament.name #",
+//					template: function(e){
+//						console.log(e)
+//						return e.tournament;
+//					},
 					editor:	function DropDownEditor(container, options) {
 						//console.log(options)
 					    $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')

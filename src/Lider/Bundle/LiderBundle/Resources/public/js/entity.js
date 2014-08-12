@@ -42,7 +42,8 @@ Entity.prototype = {
             type: 'DELETE',  
         }, 
         me.parameterMap = function (data, type) {
-			//console.log(data)
+//			console.log(type)
+//			console.log(data)
 	        if (type !== "read") {	        	
 	        	if(data.startdate){
 	        		data.startdate = kendo.toString(new Date(data.startdate), "MM/dd/yyyy");
@@ -74,8 +75,7 @@ Entity.prototype = {
 	},
 	buildDatasource: function(){
 		var me = this;
-		//console.log(me.model)
-		
+
 		return new kendo.data.DataSource({	
 			    autoSync: false,
 			  	transport: {
@@ -148,7 +148,16 @@ Entity.prototype = {
             	width: "200px",
             })	;
 		var config = {
-		      	dataSource: me.datasource,        
+		      	dataSource: me.datasource, 
+//		      	filterable: {
+//                    extra: false,
+//                    operators: {
+//                        string: {
+//                            startswith: "Empieza con",
+//                            eq: "Es igual a "                            
+//                        }
+//                    }
+//                },
 		        pageable: true,
 		        height: 500,	        
 		        columns: me.columns,
