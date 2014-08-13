@@ -773,14 +773,14 @@ var routerManager = Backbone.Router.extend({
 					template: function(e){
 						if(_.isEmpty(e.image)){
 							//console.log(e)
-							var img = $("<div>"+
-									     	"<img class='img-team' data-id='"+e.id+"' src='http://10.102.1.22/lider/web/bundles/lider/images/team.png' width = '40px' height= '40px'/>"+
-									     	"<input class='input-file-team' type='file' style = 'display: none;'/>"+
-									     "</div>");
+							var img = "<div class='img-team'>"+
+									     	"<img  data-id='"+e.id+"' src='http://10.102.1.22/lider/web/bundles/lider/images/team.png' width = '40px' height= '40px'/>"+
+									     	"<input id='input-file-team-"+e.id+"' type='file' style = 'display: none;'/>"+
+									     "</div>";
 							
 							
-							console.log(img)
-							return img[0].innerHTML;
+							//console.log(img)
+							return img;
 						}
 					}
 				},			          
@@ -837,13 +837,44 @@ var routerManager = Backbone.Router.extend({
 		        }
 			},
 			dataBound: function(e) {
-			    console.log("dataBound");
-			    $('.img-team').click(function(){
+			    //console.log("dataBound");
+			    //console.log(e)
+			    $('.img-team').children("img").click(function(){
 			    	
-					//console.log($(this).attr("data-id"))
+			    	var id = $(this).attr("data-id");
+					console.log($(this).attr("data-id"))
 					
 					//$('.input-file-team')
-					$('.input-file-team').click();
+					
+					var input = $(this).parent("div.img-team").children("input");
+					
+					input.click();
+					
+					input.change(function(){
+						console.log("change")
+						var filename = $(this).val();
+						console.log(filename)
+						if(filename){
+							
+							var formData = new FormData();
+							formData.append("imagen", $(this).get(0).files[0]);
+							config = {
+					            type: "POST",           
+					            url: "home/team/"+id,
+					            data: formData,
+					            contentType: false,
+					            processData: false,
+								success: function(){
+								   office.grid.data('kendoGrid').dataSource.read();
+								   office.grid.data('kendoGrid').refresh();
+								},
+								error: function(){}
+							}
+
+							$.ajax(config);
+						}
+					});
+					
 				});
 			},			
 			
