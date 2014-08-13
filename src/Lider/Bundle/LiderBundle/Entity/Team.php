@@ -27,8 +27,7 @@ class Team extends Entity
 	
 	
 	/**
-	 * @ORM\Column(type="string")
-	 * @Assert\NotBlank()
+	 * @ORM\Column(type="string", nullable = true)	 
 	 */
 	private $image;
 	

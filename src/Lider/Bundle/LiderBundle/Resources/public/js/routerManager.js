@@ -6,7 +6,9 @@ var routerManager = Backbone.Router.extend({
 		"questions" : "questions",
 		"players" : "players",
 		"groups" : "groups",
-		"categories" : "categories"
+		"categories" : "categories",
+		"offices" : "offices",
+		"teams" : "teams",
 	},
 
 	home: function() {
@@ -471,12 +473,15 @@ var routerManager = Backbone.Router.extend({
 						type: "string" 
 					},
 					email: { 
+						//editable: false,
 						type: "string" 
 					},
 					office: {
+						//type: "string"
 					},
 					roles: {						
-					}
+					},
+					
 				}
 		  	},
 			columns: [
@@ -490,13 +495,19 @@ var routerManager = Backbone.Router.extend({
 				},
 				{ 
 					field:"email", 
+					editable: false,
 					title: "Correo" 
-				},
+				},				
 				{ 
 					field: "office",
-					title:"Oficina",
-					width: "150px",
-					template:  "#: office.name #", 
+					title:"Oficina",					
+					template:  "#: office.name #",
+//					template:  function(e){						
+//						
+//						if(e.office){
+//							return e.office.name;
+//						}
+//					},					
 					editor:	function DropDownEditor(container, options) {
 						//console.log(options)
 					    $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
@@ -520,17 +531,19 @@ var routerManager = Backbone.Router.extend({
 				                },
 				            },
 				            dataTextField: "name",
-				            dataValueField:"id"
+				            dataValueField:"id",				            
 				        });
-					}  
+					} 
 				},
 				{ 
 					field: "roles",
 					title:"Role",
-					width: "150px",
-					template:  function(e){
-//						console.log(e)
-						return e.roles[0].name;
+					width: "150px",					
+					template:  function(e){						
+						if(e.roles[0]){
+							return e.roles[0].name;
+						}
+						
 					},
 					editor:	function DropDownEditor(container, options) {
 						//console.log(options)
@@ -558,8 +571,27 @@ var routerManager = Backbone.Router.extend({
 				            dataValueField:"id"
 				        });
 					}  
-				},								
-			]
+				},					
+			],
+	        parameterMap : function (data, type) {
+	        	console.log(type)
+	        	console.log(data)
+		        if (type == "create" || type == "update") {	        	
+		        	if(data.roles){
+		        		data.roles = [{
+		        			id: data.roles
+		        		}]
+		        	}
+		        	if(data.office && (_.isString(data.office))){		        		
+	        			data.office = {
+			        			id: data.office
+			        	}		        		
+		        	}		        
+		        	
+		        				        	
+		            return kendo.stringify(data);
+		        }
+			},			
 		})
 	},
 
@@ -572,22 +604,13 @@ var routerManager = Backbone.Router.extend({
 		var group = new Entity({
 			container:  $("#entity-content"),
 			url: "home/group/",
-			title: "Grupos",
+			title: "Grupos",			
 			model: {
 				id: "id",
 				fields: {
 					id: { editable: false, nullable: true },
 				    name: { type: "string" },
-				    tournament: {
-//						type: "string", 
-//						parse: function(rec){
-////							console.log(rec)
-//							if(_.isObject(rec)){
-//								return rec.name;
-//							}
-//							return rec;
-//						},						
-					},				    
+				    tournament: { },				    
 				    active: { type: "boolean" }
 				}
 			},
@@ -600,43 +623,56 @@ var routerManager = Backbone.Router.extend({
 					field: "tournament",
 					title:"Torneo",
 					width: "150px",
-					template:  "#: tournament.name #",
-//					template: function(e){
-//						console.log(e)
-//						return e.tournament;
-//					},
-					editor:	function DropDownEditor(container, options) {
-						//console.log(options)
-					    $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
-				        .appendTo(container)
-				        .kendoDropDownList({
-				            autoBind: false,		                
-				            dataSource: {		                	
-				                transport: {
-				                    read: "home/tournament/"
-				                },
-				                schema: {
-				    			  	total: "total",
-				    		    	data: "data",
-				    		        model: {
-				    				    id: "id",
-				    				    fields: {
-				    				    	id: { editable: false, nullable: true },
-				    				        name: { type: "string" },		        				        
-				    				    }
-				    		        }
-				                },
-				            },
-				            dataTextField: "name",
-				            dataValueField:"id",				            
-				        });
-					}  
+					template:  "#: tournament.name #",									
+					editor:	function (container, options) {
+						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+					        .appendTo(container)
+					        .kendoDropDownList({
+					            autoBind: true,	
+					            dataBound: function(e) {
+					            	input.data("kendoDropDownList").trigger("change");
+					            },
+					            dataSource: {		                	
+					                transport: {
+					                    read: "home/tournament/"
+					                },
+					                schema: {
+					    			  	total: "total",
+					    		    	data: "data",
+					    		        model: {
+					    				    id: "id",
+					    				    fields: {
+					    				    	id: { editable: false, nullable: true },
+					    				        name: { type: "string" },		        				        
+					    				    }
+					    		        }
+					                },
+					            },
+					            dataTextField: "name",
+					            dataValueField:"id",				            
+					        });
+					} 
 				},				
 				{ 
 					field: "active",
 					title: "Activo" 
 				}
-			]     
+			],
+	        parameterMap : function (data, type) {
+	        	console.log(type)
+	        	console.log(data)
+		        if (type == "create" || type == "update") {	        	
+
+		        	if(data.tournament && (_.isString(data.tournament))){		        		
+	        			data.tournament = {
+			        			id: data.tournament
+			        	}		        		
+		        	}		        
+		        	
+		        				        	
+		            return kendo.stringify(data);
+		        }
+			},
 		});
 	},
 
@@ -664,7 +700,156 @@ var routerManager = Backbone.Router.extend({
 				},				
 			]     
 		});
-	}, 	  
+	},
+	
+	offices: function() {
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Home: "",
+		  	Office: "offices"
+		});
+		var tournament = new Entity({
+			container:  $("#entity-content"),
+			url: "home/office/",
+			title: "Oficinas",
+			model: {
+				id: "id",
+				fields: {
+					id: { editable: false, nullable: true },
+				    name: { 
+				    	type: "string" 
+				    },
+				    city: {
+				    	type: "string"
+				    }				    
+				}
+			},
+			columns: [
+				{ 
+					field:"name", 
+					title: "Nombre" 
+				},
+				{ 
+					field: "city",
+					title: "Ciudad"
+				},				
+			]     
+		});
+	},
+	
+	teams: function() {
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Home: "",
+		  	Team: "teams"
+		});
+		var office = new Entity({
+			container:  $("#entity-content"),
+			url: "home/team/",
+			title: "Equipos",
+			model: {
+				id: "id",
+				fields: {
+					id: { editable: false, nullable: true },
+				    name: { 
+				    	type: "string" 
+				    },
+				    group: {
+				    	
+				    },
+				    image: {
+				    	//type: "string"
+				    },
+				    active: {
+				    	type: "boolean"
+				    }
+				}
+			},
+			columns: [
+				{ 
+					field:"image", 
+					title: "Imagen" ,
+					width: "150px",
+					template: function(e){
+						if(_.isEmpty(e.image)){
+							//console.log(e)
+							var img = $("<div>"+
+									     	"<img class='img-team' data-id='"+e.id+"' src='http://10.102.1.22/lider/web/bundles/lider/images/team.png' width = '40px' height= '40px'/>"+
+									     	"<input class='input-file-team' type='file' style = 'display: none;'/>"+
+									     "</div>");
+							
+							
+							console.log(img)
+							return img[0].innerHTML;
+						}
+					}
+				},			          
+				{ 
+					field:"name", 
+					title: "Nombre" 
+				},
+				{ 
+					field: "group",
+					title:"Grupo",					
+					template:  "#: group.name #",
+					editor:	function (container, options) {
+						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+					        .appendTo(container)
+					        .kendoDropDownList({
+					            autoBind: true,	
+					            dataBound: function(e) {
+					            	input.data("kendoDropDownList").trigger("change");
+					            },
+					            dataSource: {		                	
+					                transport: {
+					                    read: "home/group/"
+					                },
+					                schema: {
+					    			  	total: "total",
+					    		    	data: "data",
+					    		        model: {
+					    				    id: "id",
+					    				    fields: {
+					    				    	id: { editable: false, nullable: true },
+					    				        name: { type: "string" },		        				        
+					    				    }
+					    		        }
+					                },
+					            },
+					            dataTextField: "name",
+					            dataValueField:"id",				            
+					        });
+					} 
+				},	 
+			],
+	        parameterMap : function (data, type) {
+	        	
+		        if (type == "create" || type == "update") {	        	
+
+		        	if(data.tournament && (_.isString(data.tournament))){		        		
+	        			data.tournament = {
+			        			id: data.tournament
+			        	}		        		
+		        	}		        
+		        	
+		        				        	
+		            return kendo.stringify(data);
+		        }
+			},
+			dataBound: function(e) {
+			    console.log("dataBound");
+			    $('.img-team').click(function(){
+			    	
+					//console.log($(this).attr("data-id"))
+					
+					//$('.input-file-team')
+					$('.input-file-team').click();
+				});
+			},			
+			
+		});
+	},	
+	
 });
 
 

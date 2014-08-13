@@ -42,8 +42,7 @@ Entity.prototype = {
             type: 'DELETE',  
         }, 
         me.parameterMap = function (data, type) {
-//			console.log(type)
-//			console.log(data)
+
 	        if (type !== "read") {	        	
 	        	if(data.startdate){
 	        		data.startdate = kendo.toString(new Date(data.startdate), "MM/dd/yyyy");
@@ -55,8 +54,41 @@ Entity.prototype = {
 	            return kendo.stringify(data);
 	        }
 		}        
-	    		
+	    
+		me.editable = {
+	        	mode: "popup",
+	        	confirmation: "Seguro quieres eliminar este registro?",
+	        	window: {
+	                title: "Editar",
+	                animation: false,
+	                width: 700
+	            }
+	    };
+		me.command = [
+           		{
+			        name: "edit",
+			        text: { 
+			            edit: "Editar",  // This is the localization for Edit button
+			            update: "Actualizar",  // This is the localization for Update button
+			            cancel: "Cancelar"  // This is the localization for Cancel button
+			        },				        
+			    },
+			    { 
+			        name: "destroy", 
+			        text: "Eliminar",				      
+			    },
+
+        ];
+			
+	    me.autoSync = false;
+	    me.dataBound =  function(e) {	       
+	    }
+	    me.dataBinding  = function(e){
+	    	
+	    }
+	    
 		_.extend(me, config);
+		
 		me.container.addClass("panel panel-default");
 		
 		me.body = $("<div></div>").addClass("panel-body");
@@ -68,22 +100,24 @@ Entity.prototype = {
 		me.grid = me.buildGrid();		
 		
 	},
+	
 	buildTitle: function(){
 		var me = this;
 		var title = $("<h3>").text(me.title);
 		me.body.append(title);
 	},
+	
 	buildDatasource: function(){
 		var me = this;
-
-		return new kendo.data.DataSource({	
-			    autoSync: false,
-			  	transport: {
-				    read:  me.read,
-				    create: me.create,
-			        update: me.update,
-				    destroy: me.destroy,
-		            parameterMap: me.parameterMap
+		//console.log(me.autoSync)
+		var conf = {	
+		    autoSync: me.autoSync,
+		  	transport: {
+			    read:  me.read,
+			    create: me.create,
+		        update: me.update,
+			    destroy: me.destroy,
+	            parameterMap: me.parameterMap
 			  },
 			  schema: {
 			  	total: "total",
@@ -105,7 +139,6 @@ Entity.prototype = {
 			    }
 	 		  },
 	 		  requestEnd: function (e){
-//	 			  console.log(e)
 	 			  if(e.type && e.response){
 	 				if(e.type !="read"){
 	 					me.grid.data('kendoGrid').dataSource.read();
@@ -116,7 +149,14 @@ Entity.prototype = {
 	 			  }
 	 		  }
 			  
-		});
+		};
+		if(me.change){
+			conf["change"] = function(e){
+				me.change(e, me);
+			}
+		}
+			
+		return new kendo.data.DataSource(conf);
 				
 	},
 	
@@ -130,21 +170,7 @@ Entity.prototype = {
 		var d = $("<div></div>");
 		me.body.append(d);	
 		me.columns.push({ 
-            	command: [
-            		{
-				        name: "edit",
-				        text: { 
-				            edit: "Editar",  // This is the localization for Edit button
-				            update: "Actualizar",  // This is the localization for Update button
-				            cancel: "Cancelar"  // This is the localization for Cancel button
-				        },				        
-				    },
-				    { 
-				        name: "destroy", 
-				        text: "Eliminar",				      
-				    },
-
-            	],
+            	command : me.command,
             	width: "200px",
             })	;
 		var config = {
@@ -161,18 +187,12 @@ Entity.prototype = {
 		        pageable: true,
 		        height: 500,	        
 		        columns: me.columns,
-		        editable: {
-		        	mode: "popup",
-		        	confirmation: "Seguro quieres eliminar este registro?",
-		        	window: {
-		                title: "Editar",
-		                animation: false,
-		            }
-		        },
+		        editable: me.editable,
 		        toolbar: [
 				    { name: "create", text: "Agregar registro" },			
 				],
-
+				dataBound: me.dataBound,
+				dataBinding: me.dataBinding
 		    };
 		
 		if(me.detailInit){

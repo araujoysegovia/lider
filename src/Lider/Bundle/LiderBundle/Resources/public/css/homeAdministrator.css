@@ -44,31 +44,13 @@
 	margin-bottom: 20px;
 }
 
-/* .body > .tournaments {
-	padding: 10px 25px;
-	display: none;
+.k-edit-form-container{
+	width: 100%;
+}
+.k-edit-field > * {
+	width: 100%;
 }
 
-.body > .players{
-	padding: 10px 25px;
-	display: none;	
+.k-edit-field > textarea{
+	height: 100px; 
 }
-
-.body > .groups{
-	padding: 10px 25px;
-	display: none;	
-}
-.body > .categories{
-	padding: 10px 25px;
-	display: none;	
-}
-
-.body > .questions{
-	padding: 10px 25px;
-	display: none;	
-}
-
-.body > div > .title{
-	color: #428BCA;
-
-} */
