@@ -26,19 +26,16 @@ security:
                 check_path: /admin/login-check/google
                 failure_path: admin_index_page
                 default_target_path: /admin/home
-                
  #           provider: userprovider
  #           oauth:
  #               resource_owners:
  #                   google:             "/admin/login-check/google"
-                
  #               check_path:   /admin/login-check
  #               login_path:   /admin
 
  #               failure_path: /admin
  #               oauth_user_provider:
  #                   service: lider_user_provider
-                    
             form_login:
                 login_path: admin_index_page
                 check_path: /admin/login-check
