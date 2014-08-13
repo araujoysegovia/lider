@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	
+	<link rel="stylesheet" href="{{asset('bundles/lider/css/bootstrap.css')}}" />
+	<link rel="stylesheet" href="{{asset('bundles/lider/css/homeAdministrator.css')}}" />
+	<link href="{{asset('bundles/lider/js/kendo/styles/kendo.common.min.css')}}" rel="stylesheet" />
+	<link href="{{asset('bundles/lider/js/kendo/styles/kendo.bootstrap.min.css')}}" rel="stylesheet" />
+	
+    <script src="{{ asset('bundles/lider/js/kendo/js/jquery.min.js') }}"></script>  	
+	<script src="{{ asset('bundles/lider/js/kendo/js/kendo.all.min.js') }}"></script>
+
+	<script src="{{ asset('bundles/lider/js/underscore.js') }}"></script>
+	<script src="{{ asset('bundles/lider/js/backbone.js') }}"></script>
+	<script src="{{ asset('bundles/lider/js/bootstrap.min.js') }}"></script>
+	
+	
+	<script type="text/javascript" src="{{ asset('bundles/lider/js/entity.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/lider/js/homeAdministrator.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/lider/js/routerManager.js') }}"></script>
+	
+		
+	<script type="text/javascript" src="{{ asset('bundles/lider/js/tournament.js') }}"></script>
+</head>
+<body>
+	<div class="body">
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"
+						data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<img src="{{asset('bundles/lider/images/logoAyS.png')}}"
+						alt="Araujo & Segovia" width="220px" />
+				</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse"
+					id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav" id="menu">
+						<li class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown">Administrador<span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a id="linkTournaments" href="#" data-url="tournaments">Torneos</a></li>
+								<li><a id="linkPlayers" href="#" data-url="players">Jugadores</a></li>
+								<li><a id="linkGroups" href="#" data-url="groups">Grupos</a></li>
+							</ul>
+						</li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown">Preguntas<span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a id="linkCategories" href="#" data-url="categories">Categorias</a></li>
+								<li><a id="linkQuestions" href="#" data-url="questions">Preguntas</a></li>
+							</ul>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown"> 
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.name ~ ' ' ~ user.lastname }}<span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+					            <li><a href="{{ path("admin_logout") }}">Cerrar Session</a></li>
+					        </ul>
+						</li>
+					</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+			</div>
+			<!-- /.container-fluid -->
+		</nav>
+
+		<div id="breadcrumbs">
+			<ol class="breadcrumb">
+			  <li class="active">Home</li>		
+			</ol>
+		</div>
+		
+		<div id="entity-content"></div>
+
+	</div>
+</body>
+</html>

@@ -9,15 +9,15 @@ admin_logout:
 
 admin_index_page:
     path:     /
-    defaults: { _controller: LiderBundle:RoutingAdmin:loginAdmin }
+    defaults: { _controller: LiderBundle:Routing:loginPage }
 
 admin_home_page:
     path:	/home
-    defaults: { _controller: LiderBundle:RoutingAdmin:homeAdmin }
+    defaults: { _controller: LiderBundle:Routing:homePage }
 
 admin_check_failure:
     path:     /logincheck/failure
-    defaults: { _controller: LiderBundle:RoutingAdmin:loginFailure }
+    defaults: { _controller: LiderBundle:Routing:loginFailure }
 
 admin_answer:
     resource: "@LiderBundle/Resources/config/admin_routes/answer_routing.yml"

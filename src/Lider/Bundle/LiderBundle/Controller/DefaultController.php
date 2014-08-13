@@ -57,20 +57,6 @@ class DefaultController extends SymfonyController
     	$user1->setPassword($password);
     	
     	$em->persist($user1);
-
-        $user2 = new Player();
-        $user2->setEmail("eescallon@araujoysegovia.com");
-        $user2->setName("Eduardo");
-        $user2->setLastname("Escallon");
-        $user2->addRole($role);
-        
-        $factory = $this->container->get('security.encoder_factory');
-        $codificador = $factory->getEncoder($user2);
-        $password = $codificador->encodePassword("araujo123", $user2->getSalt());
-         
-        $user2->setPassword($password);
-        
-        $em->persist($user2);
     }
     
     
