@@ -40,6 +40,17 @@ class Question extends Entity
 	 * @ORM\OneToMany(targetEntity="Answer", mappedBy="question")
 	 */
 	private $answers;
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=true)
+	 */
+	private $checked;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
+	 * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
+	 */
+	private $user;
 
     /**
      * Get id
@@ -158,5 +169,51 @@ class Question extends Entity
     public function getAnswers()
     {
         return $this->answers;
+    }
+
+    /**
+     * Set checked
+     *
+     * @param boolean $checked
+     * @return Question
+     */
+    public function setChecked($checked)
+    {
+        $this->checked = $checked;
+
+        return $this;
+    }
+
+    /**
+     * Get checked
+     *
+     * @return boolean 
+     */
+    public function getChecked()
+    {
+        return $this->checked;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Player $user
+     * @return Question
+     */
+    public function setUser(\Lider\Bundle\LiderBundle\Entity\Player $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

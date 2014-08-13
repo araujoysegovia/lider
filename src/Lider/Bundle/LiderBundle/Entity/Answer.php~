@@ -35,6 +35,11 @@ class Answer extends Entity
 	 * @ORM\Column(type="boolean")
 	 */
 	private $selected = true;
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=true)
+	 */
+	private $help = true;
 
     /**
      * Get id

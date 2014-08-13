@@ -44,7 +44,7 @@ abstract class Controller extends SymfonyController {
 		);
 	}
 	
-	protected function getRequestEntity(){
+	protected function getRequestEntity($id = null){
 		$request = $this->get("request");
 		$contentType = $request->headers->get('content_type');
 		$explode = explode(";", $contentType);
@@ -59,7 +59,7 @@ abstract class Controller extends SymfonyController {
 				break;
 					
 			default:
-				return $this->applicationJson();
+				return $this->applicationJson($id);
 				break;
 		}
 	}
@@ -109,7 +109,7 @@ abstract class Controller extends SymfonyController {
 		return $newClass;
 	}
 	
-	private function applicationJson(){
+	private function applicationJson($id = null){
 		$em = $this->getDoctrine()->getEntityManager();
 		$request = $this->get("request");
 		$data = $request->getContent();
@@ -122,6 +122,12 @@ abstract class Controller extends SymfonyController {
 		$entityName = $this->getName();
 		$bundleName = $this->getBundleName();
 		$className = self::$NAMESPACE.$entityName;
+				
+		if(!is_null($id)){
+			$metadata = $em->getClassMetadata($className);			
+			$idField = $metadata->identifier[0];
+			$data[$idField] = $id;
+		}
 		
 		$newClass = $this->get("talker")->denormalizeEntity($className, $data);
 		
@@ -268,19 +274,13 @@ abstract class Controller extends SymfonyController {
 			throw new RuntimeException($errors->__toString());
 		}
 		$em->flush();
+		//echo $entity;
 		return $entity;
 	}
 	
 	public function updateAction($id = null) {
-		if(!is_null($id)){
-			$bundleName = $this->getBundleName();
-			$em = $this->getDoctrine()->getEntityManager();
-			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$ec = $repo->find($id);
-		}else{
-			$ec = $this->getRequestEntity();
-		}
-		
+			
+		$ec = $this->getRequestEntity($id);
 		if(is_null($ec->getId())){
 			throw new \Exception("Entity not found");
 		}
