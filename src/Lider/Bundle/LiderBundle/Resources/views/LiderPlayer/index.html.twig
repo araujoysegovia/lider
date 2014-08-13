@@ -1,0 +1,54 @@
+<html>
+	<head>		
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width"/>
+		<script src= "{{ asset('bundles/lider/js/vendor/jquery.min.js') }}"></script>	
+		<script src= "{{ asset('bundles/lider/js/vendor/underscore.js') }}"></script>
+		<script src= "{{ asset('bundles/lider/js/vendor/backbone.js') }}"></script>		
+		<script src= "{{ asset('bundles/lider/js/vendor/bootstrap.min.js') }}"></script>		
+		<script src= "{{ asset('bundles/lider/js/login.js') }}"></script>	
+		<script src= "{{ asset('bundles/lider/js/notify.min.js') }}"></script>	
+		
+		<link rel="stylesheet" href="{{asset('bundles/lider/css/vendor/bootstrap.css')}}" />		
+		<link rel="stylesheet" href="{{asset('bundles/lider/css/player/login.css')}}" />		
+	</head>
+	<body>
+		<div class="body">
+			<div class="login">
+				<div class="logo">
+					<img src="{{asset('bundles/lider/images/logoAyS.png')}}" class="logo-ays" alt="Araujo & Segovia" width="320px" />
+				</div>
+				<div class="login-form">
+					<form role="form" class="form-class" action="{{ path("player_login_check") }}" method="POST">
+						<div class="form-group">
+							<input type="email" name="_username" class="form-control" placeholder="Correo electr&oacute;nico"/>
+						</div>
+						<div class="form-group">
+							<input type="password" name="_password" class="form-control" placeholder="Contraseña"/>
+						</div>
+						<button type="submit" class="btn btn-primary btn-ingresar">Ingresar</button>
+						<span id="signinButton">
+						 	<span class="g-signin"
+								data-callback="signinCallback"
+								data-clientid="409288717107-h73ade2t3homia8e8r6o4dg3bmuingn3.apps.googleusercontent.com"
+								data-cookiepolicy="single_host_origin"
+								data-requestvisibleactions="http://schemas.google.com/AddActivity"
+								data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email"
+								data-approvalprompt="force"
+								data-theme="dark">
+								</span>
+						</span>
+						{% if error %}
+							<div class="alert alert-danger alert-error">
+							 	<label>Usuario o contraseña incorrecto</label>
+							</div>
+						{% endif %}	
+					</form>
+				</div>
+			</div>
+		</div>
+	<script type="text/javascript">
+
+    </script>		
+	</body>	
+</html>

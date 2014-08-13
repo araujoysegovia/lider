@@ -1,0 +1,76 @@
+body{
+	background-color: #E1EEFB;
+}
+
+.login{
+	width: 100%;
+	text-align: center;
+}
+
+.login .logo .logo-ays{
+	padding-top: 20px;
+}
+
+.login .login-form form{
+	margin-top: 60px;
+	width: 250px;
+	left: 50%;
+	margin-left: -114px;
+	position: relative;
+}
+
+.login .login-form form input{
+	font-size: 17px;
+	text-align: center;
+}
+
+.login .login-form > form > button.btn-ingresar{
+	color: #000;
+	height: 32px;
+	width: 150px;
+	font-weight: bold;
+	font-size: 12px;
+	border: none;
+	background-image: -webkit-gradient(
+	linear,
+	left top,
+	left bottom,
+	color-stop(0, #FFFD65),
+	color-stop(1, #FBB23C)
+    );
+	background-image: -o-linear-gradient(bottom, #FFFD65 0%, #FBB23C 100%);
+	background-image: -moz-linear-gradient(bottom, #FFFD65 0%, #FBB23C 100%);
+	background-image: -webkit-linear-gradient(bottom, #FFFD65 0%, #FBB23C 100%);
+	background-image: -ms-linear-gradient(bottom, #FFFD65 0%, #FBB23C 100%);
+	background-image: linear-gradient(to bottom, #FFFD65 0%, #FBB23C 100%);
+}
+
+.login .login-form form div[data-class=forgot-password]{
+	margin-top: 40px;
+	font-style: italic;
+	color: #FFF;
+	width: 165px;
+	border: solid 1px;
+	padding: 5px;
+	position: relative;
+	left: 50%;
+	margin-left: -83px;
+}
+
+.login-form > form > span#signinButton{
+ 	display: inline-block;
+	background: #DD4B39;
+	color: white;
+	height: 32px;
+	width: 150px;
+	border-radius: 5px;
+	margin-top: 20px;
+}
+
+.login .login-form a{
+	color: #fff;
+}
+
+.alert-error{
+	margin-top: 10px;
+}

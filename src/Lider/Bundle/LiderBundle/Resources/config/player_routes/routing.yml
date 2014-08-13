@@ -1,0 +1,16 @@
+player_google_login_check:
+    pattern: /login-check/google
+
+player_login_check:
+    pattern: /login-check
+
+player_logout:
+    path:   /logout
+
+player_index_page:
+    path:     /
+    defaults: { _controller: LiderBundle:RoutingPlayer:loginPage }
+
+player_home_page:
+    path:	/home
+    defaults: { _controller: LiderBundle:RoutingPlayer:homePage }
