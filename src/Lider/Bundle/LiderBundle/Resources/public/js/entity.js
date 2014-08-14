@@ -42,7 +42,7 @@ Entity.prototype = {
             type: 'DELETE',  
         }, 
         me.parameterMap = function (data, type) {
-
+			console.log("entro")
 	        if (type !== "read") {	        	
 	        	if(data.startdate){
 	        		data.startdate = kendo.toString(new Date(data.startdate), "MM/dd/yyyy");
@@ -86,6 +86,7 @@ Entity.prototype = {
 	    me.dataBinding  = function(e){
 	    	
 	    }
+	    me.width = "200px";
 	    
 		_.extend(me, config);
 		
@@ -171,23 +172,25 @@ Entity.prototype = {
 		me.body.append(d);	
 		me.columns.push({ 
             	command : me.command,
-            	width: "200px",
+            	width: me.width,
             })	;
 		var config = {
 		      	dataSource: me.datasource, 
-//		      	filterable: {
-//                    extra: false,
-//                    operators: {
-//                        string: {
-//                            startswith: "Empieza con",
-//                            eq: "Es igual a "                            
-//                        }
-//                    }
-//                },
+		      	filterable: {
+                    extra: false,
+                    operators: {
+                        string: {
+                            startswith: "Empieza con",
+                            eq: "Es igual a ",
+                            contains: "Contiene" 
+                        }
+                    }
+                },
 		        pageable: true,
 		        height: 500,	        
 		        columns: me.columns,
 		        editable: me.editable,
+		        sortable: true,                               
 		        toolbar: [
 				    { name: "create", text: "Agregar registro" },			
 				],

@@ -73,7 +73,7 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field: "enddate", 
 					title:"Fecha de fin",
-					template: "#= kendo.toString(kendo.parseDate(startdate, 'yyyy-MM-dd'), 'dd/MM/yyyy') #"
+					template: "#= kendo.toString(kendo.parseDate(enddate, 'yyyy-MM-dd'), 'dd/MM/yyyy') #"
 				},
 				{ 
 					field: "active",
@@ -98,12 +98,19 @@ var routerManager = Backbone.Router.extend({
 			    fields: {
 			    	id: { 
 			    		editable: false, 
-			    		nullable: true 
+			    		nullable: true,
+			    		type: "number"
 			    	},
 			    	question: { 
 			    		type: "string"
 			    	},
 			    	category: {},	
+			    	checked: {
+			    		type: "boolean",			    		
+			    	},
+			    	user: {
+			    		editable: false
+			    	},
 			    	answers: {
 			    		parse: function(rec){				    			
 							if(_.isObject(rec)){
@@ -113,14 +120,7 @@ var routerManager = Backbone.Router.extend({
 						},
 			    	},
 			    	answerOne: {
-			    		type: "string",
-//			    		parse: function(rec){				    			
-//							if(_.isObject(rec)){
-//								var d = rec[0];
-//								return d.name;
-//							}
-//							return rec;
-//						},							
+			    		type: "string",						
 			    	},
 			    	answerTwo: {
 			    		type: "string",	
@@ -139,67 +139,124 @@ var routerManager = Backbone.Router.extend({
 				_.each(e.response.data, function(value){
 					var ans = value.answers;
 					var a = ans[0], b = ans[1], c = ans[2], d = ans[3];
+					if(a){
+						value["answerOne"] = a.answer;
+					}
 					
-					value["answerOne"] = a.answer;
-					value["answerTwo"] = b.answer;
-					value["answerThree"] = c.answer;
-					value["answerFour"] = d.answer;
+					if(b){
+						value["answerTwo"] = b.answer;
+					}
 					
-					if(a.selected){
+					if(c){
+						value["answerThree"] = c.answer;
+					}
+					
+					if(d){
+						value["answerFour"] = d.answer;
+					}									
+					
+					if(a && a.selected){
 						value["selected"] = 1;
-					}else if(b.selected){
+					}else if(b && b.selected){
 						value["selected"] = 2;
-					}else if(c.selected){
+					}else if(c && c.selected){
 						value["selected"] = 3;
-					}else if(d.selected){
+					}else if(d && d.selected){
 						value["selected"] = 4;
 					}
 
-					if(a.help){
+					if(a && a.help){
 						value["help"] = 1;
-					}else if(b.help){
+					}else if(b && b.help){
 						value["help"] = 2;
-					}else if(c.help){
+					}else if(c && c.help){
 						value["help"] = 3;
-					}else if(d.help){
+					}else if( d && d.help){
 						value["help"] = 4;
 					}
 					
 				})
 			},
 			parameterMap: function (data, type) {
-				
-				
-		        if (type !== "read") {	      
+								
+		        if(type != "read") {	      
 		        	
-		        	data.answers[0].answer = data.answerOne;
-		        	delete data.answerOne;
+		        	console.log(data)
 		        	
-		        	data.answers[1].answer = data.answerTwo;
-		        	delete data.answerTwo;
-		        	
-		        	data.answers[2].answer = data.answerThree;
-		        	delete data.answerThree;
-		        	
-		        	data.answers[3].answer = data.answerFour;
-		        	delete data.answerFour;
-		        	
-		        	_.each(data.answers, function(value){
+		        		if(!(_.isEmpty(data.answers))){
+		        			data.answers[0].answer = data.answerOne;
+				        	data.answers[1].answer = data.answerTwo;
+				        	data.answers[2].answer = data.answerThree;
+				        	data.answers[3].answer = data.answerFour;
+				        	
+		        		}else{
+		        			data.answers = [];
+		        			data.answers.push({answer : data.answerOne});
+		        			data.answers.push({answer : data.answerTwo});
+		        			data.answers.push({answer : data.answerThree});
+		        			data.answers.push({answer : data.answerFour});
+		        			
+		        		}
+			        			        		
+		        		delete data.answerOne;
+		        		delete data.answerTwo;
+		        		delete data.answerThree;
+		        		delete data.answerFour;
 		        		
-		        		value.selected = false;
-		        		value.help = false;
-		        	})
-		        	
-		        	
-		        	
-		        	data.answers[parseInt(data.selected) - 1].selected = true;
-		        	data.answers[parseInt(data.help) - 1].help = true;
-		        	
-		            return kendo.stringify(data);
+			        	_.each(data.answers, function(value){
+			        		
+			        		value["selected"] = false;
+			        		value["help"] = false;
+			        	})
+			        	
+			        	
+			        	data.answers[parseInt(data.selected) - 1].selected = true;
+			        	data.answers[parseInt(data.help) - 1].help = true;			        				       
+         	        	
+			            return kendo.stringify(data);		        
 		        }
-				
-				
 			},
+			width: "260px",
+			command: [
+           		{
+			        name: "edit",
+			        text: { 
+			            edit: "Editar",  // This is the localization for Edit button
+			            update: "Actualizar",  // This is the localization for Update button
+			            cancel: "Cancelar"  // This is the localization for Cancel button
+			        },				        
+			    },
+			    { 
+			        name: "destroy", 
+			        text: "Eliminar",				      
+			    },
+			    {
+			    	 text: "Verificar",
+			    	 click: function (e) {
+			    		 console.log("verificar")
+			    		 e.preventDefault();
+
+		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+		                 var id = dataItem.id;		                
+		                 					
+		                 config = {
+				            type: "POST",           
+				            url: "home/question/check/"+id,					            
+				            contentType: "application/json",
+				            dataType: "json",
+				            //data: JSON.stringify(param),
+							success: function(){
+							   question.grid.data('kendoGrid').dataSource.read();
+							   question.grid.data('kendoGrid').refresh();
+							},
+							error: function(){}
+		                 }
+
+		                 $.ajax(config);
+							
+		             } 
+			    }
+		    ],
 			detailInit: function(e){
 				var grid = null;
 				
@@ -220,7 +277,16 @@ var routerManager = Backbone.Router.extend({
                  			//console.log(data)
                  	        if (type !== "read") {	        	
                  	        	
+                 	        	if(data.category && (_.isString(data.category))){		        		
+            	        			data.category = {
+            			        			id: data.category
+            			        	}		        		
+            		        	}
+                 	        	
+                 	        
+                 	        	
                  	            return kendo.stringify(data);
+                 	            
                  	        }
                      	}   
                         
@@ -248,12 +314,8 @@ var routerManager = Backbone.Router.extend({
 				  	   }, 					  	
 				    },
 				    change: function(e) {
-				    					    	
-//				    	console.log("DataSource changed");				    	
-				    	
+
 				        if((e.field == "selected" || e.field == "help") && (e.action != "sync")) {
-//				        	console.log(this)
-//				        	console.log(e)
 				        	var data = this.data();				        	
 				        	var id = e.items[0].id;
 				        	_.each(data, function(value){
@@ -261,9 +323,6 @@ var routerManager = Backbone.Router.extend({
 					        		if(value[e.field] == true){
 					        			value[e.field] = false;
 					        			value.dirty = true;
-//					        			kdataSource.sync();
-//					        			grid.data('kendoGrid').dataSource.read();
-//					        			grid.data('kendoGrid').refresh();
 					        		}else{
 					        			value[e.field] = false;
 					        		}
@@ -271,11 +330,19 @@ var routerManager = Backbone.Router.extend({
 					        	}else{
 					        		value[e.field] = true;
 					        	}
+					        	
+					        	
 					        })
+					        
+					        					        
+					        
 					        kdataSource.sync();
 					        grid.data('kendoGrid').dataSource.read();
 		 					grid.data('kendoGrid').refresh();
 		 					
+		 					//console.log(question)
+		 					question.grid.data('kendoGrid').dataSource.read();
+		 					question.grid.data('kendoGrid').refresh();
 				        }
 				        
 				    },
@@ -297,11 +364,37 @@ var routerManager = Backbone.Router.extend({
                         },
                         {
                         	field: "selected",
-                        	title: "Correcta",
+                        	title: "Correcta",                         	
+        			    	template: function(e){ 
+        			    		
+        			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
+        			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+        						
+        							
+        							if(e.selected == false){
+        								return imgNoChecked;
+        							}else{
+        								return imgChecked;
+        							}
+        						
+        					}
                         },
                         {
                         	field: "help",
-                        	title: "Ayuda"
+                        	title: "Ayuda",                        	
+        			    	template: function(e){ 
+        			    		
+        			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
+        			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+        						
+        							
+        							if(e.help == false){
+        								return imgNoChecked;
+        							}else{
+        								return imgChecked;
+        							}
+        						
+        					}
                         },                        
                         //{ command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
                     ],
@@ -313,9 +406,14 @@ var routerManager = Backbone.Router.extend({
                 this.expandRow(this.tbody.find("tr.k-master-row").first());
             },
 			columns: [
+			    {
+			    	field: "id",
+			    	title: "Id",
+			    	width: "50px"
+			    },
 			    { 
 			    	field:"question", 
-			    	title: "Nombre" ,
+			    	title: "Pregunta" ,
 			    	editor: function(container, options){
 			    		$('<textarea data-bind="value: ' + options.field + '"></textarea>')
 			    		.appendTo(container);
@@ -327,6 +425,7 @@ var routerManager = Backbone.Router.extend({
 			    	width: "150px",
 					template:  "#: category.name #", 
 					editor:	function (container, options) {
+						
 						//console.log(options)
 			    	    $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 			            .appendTo(container)
@@ -354,15 +453,50 @@ var routerManager = Backbone.Router.extend({
 					}  
 			    },
 			    {
+			    	field: "checked",
+			    	title: "Revisada",
+			    	width: "100px",			    	
+			    	template: function(e){ 
+			    		
+			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+						
+							
+							if(e.checked == false){
+								return imgNoChecked;
+							}else{
+								return imgChecked;
+							}
+						
+					}
+			    },
+			    {
+			    	field: "user",
+			    	title: "Usuario",
+			    	hidden: true,
+			    	template:  function (e){				    		
+			    		if(e.user){			    			
+			    			return e.user.name;
+			    		}else{
+			    			return "";
+			    		}  		 
+			    	}
+			    },
+			    {
 			    	field: "answerOne",			    							    
 			    	title: "Respuesta Uno",
 			    	hidden: true,
 			    	editor:	function (container, options) {
 			    		var ans = options.model.answers[0];
-			    		//console.log(ans)
-			    		$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
-			    		 .appendTo(container)
-			    		 .attr("value", ans.answer);
+			    		if (typeof ans != 'undefined'){
+			    			$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
+				    		 .appendTo(container)
+				    		 .attr("value", ans.answer);
+			    		}else{
+			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
+				    		.appendTo(container);
+			    		}
+			    		
 			    	}
 			    	
 			    },
@@ -372,9 +506,15 @@ var routerManager = Backbone.Router.extend({
 			    	hidden: true,
 			    	editor:	function (container, options) {
 			    		var ans = options.model.answers[1];
-			    		$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
-			    		 .appendTo(container)
-			    		 .attr("value", ans.answer);
+			    		if (typeof ans != 'undefined'){
+			    			$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
+				    		 .appendTo(container)
+				    		 .attr("value", ans.answer);
+			    		}else{
+			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
+				    		.appendTo(container);
+			    		}
+			    		
 			    	}
 			    },
 			    {
@@ -383,9 +523,14 @@ var routerManager = Backbone.Router.extend({
 			    	hidden: true,
 			    	editor:	function (container, options) {
 			    		var ans = options.model.answers[2];
-			    		$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
-			    		 .appendTo(container)
-			    		 .attr("value", ans.answer);
+			    		if (typeof ans != 'undefined'){
+			    			$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
+				    		 .appendTo(container)
+				    		 .attr("value", ans.answer);
+			    		}else{
+			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
+				    		.appendTo(container);
+			    		}			    		
 			    	}
 			    },
 			    {
@@ -394,15 +539,20 @@ var routerManager = Backbone.Router.extend({
 			    	hidden: true,
 			    	editor:	function (container, options) {
 			    		var ans = options.model.answers[3];
-			    		$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
-			    		 .appendTo(container)
-			    		 .val(ans.answer);
+			    		if (typeof ans != 'undefined'){
+			    			$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
+				    		 .appendTo(container)
+				    		 .val(ans.answer);	
+			    		}	else{
+			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
+				    		.appendTo(container);
+			    		}		    		
 			    	}
 			    },
 			    {
 			    	field: "selected",
 			    	title: "Respuesta Correcta",
-			    	hidden: true,
+			    	hidden: true,			    	
 			    	editor:	function (container, options) {
 						
 			    	    $('<input required data-text-field="text" data-value-field="value" data-bind="value:' + options.field + '"/>')
@@ -445,7 +595,7 @@ var routerManager = Backbone.Router.extend({
 			    }			    
 			    
 			],		  
-		  
+
 		})	  
 	},
   
@@ -501,38 +651,40 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field: "office",
 					title:"Oficina",					
-					template:  "#: office.name #",
-//					template:  function(e){						
-//						
-//						if(e.office){
-//							return e.office.name;
-//						}
-//					},					
-					editor:	function DropDownEditor(container, options) {
-						//console.log(options)
-					    $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
-				        .appendTo(container)
-				        .kendoDropDownList({
-				            autoBind: false,		                
-				            dataSource: {		                	
-				                transport: {
-				                    read: "home/office/"
-				                },
-				                schema: {
-				    			  	total: "total",
-				    		    	data: "data",
-				    		        model: {
-				    				    id: "id",
-				    				    fields: {
-				    				    	id: { editable: false, nullable: true },
-				    				        name: { type: "string" },		        				        
-				    				    }
-				    		        }
-				                },
-				            },
-				            dataTextField: "name",
-				            dataValueField:"id",				            
-				        });
+					//template:  "#: office.name #",
+					template:  function(e){						
+						
+						if(e.office){
+							return e.office.name;
+						}
+					},					
+					editor:	function (container, options) {
+						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+					        .appendTo(container)
+					        .kendoDropDownList({
+					            autoBind: true,	
+					            dataBound: function(e) {
+					            	input.data("kendoDropDownList").trigger("change");
+					            },
+					            dataSource: {		                	
+					                transport: {
+					                    read: "home/office/"
+					                },
+					                schema: {
+					    			  	total: "total",
+					    		    	data: "data",
+					    		        model: {
+					    				    id: "id",
+					    				    fields: {
+					    				    	id: { editable: false, nullable: true },
+					    				        name: { type: "string" },		        				        
+					    				    }
+					    		        }
+					                },
+					            },
+					            dataTextField: "name",
+					            dataValueField:"id",				            
+					        });
 					} 
 				},
 				{ 
@@ -545,37 +697,39 @@ var routerManager = Backbone.Router.extend({
 						}
 						
 					},
-					editor:	function DropDownEditor(container, options) {
-						//console.log(options)
-					    $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
-				        .appendTo(container)
-				        .kendoDropDownList({
-				            autoBind: false,		                
-				            dataSource: {		                	
-				                transport: {
-				                    read: "home/role/"
-				                },
-				                schema: {
-				    			  	total: "total",
-				    		    	data: "data",
-				    		        model: {
-				    				    id: "id",
-				    				    fields: {
-				    				    	id: { editable: false, nullable: true },
-				    				        name: { type: "string" },		        				        
-				    				    }
-				    		        }
-				                },
-				            },
-				            dataTextField: "name",
-				            dataValueField:"id"
-				        });
-					}  
+					editor:	function (container, options) {
+						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+					        .appendTo(container)
+					        .kendoDropDownList({
+					            autoBind: true,	
+					            dataBound: function(e) {
+					            	input.data("kendoDropDownList").trigger("change");
+					            },
+					            dataSource: {		                	
+					                transport: {
+					                    read: "home/role/"
+					                },
+					                schema: {
+					    			  	total: "total",
+					    		    	data: "data",
+					    		        model: {
+					    				    id: "id",
+					    				    fields: {
+					    				    	id: { editable: false, nullable: true },
+					    				        name: { type: "string" },		        				        
+					    				    }
+					    		        }
+					                },
+					            },
+					            dataTextField: "name",
+					            dataValueField:"id",				            
+					        });
+					}   
 				},					
 			],
 	        parameterMap : function (data, type) {
-	        	console.log(type)
-	        	console.log(data)
+//	        	console.log(type)
+//	        	console.log(data)
 		        if (type == "create" || type == "update") {	        	
 		        	if(data.roles){
 		        		data.roles = [{
@@ -759,6 +913,7 @@ var routerManager = Backbone.Router.extend({
 				    },
 				    image: {
 				    	//type: "string"
+				    	editable: false
 				    },
 				    active: {
 				    	type: "boolean"
@@ -770,18 +925,20 @@ var routerManager = Backbone.Router.extend({
 					field:"image", 
 					title: "Imagen" ,
 					width: "150px",
+					
 					template: function(e){
+						var src = 'http://10.102.1.22/lider/web';
 						if(_.isEmpty(e.image)){
-							//console.log(e)
-							var img = "<div class='img-team'>"+
-									     	"<img  data-id='"+e.id+"' src='http://10.102.1.22/lider/web/bundles/lider/images/team.png' width = '40px' height= '40px'/>"+
-									     	"<input id='input-file-team-"+e.id+"' type='file' style = 'display: none;'/>"+
-									     "</div>";
-							
-							
-							//console.log(img)
-							return img;
+							src = src + "/bundles/lider/images/team.png";
+						}else{
+							src = src + "/app.php/image/"+e.image;
 						}
+						var img = "<div class='img-team'>"+
+								     	"<img  data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
+								     	"<input id='input-file-team-"+e.id+"' type='file' style = 'display: none;'/>"+
+								     "</div>";
+
+						return img;
 					}
 				},			          
 				{ 
@@ -858,9 +1015,10 @@ var routerManager = Backbone.Router.extend({
 							
 							var formData = new FormData();
 							formData.append("imagen", $(this).get(0).files[0]);
+							//console.log(formData)
 							config = {
 					            type: "POST",           
-					            url: "home/team/"+id,
+					            url: "home/team/image/"+id,
 					            data: formData,
 					            contentType: false,
 					            processData: false,

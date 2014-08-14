@@ -22,3 +22,10 @@ admin_question_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
+      
+admin_question_checkbyid:
+    pattern:  /check/{id}
+    defaults: { _controller: LiderBundle:Question:check }
+    methods:  [POST]
+    requirements:
+      id: \d+      

@@ -180,7 +180,7 @@ abstract class Controller extends SymfonyController {
 	
 			$bundleName = $this->getBundleName();
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$list = $repo->getArrayEntityWithOneLevel($criteria, null, $start, $limit, $filter);
+			$list = $repo->getArrayEntityWithOneLevel($criteria, "id", $start, $limit, $filter);
 			$this->afterList($list);
 			
 			return $this->get("talker")->response($list);

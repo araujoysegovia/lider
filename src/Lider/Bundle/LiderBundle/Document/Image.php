@@ -14,18 +14,30 @@ class Image
      */
     private $id;
     
-    /** @MongoDB\Field */
+    /** @MongoDB\String */
     private $name;
 
-   	/**	@MongoDB\Field */
-    private $mimetype;
-   
-    public function __construct()
-    {
-        $this->entity = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->metadata = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
+    /** @MongoDB\File */
+    private $file;
+
+    /** @MongoDB\String */
+	private $mimetype;
+	
+	/** @MongoDB\String */
+	private $entity;
+	
+	/** @MongoDB\Int */
+	private  $entityId;	
+	
+	/** @MongoDB\Boolean */
+	private $deleted;
+
+
+	public function __construct()
+	{
+		$this->deleted = false;
+	}
+			
     /**
      * Get id
      *
@@ -44,10 +56,10 @@ class Image
      */
     public function setName($name)
     {
-        $this->name = $name;
-        return $this;
+    	$this->name = $name;
+    	return $this;
     }
-
+    
     /**
      * Get name
      *
@@ -55,9 +67,9 @@ class Image
      */
     public function getName()
     {
-        return $this->name;
+    	return $this->name;
     }
-
+    
     /**
      * Set file
      *
@@ -66,10 +78,10 @@ class Image
      */
     public function setFile($file)
     {
-        $this->file = $file;
-        return $this;
+    	$this->file = $file;
+    	return $this;
     }
-
+    
     /**
      * Get file
      *
@@ -77,143 +89,48 @@ class Image
      */
     public function getFile()
     {
-        return $this->file;
+    	return $this->file;
     }
-
+    
     /**
-     * Set uploadDate
+     * Set mimetype
      *
-     * @param string $uploadDate
+     * @param string $mimetype
      * @return self
      */
-    public function setUploadDate($uploadDate)
+    public function setMimetype($mimetype)
     {
-        $this->uploadDate = $uploadDate;
-        return $this;
+    	$this->mimetype = $mimetype;
+    	return $this;
     }
-
+    
     /**
-     * Get uploadDate
+     * Get mimetype
      *
-     * @return string $uploadDate
+     * @return string $mimetype
      */
-    public function getUploadDate()
+    public function getMimetype()
     {
-        return $this->uploadDate;
+    	return $this->mimetype;
     }
 
+
     /**
-     * Set length
+     * Set entity
      *
-     * @param string $length
+     * @param string $entity
      * @return self
      */
-    public function setLength($length)
+    public function setEntity($entity)
     {
-        $this->length = $length;
+        $this->entity = $entity;
         return $this;
-    }
-
-    /**
-     * Get length
-     *
-     * @return string $length
-     */
-    public function getLength()
-    {
-        return $this->length;
-    }
-
-    /**
-     * Set chunkSize
-     *
-     * @param string $chunkSize
-     * @return self
-     */
-    public function setChunkSize($chunkSize)
-    {
-        $this->chunkSize = $chunkSize;
-        return $this;
-    }
-
-    /**
-     * Get chunkSize
-     *
-     * @return string $chunkSize
-     */
-    public function getChunkSize()
-    {
-        return $this->chunkSize;
-    }
-
-    /**
-     * Set md5
-     *
-     * @param string $md5
-     * @return self
-     */
-    public function setMd5($md5)
-    {
-        $this->md5 = $md5;
-        return $this;
-    }
-
-    /**
-     * Get md5
-     *
-     * @return string $md5
-     */
-    public function getMd5()
-    {
-        return $this->md5;
-    }
-
-    /**
-     * Set companyId
-     *
-     * @param string $companyId
-     * @return self
-     */
-    public function setCompanyId($companyId)
-    {
-        $this->companyId = $companyId;
-        return $this;
-    }
-
-    /**
-     * Get companyId
-     *
-     * @return string $companyId
-     */
-    public function getCompanyId()
-    {
-        return $this->companyId;
-    }
-
-    /**
-     * Add entity
-     *
-     * @param AYS\ArchiveBundle\Document\ArchiveFileEntity $entity
-     */
-    public function addEntity(\AYS\ArchiveBundle\Document\ArchiveFileEntity $entity)
-    {
-        $this->entity[] = $entity;
-    }
-
-    /**
-     * Remove entity
-     *
-     * @param AYS\ArchiveBundle\Document\ArchiveFileEntity $entity
-     */
-    public function removeEntity(\AYS\ArchiveBundle\Document\ArchiveFileEntity $entity)
-    {
-        $this->entity->removeElement($entity);
     }
 
     /**
      * Get entity
      *
-     * @return Doctrine\Common\Collections\Collection $entity
+     * @return string $entity
      */
     public function getEntity()
     {
@@ -221,55 +138,25 @@ class Image
     }
 
     /**
-     * Add metadata
+     * Set entityId
      *
-     * @param AYS\ArchiveBundle\Document\ArchiveFileMetadata $metadata
-     */
-    public function addMetadata(\AYS\ArchiveBundle\Document\ArchiveFileMetadata $metadata)
-    {
-        $this->metadata[] = $metadata;
-    }
-
-    /**
-     * Remove metadata
-     *
-     * @param AYS\ArchiveBundle\Document\ArchiveFileMetadata $metadata
-     */
-    public function removeMetadata(\AYS\ArchiveBundle\Document\ArchiveFileMetadata $metadata)
-    {
-        $this->metadata->removeElement($metadata);
-    }
-
-    /**
-     * Get metadata
-     *
-     * @return Doctrine\Common\Collections\Collection $metadata
-     */
-    public function getMetadata()
-    {
-        return $this->metadata;
-    }
-
-    /**
-     * Set fileId
-     *
-     * @param string $fileId
+     * @param int $entityId
      * @return self
      */
-    public function setFileId($fileId)
+    public function setEntityId($entityId)
     {
-        $this->fileId = $fileId;
+        $this->entityId = $entityId;
         return $this;
     }
 
     /**
-     * Get fileId
+     * Get entityId
      *
-     * @return string $fileId
+     * @return int $entityId
      */
-    public function getFileId()
+    public function getEntityId()
     {
-        return $this->fileId;
+        return $this->entityId;
     }
 
     /**
