@@ -72,7 +72,7 @@ doctrine_mongodb:
         default:
             server: mongodb://%mongo_user%:%mongo_pass%@%mongo_host%:%mongo_port%
             options: {}
-    default_database: test_database
+    default_database: lider
     document_managers:
         default:
             auto_mapping: true
