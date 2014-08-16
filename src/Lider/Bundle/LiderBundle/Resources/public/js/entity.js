@@ -42,7 +42,7 @@ Entity.prototype = {
             type: 'DELETE',  
         }, 
         me.parameterMap = function (data, type) {
-			console.log("entro")
+			//console.log("entro")
 	        if (type !== "read") {	        	
 	        	if(data.startdate){
 	        		data.startdate = kendo.toString(new Date(data.startdate), "MM/dd/yyyy");

@@ -44,6 +44,11 @@
 	margin-bottom: 20px;
 }
 
+.navbar-default .navbar-nav > .open > a{
+	padding-left: 21px;
+	padding-right: 21px;
+}
+
 .k-edit-form-container{
 	width: 100%;
 }

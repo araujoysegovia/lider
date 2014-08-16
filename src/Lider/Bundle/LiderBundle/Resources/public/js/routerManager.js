@@ -43,8 +43,8 @@ var routerManager = Backbone.Router.extend({
 	tournaments: function() {
 		this.removeContent();
 		this.buildbreadcrumbs({
-		  	Home: "",
-		  	Tournament: "tournament"
+		  	Inicio: "",
+		  	Torneos: "tournament"
 		});
 		var tournament = new Entity({
 			container:  $("#entity-content"),
@@ -77,7 +77,17 @@ var routerManager = Backbone.Router.extend({
 				},
 				{ 
 					field: "active",
-					title: "Activo" 
+					title: "Activo",
+			    	template: function(e){ 			    		
+			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+												
+						if(e.active == false){
+							return imgNoChecked;
+						}else{
+							return imgChecked;
+						}						
+					}
 				}
 			]     
 		});
@@ -86,7 +96,7 @@ var routerManager = Backbone.Router.extend({
 	questions: function(){
 		this.removeContent();
 		this.buildbreadcrumbs({
-		  	Home: "",
+		  	Inicio: "",
 		  	Preguntas: "question"
 		});
 		var question = new Entity({
@@ -202,6 +212,7 @@ var routerManager = Backbone.Router.extend({
 		        		delete data.answerTwo;
 		        		delete data.answerThree;
 		        		delete data.answerFour;
+		        		delete data.user;
 		        		
 			        	_.each(data.answers, function(value){
 			        		
@@ -455,17 +466,17 @@ var routerManager = Backbone.Router.extend({
 			    {
 			    	field: "checked",
 			    	title: "Revisada",
-			    	width: "100px",			    	
+			    	width: "120px",			    	
 			    	template: function(e){ 
 			    		
-			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+//			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
+//			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
 						
 							
 							if(e.checked == false){
-								return imgNoChecked;
+								return "No";
 							}else{
-								return imgChecked;
+								return "Si";
 							}
 						
 					}
@@ -602,8 +613,8 @@ var routerManager = Backbone.Router.extend({
 	players: function() {
 		this.removeContent();
 		this.buildbreadcrumbs({
-		  	Home: "",
-		  	Player: "Player"
+		  	Inicio: "",
+		  	Jugadores: "Player"
 		});
 		var player = new Entity({
 			container:  $("#entity-content"),
@@ -631,7 +642,7 @@ var routerManager = Backbone.Router.extend({
 					},
 					roles: {						
 					},
-					
+					team:{ }					
 				}
 		  	},
 			columns: [
@@ -725,7 +736,44 @@ var routerManager = Backbone.Router.extend({
 					            dataValueField:"id",				            
 					        });
 					}   
-				},					
+				},	
+				{ 
+					field: "team",
+					title:"Equipo",					
+					template:  function(e){						
+						if(e.team){
+							return e.team.name;
+						}
+					},					
+					editor:	function (container, options) {
+						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+					        .appendTo(container)
+					        .kendoDropDownList({
+					            autoBind: true,	
+					            dataBound: function(e) {
+					            	input.data("kendoDropDownList").trigger("change");
+					            },
+					            dataSource: {		                	
+					                transport: {
+					                    read: "home/team/"
+					                },
+					                schema: {
+					    			  	total: "total",
+					    		    	data: "data",
+					    		        model: {
+					    				    id: "id",
+					    				    fields: {
+					    				    	id: { editable: false, nullable: true },
+					    				        name: { type: "string" },		        				        
+					    				    }
+					    		        }
+					                },
+					            },
+					            dataTextField: "name",
+					            dataValueField:"id",				            
+					        });
+					} 
+				},
 			],
 	        parameterMap : function (data, type) {
 //	        	console.log(type)
@@ -752,8 +800,8 @@ var routerManager = Backbone.Router.extend({
 	groups: function() {
 		this.removeContent();
 		this.buildbreadcrumbs({
-		  	Home: "",
-		  	Groups: "groups"
+		  	Inicio: "",
+		  	Grupos: "groups"
 		});
 		var group = new Entity({
 			container:  $("#entity-content"),
@@ -776,7 +824,7 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field: "tournament",
 					title:"Torneo",
-					width: "150px",
+					
 					template:  "#: tournament.name #",									
 					editor:	function (container, options) {
 						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
@@ -809,12 +857,22 @@ var routerManager = Backbone.Router.extend({
 				},				
 				{ 
 					field: "active",
-					title: "Activo" 
+					title: "Activo",
+					width: "100px",
+			    	template: function(e){ 			    		
+			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+												
+						if(e.active == false){
+							return imgNoChecked;
+						}else{
+							return imgChecked;
+						}						
+					}
 				}
 			],
 	        parameterMap : function (data, type) {
-	        	console.log(type)
-	        	console.log(data)
+	        	
 		        if (type == "create" || type == "update") {	        	
 
 		        	if(data.tournament && (_.isString(data.tournament))){		        		
@@ -833,8 +891,8 @@ var routerManager = Backbone.Router.extend({
 	categories: function() {
 		this.removeContent();
 		this.buildbreadcrumbs({
-		  	Home: "",
-		  	Category: "categories"
+		  	Inicio: "",
+		  	Categorias: "categories"
 		});
 		var category = new Entity({
 			container:  $("#entity-content"),
@@ -859,8 +917,8 @@ var routerManager = Backbone.Router.extend({
 	offices: function() {
 		this.removeContent();
 		this.buildbreadcrumbs({
-		  	Home: "",
-		  	Office: "offices"
+		  	Inicio: "",
+		  	Oficinas: "offices"
 		});
 		var tournament = new Entity({
 			container:  $("#entity-content"),
@@ -894,8 +952,8 @@ var routerManager = Backbone.Router.extend({
 	teams: function() {
 		this.removeContent();
 		this.buildbreadcrumbs({
-		  	Home: "",
-		  	Team: "teams"
+		  	Inicio: "",
+		    Equipos: "teams"
 		});
 		var office = new Entity({
 			container:  $("#entity-content"),
@@ -920,6 +978,66 @@ var routerManager = Backbone.Router.extend({
 				    }
 				}
 			},
+			detailInit: function(e){
+				var grid = null;
+				
+				var kdataSource = new kendo.data.DataSource({
+					//autoSync: true,
+					//batch: true,
+                    transport: {
+                        read: "home/player?team=" + e.data.id,
+                        update: {
+                                url: function (e) {            	                                
+                                    return "home/player/" + e.id;
+                                },
+                                type: "PUT",
+                                contentType: "application/json",
+                                dataType: "json"
+                            }
+                    },                        
+                    schema: {
+                    	total: "total",
+                    	data: "data",
+                    	model: {
+                    		id: "id",
+							fields: {
+								id: { 
+									editable: false,
+									nullable: true 
+								},
+								name: { 
+									editable: false,
+									type: "string" 										
+								}								
+						   }
+				  	   }, 					  	
+				    },				    
+                    serverPaging: true,
+                    serverSorting: true,
+                    serverFiltering: true,
+                    pageSize: 10,  
+				});
+				
+				grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
+                    dataSource: kdataSource,
+                    scrollable: false,
+                    sortable: true,
+                    pageable: true,
+                    columns: [
+                        { 
+                        	field: "name",
+                        	title: "Jugador",
+                        	template: function (e){
+                        		//console.log(e)
+                        		return e.name+" "+e.lastname;
+                        	}
+                        }                                            
+                        //{ command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+                    ],
+                    editable: true,
+                   
+                });
+			},			
 			columns: [
 				{ 
 					field:"image", 

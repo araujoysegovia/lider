@@ -60,9 +60,9 @@ class Talker{
 		return $obj;
 	} 
 	
-	public function denormalizeEntity($entity, $data){
-		$encoder = $this->getType();
-		$obj = $this->normalizer->denormalize($data, $entity, $encoder['type']);
+	public function denormalizeEntity($entity, $data){				
+		$encoder = $this->getType();		
+		$obj = $this->normalizer->denormalize($data, $entity, $encoder['type']);		
 		return $obj;
 	}
 

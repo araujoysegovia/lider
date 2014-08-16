@@ -45,6 +45,8 @@ abstract class Controller extends SymfonyController {
 	}
 	
 	protected function getRequestEntity($id = null){
+		
+		
 		$request = $this->get("request");
 		$contentType = $request->headers->get('content_type');
 		$explode = explode(";", $contentType);
@@ -128,6 +130,7 @@ abstract class Controller extends SymfonyController {
 			$idField = $metadata->identifier[0];
 			$data[$idField] = $id;
 		}
+		
 		
 		$newClass = $this->get("talker")->denormalizeEntity($className, $data);
 		
@@ -278,8 +281,8 @@ abstract class Controller extends SymfonyController {
 	}
 	
 	public function updateAction($id = null) {
-			
-		$ec = $this->getRequestEntity($id);
+		
+		$ec = $this->getRequestEntity($id);		
 		if(is_null($ec->getId())){
 			throw new \Exception("Entity not found");
 		}
