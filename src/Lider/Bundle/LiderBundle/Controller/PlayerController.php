@@ -37,7 +37,6 @@ class PlayerController extends Controller
         {
             if($request->headers->has("X-USER") && $request->headers->has("X-PASS"))
             {
-
                 $sifincaUser = '/SessionUser Username="([^"]+)"/';
                 if(preg_match($sifincaUser, $request->headers->get('X-USER'), $matches)) {
                     $userName = $matches[1];
@@ -113,16 +112,37 @@ class PlayerController extends Controller
             $dm->persist($session);
             $dm->flush();
         }
+        // echo $user->getTeam()->getId();
         $arr = array();
+        $roles = array();
+        // print_r($user->getRoles()->getId());
+        foreach($user->getRoles() as $key => $value){
+            $roles[$key] = array(
+                "id" => $value->getId(),
+                "name" => $value->getName(),
+            );
+        }
+
+        $office = array();
+        foreach($user->getOffice() as $key => $value){
+            $office[$key] = array(
+                "id" => $value->getId(),
+                "name" => $value->getName(),
+            );
+        }
+
         $arr['token'] = $session->getToken();
         $arr['user'] = array(
             "email" => $user->getEmail(),
             "name" => $user->getName(),
             "latname" => $user->getLastname(),
             "image" => $user->getImage(),
-            "office" => $user->getOffice(),
-            "roles" => $user->getRoles(),
-            "team" => $user->getTeam(),
+            "office" => $office,
+            "roles" => $roles,
+            "team" => array(
+                "id" => $user->getTeam()->getId(),
+                "name" => $user->getTeam()->getName(),
+            ),
         );
         
         //$list = $repo->getArrayEntityWithOneLevel(array("id" => $user->getId()));

@@ -134,7 +134,7 @@ abstract class Controller extends SymfonyController {
 		return $newClass;
 	}
 	
-	public function listAction($id = null) {		
+	public function listAction($id = null) {
 		$em = $this->getDoctrine()->getEntityManager();
 		$request = $this->get("request");
 		if(is_null($id)){
@@ -180,13 +180,12 @@ abstract class Controller extends SymfonyController {
 	
 			$bundleName = $this->getBundleName();
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$list = $repo->getArrayEntityWithOneLevel($criteria, null, $start, $limit, $filter);
+			$list = $repo->getArrayEntityWithOneLevel($criteria, "id", $start, $limit, $filter);
 			$this->afterList($list);
 			
 			return $this->get("talker")->response($list);
 			
 		}else{
-			
 			$bundleName = $this->getBundleName();
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
 			$list = $repo->getArrayEntityWithOneLevel(array("id" => $id));

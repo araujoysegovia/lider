@@ -75,7 +75,7 @@ class MainRepository extends EntityRepository
         );
     }
 
-    protected function getSQLStructure(array $criteria, array $orderBy = null, $sresult = null, $limit = null, $filter = null)
+    protected function getSQLStructure(array $criteria, $orderBy = null, $sresult = null, $limit = null, $filter = null)
     {
         $em = $this->getEntityManager();
         $criteria = $this->fixCriteria($criteria);
@@ -141,7 +141,7 @@ class MainRepository extends EntityRepository
             }
         }
         if (!is_null($orderBy)) {
-            $query->orderBy($orderBy);
+            $query->orderBy("z.".$orderBy);
         }
         if($filter)
         {
@@ -157,7 +157,7 @@ class MainRepository extends EntityRepository
     }
 
 
-    public function getArrayEntityWithOneLevel(array $criteria, array $orderBy = null, $sresult = null, $limit = null, array $filter = null) {
+    public function getArrayEntityWithOneLevel(array $criteria, $orderBy = null, $sresult = null, $limit = null, array $filter = null) {
 
         $query = $this->getSQLStructure($criteria, $orderBy, $sresult, $limit, $filter);
         $sql = $query->getQuery()->getSQL();

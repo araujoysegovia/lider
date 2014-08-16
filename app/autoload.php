@@ -4,6 +4,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use Composer\Autoload\ClassLoader;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 
+
 /**
  * @var ClassLoader $loader
  */

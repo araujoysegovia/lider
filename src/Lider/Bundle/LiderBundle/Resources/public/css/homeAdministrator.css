@@ -44,31 +44,23 @@
 	margin-bottom: 20px;
 }
 
-/* .body > .tournaments {
-	padding: 10px 25px;
-	display: none;
+.k-edit-form-container{
+	width: 100%;
+}
+.k-edit-field{
+	margin-right: 5%;
+}
+.k-edit-field > * {
+	width: 100%;
 }
 
-.body > .players{
-	padding: 10px 25px;
-	display: none;	
+.k-edit-field > textarea{
+	height: 100px; 
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
 }
 
-.body > .groups{
-	padding: 10px 25px;
-	display: none;	
+.k-edit-field > input[type="checkbox"] {
+	width: 20px;
 }
-.body > .categories{
-	padding: 10px 25px;
-	display: none;	
-}
-
-.body > .questions{
-	padding: 10px 25px;
-	display: none;	
-}
-
-.body > div > .title{
-	color: #428BCA;
-
-} */
