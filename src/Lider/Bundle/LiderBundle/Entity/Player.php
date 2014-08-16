@@ -98,8 +98,10 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
 		return false;
 	}
 	
-	public function equals(UserInterface $user)
+	public function equals($user)
 	{
+		echo "entro";
+		echo $user->getUsername() ."==". $this->getUsername();
 		return $user->getUsername() == $this->getUsername();
 	}
 	
