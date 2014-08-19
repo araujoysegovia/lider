@@ -10,11 +10,6 @@ class TeamController extends Controller
     public function getName(){
     	return "Team";
     }
-
-    public function getPlayersFromTeam(){
-        $em = $this->getDoctrine()->getEntityManager();
-        $repo = $em->getRepository("LiderBundle:Team");
-    }
     
     public function setImageAction($id) {
     	
@@ -35,7 +30,7 @@ class TeamController extends Controller
     	$image->setMimetype($uploadedFile->getClientMimeType());
 		$image->setEntity($className);
 		$image->setEntityId($id);
-		    	
+		
     	$dm->persist($image);
     	$dm->flush();
     	

@@ -40,7 +40,7 @@ class HeaderAuthenticationListener implements ListenerInterface
 	 * {@inheritdoc}
 	 */
 	public function handle(GetResponseEvent $event)
-    {    	
+    {
         $request = $event->getRequest();
         if (!$this->requiresAuthentication($request)) {
         	return;

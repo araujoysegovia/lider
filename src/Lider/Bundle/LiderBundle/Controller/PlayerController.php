@@ -27,14 +27,18 @@ class PlayerController extends Controller
 
     public function loginAction(){
         $em = $this->getDoctrine()->getEntityManager();
+
         $dm = $this->get('doctrine_mongodb')->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
+
         $repo = $em->getRepository("LiderBundle:Player");
         $repoMongo = $dm->getRepository("LiderBundle:Session");
+
         $request = $this->get("request");
 
         if(!is_object($user))
         {
+
             if($request->headers->has("X-USER") && $request->headers->has("X-PASS"))
             {
                 $sifincaUser = '/SessionUser Username="([^"]+)"/';

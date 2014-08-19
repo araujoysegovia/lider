@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Team class
  * @ORM\Table(name="team")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\LiderRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class Team extends Entity
 {
@@ -38,11 +38,6 @@ class Team extends Entity
 	 */
 	private $group;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Player", mappedBy="team")
-     */
-    private $player;
-	
 	/**
 	 * @ORM\Column(type="boolean")
 	 */
@@ -149,45 +144,5 @@ class Team extends Entity
     public function getGroup()
     {
         return $this->group;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->player = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add player
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Player $player
-     * @return Team
-     */
-    public function addPlayer(\Lider\Bundle\LiderBundle\Entity\Player $player)
-    {
-        $this->player[] = $player;
-
-        return $this;
-    }
-
-    /**
-     * Remove player
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Player $player
-     */
-    public function removePlayer(\Lider\Bundle\LiderBundle\Entity\Player $player)
-    {
-        $this->player->removeElement($player);
-    }
-
-    /**
-     * Get player
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPlayer()
-    {
-        return $this->player;
     }
 }

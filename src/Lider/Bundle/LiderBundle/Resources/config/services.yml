@@ -1,13 +1,13 @@
 parameters:
     lider.security.core.provider.class: Lider\Bundle\LiderBundle\Security\Core\UserProvider
-    
+
 services:
     talker:
         class: Lider\Bundle\LiderBundle\Lib\Talker
         arguments:
               entityManager: "@doctrine.orm.entity_manager"
               container: "@service_container"
-              
+
     login.security.authentication.provider:
         class: Lider\Bundle\LiderBundle\Security\Authentication\Provider\Provider
 
@@ -16,8 +16,7 @@ services:
         parent: security.authentication.listener.abstract
         abstract: true
         #arguments: ["@security.context", "@security.authentication.manager", "@talker"]
-        
-    
+
     hauth.security.authentication.provider:
         class: Lider\Bundle\LiderBundle\Security\Authentication\Provider\HeaderAuthenticationProvider
         arguments: ["", "@security.encoder_factory"]
@@ -27,8 +26,7 @@ services:
         #parent: security.authentication.listener.abstract
         #abstract: true
         arguments: ["@security.context", "@security.authentication.manager", "@talker"]
-        
+
     lider_user_provider:
         class: "%lider.security.core.provider.class%"
         arguments: ["@service_container"]
-      

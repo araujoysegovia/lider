@@ -57,7 +57,7 @@ security:
                  target: admin_index_page
 
         player_area:
-            pattern:   ^/player
+            pattern:   ^/
             anonymous: ~
             hauth: true
             elogin: 
@@ -99,4 +99,4 @@ security:
         - { path: ^/admin/home, roles: [ROLE_ADMIN] }
         # - { path: ^/player/home, roles: [ROLE_USER, ROLE_ADMIN] }
         - { path: ^/admin, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/player, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

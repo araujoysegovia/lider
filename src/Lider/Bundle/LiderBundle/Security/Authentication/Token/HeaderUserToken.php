@@ -61,27 +61,27 @@ class HeaderUserToken extends AbstractToken
 	
 	/**
 	 * {@inheritDoc}
-
-	public function serialize()
-	{
-		return serialize(array(
-				$this->accessToken,
-				parent::serialize()
-		));
-	}
+	 */
+	// public function serialize()
+	// {
+	// 	return serialize(array(
+	// 			$this->accessToken,
+	// 			parent::serialize()
+	// 	));
+	// }
 	
-	/**
-	 * {@inheritDoc}
-	public function unserialize($serialized)
-	{
-		$data = unserialize($serialized);
-		list(
-			$this->accessToken,
-			$parent,
-		) = $data;
+	// /**
+	//  * {@inheritDoc}
+	// public function unserialize($serialized)
+	// {
+	// 	$data = unserialize($serialized);
+	// 	list(
+	// 		$this->accessToken,
+	// 		$parent,
+	// 	) = $data;
 	
-		parent::unserialize($parent);
-	} */
+	// 	parent::unserialize($parent);
+	// } */
 	
 }
 
