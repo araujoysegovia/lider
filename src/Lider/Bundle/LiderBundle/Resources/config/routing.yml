@@ -9,6 +9,8 @@ admin_module:
 player_module:
     resource: "@LiderBundle/Resources/config/player_routes/routing.yml"
 
+    host: soylider.sifinca.net
+
 image_route:
     pattern:  /image/{id}
     defaults: { _controller: LiderBundle:Image:get }

@@ -23,13 +23,13 @@ security:
             hauth: true
             elogin: 
                 login_path: admin_index_page
-                check_path: /admin/login-check/google
+                check_path: /admin/check/google
                 failure_path: admin_index_page
                 default_target_path: /admin/home
  #           provider: userprovider
  #           oauth:
  #               resource_owners:
- #                   google:             "/admin/login-check/google"
+ #                   google:             "/admin/check/google"
  #               check_path:   /admin/login-check
  #               login_path:   /admin
 
@@ -38,7 +38,7 @@ security:
  #                   service: lider_user_provider
             form_login:
                 login_path: admin_index_page
-                check_path: /admin/login-check
+                check_path: /admin/check
                 default_target_path: admin_home_page            
                 use_forward: true
 #				        username_parameter:             _username

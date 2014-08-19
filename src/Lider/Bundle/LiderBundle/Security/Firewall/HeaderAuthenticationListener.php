@@ -30,8 +30,9 @@ class HeaderAuthenticationListener implements ListenerInterface
 	
 	protected function requiresAuthentication(Request $request)
 	{
-		return !$this->httpUtils->checkRequestPath($request, "/admin/login-check/google") && 
-				!$this->httpUtils->checkRequestPath($request, "/admin/login-check") &&
+		//echo "/admin/login-check/google === ".rawurldecode($request->getPathInfo());
+		return !$this->httpUtils->checkRequestPath($request, "/admin/check/google") && 
+				!$this->httpUtils->checkRequestPath($request, "/admin/check") &&
 				!$this->httpUtils->checkRequestPath($request, "/admin/logout");
 				
 	}

@@ -1,8 +1,12 @@
+admin_index_page:
+    path:     /
+    defaults: { _controller: LiderBundle:Routing:loginPage }
+
 admin_google_login_check:
-    pattern: /login-check/google
+    pattern: /check/google
 
 admin_login_check:
-    pattern: /login-check
+    pattern: /check
 
 admin_logout:
     path:   /logout
