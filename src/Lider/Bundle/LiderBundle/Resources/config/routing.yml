@@ -5,6 +5,7 @@ default_data:
 admin_module:
     resource: "@LiderBundle/Resources/config/admin_routes/routing.yml"
     prefix:   /admin
+    host: soylider.sifinca.net
     
 image_route:
     pattern:  /image/{id}

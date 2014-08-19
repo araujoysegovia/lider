@@ -31,6 +31,7 @@ class LoginFactory extends AbstractFactory
 		if($config["check_path"]){
 			$this->addOption("check_path", $config["check_path"]);
 		}
+		
 		if($config["default_target_path"]){
 			$this->addOption("default_target_path", $config["default_target_path"]);
 		}
@@ -95,6 +96,7 @@ class LoginFactory extends AbstractFactory
 	 */
 	protected function createListener($container, $id, $config, $userProvider)
 	{
+		//echo "ENTRO".$config["check_path"];
 		$listenerId = parent::createListener($container, $id, $config, $userProvider);
 		/*$listener = $container->getDefinition($listenerId)
 			->addMethodCall('setCheckPath', array($config["check_path"]));*/

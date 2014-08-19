@@ -21,7 +21,7 @@ function signinCallback(authResult) {
 		  formData.append("authenticated", true)
 		  
 		  var form = $("form", ".login-form");
-		  form.attr("action", "login-check/google");
+		  form.attr("action", "check/google");
 		  form.append($("<input>")
 				  .attr("type", "hidden")
 				  .attr("name", "access_token")

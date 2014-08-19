@@ -21,7 +21,7 @@ class Listener extends AbstractAuthenticationListener
 	protected $httpUtils;
 	protected $em;
 	static $URL_TOKEN = 'https://www.googleapis.com/oauth2/v2/userinfo';
-	private $check_path = '/admin/login-check/google';
+	private $check_path = '/admin/check/google';
 	private $talker;
 	
 	/*public function __construct(SecurityContextInterface $securityContext, AuthenticationManagerInterface $authenticationManager, \Lider\Bundle\LiderBundle\Lib\Talker $talker)
@@ -42,6 +42,7 @@ class Listener extends AbstractAuthenticationListener
 		));
 		$data = curl_exec($ch);
 		curl_close($ch);
+		echo $data;
 		return $data;
 	}
 	
