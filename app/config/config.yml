@@ -94,3 +94,26 @@ swiftmailer:
 #            client_id:           409288717107-h73ade2t3homia8e8r6o4dg3bmuingn3.apps.googleusercontent.com  
 #            client_secret:       E4OBnryE-9dRSlMOYAvxXePm
 #            scope:               "email profile"
+
+nelmio_cors:
+    defaults:
+         allow_origin: ['*']
+         allow_headers: ['x-login']
+         allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+         max_age: 3600
+    paths:
+        '^/login':
+            allow_origin: ['*']
+            allow_headers: ['*']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTION']
+            max_age: 3600
+        '^/admin/check':
+            allow_origin: ['*']
+            allow_headers: ['*']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTION']
+            max_age: 3600
+        '^/admin/check/google':
+            allow_origin: ['*']
+            allow_headers: ['*']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTION']
+            max_age: 3600

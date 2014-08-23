@@ -5,11 +5,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Tournament class
- * @ORM\Table(name="tournament")
+ * Group class
+ * @ORM\Table(name="team_group")
  * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
-class Tournament extends Entity
+class Group extends Entity
 {
     /**
      * @ORM\Id
@@ -24,24 +24,20 @@ class Tournament extends Entity
      * @Assert\Length(max=100)
 	 */
 	private $name;
-
-	/**
-	 * @ORM\Column(type="date")
-	 * @Assert\NotBlank()
-	 */
-	private $startdate;
 	
 	/**
-	 * @ORM\Column(type="date")
+	 * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"})
+	 * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
 	 * @Assert\NotBlank()
 	 */
-	private $enddate;
+	private $tournament;
 	
 	/**
 	 * @ORM\Column(type="boolean")
 	 */
 	private $active = true;
-		
+
+
     /**
      * Get id
      *
@@ -56,7 +52,7 @@ class Tournament extends Entity
      * Set name
      *
      * @param string $name
-     * @return Tournament
+     * @return Group
      */
     public function setName($name)
     {
@@ -76,56 +72,10 @@ class Tournament extends Entity
     }
 
     /**
-     * Set startdate
-     *
-     * @param \DateTime $startdate
-     * @return Tournament
-     */
-    public function setStartdate($startdate)
-    {
-        $this->startdate = $startdate;
-
-        return $this;
-    }
-
-    /**
-     * Get startdate
-     *
-     * @return \DateTime 
-     */
-    public function getStartdate()
-    {
-        return $this->startdate;
-    }
-
-    /**
-     * Set enddate
-     *
-     * @param \DateTime $enddate
-     * @return Tournament
-     */
-    public function setEnddate($enddate)
-    {
-        $this->enddate = $enddate;
-
-        return $this;
-    }
-
-    /**
-     * Get enddate
-     *
-     * @return \DateTime 
-     */
-    public function getEnddate()
-    {
-        return $this->enddate;
-    }
-
-    /**
      * Set active
      *
      * @param boolean $active
-     * @return Tournament
+     * @return Group
      */
     public function setActive($active)
     {
@@ -142,5 +92,28 @@ class Tournament extends Entity
     public function getActive()
     {
         return $this->active;
+    }
+
+    /**
+     * Set tournament
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Tournament $tournament
+     * @return Group
+     */
+    public function setTournament(\Lider\Bundle\LiderBundle\Entity\Tournament $tournament = null)
+    {
+        $this->tournament = $tournament;
+
+        return $this;
+    }
+
+    /**
+     * Get tournament
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Tournament 
+     */
+    public function getTournament()
+    {
+        return $this->tournament;
     }
 }

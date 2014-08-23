@@ -22,3 +22,13 @@ player_player_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
+      
+player_team:
+   pattern:  /team
+   defaults: { _controller: LiderBundle:Player:teamUserSession }
+   methods:  [GET]
+
+player_save_image:
+    pattern:  /save/image/{id}
+    defaults: { _controller: LiderBundle:Player:saveImage }
+    methods:  [POST]    

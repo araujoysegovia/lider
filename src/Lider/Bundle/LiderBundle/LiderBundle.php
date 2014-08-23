@@ -12,7 +12,7 @@ class LiderBundle extends Bundle
 	public function build(ContainerBuilder $container)
 	{
 		parent::build($container);
-	
+		
 		$extension = $container->getExtension('security');
 		$extension->addSecurityListenerFactory(new LoginFactory());
 		$extension->addSecurityListenerFactory(new HeaderAuthenticationFactory());

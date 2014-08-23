@@ -42,7 +42,6 @@ class Listener extends AbstractAuthenticationListener
 		));
 		$data = curl_exec($ch);
 		curl_close($ch);
-		echo $data;
 		return $data;
 	}
 	
@@ -95,17 +94,17 @@ class Listener extends AbstractAuthenticationListener
 	 */
 	protected function attemptAuthentication(Request $request)
 	{
-		$token = $request->get("access_token");
+		$atoken = $request->get("access_token");
 		$code = $request->get("code");	
-		if($token && $code){
-			$content = $this->getUserInfo($token);
+		if($atoken && $code){
+			$content = $this->getUserInfo($atoken);
 			$data = json_decode($content, true);
 			if(!is_array($data) || (is_array($data) && !array_key_exists("email", $data)))
 				throw new AuthenticationException("User not found");
 				
 			$userName = $data["email"];			
 			$token = new UserToken();
-			$token->setAccessToken($token);
+			$token->setAccessToken($atoken);
 			
 		}else{
 			throw new \Exception("Missing access token parameters");

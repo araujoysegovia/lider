@@ -29,5 +29,4 @@ class ImageController extends SymfonyController
 		
 		return $response;
 	}
-    
 }

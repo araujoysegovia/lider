@@ -5,11 +5,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Tournament class
- * @ORM\Table(name="tournament")
+ * Team class
+ * @ORM\Table(name="team")
  * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
-class Tournament extends Entity
+class Team extends Entity
 {
     /**
      * @ORM\Id
@@ -24,24 +24,26 @@ class Tournament extends Entity
      * @Assert\Length(max=100)
 	 */
 	private $name;
+	
+	
+	/**
+	 * @ORM\Column(type="string", nullable = true)	 
+	 */
+	private $image;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"})
+	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+	 * @Assert\NotBlank()
+	 */
+	private $group;
 
-	/**
-	 * @ORM\Column(type="date")
-	 * @Assert\NotBlank()
-	 */
-	private $startdate;
-	
-	/**
-	 * @ORM\Column(type="date")
-	 * @Assert\NotBlank()
-	 */
-	private $enddate;
-	
 	/**
 	 * @ORM\Column(type="boolean")
 	 */
 	private $active = true;
-		
+
+
     /**
      * Get id
      *
@@ -56,7 +58,7 @@ class Tournament extends Entity
      * Set name
      *
      * @param string $name
-     * @return Tournament
+     * @return Team
      */
     public function setName($name)
     {
@@ -76,56 +78,33 @@ class Tournament extends Entity
     }
 
     /**
-     * Set startdate
+     * Set image
      *
-     * @param \DateTime $startdate
-     * @return Tournament
+     * @param string $image
+     * @return Team
      */
-    public function setStartdate($startdate)
+    public function setImage($image)
     {
-        $this->startdate = $startdate;
+        $this->image = $image;
 
         return $this;
     }
 
     /**
-     * Get startdate
+     * Get image
      *
-     * @return \DateTime 
+     * @return string 
      */
-    public function getStartdate()
+    public function getImage()
     {
-        return $this->startdate;
-    }
-
-    /**
-     * Set enddate
-     *
-     * @param \DateTime $enddate
-     * @return Tournament
-     */
-    public function setEnddate($enddate)
-    {
-        $this->enddate = $enddate;
-
-        return $this;
-    }
-
-    /**
-     * Get enddate
-     *
-     * @return \DateTime 
-     */
-    public function getEnddate()
-    {
-        return $this->enddate;
+        return $this->image;
     }
 
     /**
      * Set active
      *
      * @param boolean $active
-     * @return Tournament
+     * @return Team
      */
     public function setActive($active)
     {
@@ -142,5 +121,28 @@ class Tournament extends Entity
     public function getActive()
     {
         return $this->active;
+    }
+
+    /**
+     * Set group
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Group $group
+     * @return Team
+     */
+    public function setGroup(\Lider\Bundle\LiderBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Group 
+     */
+    public function getGroup()
+    {
+        return $this->group;
     }
 }

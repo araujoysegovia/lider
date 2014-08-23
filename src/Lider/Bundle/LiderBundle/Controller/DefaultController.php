@@ -73,5 +73,9 @@ class DefaultController extends SymfonyController
     	
     	return $adminrole;
     }
-    
+
+    public function testSaveAction()
+    {
+    	return $this->render("LiderBundle:Administrator:playerImage.html.twig");
+    }
 }

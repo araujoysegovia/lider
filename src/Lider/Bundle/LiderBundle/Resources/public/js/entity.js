@@ -198,7 +198,7 @@ Entity.prototype = {
 				dataBinding: me.dataBinding
 		    };
 		
-		if(me.detailInit){
+		if(me.detailInit){			
 			config["detailInit"] = me.detailInit;
 		}
 		

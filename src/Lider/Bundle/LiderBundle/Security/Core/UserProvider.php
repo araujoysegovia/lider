@@ -12,7 +12,7 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 
 use Lider\Bundle\LiderBundle\Entity\Player;
 
-class UserProvider extends OAuthUserProvider
+class UserProvider implements UserProviderInterface
 {
 	private $container;
 	
@@ -23,16 +23,30 @@ class UserProvider extends OAuthUserProvider
 	public function loadUserByUsername($username)
 	{
 		$request = $this->container->get("request");	
-		
-		$user = $this->container->get("doctrine")->getEntityManager()
-						->getRepository("LiderBundle:Player")
-						->findOneBy(array("email"=>$username, "deleted" => false));
-		if ($user) {
+		$user = $this->container->get('doctrine')->getEntityManager()
+				->getRepository("LiderBundle:Player")
+				->findOneBy(array("email" => $username, "deleted" => false));
+		if($user)
 			return $user;
-		}
 	
 		throw new UsernameNotFoundException(
 				sprintf('Username "%s" does not exist.', $username)
+		);
+	}
+	
+	public function loadSessionByToken($token)
+	{
+		$request = $this->container->get("request");
+		$session = $this->container->get('doctrine_mongodb')->getManager()
+			->getRepository("LiderBundle:Session")
+			->findOneBy(array("email"=> $token->getUsername(), "token" => $token->accessToken, "enabled" => true));
+		
+		if ($session) {			
+			return $session;
+		}
+	
+		throw new UsernameNotFoundException(
+				sprintf('Username "%s" does not exist.', $token->accessToken)
 		);
 	}
 	
@@ -50,21 +64,5 @@ class UserProvider extends OAuthUserProvider
 	public function supportsClass($class)
 	{
 		return $class === 'Lider\Bundle\LiderBundle\Entity\Player';
-	}
-	
-	public function loadUserByOAuthUserResponse(UserResponseInterface $response) {
-		$username = $response->getUsername(); /* An ID like: 112259658235204980084 */
-		$email = $response->getEmail();
-		$nickname = $response->getNickname();
-		$realname = $response->getRealName();
-		$avatar = $response->getProfilePicture();
-		 
-		$user = $this->loadUserByUsername($response->getUsername());
-		if(!$user)
-			throw new UsernameNotFoundException(
-					sprintf('Username "%s" does not exist.', $username)
-			);
-		
-		return $user;
 	}
 }

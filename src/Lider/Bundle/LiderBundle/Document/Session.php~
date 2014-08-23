@@ -77,6 +77,16 @@ class Session
      * @MongoDB\String
      */
     private $cookie;
+
+    /**
+     * @MongoDB\Int
+     */
+    private $wonGames;
+    
+    /**
+     * @MongoDB\Int
+     */
+    private $wonLost;
         
     /**
      * Get id
@@ -329,5 +339,4 @@ class Session
     {
         return $this->cookie;
     }
-
 }

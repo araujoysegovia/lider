@@ -13,14 +13,15 @@ security:
     providers:
         main:
             entity: { class: Lider\Bundle\LiderBundle\Entity\Player, property: email }
-#        userprovider:
-#            id: lider_user_provider
+        userprovider:
+            id: lider_user_provider
 
     firewalls:
         admin_area:
             pattern:   ^/admin
             anonymous: ~
             hauth: true
+            provider: main
             elogin: 
                 login_path: admin_index_page
                 check_path: /admin/check/google
@@ -58,45 +59,21 @@ security:
 
         player_area:
             pattern:   ^/
+#            host: soylider.sifinca.net
+            http_basic: true
             anonymous: ~
+            provider: userprovider
             hauth: true
-            elogin: 
-                login_path: player_index_page
-                check_path: /player/login-check/google
-                failure_path: player_index_page
-                default_target_path: /player/home
- #           provider: userprovider
- #           oauth:
- #               resource_owners:
- #                   google:             "/player/login-check/google"
- #               check_path:   /player/login-check
- #               login_path:   /player
-
- #               failure_path: /player
- #               oauth_user_provider:
- #                   service: lider_user_provider
-            form_login:
-                login_path: player_index_page
-                check_path: /player/login-check
-                default_target_path: player_home_page            
-                use_forward: true
-#                       username_parameter:             _username
-#               password_parameter:             _password
-
-                #Redirigir en ingreso satisfactorio
-                #always_use_default_target_path: false
-
-
-                #opciones para redirigir en ingreso fallido 
-                failure_path: player_index_page
-                failure_forward: true                
-
-            logout:
-                 path:   player_logout
-                 target: player_index_page
+#            elogin: 
+#                login_path: player_index_page
+#                check_path: /player/login-check/google
+#                failure_path: player_index_page
+#                default_target_path: /player/home
+            form_login: ~
 
     access_control:
         - { path: ^/admin/home, roles: [ROLE_ADMIN] }
-        # - { path: ^/player/home, roles: [ROLE_USER, ROLE_ADMIN] }
         - { path: ^/admin, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/home, roles: IS_AUTHENTICATED_FULLY }
+        #- { path: ^/home, roles: IS_AUTHENTICATED_ANONYMOUSLY }

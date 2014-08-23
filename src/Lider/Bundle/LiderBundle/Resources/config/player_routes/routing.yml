@@ -2,18 +2,10 @@ login:
     pattern:  /login
     defaults: { _controller: LiderBundle:Player:login }
 
-player_home_page:
-    path:	/home
-    defaults: { _controller: LiderBundle:RoutingPlayer:homePage }
-
-player_check_failure:
-    path:     /logincheck/failure
-    defaults: { _controller: LiderBundle:RoutingPlayer:loginFailure }
-
 player_player:
     resource: "@LiderBundle/Resources/config/player_routes/player_routing.yml"
     prefix:   /home/player
 
-player_team:
-    resource: "@LiderBundle/Resources/config/player_routes/team_routing.yml"
-    prefix:   /home/team
+#player_team:
+#    resource: "@LiderBundle/Resources/config/player_routes/team_routing.yml"
+#    prefix:   /home/team

@@ -2,13 +2,13 @@
 
 namespace Lider\Bundle\LiderBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\SecurityContext;
 
-class RoutingAdminController extends Controller
+class RoutingAdminController extends SymfonyController
 {
     public function indexAction($name)
     {

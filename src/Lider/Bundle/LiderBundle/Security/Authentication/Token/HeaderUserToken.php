@@ -7,11 +7,11 @@ class HeaderUserToken extends AbstractToken
 {
 	public $digest;	
 	public $accessToken;
-	
+
 	public function __construct(array $roles = array())
 	{
 		parent::__construct($roles);
-		//$this->setAuthenticated(count($roles) > 0);
+		$this->setAuthenticated(count($roles) > 0);
 	}
 	
 	public function getCredentials()
@@ -19,26 +19,10 @@ class HeaderUserToken extends AbstractToken
 		return '';
 	}
 	
-	/**
-	 * @param string $accessToken The OAuth access token
-	 */
-	public function setAccessToken($accessToken)
-	{
-		$this->accessToken = $accessToken;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getAccessToken()
-	{
-		return $this->accessToken;
-	}
-	
 	
 	/**
 	 * {@inheritdoc}
-	 */
+
 	public function serialize()
 	{
 		return serialize(array(
@@ -50,7 +34,7 @@ class HeaderUserToken extends AbstractToken
 	
 	/**
 	 * {@inheritdoc}
-	 */
+	 
 	public function unserialize($serialized)
 	{
 		list($this->digest,
@@ -58,31 +42,7 @@ class HeaderUserToken extends AbstractToken
 			$parentStr) = unserialize($serialized);
 		parent::unserialize($parentStr);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// public function serialize()
-	// {
-	// 	return serialize(array(
-	// 			$this->accessToken,
-	// 			parent::serialize()
-	// 	));
-	// }
-	
-	// /**
-	//  * {@inheritDoc}
-	// public function unserialize($serialized)
-	// {
-	// 	$data = unserialize($serialized);
-	// 	list(
-	// 		$this->accessToken,
-	// 		$parent,
-	// 	) = $data;
-	
-	// 	parent::unserialize($parent);
-	// } */
-	
+	*/
 }
 
 ?>

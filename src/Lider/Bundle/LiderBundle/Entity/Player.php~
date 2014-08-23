@@ -400,27 +400,4 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
     {
         return $this->wonLost;
     }
-
-    /**
-     * Set active
-     *
-     * @param boolean $active
-     * @return Player
-     */
-    public function setActive($active)
-    {
-        $this->active = $active;
-
-        return $this;
-    }
-
-    /**
-     * Get active
-     *
-     * @return boolean 
-     */
-    public function getActive()
-    {
-        return $this->active;
-    }
 }

@@ -17,11 +17,6 @@ class DuelQuestion
     /**
      * @MongoDB\int
      */
-    private $gameId;
-        
-    /**
-     * @MongoDB\int
-     */
     private $questionId;
 
 	/**

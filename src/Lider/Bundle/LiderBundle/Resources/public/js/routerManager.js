@@ -271,147 +271,133 @@ var routerManager = Backbone.Router.extend({
 			detailInit: function(e){
 				var grid = null;
 				
-				var kdataSource = new kendo.data.DataSource({
-					//autoSync: true,
-					//batch: true,
-                    transport: {
-                        read: "home/answer?question=" + e.data.id,
-                        update: {
-                                url: function (e) {            	                                
-                                    return "home/answer/" + e.id;
-                                },
-                                type: "PUT",
-                                contentType: "application/json",
-                                dataType: "json"
-                            },
-                        parameterMap: function (data, type) {
-                 			//console.log(data)
-                 	        if (type !== "read") {	        	
-                 	        	
-                 	        	if(data.category && (_.isString(data.category))){		        		
-            	        			data.category = {
-            			        			id: data.category
-            			        	}		        		
-            		        	}
-                 	        	
-                 	        
-                 	        	
-                 	            return kendo.stringify(data);
-                 	            
-                 	        }
-                     	}   
-                        
-                    },                        
-                    schema: {
-                    	total: "total",
-                    	data: "data",
-                    	model: {
-                    		id: "id",
-							fields: {
-								id: { 
-									editable: false,
-									nullable: true 
-								},
-								answer: { 
-									type: "string" 
-								},
-								selected:{
-									type: "boolean"
-								},
-								help: {
-									type: "boolean"
-								}
-						   }
-				  	   }, 					  	
-				    },
-				    change: function(e) {
-
-				        if((e.field == "selected" || e.field == "help") && (e.action != "sync")) {
-				        	var data = this.data();				        	
-				        	var id = e.items[0].id;
-				        	_.each(data, function(value){
-					        	if(value.id != id){
-					        		if(value[e.field] == true){
-					        			value[e.field] = false;
-					        			value.dirty = true;
-					        		}else{
-					        			value[e.field] = false;
-					        		}
-					        		
-					        	}else{
-					        		value[e.field] = true;
-					        	}
-					        	
-					        	
-					        })
+				if (!(_.isNull(e.data.id))){
+					
+					var kdataSource = new kendo.data.DataSource({
+						//autoSync: true,
+						//batch: true,
+	                    transport: {
+	                        read: "home/answer?question=" + e.data.id,
+	                        update: {                        	
+	                                url: function (e) {      
+	                                	console.log(e)
+	                                    return "home/answer/" + e.id;
+	                                },
+	                                type: "PUT",
+	                                contentType: "application/json",
+	                                dataType: "json"
+	                            },
+	                        parameterMap: function (data, type) {
+	                 			//console.log(data)
+	                 	        if (type !== "read") {	        	
+	                 	        	
+	                 	        	if(data.category && (_.isString(data.category))){		        		
+	            	        			data.category = {
+	            			        			id: data.category
+	            			        	}		        		
+	            		        	}
+	                 	        	
+	                 	            return kendo.stringify(data);	                 	            
+	                 	        }
+	                     	}   	                        
+	                    },                        
+	                    schema: {
+	                    	total: "total",
+	                    	data: "data",
+	                    	model: {
+	                    		id: "id",
+								fields: {
+									id: { 
+										editable: false,
+										nullable: true 
+									},
+									answer: { 
+										type: "string" 
+									},
+									selected:{
+										type: "boolean"
+									},
+									help: {
+										type: "boolean"
+									}
+							   }
+					  	   }, 					  	
+					    },
+					    change: function(e) {
+	
+					        if((e.field == "selected" || e.field == "help") && (e.action != "sync")) {
+					        	var data = this.data();				        	
+					        	var id = e.items[0].id;
+					        	_.each(data, function(value){
+						        	if(value.id != id){
+						        		if(value[e.field] == true){
+						        			value[e.field] = false;
+						        			value.dirty = true;
+						        		}else{
+						        			value[e.field] = false;
+						        		}
+						        		
+						        	}else{
+						        		value[e.field] = true;
+						        	}						        							        	
+						        })
+						        
+						        kdataSource.sync();
+						        grid.data('kendoGrid').dataSource.read();
+			 					grid.data('kendoGrid').refresh();
+			 								 					
+			 					question.grid.data('kendoGrid').dataSource.read();
+			 					question.grid.data('kendoGrid').refresh();
+					        }
 					        
-					        					        
-					        
-					        kdataSource.sync();
-					        grid.data('kendoGrid').dataSource.read();
-		 					grid.data('kendoGrid').refresh();
-		 					
-		 					//console.log(question)
-		 					question.grid.data('kendoGrid').dataSource.read();
-		 					question.grid.data('kendoGrid').refresh();
-				        }
-				        
-				    },
-                    serverPaging: true,
-                    serverSorting: true,
-                    serverFiltering: true,
-                    pageSize: 10,  
-				});
-				
-				grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
-                    dataSource: kdataSource,
-                    scrollable: false,
-                    sortable: true,
-                    pageable: true,
-                    columns: [
-                        { 
-                        	field: "answer",
-                        	title: "Respuesta"
-                        },
-                        {
-                        	field: "selected",
-                        	title: "Correcta",                         	
-        			    	template: function(e){ 
-        			    		
-        			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
-        			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
-        						
-        							
+					    },
+	                    serverPaging: true,
+	                    serverSorting: true,
+	                    serverFiltering: true,
+	                    pageSize: 10,  
+					});
+					
+					var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
+		    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>";
+		    		
+					grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
+	                    dataSource: kdataSource,
+	                    scrollable: false,
+	                    sortable: true,
+	                    pageable: true,
+	                    columns: [
+	                        { 
+	                        	field: "answer",
+	                        	title: "Respuesta"
+	                        },
+	                        {
+	                        	field: "selected",
+	                        	title: "Correcta",                         	
+	        			    	template: function(e){ 	        			    			        			    		 	        							        						
         							if(e.selected == false){
         								return imgNoChecked;
         							}else{
         								return imgChecked;
         							}
-        						
-        					}
-                        },
-                        {
-                        	field: "help",
-                        	title: "Ayuda",                        	
-        			    	template: function(e){ 
-        			    		
-        			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
-        			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
-        						
-        							
+	        						
+	        					}
+	                        },
+	                        {
+	                        	field: "help",
+	                        	title: "Ayuda",                        	
+	        			    	template: function(e){	
         							if(e.help == false){
         								return imgNoChecked;
         							}else{
         								return imgChecked;
-        							}
-        						
-        					}
-                        },                        
-                        //{ command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
-                    ],
-                    editable: true,
-                   
-                });
+        							}	        						
+	        					}
+	                        },                        
+	                        //{ command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+	                    ],
+	                    editable: true,	                   
+	                });
+				}
 			},
 			dataBound: function() {
                 this.expandRow(this.tbody.find("tr.k-master-row").first());
@@ -430,55 +416,49 @@ var routerManager = Backbone.Router.extend({
 			    		.appendTo(container);
 			    	}
 			    },
-			    { 
-			    	field: "category",
-			    	title:"Categoria",
-			    	width: "150px",
-					template:  "#: category.name #", 
+				{ 
+					field: "category",
+					title:"Categoria",					
+					template:  "#: category.name #",
 					editor:	function (container, options) {
-						
-						//console.log(options)
-			    	    $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
-			            .appendTo(container)
-			            .kendoDropDownList({
-			                autoBind: false,		                
-			                dataSource: {		                	
-			                    transport: {
-			                        read: "home/category/"
-			                    },
-			                    schema: {
-			        			  	total: "total",
-			        		    	data: "data",
-			        		        model: {
-			        				    id: "id",
-			        				    fields: {
-			        				    	id: { editable: false, nullable: true },
-			        				        name: { type: "string" },		        				        
-			        				    }
-			        		        }
-			                    },
-			                },
-			                dataTextField: "name",
-			                dataValueField:"id"
-			            });
-					}  
-			    },
+						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+					        .appendTo(container)
+					        .kendoDropDownList({
+					            autoBind: true,	
+					            dataBound: function(e) {
+					            	input.data("kendoDropDownList").trigger("change");
+					            },
+					            dataSource: {		                	
+					                transport: {
+					                    read: "home/category/"
+					                },
+					                schema: {
+					    			  	total: "total",
+					    		    	data: "data",
+					    		        model: {
+					    				    id: "id",
+					    				    fields: {
+					    				    	id: { editable: false, nullable: true },
+					    				        name: { type: "string" },		        				        
+					    				    }
+					    		        }
+					                },
+					            },
+					            dataTextField: "name",
+					            dataValueField:"id",				            
+					        });
+					} 
+				},	
 			    {
 			    	field: "checked",
 			    	title: "Revisada",
 			    	width: "120px",			    	
-			    	template: function(e){ 
-			    		
-//			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
-//			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
-						
-							
-							if(e.checked == false){
-								return "No";
-							}else{
-								return "Si";
-							}
-						
+			    	template: function(e){ 			    	
+						if(e.checked == false){
+							return "No";
+						}else{
+							return "Si";
+						}					
 					}
 			    },
 			    {
@@ -506,10 +486,8 @@ var routerManager = Backbone.Router.extend({
 			    		}else{
 			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
 				    		.appendTo(container);
-			    		}
-			    		
-			    	}
-			    	
+			    		}			    		
+			    	}			    	
 			    },
 			    {
 			    	field: "answerTwo",
@@ -524,8 +502,7 @@ var routerManager = Backbone.Router.extend({
 			    		}else{
 			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
 				    		.appendTo(container);
-			    		}
-			    		
+			    		}			    		
 			    	}
 			    },
 			    {
@@ -579,8 +556,7 @@ var routerManager = Backbone.Router.extend({
 			                dataTextField: "text",
 			                dataValueField:"value"
 			            });
-					},
-			    	
+					},			    	
 			    },
 			    {
 			    	field: "help",
@@ -601,12 +577,9 @@ var routerManager = Backbone.Router.extend({
 			                dataTextField: "text",
 			                dataValueField:"value"
 			            });
-					},
-					
-			    }			    
-			    
+					},					
+			    }			    			    
 			],		  
-
 		})	  
 	},
   
@@ -642,7 +615,10 @@ var routerManager = Backbone.Router.extend({
 					},
 					roles: {						
 					},
-					team:{ }					
+					team:{ },
+					active: {
+						type: "boolean"
+					}
 				}
 		  	},
 			columns: [
@@ -774,6 +750,18 @@ var routerManager = Backbone.Router.extend({
 					        });
 					} 
 				},
+				{ 
+					field: "active",
+					title: "Activo",
+					width: "100px",
+			    	template: function(e){
+						if(e.active == false){
+							return "No";
+						}else{
+							return "Si";
+						}																		
+					}
+				}
 			],
 	        parameterMap : function (data, type) {
 //	        	console.log(type)
@@ -816,6 +804,67 @@ var routerManager = Backbone.Router.extend({
 				    active: { type: "boolean" }
 				}
 			},
+			detailInit: function(e){
+				console.log("audhaudh")
+				var grid = null;
+				
+				var kdataSource = new kendo.data.DataSource({
+					//autoSync: true,
+					//batch: true,
+                    transport: {
+                        read: "home/team?group=" + e.data.id,
+                        update: {
+                                url: function (e) {            	                                
+                                    return "home/team/" + e.id;
+                                },
+                                type: "PUT",
+                                contentType: "application/json",
+                                dataType: "json"
+                            }
+                    },                        
+                    schema: {
+                    	total: "total",
+                    	data: "data",
+                    	model: {
+                    		id: "id",
+							fields: {
+								id: { 
+									editable: false,
+									nullable: true 
+								},
+								name: { 
+									editable: false,
+									type: "string" 										
+								}								
+						   }
+				  	   }, 					  	
+				    },				    
+                    serverPaging: true,
+                    serverSorting: true,
+                    serverFiltering: true,
+                    pageSize: 10,  
+				});
+				
+				grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
+                    dataSource: kdataSource,
+                    scrollable: false,
+                    sortable: true,
+                    pageable: true,
+                    columns: [
+                        { 
+                        	field: "name",
+                        	title: "Grupo",
+                        	template: function (e){
+                        		console.log(e)
+                        		return e.name;
+                        	}
+                        }                                            
+                        //{ command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+                    ],
+                    editable: true,
+                   
+                });
+			},					
 			columns: [
 				{ 
 					field:"name", 
@@ -1045,7 +1094,7 @@ var routerManager = Backbone.Router.extend({
 					width: "150px",
 					
 					template: function(e){
-						var src = 'http://localhost/lider/web';
+						var src = 'http://10.102.1.22/lider/web';
 						if(_.isEmpty(e.image)){
 							src = src + "/bundles/lider/images/team.png";
 						}else{
@@ -1126,9 +1175,9 @@ var routerManager = Backbone.Router.extend({
 					input.click();
 					
 					input.change(function(){
-						console.log("change")
+						//console.log("change")
 						var filename = $(this).val();
-						console.log(filename)
+						//console.log(filename)
 						if(filename){
 							
 							var formData = new FormData();

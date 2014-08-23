@@ -25,9 +25,16 @@ class HeaderAuthenticationProvider implements AuthenticationProviderInterface
 	{	
 		$user = $this->userProvider->loadUserByUsername($token->getUsername());
 		if($user){
-			$atoken = $token->getAccessToken();			
+			$atoken = $token->accessToken;			
 			if($atoken){
-				throw new \Exception('The authentication failed.');
+				$session = $this->userProvider->loadSessionByToken($token);
+				if($session){
+					$authenticatedToken = new HeaderUserToken($user->getRoles());
+					$authenticatedToken->setUser($user);				
+					return $authenticatedToken;
+				}
+				//echo get_class($this->userProvider);
+				//throw new \Exception('The authentication failed.');
 				//checkerar la session en la BD
 			}else{
 				$codificador = $this->encoderFactory->getEncoder($user);
@@ -35,8 +42,6 @@ class HeaderAuthenticationProvider implements AuthenticationProviderInterface
 				if($password == $user->getPassword()){					
 					$authenticatedToken = new HeaderUserToken($user->getRoles());
 					$authenticatedToken->setUser($user);
-					$authenticatedToken->setAttributes($token->getAttributes());
-					$authenticatedToken->setAuthenticated(true);
 					return $authenticatedToken;
 				}
 			}

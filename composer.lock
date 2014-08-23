@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "921a5980982158bc72aaf6bb12b348e0",
+    "hash": "97774905e5902bfe69ef24403427f435",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -699,12 +699,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineMongoDBBundle.git",
-                "reference": "59cf093975403a5c647023801b7ced883d795dd7"
+                "reference": "1595d14845fc48ef59c8cc1ae496305964ac0f0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineMongoDBBundle/zipball/59cf093975403a5c647023801b7ced883d795dd7",
-                "reference": "59cf093975403a5c647023801b7ced883d795dd7",
+                "url": "https://api.github.com/repos/doctrine/DoctrineMongoDBBundle/zipball/1595d14845fc48ef59c8cc1ae496305964ac0f0a",
+                "reference": "1595d14845fc48ef59c8cc1ae496305964ac0f0a",
                 "shasum": ""
             },
             "require": {
@@ -758,7 +758,7 @@
                 "persistence",
                 "symfony"
             ],
-            "time": "2014-08-05 15:32:18"
+            "time": "2014-08-20 14:18:27"
         },
         {
             "name": "doctrine/orm",
