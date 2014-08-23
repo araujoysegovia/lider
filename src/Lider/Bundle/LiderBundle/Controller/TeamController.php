@@ -84,7 +84,7 @@ class TeamController extends Controller
     	$subPlayers = $players;
     	for ($j = 0; $j < $countGroup; $j++) {
     		$countSubplayers = count($subPlayers);
-    		if($countSubplayers > $c){
+    		if($countSubplayers > $minPlayersAmount){
 	    		$team = array(
 	    			'name' => 'Equipo '.($j+1),
 	    			'countPlayers'=> 0,
