@@ -20,7 +20,6 @@ security:
         admin_area:
             pattern:   ^/admin
             anonymous: ~
-            hauth: true
             provider: main
             elogin: 
                 login_path: admin_index_page

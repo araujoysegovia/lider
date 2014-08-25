@@ -33,7 +33,7 @@ class Provider implements AuthenticationProviderInterface
 			return $authenticatedToken;
 		}
 	
-		throw new AuthenticationException('The authentication failed.');
+		throw new AuthenticationException('The authentication failed 123.');
 	}
 	
 	public function supports(TokenInterface $token)

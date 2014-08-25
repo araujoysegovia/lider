@@ -13,8 +13,8 @@ class PlayerRepository extends MainRepository
 	 * @param unknown $id
 	 */
 	public function getPlayerGamesInfo($playerId) {		
-		
-		$query =  $this->createQuery(
+		$em = $this->getEntityManager();
+		$query =  $em->createQuery(
 		    'SELECT win.w, lost.l, point.p
 		     FROM (
 				SELECT COUNT(0) as w FROM LiderBundle:Duel WHERE player_win = :playerid
@@ -31,6 +31,18 @@ class PlayerRepository extends MainRepository
 		
 		return $query->getResult();
 	}
-			
+
+	
+	public function playersForCity($city) {
+		$query = $this->createQueryBuilder('p')
+					->select('p')
+					->join('p.office', 'o', 'WITH', "o.city =:cityName AND o.deleted = false" )
+					->join('p.roles', 'r', 'WITH', "r.deleted = false AND r.name = 'USER'")
+					->where('p.active = true AND p.deleted = false')
+					->setParameter('cityName', $city, \Doctrine\DBAL\Types\Type::STRING)
+					->getQuery();
+		
+		return $query->getArrayResult();
+	}
 		
 }

@@ -51,94 +51,128 @@ class TeamController extends Controller
     	$maxPlayersAmount = $request->get('max');
     	    	
     	$em = $this->getDoctrine()->getEntityManager();
-    	$players = $em->getRepository("LiderBundle:Player")->getArrayEntityWithOneLevel(array("active" => true, "deleted" => false));
-    	$players = $players['data'];
-    	$countPlayers = count($players);
- 		    	
-    	$c = 0;
+    	
+    	 		    	
+		
+    	$cities = $em->getRepository("LiderBundle:Office")->getCities();
+    	
+    	$data = array();
+    	$totalTeams = 0;
+    	$totalOut =0;
+    	$totalPlayers=0;
+    	for ($i = 0; $i < count($cities); $i++) {
+    		$cityName = $cities[$i]["city"];
+    		$players = $em->getRepository("LiderBundle:Player")->playersForCity($cityName);
+    		$team = $this->createTeams($players, $minPlayersAmount, $maxPlayersAmount, $cityName);
+    		$totalTeams+=$team["totalTeam"];
+    		$totalOut+=$team["totalOut"];
+    		$totalPlayers+=$team["totalPlayers"];
+    		$data[$cityName] = $team;
+    	}
 
-    	for ($i = $maxPlayersAmount; $i >= $minPlayersAmount; $i--) {
-    		
+    	$rec = array(
+    		"totalTeam" => $totalTeams,
+    		"totalOut" => $totalOut,
+    		"totalPlayers" => $totalPlayers,
+    		"Cities" => $data
+    	);
+    	return $this->get("talker")->response($rec);
+    }
+    
+    private function createTeams($players, $min, $max, $cityName){
+    	
+    	$countPlayers = count($players);
+    	$c = 0;
+    	
+    	for ($i = $max; $i >= $min; $i--) {
+    	
     		$a = $countPlayers % $i;
-    		echo "<br/>".$countPlayers."%".$i."=".$a;
-    		if($a == 0 || ($a >= $minPlayersAmount && $a <= $maxPlayersAmount)){
+    		//echo "\n\n".$countPlayers."%".$i."=".$a;
+    		if($a == 0 || ($a >= $min && $a <= $max)){
     			$c = $i;
     			break;
     		}
     	}
-    	
+    	 
     	if($c == 0){
-    		for ($i = $minPlayersAmount; $i <= $maxPlayersAmount; $i++) {
+    		for ($i = $min; $i <= $max; $i++) {
     			$a = $countPlayers % $i;
     			if($c==0){
-    				$c = $a;					
+    				$c = $i;
     			}else if($a<$c){
     				$c = $i;
     			}
     		}
     	}
     	
-    	//return new Response("jajaj");
+    	
     	$countGroup = $countPlayers/$c;
     	$teams = array();
     	$subPlayers = $players;
+    	$count = 0;
     	for ($j = 0; $j < $countGroup; $j++) {
     		$countSubplayers = count($subPlayers);
-    		if($countSubplayers > $minPlayersAmount){
-	    		$team = array(
-	    			'name' => 'Equipo '.($j+1),
-	    			'countPlayers'=> 0,
-	    			'office' => null,
-	    			'players' => array()
-	    			
-	    		);
-	    		for ($i = 0; $i < $c; $i++) {  
-	    			$sp = $subPlayers;
-	    			//echo count($sp);
-	    			$found = false;
-	    			while (count($sp) > 0 && $found == false) {
-	    				
-	    				$pos = rand(1, count($sp)) -1;
-	    				$player = $sp[$pos];
-	    				//echo "<br/>".count($sp);
-	    				
-	    				if(count($team['players']) > 0){
-	    					$splayer = $team['players'][0];
-	    					if($splayer['office']['id'] == $player['office']['id']){
-	    						$team['players'][] = $player;
-	    						$this->removeItem($subPlayers, $player['id']);	
-	    						$found = true;
-	    					}
-	    					//unset($sp[$pos-1]);
-	    					array_splice($sp, $pos, 1);
-	    				}else{
-	    					$team['players'][] = $player;
-	    					$team['office'] = $player['office']['name'];
-	    					$this->removeItem($subPlayers, $player['id']);
-	    					$found = true;
-	    					//return new Response("<br/>".count($team));
-	    				}
-	    			}  	    		    		
-	    		}
-	    		$team['countPlayers'] = count($team['players']);
-	    		if(count($team['countPlayers']) > 0){
-	    			$teams[] = $team; 
-	    		}   
-    		} 		
-    	}    
-
+    		if($countSubplayers >= $min){
+    			$team = array(
+    					'name' => $cityName.' - Equipo '.($j+1),
+    					'countPlayers'=> 0,    					
+    					'players' => array()
+    			);
+    			 
+    			for ($i = 0; $i < $c; $i++) {
+    				$sp = $subPlayers;
+    				//echo count($sp);
+    				$found = false;
+    				while (count($sp) > 0 && $found == false) {
+    		    
+    					$pos = rand(1, count($sp)) -1;
+    					$player = $sp[$pos];
+    					//echo "<br/>".count($sp);
+    		    
+    					if(count($team['players']) > 0){
+    						$splayer = $team['players'][0];
+//     						if($splayer['office']['city'] == $player['office']['city']){
+    							$team['players'][] = $player;
+    							$this->removeItem($subPlayers, $player['id']);
+    							$found = true;
+//     						}
+    						//unset($sp[$pos-1]);
+    						array_splice($sp, $pos, 1);
+    					}else{
+    						$team['players'][] = $player;
+//     						$team['office'] = $player['office']['name'];
+    						$this->removeItem($subPlayers, $player['id']);
+    						$found = true;
+    						//return new Response("<br/>".count($team));
+    					}
+    				}
+    			}
+    			$team['countPlayers'] = count($team['players']);
+    			 
+    			if(count($team['countPlayers']) > 0){
+//     				$city =  $team['players'][0]['office']['city'];
+//     				if(!array_key_exists($city, $teams)){
+//     					$teams[$city] = array();
+//     				}
+    				$teams[] = $team;
+    				$count++;
+    			}
+    		}
+    	}
+    	
     	$res = array(
-    	    'totalTeam' => count($teams),
-    		'totalOut' => count($subPlayers),
-    		'totalPlayers' => $countPlayers,
-    		'totalPlayersByTeam' => $c,
-    		'teams' => $teams,
-    		'out' => $subPlayers
-    		
-    		
+    			'totalTeam' => $count,
+    			'totalOut' => count($subPlayers),
+    			'totalPlayers' => $countPlayers,
+    			'totalPlayersByTeam' => $c,
+    			'teams' => $teams,
+    			'out' => $subPlayers
+    	
+    	
     	);
     	
-    	return $this->get("talker")->response($res);
+    	return $res;
+    	
     }
     
     private function removeItem(&$array, $id) {
