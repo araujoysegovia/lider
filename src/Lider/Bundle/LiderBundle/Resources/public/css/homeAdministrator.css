@@ -14,6 +14,7 @@
 	background-image: -webkit-linear-gradient(bottom, #FFFFFF 27%, #B6B8BD 100%);
 	background-image: -ms-linear-gradient(bottom, #FFFFFF 27%, #B6B8BD 100%);
 	background-image: linear-gradient(to bottom, #FFFFFF 27%, #B6B8BD 100%);
+	overflow: auto;
 }
 
 .navbar-header{
@@ -25,7 +26,8 @@
 	top: 140px;
 	left: 20px;
 	right: 20px;
-	bottom: 10px;
+	/* bottom: 10px; */
+	overflow: hidde;
 }
 
 #breadcrumbs{
@@ -68,4 +70,66 @@
 
 .k-edit-field > input[type="checkbox"] {
 	width: 20px;
+}
+
+.navbar > .collapse > .navbar-form > .form-group > input {
+	margin-right: 5px;
+	width: 90px;
+	text-align: center;
+}
+
+.panel-team{
+	min-width: 200px;
+	float: left;
+	margin-right: 20px;
+}
+
+.panel-team-out{
+	min-width: 200px;
+	float: left;
+	margin-right: 20px;
+}
+
+.panel-player{
+	overflow: hidden;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #eee;
+	cursor: pointer;
+}
+
+.panel-player:hover{
+	background: #eee;
+}
+
+.panel-player > .img-player {
+	float: left;
+	width: 30px;	
+}
+
+.panel-player > .img-player > img{
+	-webkit-border-radius: 100px;
+	-moz-border-radius: 100px;
+	 border-radius: 100px;
+	width: 30px;
+}
+.panel-player > .name-player{
+	float: right;
+	
+}
+
+.panel-player > .name-player p{
+ 	text-transform: capitalize;	
+}
+
+.title-team{
+	color: #025CB0 !important;
+	font-weight: bold;
+}
+
+.team-out{
+	color: #ffbd10 !important;
+}
+
+.team-error{
+	color:red !important;	
 }

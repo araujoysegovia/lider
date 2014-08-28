@@ -28,7 +28,7 @@ player_team:
    defaults: { _controller: LiderBundle:Player:teamUserSession }
    methods:  [GET]
 
-player_save_image:
-    pattern:  /save/image/{id}
-    defaults: { _controller: LiderBundle:Player:saveImage }
+player_update_profile:
+    pattern:  /profile
+    defaults: { _controller: LiderBundle:Player:changePhoto }
     methods:  [POST]    

@@ -3,11 +3,11 @@ namespace Lider\Bundle\LiderBundle\Controller;
 
 use Lider\Bundle\LiderBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class GroupController extends Controller
+class TestController extends Controller
 {
-    public function getName(){
-    	return "Group";
-    }
-   
+	public function testAction() {
+		;
+	}
 }

@@ -14,22 +14,33 @@ class PlayerRepository extends MainRepository
 	 */
 	public function getPlayerGamesInfo($playerId) {		
 		$em = $this->getEntityManager();
-		$query =  $em->createQuery(
-		    'SELECT win.w, lost.l, point.p
-		     FROM (
-				SELECT COUNT(0) as w FROM LiderBundle:Duel WHERE player_win = :playerid
-			 ) as win,
-			 (
-				SELECT COUNT(0) as w FROM LiderBundle:Duel WHERE player_lost = :playerid
-			 ) as lost,
-			 (
-				SELECT SUM() as p FROM (
-					
-				) 
-			 ) as lost,
-		')->setParameter('playerid', $playerId);	
 		
-		return $query->getResult();
+		$queryWin = $em->createQuery('SELECT COUNT(d) as w FROM LiderBundle:Duel d WHERE d.player_win = :playerid')	
+			           ->setParameter('playerid', $playerId)		
+					   ->getArrayResult();
+		
+		$queryLost = $em->createQuery('SELECT COUNT(d) as l FROM LiderBundle:Duel d WHERE d.player_lost = :playerid')
+						->setParameter('playerid', $playerId)
+						->getArrayResult();
+		
+		$queryPointOne = $em->createQuery('SELECT SUM(d.point_one) AS pt1 FROM LiderBundle:Duel d WHERE d.player_one = :playerid')
+							->setParameter('playerid', $playerId)
+							->getArrayResult();
+		
+		$queryPointTwo = $em->createQuery('SELECT SUM(d.point_two) AS pt2 FROM LiderBundle:Duel d WHERE d.player_two = :playerid')
+							->setParameter('playerid', $playerId)
+							->getArrayResult();
+		
+		
+		$points = $queryPointOne[0]['pt1'] + $queryPointTwo[0]['pt2'];
+		
+		$array = array(
+			'win'=>$queryWin[0]['w'],
+			'lost'=>$queryLost[0]['l'],
+			'points' => $points
+		);
+
+		return $array;
 	}
 
 	

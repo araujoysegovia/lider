@@ -85,8 +85,12 @@ Entity.prototype = {
 	    }
 	    me.dataBinding  = function(e){
 	    	
-	    }
+	    }	    
 	    me.width = "200px";
+	    
+        me.toolbar = [
+                     	{ name: "create", text: "Agregar registro" },				    
+				    ];
 	    
 		_.extend(me, config);
 		
@@ -191,9 +195,7 @@ Entity.prototype = {
 		        columns: me.columns,
 		        editable: me.editable,
 		        sortable: true,                               
-		        toolbar: [
-				    { name: "create", text: "Agregar registro" },			
-				],
+		        toolbar: me.toolbar,
 				dataBound: me.dataBound,
 				dataBinding: me.dataBinding
 		    };

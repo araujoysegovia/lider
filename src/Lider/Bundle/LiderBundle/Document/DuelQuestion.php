@@ -452,4 +452,26 @@ class DuelQuestion
     {
         return $this->point_two;
     }
+
+    /**
+     * Set gameId
+     *
+     * @param int $gameId
+     * @return self
+     */
+    public function setGameId($gameId)
+    {
+        $this->gameId = $gameId;
+        return $this;
+    }
+
+    /**
+     * Get gameId
+     *
+     * @return int $gameId
+     */
+    public function getGameId()
+    {
+        return $this->gameId;
+    }
 }

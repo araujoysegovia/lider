@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Question class
  * @ORM\Table(name="question")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\QuestionRepository")
  */
 class Question extends Entity
 {
@@ -52,6 +52,11 @@ class Question extends Entity
 	 */
 	private $user;
 
+	/**
+	 * @ORM\Column(type="string", nullable = true)	 
+	 */
+	private $image;
+	
     /**
      * Get id
      *
@@ -215,5 +220,28 @@ class Question extends Entity
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set image
+     *
+     * @param string $image
+     * @return Question
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return string 
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 }

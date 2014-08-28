@@ -75,6 +75,8 @@ class Duel extends Entity
 	 */
 	private $active = true;
 
+	
+	
 	/**
 	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
 	 * @ORM\JoinColumn(name="player_win_id", referencedColumnName="id")
@@ -349,5 +351,51 @@ class Duel extends Entity
     public function getPlayerLostId()
     {
         return $this->player_lost_id;
+    }
+
+    /**
+     * Set player_win
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerWin
+     * @return Duel
+     */
+    public function setPlayerWin(\Lider\Bundle\LiderBundle\Entity\Player $playerWin = null)
+    {
+        $this->player_win = $playerWin;
+
+        return $this;
+    }
+
+    /**
+     * Get player_win
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     */
+    public function getPlayerWin()
+    {
+        return $this->player_win;
+    }
+
+    /**
+     * Set player_lost
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerLost
+     * @return Duel
+     */
+    public function setPlayerLost(\Lider\Bundle\LiderBundle\Entity\Player $playerLost = null)
+    {
+        $this->player_lost = $playerLost;
+
+        return $this;
+    }
+
+    /**
+     * Get player_lost
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     */
+    public function getPlayerLost()
+    {
+        return $this->player_lost;
     }
 }

@@ -133,11 +133,14 @@ class PlayerController extends Controller
         if($team){
         	$arr['user']['team'] = array(
         		"id" => $user->getTeam()->getId(),
-        		"name" => $user->getTeam()->getName()
+        		"name" => $user->getTeam()->getName()        		
         	) ;
         }
         
-        //$list = $repo->getArrayEntityWithOneLevel(array("id" => $user->getId()));
+
+        $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
+        $arr['user']['gameInfo'] = $playerGameInfo;
+               
         return $this->get("talker")->response($arr);
     }
     
@@ -151,57 +154,38 @@ class PlayerController extends Controller
     					 array("team"=>$user->getTeam()->getId(), "deleted" => false));
     	
     	return $this->get("talker")->response($entities);
-    }
+    } 
     
-    public function saveImageAction(){
+    public function changePhotoAction() {
+    	 
+    	$em = $this->getDoctrine()->getEntityManager();
+    	
+    	$user = $this->container->get('security.context')->getToken()->getUser();
+    	 
     	$dm = $this->get('doctrine_mongodb')->getManager();
-    	$repository = $this->get('doctrine_mongodb')->getManager();    	
-    	$imagesRepository = $repository->getRepository('LiderBundle:Image');
-    	
-    	$image = $imagesRepository->findAll();
-    	foreach($image as $im)
-    	{
-    		$dm->remove($im);
-    	}
-    	try{
-    		$dm->flush();
-    	}
-    	catch(\Exception $e)
-    	{
+    	$request = $this->get("request");
     
-    	}
-    	$iconArray = array(
-    		array("image" => __DIR__."http://10.102.1.22/lider/web/bundles/lider/images/avatar.png"),
-    			//array("image" => __DIR__."../Resources/public/images/avatar.png"),
-    	);    	 
-    
-    	$icons = array();
-    	$result = new \finfo();
-    
+    	$uploadedFile = $request->files->get('imagen');
     	$className = self::$NAMESPACE.$this->getName();
-    	
-    	foreach($iconArray as $value){
+    	 
+    	$image = new Image();
+    	$image->setName($uploadedFile->getClientOriginalName());
+    	$image->setFile($uploadedFile->getPathname());
+    	$image->setMimetype($uploadedFile->getClientMimeType());
+    	$image->setEntity($className);
+    	$image->setEntityId($user->getId());
     
-    		$avatar = new Image();
-    		//$fileMetadata = new ImageMetadata();
-    		$image = new \Imagick($value['image']);
-    		//$fileMetadata->setMimeType($result->file($value['image'], FILEINFO_MIME_TYPE));
-    		//$fileMetadata->setSize($image->getImageLength());
-    		//$fileMetadata->setExtension($image->getImageFormat());
-    		
-    		$avatar->setName($image->getClientOriginalName());
-    		$avatar->setFile($image->getPathname());
-    		$avatar->setMimetype($image->getClientMimeType());
-    		$avatar->setEntity($className);
-    		$avatar->setEntityId($id);
-    		
-    		$icon->setImage($value['image']);
-    		$icon->setMetadata($fileMetadata);
-    		$dm->persist($icon);
-    		echo $icon->getId();
-    		$icons[] = $icon;
-    	}
+    	$dm->persist($image);
     	$dm->flush();
-    	return $icons;
+    	 
+    	$user->setImage($image->getId());
+    	 
+    	$em->flush();
+    	 
+    	return $this->get("talker")->response(array (
+				"success" => true,
+				"message" => $this->save_successful,
+    			"image" => $image->getId()
+		));
     }
 }

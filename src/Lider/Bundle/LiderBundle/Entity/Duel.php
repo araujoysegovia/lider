@@ -75,6 +75,8 @@ class Duel extends Entity
 	 */
 	private $active = true;
 
+	
+	
 	/**
 	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
 	 * @ORM\JoinColumn(name="player_win_id", referencedColumnName="id")

@@ -58,3 +58,14 @@ admin_role:
 admin_player:
     resource: "@LiderBundle/Resources/config/admin_routes/player_routing.yml"
     prefix:   /home/player
+    
+a_question_test:
+    pattern:  /test
+    defaults: { _controller: LiderBundle:Question:getTestQuestion }
+    methods:  [GET]
+
+a_answer_check:
+    pattern:  /answer/check
+    defaults: { _controller: LiderBundle:Question:checkAnswer }
+    methods:  [POST]    
+  

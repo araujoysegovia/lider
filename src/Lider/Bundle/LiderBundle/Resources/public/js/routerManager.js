@@ -9,6 +9,7 @@ var routerManager = Backbone.Router.extend({
 		"categories" : "categories",
 		"offices" : "offices",
 		"teams" : "teams",
+		"generateTeams": "generateTeams",
 	},
 
 	home: function() {
@@ -79,8 +80,8 @@ var routerManager = Backbone.Router.extend({
 					field: "active",
 					title: "Activo",
 			    	template: function(e){ 			    		
-			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
 												
 						if(e.active == false){
 							return imgNoChecked;
@@ -142,7 +143,11 @@ var routerManager = Backbone.Router.extend({
 			    		type: "string",	
 			    	},
 			    	selected: {},
-			    	help: {}
+			    	help: {},
+				    image: {
+				    	//type: "string"
+				    	editable: false
+				    },
 			    }
 			},
 			onReadData: function (e){
@@ -228,7 +233,7 @@ var routerManager = Backbone.Router.extend({
 			            return kendo.stringify(data);		        
 		        }
 			},
-			width: "260px",
+			width: "450px",
 			command: [
            		{
 			        name: "edit",
@@ -267,8 +272,34 @@ var routerManager = Backbone.Router.extend({
 		                 $.ajax(config);
 							
 		             } 
-			    }
-		    ],
+			    },
+			    {
+			    	 text: "Remover imagen",
+			    	 click: function (e) {			    	
+			    		 e.preventDefault();
+			    		 console.log(e)
+		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+			    		 console.log(dataItem)
+		                 var id = dataItem.id;		                
+		                 					
+		                 config = {
+				            type: "POST",           
+				            url: "home/question/image/"+id+"/remove",					            
+				            contentType: "application/json",
+				            dataType: "json",
+				            //data: JSON.stringify(param),
+							success: function(){
+							   question.grid.data('kendoGrid').dataSource.read();
+							   question.grid.data('kendoGrid').refresh();
+							},
+							error: function(){}
+		                 }
+
+		                 $.ajax(config);
+							
+		             } 
+			    }			    
+		    ],	        
 			detailInit: function(e){
 				var grid = null;
 				
@@ -358,8 +389,8 @@ var routerManager = Backbone.Router.extend({
 	                    pageSize: 10,  
 					});
 					
-					var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
-		    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>";
+					var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
+		    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
 		    		
 					grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
 	                    dataSource: kdataSource,
@@ -400,9 +431,9 @@ var routerManager = Backbone.Router.extend({
 	                });
 				}
 			},
-			dataBound: function() {
-                this.expandRow(this.tbody.find("tr.k-master-row").first());
-            },
+//			dataBound: function() {
+//                this.expandRow(this.tbody.find("tr.k-master-row").first());
+//            },
 			columns: [
 			    {
 			    	field: "id",
@@ -579,8 +610,73 @@ var routerManager = Backbone.Router.extend({
 			                dataValueField:"value"
 			            });
 					},					
-			    }			    			    
-			],		  
+			    },
+				{ 
+					field:"image", 
+					title: "Imagen" ,
+					width: "150px",	
+					filterable: false,
+					template: function(e){
+						var src = 'http://soylider.sifinca.net/bundles/';
+						if(_.isEmpty(e.image)){
+							src = src + "/bundles/lider/images/none.png";
+						}else{
+							src = src + "/app.php/image/"+e.image;
+						}
+						var img = "<div class='img-question'>"+
+								     	"<img  data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
+								     	"<input id='input-file-question-"+e.id+"' type='file' style = 'display: none;'/>"+
+								     "</div>";
+
+						return img;
+					}
+				},	    			    
+			],	
+			dataBound: function(e) {
+			    //console.log("dataBound");
+			    //console.log(e)
+				 this.expandRow(this.tbody.find("tr.k-master-row").first());
+				
+			    $('.img-question').children("img").click(function(){
+			    	
+			    	var id = $(this).attr("data-id");
+					console.log($(this).attr("data-id"))
+					
+					//$('.input-file-team')
+					
+					var input = $(this).parent("div.img-question").children("input");
+					
+					input.click();
+					
+					input.change(function(){
+						//console.log("change")
+						var filename = $(this).val();
+						//console.log(filename)
+						if(filename){
+							
+							var formData = new FormData();
+							formData.append("imagen", $(this).get(0).files[0]);
+							//console.log(formData)
+							config = {
+					            type: "POST",           
+					            url: "home/question/image/"+id,
+					            data: formData,
+					            contentType: false,
+					            processData: false,
+								success: function(){
+									question.grid.data('kendoGrid').dataSource.read();
+									question.grid.data('kendoGrid').refresh();
+								},
+								error: function(){}
+							}
+
+							$.ajax(config);
+						}
+					});
+					
+				});
+			},
+
 		})	  
 	},
   
@@ -805,8 +901,7 @@ var routerManager = Backbone.Router.extend({
 				    active: { type: "boolean" }
 				}
 			},
-			detailInit: function(e){
-				console.log("audhaudh")
+			detailInit: function(e){				
 				var grid = null;
 				
 				var kdataSource = new kendo.data.DataSource({
@@ -910,8 +1005,8 @@ var routerManager = Backbone.Router.extend({
 					title: "Activo",
 					width: "100px",
 			    	template: function(e){ 			    		
-			    		var imgChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://10.102.1.22/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
 												
 						if(e.active == false){
 							return imgNoChecked;
@@ -934,7 +1029,7 @@ var routerManager = Backbone.Router.extend({
 		        				        	
 		            return kendo.stringify(data);
 		        }
-			},
+			}		  	
 		});
 	},
 
@@ -1005,6 +1100,7 @@ var routerManager = Backbone.Router.extend({
 		  	Inicio: "",
 		    Equipos: "teams"
 		});
+		
 		var office = new Entity({
 			container:  $("#entity-content"),
 			url: "home/team/",
@@ -1203,9 +1299,84 @@ var routerManager = Backbone.Router.extend({
 					
 				});
 			},			
-			
+			toolbar: [
+  			    { name: "create", text: "Agregar registro" },
+  			    { 
+  			    	name: "generateGroups",
+  			    	template: function(){  			    		
+  			    		var btn = '<a class="k-button"  onclick="generateTeam()">Generar</a>';  			    		
+  			    		return btn;
+  			    	}
+  			    }
+		  	],
 		});
 	},	
+	
+	generateTeams: function(){
+		
+		this.removeContent();
+
+//		var panel = $('<div class="panel panel-default"></div>');
+//		var panelHeading = $('<div class="panel-heading"></div>';
+//		var panelBody = $('<div class="panel-body"></div>');
+		
+		//console.log(data)	
+		
+		var navBar = $('<nav class="navbar navbar-default" role="navigation">'+						
+					 	'<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">'+
+						 	'<form class="navbar-form navbar-left" role="search">'+
+						        '<div class="form-group">'+						          						         
+						          '<input id="max"  type="number" class="form-control" placeholder="Máximo">'+
+						        '</div>'+
+						        '<div class="form-group">'+						         						          
+						          '<input id="min"  type="number" class="form-control" placeholder="Minimo">'+
+						        '</div>'+
+						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+
+					        '</form>'+
+				        '</div>'+
+			        '</nav>');
+		
+		$("#entity-content").append(navBar);
+		
+		navBar.find("form").submit(function(e){
+			e.preventDefault();
+			
+			var max = $("#max").val();
+			var min = $("#min").val();
+			
+			parameters = {
+					type: "GET",     
+		            url: "http://soylider.sifinca.net/admin/home/team/generate?max="+max+"&min="+min,
+		            //data: data,
+		            contentType: 'application/json',
+		            dataType: "json",
+		            success: function(data){
+		            	//console.log(data)
+		            	cities = data['cities'];
+		            	_.each(cities, function(value, key){
+		            	//	console.log(value.teams)
+		            		var panel = $('<div id="panel-'+key+'" class="panel-city">'+
+		            						'<div class="panel-heading"><h4>'+key+'</h4><hr></div>'+
+		            						'<div class="panel-body">'+
+		            						'</div>'+ 
+		            					 '</div>');
+		            		
+		            		$("#entity-content").append(panel);
+		            	
+		            		teamsCity(value.teams, panel.find("div.panel-body"), value.out);
+		            	})
+		            },
+		            error: function(){},
+				};
+			
+			var ajax = $.ajax(parameters);
+			
+			//console.log(ajax)
+		});
+		
+
+		
+	}
 	
 });
 
@@ -1214,3 +1385,100 @@ $(document).ready(function () {
 	var router = new routerManager();
 	Backbone.history.start();
 });
+
+function generateTeam(){
+	
+	var router = new routerManager();	
+	//router.generateTeams();
+	Backbone.history.navigate("generateTeams", true);
+}
+
+function teamsCity(teams, content, out){
+	
+	_.each(teams, function(value, key){
+		
+		var panel = $('<div class="panel panel-default panel-team" ondrop="drop(event)" ondragover="allowDrop(event)">'+
+							'<div class="panel-heading title-team">'+value.name+'</div>'+
+							'<div class="panel-body panel-body-team">'+
+							'</div>'+ 
+					   '</div>');
+		
+		content.append(panel);
+
+		playersTeam(value.players, panel.find("div.panel-body"));
+	});
+	
+	
+	if(out.length > 0){		
+		var panelOut = $('<div class="panel panel-default panel-team-out" ondrop="drop(event)" ondragover="allowDrop(event)">'+
+							'<div class="panel-heading title-team">Sin equipo</div>'+
+							'<div class="panel-body panel-body-team">'+
+							'</div>'+ 
+					   '</div>');
+		
+		panelOut.children('.title-team').addClass("team-out");
+		content.append(panelOut);
+
+		playersTeam(out, panelOut.find("div.panel-body"));
+	}
+}
+
+function playersTeam(players, content){
+	
+	_.each(players, function(value, key){
+		if(value){
+			var img = value.image;
+			if(!img){
+				img = 'http://soylider.sifinca.net/bundles/lider/images/avatar.png'
+			}
+			var panel = $('<div id="player-'+value.id+'" class="panel-player" draggable="true" ondragstart="drag(event)">'+
+							'<div class="img-player">'+
+								'<img src='+img+'>'+
+							'</div>'+
+							'<div class="name-player"><p>'+value.name.toLowerCase() +'</p></div>'+
+						+'</div>');
+
+			
+			content.append(panel);
+		}
+
+	})
+}
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("Text", ev.target.id);
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("Text");
+    var player = $("div#"+data);
+    var target =  $(ev.target);
+    //console.log(target)
+    if(target.hasClass("panel-body")){
+    	$(ev.target).append(player);
+    }else{
+    	var parent = target.parents("div.panel-body-team");
+    	if(parent.length >0 ){
+    		parent.append(player)
+//    		console.log(parent)
+    		
+    		var numPlayers = parent[0].childElementCount;
+    		console.log(numPlayers)
+    		if(numPlayers > 3){
+    			console.log(parent.parent().children(".title-team"))
+    			var t = parent.parent().children(".title-team");
+//    			t.css("background", "red");
+    			t.removeClass("team-out");
+    			t.addClass("team-error");
+    		}
+    		
+    	}
+    }
+    
+    //ev.target.appendChild(document.getElementById(data));
+}

@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Office class
  * @ORM\Table(name="office")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\OfficeRepository")
  */
 class Office extends Entity
 {

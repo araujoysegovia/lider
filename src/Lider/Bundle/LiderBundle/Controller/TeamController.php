@@ -50,9 +50,7 @@ class TeamController extends Controller
     	$minPlayersAmount = $request->get('min');
     	$maxPlayersAmount = $request->get('max');
     	    	
-    	$em = $this->getDoctrine()->getEntityManager();
-    	
-    	 		    	
+    	$em = $this->getDoctrine()->getEntityManager();    	
 		
     	$cities = $em->getRepository("LiderBundle:Office")->getCities();
     	
@@ -74,7 +72,7 @@ class TeamController extends Controller
     		"totalTeam" => $totalTeams,
     		"totalOut" => $totalOut,
     		"totalPlayers" => $totalPlayers,
-    		"Cities" => $data
+    		"cities" => $data
     	);
     	return $this->get("talker")->response($rec);
     }
@@ -166,9 +164,7 @@ class TeamController extends Controller
     			'totalPlayers' => $countPlayers,
     			'totalPlayersByTeam' => $c,
     			'teams' => $teams,
-    			'out' => $subPlayers
-    	
-    	
+    			'out' => $subPlayers        	
     	);
     	
     	return $res;

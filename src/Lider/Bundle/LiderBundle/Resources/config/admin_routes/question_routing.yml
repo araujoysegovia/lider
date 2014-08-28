@@ -29,3 +29,16 @@ admin_question_checkbyid:
     methods:  [POST]
     requirements:
       id: \d+      
+
+admin_question_image:
+    pattern:  /image/{id}
+    defaults: { _controller: LiderBundle:Question:setImage }
+    methods:  [POST]
+    requirements:
+      id: \d+   
+      
+admin_question_remove_image:
+    pattern:  /image/{id}/remove
+    defaults: { _controller: LiderBundle:Question:removeImage }
+    methods:  [POST]
+        
