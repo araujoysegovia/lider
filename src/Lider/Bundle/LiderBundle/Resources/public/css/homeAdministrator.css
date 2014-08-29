@@ -72,6 +72,16 @@
 	width: 20px;
 }
 
+.img-team > img {
+	cursor: pointer;
+}
+
+.img-question > img{
+	cursor: pointer;
+}
+
+/***************************** Estilos generador de equipos **************************/
+
 .navbar > .collapse > .navbar-form > .form-group > input {
 	margin-right: 5px;
 	width: 90px;

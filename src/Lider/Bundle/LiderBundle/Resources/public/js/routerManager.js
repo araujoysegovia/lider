@@ -617,14 +617,14 @@ var routerManager = Backbone.Router.extend({
 					width: "150px",	
 					filterable: false,
 					template: function(e){
-						var src = 'http://soylider.sifinca.net/bundles/';
+						var src = 'http://soylider.sifinca.net';
 						if(_.isEmpty(e.image)){
 							src = src + "/bundles/lider/images/none.png";
 						}else{
 							src = src + "/app.php/image/"+e.image;
 						}
 						var img = "<div class='img-question'>"+
-								     	"<img  data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
+								     	"<img data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
 								     	"<input id='input-file-question-"+e.id+"' type='file' style = 'display: none;'/>"+
 								     "</div>";
 
@@ -1386,6 +1386,9 @@ $(document).ready(function () {
 	Backbone.history.start();
 });
 
+/*
+ * Acceder a la ruta para generar los equipos
+ * */
 function generateTeam(){
 	
 	var router = new routerManager();	

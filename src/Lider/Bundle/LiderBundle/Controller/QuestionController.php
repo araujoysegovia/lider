@@ -65,8 +65,6 @@ class QuestionController extends Controller
     
     /**	
      * Verificar la respuesta enviada
-     * @param unknown $idQuestion
-     * @param unknown $idAnswer
      */
     public function checkAnswerAction() {
     	
@@ -115,9 +113,7 @@ class QuestionController extends Controller
     				}    				
     			}
     		}
-    	}
-
-    	
+    	}   	
     	
     	
     	if(!$entity){

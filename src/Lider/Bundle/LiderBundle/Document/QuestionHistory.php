@@ -25,7 +25,7 @@ class QuestionHistory
     private $questionId;
     
     /**
-     * @MongoDB\Int
+     * @MongoDB\String
      */
     private $selectedAnswer;
 
@@ -50,10 +50,11 @@ class QuestionHistory
     private $entryDate;
     
     /**
-     * @MongoDB\Int
+     * @MongoDB\String
      */
     private $answerOk;
     
+
     /**
      * Get id
      *
@@ -109,25 +110,25 @@ class QuestionHistory
     }
 
     /**
-     * Set answerId
+     * Set selectedAnswer
      *
-     * @param int $answerId
+     * @param string $selectedAnswer
      * @return self
      */
-    public function setAnswerId($answerId)
+    public function setSelectedAnswer($selectedAnswer)
     {
-        $this->answerId = $answerId;
+        $this->selectedAnswer = $selectedAnswer;
         return $this;
     }
 
     /**
-     * Get answerId
+     * Get selectedAnswer
      *
-     * @return int $answerId
+     * @return string $selectedAnswer
      */
-    public function getAnswerId()
+    public function getSelectedAnswer()
     {
-        return $this->answerId;
+        return $this->selectedAnswer;
     }
 
     /**
@@ -219,33 +220,9 @@ class QuestionHistory
     }
 
     /**
-     * Set selectedAnswer
-     *
-     * @param int $selectedAnswer
-     * @return self
-     */
-    public function setSelectedAnswer($selectedAnswer)
-    {
-        $this->selectedAnswer = $selectedAnswer;
-        return $this;
-    }
-
-    /**
-     * Get selectedAnswer
-     *
-     * @return int $selectedAnswer
-     */
-    public function getSelectedAnswer()
-    {
-        return $this->selectedAnswer;
-    }
-
-
-
-    /**
      * Set answerOk
      *
-     * @param int $answerOk
+     * @param string $answerOk
      * @return self
      */
     public function setAnswerOk($answerOk)
@@ -257,7 +234,7 @@ class QuestionHistory
     /**
      * Get answerOk
      *
-     * @return int $answerOk
+     * @return string $answerOk
      */
     public function getAnswerOk()
     {

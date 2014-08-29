@@ -1,6 +1,11 @@
 login:
     pattern:  /login
     defaults: { _controller: LiderBundle:Player:login }
+    
+    
+login_google:
+    pattern:  /login/google
+    defaults: { _controller: LiderBundle:Player:loginWithGoogle }
 
 player_player:
     resource: "@LiderBundle/Resources/config/player_routes/player_routing.yml"

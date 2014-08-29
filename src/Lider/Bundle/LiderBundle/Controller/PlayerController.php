@@ -7,8 +7,24 @@ use Lider\Bundle\LiderBundle\Document\Image;
 
 class PlayerController extends Controller
 {
+	
+	static $URL_TOKEN = 'https://www.googleapis.com/oauth2/v2/userinfo';
+	
     public function getName(){
     	return "Player";
+    }
+    
+    private function getUserInfo($token)  {
+    	$ch = curl_init();
+    	curl_setopt($ch,CURLOPT_URL, self::$URL_TOKEN);
+    	curl_setopt($ch,CURLOPT_POST, 0);
+    	curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+    	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    	"authorization: Bearer $token",
+    	));
+    	$data = curl_exec($ch);
+    	curl_close($ch);
+    	return $data;
     }
 
     /**
@@ -24,6 +40,103 @@ class PlayerController extends Controller
         $codificador = $factory->getEncoder($user);
         $password = $codificador->encodePassword($password, $user->getSalt());
         return $password;
+    }
+    
+    public function loginWithGoogleAction(Request $request){
+    	$em = $this->getDoctrine()->getEntityManager();
+    	$dm = $this->get('doctrine_mongodb')->getManager();
+    	
+    	$atoken = $request->get("access_token");
+    	$code = $request->get("code");
+    	if(!$atoken || !$code)
+    		throw new \Exception("Token not found");
+		
+    	$content = $this->getUserInfo($atoken);
+    	$data = json_decode($content, true);
+    	if(!is_array($data) || (is_array($data) && !array_key_exists("email", $data)))
+    		throw new AuthenticationException("User not found");
+    	
+    	$repo = $em->getRepository("LiderBundle:Player");
+    	$userName = $data["email"];
+    	$user = $repo->findOneByEmail($userName);
+    	
+    	if(!$user)
+    		throw new \Exception("User Not Registered", 403);
+    	
+    	$session = new \Lider\Bundle\LiderBundle\Document\Session();
+    	$session->setStart(new \MongoDate());
+    	$session->setUserId($user->getId());
+    	$session->setIp($request->getClientIp());
+    	$session->setLast(new \MongoDate());
+    	$session->setEnabled(true);
+    	$session->setEmail($user->getUsername());
+    	$session->setUserAgent($request->headers->get("User-Agent"));
+    	$session->setCookie($request->headers->get("Cookie"));
+    	
+    	$dm->persist($session);
+    	$dm->flush();
+    	
+    	$generateToken = $this->generatePass($session->getId());
+    	
+    	$token = "";
+    	if(strstr($generateToken, '/'))
+    	{
+    		$explode = explode("/", $generateToken);
+    		foreach($explode as $value)
+    		{
+    			$token .= $value;
+    		}
+    	}
+    	else{
+    		$token = $generateToken;
+    	}
+    	
+    	$session->setToken($token);
+    	
+    	$dm->persist($session);
+    	$dm->flush();
+    	
+    	//echo $user->getTeam()->getId();
+    	$arr = array();
+    	$roles = array();
+    	//print_r($user->getRoles()->getId());
+    	foreach($user->getRoles() as $key => $value){
+    		$roles[$key] = array(
+    			"id" => $value->getId(),
+    			"name" => $value->getName(),
+    		);
+    	}
+    	$office = array(
+    		"id" => $user->getOffice()->getId(),
+    		"name" => $user->getOffice()->getName(),
+    	);
+    	
+    	$arr['token'] = $session->getToken();
+    	
+    	$arr['user'] = array(
+    			"email" => $user->getEmail(),
+    			"name" => $user->getName(),
+    			"latname" => $user->getLastname(),
+    			"image" => $user->getImage(),
+    			"office" => $office,
+    			"roles" => $roles,
+    			"team" => array(),
+    	);
+    	
+    	$team = $user->getTeam();
+    	
+    	if($team){
+    		$arr['user']['team'] = array(
+    			"id" => $user->getTeam()->getId(),
+    			"name" => $user->getTeam()->getName()
+    		) ;
+    	}
+    	
+    	
+    	$playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
+    	$arr['user']['gameInfo'] = $playerGameInfo;
+    	 
+    	return $this->get("talker")->response($arr);
     }
 
     public function loginAction(){
