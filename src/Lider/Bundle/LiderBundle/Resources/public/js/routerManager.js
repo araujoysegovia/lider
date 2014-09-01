@@ -1,3 +1,4 @@
+var max, min;
 var routerManager = Backbone.Router.extend({
 
 	routes: {
@@ -1341,8 +1342,8 @@ var routerManager = Backbone.Router.extend({
 		navBar.find("form").submit(function(e){
 			e.preventDefault();
 			
-			var max = $("#max").val();
-			var min = $("#min").val();
+			max = $("#max").val();
+			min = $("#min").val();
 			
 			parameters = {
 					type: "GET",     
@@ -1351,13 +1352,17 @@ var routerManager = Backbone.Router.extend({
 		            contentType: 'application/json',
 		            dataType: "json",
 		            success: function(data){
-		            	//console.log(data)
+//		            	console.log(data)
 		            	cities = data['cities'];
 		            	_.each(cities, function(value, key){
-		            	//	console.log(value.teams)
+		            		console.log(value)
 		            		var panel = $('<div id="panel-'+key+'" class="panel-city">'+
 		            						'<div class="panel-heading"><h4>'+key+'</h4><hr></div>'+
 		            						'<div class="panel-body">'+
+		            							'<div class="info-city">'+
+		            								'<label>Total de jugadores: '+value.totalPlayers+'</label>'+
+		            								'<label>Total de equipos: '+value.totalTeam+'</label>'+		            								
+		            							'</div>'+
 		            						'</div>'+ 
 		            					 '</div>');
 		            		
@@ -1400,7 +1405,7 @@ function teamsCity(teams, content, out){
 	
 	_.each(teams, function(value, key){
 		
-		var panel = $('<div class="panel panel-default panel-team" ondrop="drop(event)" ondragover="allowDrop(event)">'+
+		var panel = $('<div class="panel panel-primary panel-team" ondrop="drop(event)" ondragover="allowDrop(event)">'+
 							'<div class="panel-heading title-team">'+value.name+'</div>'+
 							'<div class="panel-body panel-body-team">'+
 							'</div>'+ 
@@ -1413,7 +1418,7 @@ function teamsCity(teams, content, out){
 	
 	
 	if(out.length > 0){		
-		var panelOut = $('<div class="panel panel-default panel-team-out" ondrop="drop(event)" ondragover="allowDrop(event)">'+
+		var panelOut = $('<div class="panel panel-warning panel-team-out" ondrop="drop(event)" ondragover="allowDrop(event)">'+
 							'<div class="panel-heading title-team">Sin equipo</div>'+
 							'<div class="panel-body panel-body-team">'+
 							'</div>'+ 
@@ -1449,13 +1454,37 @@ function playersTeam(players, content){
 }
 
 function allowDrop(ev) {
+	
     ev.preventDefault();
 }
 
 function drag(ev) {
+	
     ev.dataTransfer.setData("Text", ev.target.id);
+	//console.log(ev.toElement)
+	var p = $(ev.toElement).parent();
+	var abu = p.parent();
+	console.log(p)
+	var numPlayers = p[0].childElementCount;
+	//console.log(abu)
+	if((numPlayers < min) || (numPlayers > max)){
+		console.log("entro 2")
+//		console.log(parent.parent().children(".title-team"))		
+//		t.css("background", "red");
+		abu.removeClass("panel-warning");
+		abu.addClass("panel-danger");
+	}else{
+		
+		abu.removeClass("panel-warning");
+		abu.removeClass("panel-danger");
+		abu.addClass("panel-primary");
+	}	
+	
 }
 
+/*
+ * Ingresar
+ * */
 function drop(ev) {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("Text");
@@ -1471,13 +1500,20 @@ function drop(ev) {
 //    		console.log(parent)
     		
     		var numPlayers = parent[0].childElementCount;
-    		console.log(numPlayers)
-    		if(numPlayers > 3){
-    			console.log(parent.parent().children(".title-team"))
+//    		console.log(numPlayers)
+    		//console.log(numPlayers+" < "+min+" || "+ numPlayers+" >"+ max)
+    		if((numPlayers < min) || (numPlayers > max)){
+    			console.log("entro")
+//    			console.log(parent.parent().children(".title-team"))
     			var t = parent.parent().children(".title-team");
 //    			t.css("background", "red");
-    			t.removeClass("team-out");
-    			t.addClass("team-error");
+    			parent.parent().removeClass("panel-warning");
+    			parent.parent().addClass("panel-danger");
+    		}else{
+    			
+    			parent.parent().removeClass("panel-warning");
+    			parent.parent().removeClass("panel-danger");
+    			parent.parent().addClass("panel-primary");
     		}
     		
     	}

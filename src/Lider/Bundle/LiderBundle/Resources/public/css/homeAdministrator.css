@@ -98,6 +98,7 @@
 	min-width: 200px;
 	float: left;
 	margin-right: 20px;
+	border-color: #F0AD4E;
 }
 
 .panel-player{
@@ -131,15 +132,23 @@
  	text-transform: capitalize;	
 }
 
-.title-team{
-	color: #025CB0 !important;
-	font-weight: bold;
+.title-team{	
+	font-weight: bold; 
 }
 
-.team-out{
-	color: #ffbd10 !important;
+.team-out{	
+/* 	background: #F0AD4E !important;
+	color: #fff !important; */
 }
 
 .team-error{
-	color:red !important;	
+	
+}
+
+.info-city{
+	margin-bottom: 10px;
+}
+
+.info-city > label{
+	margin-right: 50px;
 }
