@@ -1,6 +1,16 @@
 imports:
     - { resource: config.yml }
 
+
+services:
+    kernel.listener.exceptionlistener:
+        class: Lider\Bundle\LiderBundle\Lib\ExceptionListener
+        arguments:
+              request: "@talker"
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+            
+            
 #framework:
 #    validation:
 #        cache: apc

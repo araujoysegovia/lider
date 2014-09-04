@@ -44,7 +44,9 @@ abstract class Controller extends SymfonyController {
 		);
 	}
 	
-	protected function getRequestEntity(){
+	protected function getRequestEntity($id = null){
+		
+		
 		$request = $this->get("request");
 		$contentType = $request->headers->get('content_type');
 		$explode = explode(";", $contentType);
@@ -59,7 +61,7 @@ abstract class Controller extends SymfonyController {
 				break;
 					
 			default:
-				return $this->applicationJson();
+				return $this->applicationJson($id);
 				break;
 		}
 	}
@@ -109,7 +111,7 @@ abstract class Controller extends SymfonyController {
 		return $newClass;
 	}
 	
-	private function applicationJson(){
+	private function applicationJson($id = null){
 		$em = $this->getDoctrine()->getEntityManager();
 		$request = $this->get("request");
 		$data = $request->getContent();
@@ -122,13 +124,20 @@ abstract class Controller extends SymfonyController {
 		$entityName = $this->getName();
 		$bundleName = $this->getBundleName();
 		$className = self::$NAMESPACE.$entityName;
+				
+		if(!is_null($id)){
+			$metadata = $em->getClassMetadata($className);			
+			$idField = $metadata->identifier[0];
+			$data[$idField] = $id;
+		}
+		
 		
 		$newClass = $this->get("talker")->denormalizeEntity($className, $data);
 		
 		return $newClass;
 	}
 	
-	public function listAction($id = null) {		
+	public function listAction($id = null) {
 		$em = $this->getDoctrine()->getEntityManager();
 		$request = $this->get("request");
 		if(is_null($id)){
@@ -155,14 +164,14 @@ abstract class Controller extends SymfonyController {
 			}
 			
 			$user = $this->container->get('security.context')->getToken()->getUser();
+
 			$roles = $user->getRoles();
 			$role = $roles[0];
 			
 			if($role->getId() > 1 && array_key_exists("company", $associations)){
 				$criteria["company"] = $user->getCompany()->getId();
 			}
-			
-			
+						
 			$filter = $request->get('filter');
 			if($filter){
 				$filter = json_decode($filter, true);
@@ -174,13 +183,12 @@ abstract class Controller extends SymfonyController {
 	
 			$bundleName = $this->getBundleName();
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$list = $repo->getArrayEntityWithOneLevel($criteria, null, $start, $limit, $filter);
+			$list = $repo->getArrayEntityWithOneLevel($criteria, "id", $start, $limit, $filter);
 			$this->afterList($list);
 			
 			return $this->get("talker")->response($list);
 			
 		}else{
-			
 			$bundleName = $this->getBundleName();
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
 			$list = $repo->getArrayEntityWithOneLevel(array("id" => $id));
@@ -195,10 +203,10 @@ abstract class Controller extends SymfonyController {
 	
 	protected function getBundleName(){
 		$request = $this->get("request");
-		$controller = $request->attributes->get('_controller');
-		$matches    = explode("\\", $controller);
+		$controller = $request->attributes->get('_controller');		
+		$matches    = explode("\\", $controller);		
 		if(count($matches) > 1)
-			return  $matches[1];
+			return  $matches[2];
 		else{
 			$matches = explode(":", $controller);
 			return  $matches[0];
@@ -214,7 +222,7 @@ abstract class Controller extends SymfonyController {
 			case 'GET':
 				return $this->listAction();
 				break;
-			case 'POST':
+			case 'POST':				
 				return $this->saveAction();
 				break;
 			case 'PUT':
@@ -268,19 +276,13 @@ abstract class Controller extends SymfonyController {
 			throw new RuntimeException($errors->__toString());
 		}
 		$em->flush();
+		//echo $entity;
 		return $entity;
 	}
 	
 	public function updateAction($id = null) {
-		if(!is_null($id)){
-			$bundleName = $this->getBundleName();
-			$em = $this->getDoctrine()->getEntityManager();
-			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$ec = $repo->find($id);
-		}else{
-			$ec = $this->getRequestEntity();
-		}
 		
+		$ec = $this->getRequestEntity($id);		
 		if(is_null($ec->getId())){
 			throw new \Exception("Entity not found");
 		}

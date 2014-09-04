@@ -22,3 +22,15 @@ admin_team_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
+      
+admin_team_image:
+    pattern:  /image/{id}
+    defaults: { _controller: LiderBundle:Team:setImage }
+    methods:  [POST]
+    requirements:
+      id: \d+
+      
+admin_team_geneate:
+    pattern:  /generate
+    defaults: { _controller: LiderBundle:Team:generateTeam }
+    methods:  [GET]   

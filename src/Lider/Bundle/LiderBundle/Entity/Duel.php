@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Duel class
  * @ORM\Table(name="duel")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class Duel extends Entity
 {
@@ -75,6 +75,20 @@ class Duel extends Entity
 	 */
 	private $active = true;
 
+	
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
+	 * @ORM\JoinColumn(name="player_win_id", referencedColumnName="id")
+	 */
+	private $player_win;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
+	 * @ORM\JoinColumn(name="player_lost_id", referencedColumnName="id")
+	 */	
+	private $player_lost;
+  
 
     /**
      * Get id
@@ -291,5 +305,97 @@ class Duel extends Entity
     public function getPlayerTwo()
     {
         return $this->player_two;
+    }
+
+    /**
+     * Set player_win_id
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerWinId
+     * @return Duel
+     */
+    public function setPlayerWinId(\Lider\Bundle\LiderBundle\Entity\Player $playerWinId = null)
+    {
+        $this->player_win_id = $playerWinId;
+
+        return $this;
+    }
+
+    /**
+     * Get player_win_id
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     */
+    public function getPlayerWinId()
+    {
+        return $this->player_win_id;
+    }
+
+    /**
+     * Set player_lost_id
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerLostId
+     * @return Duel
+     */
+    public function setPlayerLostId(\Lider\Bundle\LiderBundle\Entity\Player $playerLostId = null)
+    {
+        $this->player_lost_id = $playerLostId;
+
+        return $this;
+    }
+
+    /**
+     * Get player_lost_id
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     */
+    public function getPlayerLostId()
+    {
+        return $this->player_lost_id;
+    }
+
+    /**
+     * Set player_win
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerWin
+     * @return Duel
+     */
+    public function setPlayerWin(\Lider\Bundle\LiderBundle\Entity\Player $playerWin = null)
+    {
+        $this->player_win = $playerWin;
+
+        return $this;
+    }
+
+    /**
+     * Get player_win
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     */
+    public function getPlayerWin()
+    {
+        return $this->player_win;
+    }
+
+    /**
+     * Set player_lost
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerLost
+     * @return Duel
+     */
+    public function setPlayerLost(\Lider\Bundle\LiderBundle\Entity\Player $playerLost = null)
+    {
+        $this->player_lost = $playerLost;
+
+        return $this;
+    }
+
+    /**
+     * Get player_lost
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     */
+    public function getPlayerLost()
+    {
+        return $this->player_lost;
     }
 }

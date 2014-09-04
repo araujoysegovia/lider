@@ -35,7 +35,8 @@ class ExceptionListener
         if ($exception instanceof HttpExceptionInterface) {
             $response->headers->replace($exception->getHeaders());
         }
-            $response->setStatusCode($code);
+        //$code=200;
+        $response->setStatusCode($code);
         $event->setResponse($response);
     }
 }

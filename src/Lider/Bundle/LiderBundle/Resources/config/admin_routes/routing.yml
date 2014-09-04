@@ -1,49 +1,71 @@
+admin_index_page:
+    path:     /
+    defaults: { _controller: LiderBundle:RoutingAdmin:loginPage }
+
+admin_google_login_check:
+    pattern: /check/google
+
 admin_login_check:
-    pattern: /login-check
+    pattern: /check
 
 admin_logout:
-    path:   /admin/logout
+    path:   /logout
 
 admin_index_page:
     path:     /
-    defaults: { _controller: LiderBundle:Routing:loginPage }
+    defaults: { _controller: LiderBundle:RoutingAdmin:loginPage }
 
 admin_home_page:
-    path:	/admin/home
-    defaults: { _controller: LiderBundle:Routing:homePage }
+    path:	/home
+    defaults: { _controller: LiderBundle:RoutingAdmin:homePage }
 
 admin_check_failure:
-    path:     /admin/logincheck/failure
-    defaults: { _controller: LiderBundle:Routing:loginFailure }
+    path:     /logincheck/failure
+    defaults: { _controller: LiderBundle:RoutingAdmin:loginFailure }
 
 admin_answer:
     resource: "@LiderBundle/Resources/config/admin_routes/answer_routing.yml"
-    prefix:   /admin/answer
+    prefix:   /home/answer
 
 admin_category:
     resource: "@LiderBundle/Resources/config/admin_routes/category_routing.yml"
-    prefix:   /admin/category
+    prefix:   /home/category
 
 admin_group:
     resource: "@LiderBundle/Resources/config/admin_routes/group_routing.yml"
-    prefix:   /admin/group
+    prefix:   /home/group
 
 admin_team:
     resource: "@LiderBundle/Resources/config/admin_routes/team_routing.yml"
-    prefix:   /admin/team
+    prefix:   /home/team
 
 admin_tournament:
     resource: "@LiderBundle/Resources/config/admin_routes/tournament_routing.yml"
-    prefix:   /admin/tournament
+    prefix:   /home/tournament
 
 admin_question:
     resource: "@LiderBundle/Resources/config/admin_routes/question_routing.yml"
-    prefix:   /admin/question
+    prefix:   /home/question
 
 admin_office:
     resource: "@LiderBundle/Resources/config/admin_routes/office_routing.yml"
-    prefix:   /admin/office
+    prefix:   /home/office
 
 admin_role:
     resource: "@LiderBundle/Resources/config/admin_routes/role_routing.yml"
-    prefix:   /admin/role
+    prefix:   /home/role
+
+admin_player:
+    resource: "@LiderBundle/Resources/config/admin_routes/player_routing.yml"
+    prefix:   /home/player
+    
+a_question_test:
+    pattern:  /test
+    defaults: { _controller: LiderBundle:Question:getTestQuestion }
+    methods:  [GET]
+
+a_answer_check:
+    pattern:  /answer/check
+    defaults: { _controller: LiderBundle:Question:checkAnswer }
+    methods:  [POST]    
+  

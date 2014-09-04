@@ -5,13 +5,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Serializer;
-use DialBoxes\AdminBundle\Lib\Normalizer;
-
+use Lider\Bundle\LiderBundle\Lib\Normalizer;
 
 class Talker{
 	
 	private $serializer;
 	private $normalizer;
+	private $em;
 
 	public function __construct($em, $co) {
 		$this->em = $em;
@@ -26,6 +26,10 @@ class Talker{
 					"xml" => new XmlEncoder()
 			)
 		);
+	}
+	
+	public function getEntityManager(){
+		return $this->em;
 	}
 	
 	public function getRequestData(){
@@ -56,9 +60,9 @@ class Talker{
 		return $obj;
 	} 
 	
-	public function denormalizeEntity($entity, $data){
-		$encoder = $this->getType();
-		$obj = $this->normalizer->denormalize($data, $entity, $encoder['type']);
+	public function denormalizeEntity($entity, $data){				
+		$encoder = $this->getType();		
+		$obj = $this->normalizer->denormalize($data, $entity, $encoder['type']);		
 		return $obj;
 	}
 

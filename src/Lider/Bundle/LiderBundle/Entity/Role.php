@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Role\RoleInterface;
 /**
  * Role class
  * @ORM\Table(name="roles")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class Role extends Entity implements RoleInterface, \Serializable
 {

@@ -24,13 +24,11 @@ class DefaultController extends SymfonyController
     	return new Response("Default data is created");
     }
     
-    
     public function getHomeAction()
     {
-         return $this->render('LiderBundle:Default:homeAdministrator.html.twig');
+         return $this->render('LiderBundle:Default:home.html.twig');
     }    
 
-    
     private function createDefaultUser($em, $role){
     	$user = new Player();
     	$user->setEmail("dmejia@araujoysegovia.com");
@@ -57,23 +55,31 @@ class DefaultController extends SymfonyController
     	$password = $codificador->encodePassword("araujo123", $user1->getSalt());
     	 
     	$user1->setPassword($password);
-    	
+
     	$em->persist($user1);
+
+
+
+
     }
     
     
     private function createDefaultRole($em){    	
     	$adminrole = new Role();    	
-    	$adminrole->setName("ROLE_ADMIN");
+    	$adminrole->setName("ADMIN");
     	$adminrole->setDescription("Administrator role");
     	$em->persist($adminrole);    	
     	
     	$userrole = new Role();
-    	$userrole->setName("ROLE_USER");
+    	$userrole->setName("USER");
     	$userrole->setDescription("Usuario role");
     	$em->persist($userrole);
     	
     	return $adminrole;
     }
-    
+
+    public function testSaveAction()
+    {
+    	return $this->render("LiderBundle:Administrator:playerImage.html.twig");
+    }
 }

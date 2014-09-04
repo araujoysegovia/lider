@@ -1,0 +1,19 @@
+login:
+    pattern:  /login
+    defaults: { _controller: LiderBundle:Player:login }
+
+login_google:
+    pattern:  /login/google
+    defaults: { _controller: LiderBundle:Player:loginWithGoogle }
+
+player_player:
+    resource: "@LiderBundle/Resources/config/player_routes/player_routing.yml"
+    prefix:   /home/player
+
+player_question:
+    resource: "@LiderBundle/Resources/config/player_routes/question_routing.yml"
+    prefix:   /home/question
+
+player_team:
+   resource: "@LiderBundle/Resources/config/player_routes/team_routing.yml"
+   prefix:   /home/team

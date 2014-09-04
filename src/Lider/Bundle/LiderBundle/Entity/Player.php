@@ -2,6 +2,7 @@
 namespace Lider\Bundle\LiderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUser as BaseOAuthUser;
@@ -9,10 +10,10 @@ use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 
 /**
  * Player class
- * @ORM\Table(name="player")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @ORM\Table(name="player", uniqueConstraints={@ORM\UniqueConstraint(name="player_email", columns={"email"})}))
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\PlayerRepository")
  */
-class Player implements AdvancedUserInterface, \Serializable{
+class Player extends Entity implements AdvancedUserInterface, \Serializable{
 	
 	/**
 	 * @ORM\Id
@@ -77,7 +78,31 @@ class Player implements AdvancedUserInterface, \Serializable{
 	 */
 	private $password;
 	
+	/**
+	 * @ORM\Column(type="integer", nullable=true)	 	 
+	 */
+	private $wonGames;
+
+	/**
+	 * @ORM\Column(type="integer", nullable=true)
+	 */
+	private $wonLost;
 	
+	/**
+	 * @ORM\Column(type="boolean", nullable = true)	 	 
+	 */
+	private $active = true;
+	
+    /**
+     * @ORM\Column(type="boolean", nullable = true)      
+     */
+    private $changePassword = true;
+
+    /**
+     * @ORM\OneToMany(targetEntity="PlayerPoint", mappedBy="player")
+     */
+    private  $playerPoints;
+
 	public function serialize()
 	{
 		return serialize(array($this->getId(), $this->getUsername()));
@@ -98,8 +123,8 @@ class Player implements AdvancedUserInterface, \Serializable{
 		return false;
 	}
 	
-	public function equals(UserInterface $user)
-	{
+	public function equals($user)
+	{		
 		return $user->getUsername() == $this->getUsername();
 	}
 	
@@ -152,6 +177,8 @@ class Player implements AdvancedUserInterface, \Serializable{
     public function __construct()
     {
         $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->playerPoints = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->password = "araujo123";
     }
 
     /**
@@ -336,5 +363,130 @@ class Player implements AdvancedUserInterface, \Serializable{
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * Set wonGames
+     *
+     * @param integer $wonGames
+     * @return Player
+     */
+    public function setWonGames($wonGames)
+    {
+        $this->wonGames = $wonGames;
+
+        return $this;
+    }
+
+    /**
+     * Get wonGames
+     *
+     * @return integer 
+     */
+    public function getWonGames()
+    {
+        return $this->wonGames;
+    }
+
+    /**
+     * Set wonLost
+     *
+     * @param integer $wonLost
+     * @return Player
+     */
+    public function setWonLost($wonLost)
+    {
+        $this->wonLost = $wonLost;
+
+        return $this;
+    }
+
+    /**
+     * Get wonLost
+     *
+     * @return integer 
+     */
+    public function getWonLost()
+    {
+        return $this->wonLost;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     * @return Player
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean 
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set changePassword
+     *
+     * @param boolean $changePassword
+     * @return Player
+     */
+    public function setChangePassword($changePassword)
+    {
+        $this->changePassword = $changePassword;
+
+        return $this;
+    }
+
+    /**
+     * Get changePassword
+     *
+     * @return boolean 
+     */
+    public function getChangePassword()
+    {
+        return $this->changePassword;
+    }
+
+    /**
+     * Add playerPoints
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\PlayerPoint $playerPoints
+     * @return Player
+     */
+    public function addPlayerPoint(\Lider\Bundle\LiderBundle\Entity\PlayerPoint $playerPoints)
+    {
+        $this->playerPoints[] = $playerPoints;
+
+        return $this;
+    }
+
+    /**
+     * Remove playerPoints
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\PlayerPoint $playerPoints
+     */
+    public function removePlayerPoint(\Lider\Bundle\LiderBundle\Entity\PlayerPoint $playerPoints)
+    {
+        $this->playerPoints->removeElement($playerPoints);
+    }
+
+    /**
+     * Get playerPoints
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPlayerPoints()
+    {
+        return $this->playerPoints;
     }
 }

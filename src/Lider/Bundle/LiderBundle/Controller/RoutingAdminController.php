@@ -2,13 +2,13 @@
 
 namespace Lider\Bundle\LiderBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\SecurityContext;
 
-class RoutingController extends Controller
+class RoutingAdminController extends SymfonyController
 {
     public function indexAction($name)
     {
@@ -17,7 +17,7 @@ class RoutingController extends Controller
 
 
     /**   
-     * @Template("LiderBundle:Lider:index.html.twig")
+     * @Template("LiderBundle:Administrator:index.html.twig")
      */
     public function loginPageAction(Request $request)
     {
@@ -32,7 +32,7 @@ class RoutingController extends Controller
             'error'         => $error,
         );
 
-    	//return $this->render('LiderBundle:Lider:index.html.twig');
+    	//return $this->render('LiderBundle:Administrator:index.html.twig');
     }
     
     public function loginFailureAction(Request $request)
@@ -47,11 +47,13 @@ class RoutingController extends Controller
     }
     
     /**   
-     * @Template("LiderBundle:Lider:home.html.twig")
+     * @Template("LiderBundle:Administrator:home.html.twig")
      */
     public function homePageAction(Request $request)
-    {    	
-		return array();
+    {    
+    	$em = $this->getDoctrine()->getEntityManager();
+    	$user = $this->container->get('security.context')->getToken()->getUser();
+		return array("user" => $user);
     	//return $this->render('LiderBundle:Lider:index.html.twig');
     }
 }

@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Team Tournament Point class
  * @ORM\Table(name="teamtournamentpoint")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class TeamTournamentPoint extends Entity
 {
@@ -37,6 +37,8 @@ class TeamTournamentPoint extends Entity
 	 * @Assert\NotBlank()
 	 */
 	private $point = 0;
+
+
 
     /**
      * Get id

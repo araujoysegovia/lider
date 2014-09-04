@@ -2,12 +2,14 @@
 namespace Lider\Bundle\LiderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Answer class
  * @ORM\Table(name="answer")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @MongoDB\EmbeddedDocument 
  */
 class Answer extends Entity
 {
@@ -25,7 +27,7 @@ class Answer extends Entity
 	private $answer;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"}, inversedBy="answers")
 	 * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
 	 * @Assert\NotBlank()
 	 */
@@ -35,6 +37,11 @@ class Answer extends Entity
 	 * @ORM\Column(type="boolean")
 	 */
 	private $selected = true;
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=true)
+	 */
+	private $help = true;
 
     /**
      * Get id
@@ -113,5 +120,28 @@ class Answer extends Entity
     public function getQuestion()
     {
         return $this->question;
+    }
+
+    /**
+     * Set help
+     *
+     * @param boolean $help
+     * @return Answer
+     */
+    public function setHelp($help)
+    {
+        $this->help = $help;
+
+        return $this;
+    }
+
+    /**
+     * Get help
+     *
+     * @return boolean 
+     */
+    public function getHelp()
+    {
+        return $this->help;
     }
 }

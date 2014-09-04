@@ -1,0 +1,47 @@
+player_player:
+    pattern:  /
+    defaults: { _controller: LiderBundle:Player:checkRoute }
+
+player_player_delete:
+    pattern:  /{id}
+    defaults: { _controller: LiderBundle:Player:delete }
+    methods:  [DELETE]
+    requirements:
+      id: \d+
+
+player_player_update:
+    pattern:  /{id}
+    defaults: { _controller: LiderBundle:Player:update }
+    methods:  [PUT]
+    requirements:
+      id: \d+
+
+player_player_getbyid:
+    pattern:  /{id}
+    defaults: { _controller: LiderBundle:Player:list }
+    methods:  [GET]
+    requirements:
+      id: \d+
+
+#Jugadores del equipo del usuario en session
+player_team_session:
+   pattern:  /team
+   defaults: { _controller: LiderBundle:Player:teamUserSession }
+   methods:  [GET]
+
+#Cambiar foto de perfil
+player_update_profile:
+    pattern:  /profile
+    defaults: { _controller: LiderBundle:Player:changePhoto }
+    methods:  [POST]
+
+#Cambiar contraseña del usuario
+player_update_password:
+    pattern:  /pass
+    defaults: { _controller: LiderBundle:Player:updatePassword }
+    methods:  [PUT]
+
+player_reset_password:
+    pattern:  /pass
+    defaults: { _controller: LiderBundle:Player:resetPassword }
+    methods:  [POST]

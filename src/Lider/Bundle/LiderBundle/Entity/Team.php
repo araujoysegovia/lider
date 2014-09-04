@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Team class
  * @ORM\Table(name="team")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
 class Team extends Entity
 {
@@ -27,8 +27,7 @@ class Team extends Entity
 	
 	
 	/**
-	 * @ORM\Column(type="string")
-	 * @Assert\NotBlank()
+	 * @ORM\Column(type="string", nullable = true)	 
 	 */
 	private $image;
 	
@@ -38,7 +37,7 @@ class Team extends Entity
 	 * @Assert\NotBlank()
 	 */
 	private $group;
-	
+
 	/**
 	 * @ORM\Column(type="boolean")
 	 */

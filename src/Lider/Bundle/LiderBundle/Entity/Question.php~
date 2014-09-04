@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Question class
  * @ORM\Table(name="question")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\QuestionRepository")
  */
 class Question extends Entity
 {
@@ -19,9 +19,8 @@ class Question extends Entity
 	private $id;
 	
 	/**
-	 * @ORM\Column(type="text", length=100)
+	 * @ORM\Column(type="text")
 	 * @Assert\NotBlank()
-	 * @Assert\Length(max=100)
 	 */
 	private $question;
 	
@@ -36,7 +35,28 @@ class Question extends Entity
 	 * @Assert\NotBlank()
 	 */
 	private $category;
+	
+	/**
+	 * @ORM\OneToMany(targetEntity="Answer", mappedBy="question")
+	 */
+	private $answers;
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=true)
+	 */
+	private $checked;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
+	 * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
+	 */
+	private $user;
 
+	/**
+	 * @ORM\Column(type="string", nullable = true)	 
+	 */
+	private $image;
+	
     /**
      * Get id
      *
@@ -114,5 +134,114 @@ class Question extends Entity
     public function getCategory()
     {
         return $this->category;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add answers
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Answer $answers
+     * @return Question
+     */
+    public function addAnswer(\Lider\Bundle\LiderBundle\Entity\Answer $answers)
+    {
+        $this->answers[] = $answers;
+
+        return $this;
+    }
+
+    /**
+     * Remove answers
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Answer $answers
+     */
+    public function removeAnswer(\Lider\Bundle\LiderBundle\Entity\Answer $answers)
+    {
+        $this->answers->removeElement($answers);
+    }
+
+    /**
+     * Get answers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAnswers()
+    {
+        return $this->answers;
+    }
+
+    /**
+     * Set checked
+     *
+     * @param boolean $checked
+     * @return Question
+     */
+    public function setChecked($checked)
+    {
+        $this->checked = $checked;
+
+        return $this;
+    }
+
+    /**
+     * Get checked
+     *
+     * @return boolean 
+     */
+    public function getChecked()
+    {
+        return $this->checked;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Player $user
+     * @return Question
+     */
+    public function setUser(\Lider\Bundle\LiderBundle\Entity\Player $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set image
+     *
+     * @param string $image
+     * @return Question
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return string 
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 }
