@@ -45,3 +45,17 @@ player_reset_password:
     pattern:  /pass
     defaults: { _controller: LiderBundle:Player:resetPassword }
     methods:  [POST]
+    
+#Duelo Actual
+player_current_duel:
+    pattern:  /duel
+    defaults: { _controller: LiderBundle:Duel:getCurrentDuel }
+    methods:  [GET]
+    
+#Duelo Actual
+player_current_duel:
+    pattern:  /duel/history
+    defaults: { _controller: LiderBundle:Duel:getHistoryDuel }
+    methods:  [GET]
+    
+    
