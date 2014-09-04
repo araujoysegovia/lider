@@ -1336,7 +1336,7 @@ var routerManager = Backbone.Router.extend({
 						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+						        
 					        '</form>'+					        
 					        '<ul class="nav navbar-nav navbar-right" style="margin-top:10px; margin-right: 10px;">'+
-					        	'<li><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Guardar</button></li>'+
+					        	'<li><button type="button" class="btn btn-success save-popup" data-toggle="modal" data-target="#myModal">Guardar</button></li>'+
 						    '</ul>'+
 				        '</div>'+
 			        '</nav>');
@@ -1347,14 +1347,17 @@ var routerManager = Backbone.Router.extend({
 		var content = $("<div></div>");
 		$("#entity-content").append(content);
 
+		var tb = null;
+
 		navBar.find("form").submit(function(e){
 			e.preventDefault();
 			
 			max = $("#max").val();
 			min = $("#min").val();
-			
-			// console.log(content)
-			var tb = new teamBuilder(content, min, max);
+						
+			tb = new teamBuilder(content, min, max);
+
+
 
 		});
 		
@@ -1368,18 +1371,55 @@ var routerManager = Backbone.Router.extend({
 						      '</div>'+
 						      '<div class="modal-body">'+	
 						      	'<form>'+
-						      		
+						      		'<div class="form-group">'+
+						      			'<label>Torneo</label>'+
+						      			'<select class="form-control select-tournaments"></select>'+
+						      		'</div>'+
+						      		'<div class="form-group">'+
+						      			'<label>Nombre de los equipos(separados por coma)</label>'+
+						      			'<textarea class="form-control" rows="3"></textarea>'+
+						      		'</div>'+
 						      	'</form>'+
 						      '</div>'+
 						      '<div class="modal-footer">'+
-						        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>'+
-						        '<button type="button" class="btn btn-primary">Save changes</button>'+
+						        '<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>'+
+						        '<button type="button" class="btn btn-primary save-teams">Guardar</button>'+
 						      '</div>'+
 						    '</div>'+
 						  '</div>'+
 						'</div>';
 
 		$("#entity-content").append(modal);
+
+		//Buscar torneos activos
+		$(".save-popup").click(function () {			
+			parameters = {
+				type: "GET",     
+	            url: "http://localhost/lider/web/app_dev.php/admin/home/tournament/active",		            
+	            contentType: 'application/json',
+	            dataType: "json",
+	            success: function(data){	            		
+	            		$(modal).find(".select-tournaments")
+	            		var select = $(modal).find(".select-tournaments");	            		
+	            		_.each(data, function (value, key) {
+	            			var option = $('<option value='+value.id+'>'+value.name+'</option>');
+	            			
+	            			$(".select-tournaments").append(option);
+	            		});            		
+	            },
+	            error: function(){},            
+			};
+			
+			$.ajax(parameters);	
+
+		});
+
+		$(".save-teams").click(function () {			
+			if(tb != null){
+				tb.jsonBuild();				
+			}
+		});
+		
 	}
 	
 });
@@ -1390,9 +1430,9 @@ $(document).ready(function () {
 	Backbone.history.start();
 });
 
-// /*
-//  * Acceder a la ruta para generar los equipos
-//  * */
+/**
+ * Acceder a la ruta para generar los equipos
+ */
 function generateTeam(){
 	
 	var router = new routerManager();	

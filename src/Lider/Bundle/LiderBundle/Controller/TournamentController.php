@@ -10,4 +10,16 @@ class TournamentController extends Controller
     	return "Tournament";
     }
 
+    /**
+     * Buscar torneos activos
+     */
+    public function activeTournamentAction()
+    {
+    	$em = $this->getDoctrine()->getEntityManager();
+    	$entity = $em->getRepository("LiderBundle:Tournament")->findBy(array("active" => true, "deleted" => false));
+    	if(!$entity)
+    		throw new \Exception("Entity no found");
+
+    	return $this->get("talker")->response($entity);
+    }
 }

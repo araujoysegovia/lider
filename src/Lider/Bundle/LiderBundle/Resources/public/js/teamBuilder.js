@@ -305,6 +305,9 @@ teamBuilder.prototype = {
 	    //ev.target.appendChild(document.getElementById(data));
 	},
 
+	/**
+	* Validar cantidad de jugadores en un equipo
+	*/	
 	validateNumberPlayers: function (obj) {
 		var me = this;
 		var numPlayers = obj.players ? obj.players.length : 0;
@@ -327,6 +330,9 @@ teamBuilder.prototype = {
 		}
 	},
 
+	/**
+	* Destruir un equipo
+	*/
 	destroyGroup: function(obj){
 		console.log(obj)
 		var me = this;
@@ -344,6 +350,9 @@ teamBuilder.prototype = {
 	    });
 	},
 
+	/**
+	* Crear un nuevo equipo
+	*/
 	makeGroup: function(obj){
 		var me = this;
 		obj.city.teams.lastItem++;
@@ -362,89 +371,23 @@ teamBuilder.prototype = {
 			me.destroyGroup(obj);
 		});
 		me.validateNumberPlayers(obj);
+	},
+
+	jsonBuild: function () {
+
+		var me = this;
+
+		console.log(me)
+		
+		var json = {};
+		_.each(me.cities, function (value, key) {
+			json['id'] = value.id,
+			json['name'] = value.name,
+			json['teams'] = value.teams
+		});
+
+		console.log(json)
 	}
 
 }
-
-/***** Funciones de arrastrar y soltar *****/
-
-// function allowDrop(ev) {
-	
-//     ev.preventDefault();
-// }
-
-// function drag(ev) {
-	
-//     ev.dataTransfer.setData("Text", ev.target.id);
-// 	//console.log(ev.toElement)
-// 	var p = $(ev.toElement).parent();
-// 	var abu = p.parent();
-// 	//console.log(p)
-// 	var numPlayers = p[0].childElementCount;
-// 	numPlayers = numPlayers-1;
-// 	//console.log(numPlayers)
-// 	//console.log(numPlayers+" < "+min+" || "+ numPlayers+" > "+ max)
-// 	if((numPlayers < min) || (numPlayers > max)){
-		
-// 		abu.removeClass("panel-warning");
-// 		abu.addClass("panel-danger");
-// 	}else{
-		
-// 		abu.removeClass("panel-warning");
-// 		abu.removeClass("panel-danger");
-// 		abu.addClass("panel-primary");
-// 	}	
-	
-// }
-
-// /*
-//  * Ingresar
-//  * */
-// function drop(ev, numTeam) {
-//     ev.preventDefault();
-//     var data = ev.dataTransfer.getData("Text");
-//     var player = $("div#"+data);
-//     var target =  $(ev.target);
-//     //console.log(target)
-//     if(target.hasClass("panel-body")){
-//     	$(ev.target).append(player);
-//     }else{
-//     	var parent = target.parents("div.panel-body-team");
-//     	if(parent.length >0 ){
-//     		parent.append(player)
-// //    		console.log(parent)
-    		
-//     		var numPlayers = parent[0].childElementCount;
-
-// //    		console.log(numPlayers)
-//     		//console.log(numPlayers+" < "+min+" || "+ numPlayers+" >"+ max)
-//     		if((numPlayers < min) || (numPlayers > max)){
-//     			//console.log("entro")
-// //    			console.log(parent.parent().children(".title-team"))
-//     			var t = parent.parent().children(".title-team");
-// //    			t.css("background", "red");
-//     			parent.parent().removeClass("panel-warning");
-//     			parent.parent().addClass("panel-danger");
-//     		}else{
-    			
-//     			var panel = parent.parent(); /* Panel del equipo */
-//     			panel.removeClass("panel-warning");
-//     			panel.removeClass("panel-danger");
-//     			panel.addClass("panel-primary");
-
-//     			if(panel.hasClass("panel-team-out")){
-//     				panel.children(".title-team").empty();
-    				
-
-//     				var newTitle = $('<label>Equipo '+(numTeam+1)+'<label>');
-//     				panel.children(".title-team").append(newTitle);
-//     			}
-    			
-//     		}
-    		
-//     	}
-//     }
-    
-//     //ev.target.appendChild(document.getElementById(data));
-// }
 

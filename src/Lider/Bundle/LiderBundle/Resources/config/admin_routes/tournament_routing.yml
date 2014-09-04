@@ -22,3 +22,10 @@ admin_tournament_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
+
+#Torneos activos
+admin_tournament_active:
+    pattern:  /active
+    defaults: { _controller: LiderBundle:Tournament:activeTournament }
+    methods:  [GET]
+
