@@ -2,12 +2,14 @@
 namespace Lider\Bundle\LiderBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Answer class
  * @ORM\Table(name="answer")
  * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @MongoDB\EmbeddedDocument 
  */
 class Answer extends Entity
 {

@@ -82,10 +82,22 @@
 
 /***************************** Estilos generador de equipos **************************/
 
+
+
 .navbar > .collapse > .navbar-form > .form-group > input {
 	margin-right: 5px;
 	width: 90px;
 	text-align: center;
+}
+
+.panel-heading > div > h2 {
+	display: inline;
+}
+
+.panel-heading > div > button {
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
 }
 
 .panel-team{
@@ -98,7 +110,7 @@
 	min-width: 200px;
 	float: left;
 	margin-right: 20px;
-	border-color: #F0AD4E;
+	/*border-color: #F0AD4E;*/
 }
 
 .panel-player{

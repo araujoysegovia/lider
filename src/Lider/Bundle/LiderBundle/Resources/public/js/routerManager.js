@@ -1,4 +1,5 @@
 var max, min;
+
 var routerManager = Backbone.Router.extend({
 
 	routes: {
@@ -1323,64 +1324,62 @@ var routerManager = Backbone.Router.extend({
 		
 		//console.log(data)	
 		
-		var navBar = $('<nav class="navbar navbar-default" role="navigation">'+						
+		var navBar = $('<nav class="navbar navbar-default" role="navigation">'+	
 					 	'<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">'+
 						 	'<form class="navbar-form navbar-left" role="search">'+
-						        '<div class="form-group">'+						          						         
-						          '<input id="max"  type="number" class="form-control" placeholder="Máximo">'+
-						        '</div>'+
-						        '<div class="form-group">'+						         						          
+						 		'<div class="form-group">'+						         						          
 						          '<input id="min"  type="number" class="form-control" placeholder="Minimo">'+
 						        '</div>'+
-						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+
-					        '</form>'+
+						        '<div class="form-group">'+						          						         
+						          '<input id="max"  type="number" class="form-control" placeholder="Máximo">'+
+						        '</div>'+						        
+						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+						        
+					        '</form>'+					        
+					        '<ul class="nav navbar-nav navbar-right" style="margin-top:10px; margin-right: 10px;">'+
+					        	'<li><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Guardar</button></li>'+
+						    '</ul>'+
 				        '</div>'+
 			        '</nav>');
 		
 		$("#entity-content").append(navBar);
 		
+
+		var content = $("<div></div>");
+		$("#entity-content").append(content);
+
 		navBar.find("form").submit(function(e){
 			e.preventDefault();
 			
 			max = $("#max").val();
 			min = $("#min").val();
 			
-			parameters = {
-					type: "GET",     
-		            url: "http://soylider.sifinca.net/admin/home/team/generate?max="+max+"&min="+min,
-		            //data: data,
-		            contentType: 'application/json',
-		            dataType: "json",
-		            success: function(data){
-//		            	console.log(data)
-		            	cities = data['cities'];
-		            	_.each(cities, function(value, key){
-		            		console.log(value)
-		            		var panel = $('<div id="panel-'+key+'" class="panel-city">'+
-		            						'<div class="panel-heading"><h4>'+key+'</h4><hr></div>'+
-		            						'<div class="panel-body">'+
-		            							'<div class="info-city">'+
-		            								'<label>Total de jugadores: '+value.totalPlayers+'</label>'+
-		            								'<label>Total de equipos: '+value.totalTeam+'</label>'+		            								
-		            							'</div>'+
-		            						'</div>'+ 
-		            					 '</div>');
-		            		
-		            		$("#entity-content").append(panel);
-		            	
-		            		teamsCity(value.teams, panel.find("div.panel-body"), value.out);
-		            	})
-		            },
-		            error: function(){},
-				};
-			
-			var ajax = $.ajax(parameters);
-			
-			//console.log(ajax)
+			// console.log(content)
+			var tb = new teamBuilder(content, min, max);
+
 		});
 		
+		var modal = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
+						  '<div class="modal-dialog">'+
+						    '<div class="modal-content">'+
+						      '<div class="modal-header">'+
+						        '<button type="button" class="close" data-dismiss="modal">'+
+						        '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
+						        '<h4 class="modal-title" id="myModalLabel">Guardar equipos</h4>'+
+						      '</div>'+
+						      '<div class="modal-body">'+	
+						      	'<form>'+
+						      		
+						      	'</form>'+
+						      '</div>'+
+						      '<div class="modal-footer">'+
+						        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>'+
+						        '<button type="button" class="btn btn-primary">Save changes</button>'+
+						      '</div>'+
+						    '</div>'+
+						  '</div>'+
+						'</div>';
 
-		
+		$("#entity-content").append(modal);
 	}
 	
 });
@@ -1391,9 +1390,9 @@ $(document).ready(function () {
 	Backbone.history.start();
 });
 
-/*
- * Acceder a la ruta para generar los equipos
- * */
+// /*
+//  * Acceder a la ruta para generar los equipos
+//  * */
 function generateTeam(){
 	
 	var router = new routerManager();	
@@ -1401,123 +1400,136 @@ function generateTeam(){
 	Backbone.history.navigate("generateTeams", true);
 }
 
-function teamsCity(teams, content, out){
-	
-	_.each(teams, function(value, key){
-		
-		var panel = $('<div class="panel panel-primary panel-team" ondrop="drop(event)" ondragover="allowDrop(event)">'+
-							'<div class="panel-heading title-team">'+value.name+'</div>'+
-							'<div class="panel-body panel-body-team">'+
-							'</div>'+ 
-					   '</div>');
-		
-		content.append(panel);
+// function teamsCity(city, teams, content, out){	
 
-		playersTeam(value.players, panel.find("div.panel-body"));
-	});
 	
-	
-	if(out.length > 0){		
-		var panelOut = $('<div class="panel panel-warning panel-team-out" ondrop="drop(event)" ondragover="allowDrop(event)">'+
-							'<div class="panel-heading title-team">Sin equipo</div>'+
-							'<div class="panel-body panel-body-team">'+
-							'</div>'+ 
-					   '</div>');
+// 	_.each(teams, function(value, key){
 		
-		panelOut.children('.title-team').addClass("team-out");
-		content.append(panelOut);
+// 		var panel = $('<div class="panel panel-primary panel-team" ondrop="drop(event)" ondragover="allowDrop(event)">'+
+// 							'<div class="panel-heading title-team">'+value.name+'</div>'+
+// 							'<div class="panel-body panel-body-team">'+
+// 							'</div>'+ 
+// 					   '</div>');
+		
+// 		content.append(panel);
 
-		playersTeam(out, panelOut.find("div.panel-body"));
-	}
-}
-
-function playersTeam(players, content){
+// 		playersTeam(value.players, panel.find("div.panel-body"));
+// 	});
 	
-	_.each(players, function(value, key){
-		if(value){
-			var img = value.image;
-			if(!img){
-				img = 'http://soylider.sifinca.net/bundles/lider/images/avatar.png'
-			}
-			var panel = $('<div id="player-'+value.id+'" class="panel-player" draggable="true" ondragstart="drag(event)">'+
-							'<div class="img-player">'+
-								'<img src='+img+'>'+
-							'</div>'+
-							'<div class="name-player"><p>'+value.name.toLowerCase() +'</p></div>'+
-						+'</div>');
+	
+// 	if(out.length > 0){	
+
+// 		var panelOut = $('<div class="panel panel-warning panel-team-out" ondrop="drop(event, '+teams.length+')" ondragover="allowDrop(event)">'+
+// 							'<div class="panel-heading title-team">Sin equipo</div>'+
+// 							'<div class="panel-body panel-body-team">'+
+// 							'</div>'+ 
+// 					   '</div>');
+		
+// 		panelOut.children('.title-team').addClass("team-out");
+// 		content.append(panelOut);
+
+// 		playersTeam(out, panelOut.find("div.panel-body"));
+// 	}
+// }
+
+// function playersTeam(players, content){
+	
+// 	_.each(players, function(value, key){
+// 		if(value){
+// 			var img = value.image;
+// 			if(!img){
+// 				img = 'http://soylider.sifinca.net/bundles/lider/images/avatar.png'
+// 			}
+// 			var panel = $('<div id="player-'+value.id+'" class="panel-player" draggable="true" ondragstart="drag(event)">'+
+// 							'<div class="img-player">'+
+// 								'<img src='+img+'>'+
+// 							'</div>'+
+// 							'<div class="name-player"><p>'+value.name.toLowerCase() +'</p></div>'+
+// 						+'</div>');
 
 			
-			content.append(panel);
-		}
+// 			content.append(panel);
+// 		}
 
-	})
-}
+// 	})
+// }
 
-function allowDrop(ev) {
+// function allowDrop(ev) {
 	
-    ev.preventDefault();
-}
+//     ev.preventDefault();
+// }
 
-function drag(ev) {
+// function drag(ev) {
 	
-    ev.dataTransfer.setData("Text", ev.target.id);
-	//console.log(ev.toElement)
-	var p = $(ev.toElement).parent();
-	var abu = p.parent();
-	console.log(p)
-	var numPlayers = p[0].childElementCount;
-	//console.log(abu)
-	if((numPlayers < min) || (numPlayers > max)){
-		console.log("entro 2")
-//		console.log(parent.parent().children(".title-team"))		
-//		t.css("background", "red");
-		abu.removeClass("panel-warning");
-		abu.addClass("panel-danger");
-	}else{
+//     ev.dataTransfer.setData("Text", ev.target.id);
+// 	//console.log(ev.toElement)
+// 	var p = $(ev.toElement).parent();
+// 	var abu = p.parent();
+// 	//console.log(p)
+// 	var numPlayers = p[0].childElementCount;
+// 	numPlayers = numPlayers-1;
+// 	//console.log(numPlayers)
+// 	//console.log(numPlayers+" < "+min+" || "+ numPlayers+" > "+ max)
+// 	if((numPlayers < min) || (numPlayers > max)){
 		
-		abu.removeClass("panel-warning");
-		abu.removeClass("panel-danger");
-		abu.addClass("panel-primary");
-	}	
+// 		abu.removeClass("panel-warning");
+// 		abu.addClass("panel-danger");
+// 	}else{
+		
+// 		abu.removeClass("panel-warning");
+// 		abu.removeClass("panel-danger");
+// 		abu.addClass("panel-primary");
+// 	}	
 	
-}
+// }
 
-/*
- * Ingresar
- * */
-function drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("Text");
-    var player = $("div#"+data);
-    var target =  $(ev.target);
-    //console.log(target)
-    if(target.hasClass("panel-body")){
-    	$(ev.target).append(player);
-    }else{
-    	var parent = target.parents("div.panel-body-team");
-    	if(parent.length >0 ){
-    		parent.append(player)
-//    		console.log(parent)
+// /*
+//  * Ingresar
+//  * */
+// function drop(ev, numTeam) {
+//     ev.preventDefault();
+//     var data = ev.dataTransfer.getData("Text");
+//     var player = $("div#"+data);
+//     var target =  $(ev.target);
+//     //console.log(target)
+//     if(target.hasClass("panel-body")){
+//     	$(ev.target).append(player);
+//     }else{
+//     	var parent = target.parents("div.panel-body-team");
+//     	if(parent.length >0 ){
+//     		parent.append(player)
+// //    		console.log(parent)
     		
-    		var numPlayers = parent[0].childElementCount;
-//    		console.log(numPlayers)
-    		//console.log(numPlayers+" < "+min+" || "+ numPlayers+" >"+ max)
-    		if((numPlayers < min) || (numPlayers > max)){
-    			console.log("entro")
-//    			console.log(parent.parent().children(".title-team"))
-    			var t = parent.parent().children(".title-team");
-//    			t.css("background", "red");
-    			parent.parent().removeClass("panel-warning");
-    			parent.parent().addClass("panel-danger");
-    		}else{
+//     		var numPlayers = parent[0].childElementCount;
+
+// //    		console.log(numPlayers)
+//     		console.log(numPlayers+" < "+min+" || "+ numPlayers+" >"+ max)
+//     		if((numPlayers < min) || (numPlayers > max)){
+//     			//console.log("entro")
+// //    			console.log(parent.parent().children(".title-team"))
+//     			var t = parent.parent().children(".title-team");
+// //    			t.css("background", "red");
+//     			parent.parent().removeClass("panel-warning");
+//     			parent.parent().addClass("panel-danger");
+//     		}else{
     			
-    			parent.parent().removeClass("panel-warning");
-    			parent.parent().removeClass("panel-danger");
-    			parent.parent().addClass("panel-primary");
-    		}
+//     			var panel = parent.parent(); /* Panel del equipo */
+//     			panel.removeClass("panel-warning");
+//     			panel.removeClass("panel-danger");
+//     			panel.addClass("panel-primary");
+
+//     			if(panel.hasClass("panel-team-out")){
+//     				panel.children(".title-team").empty();
+    				
+
+//     				var newTitle = $('<label>Equipo '+(numTeam+1)+'<label>');
+//     				panel.children(".title-team").append(newTitle);
+//     			}
+    			
+//     		}
     		
-    	}
-    }
+//     	}
+//     }
     
-    //ev.target.appendChild(document.getElementById(data));
-}
+//     //ev.target.appendChild(document.getElementById(data));
+// }

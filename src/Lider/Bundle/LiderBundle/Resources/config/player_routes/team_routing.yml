@@ -1,4 +1,4 @@
-player_team:
+player_team_route:
     pattern:  /
     defaults: { _controller: LiderBundle:Team:checkRoute }
 

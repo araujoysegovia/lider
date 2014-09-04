@@ -22,13 +22,26 @@ player_player_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
-      
-player_team:
+
+#Jugadores del equipo del usuario en session
+player_team_session:
    pattern:  /team
    defaults: { _controller: LiderBundle:Player:teamUserSession }
    methods:  [GET]
 
+#Cambiar foto de perfil
 player_update_profile:
     pattern:  /profile
     defaults: { _controller: LiderBundle:Player:changePhoto }
-    methods:  [POST]    
+    methods:  [POST]
+
+#Cambiar contraseña del usuario
+player_update_password:
+    pattern:  /pass
+    defaults: { _controller: LiderBundle:Player:updatePassword }
+    methods:  [PUT]
+
+player_reset_password:
+    pattern:  /pass
+    defaults: { _controller: LiderBundle:Player:resetPassword }
+    methods:  [POST]

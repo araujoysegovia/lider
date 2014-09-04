@@ -1,0 +1,136 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * @MongoDB\Document
+ */
+class ReportQuestion
+{
+    /**
+     * @MongoDB\Id  
+     */
+    private $id;
+    
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Player") 
+     */
+    private $player;
+    
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Question") 
+     */
+    private $question;
+    
+    /**
+     * @MongoDB\String
+     */
+    private $reportText;
+
+    /**
+     * @MongoDB\Date
+     */
+	private  $reportDate;
+    
+
+
+    /**
+     * Get id
+     *
+     * @return id $id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set player
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Player $player
+     * @return self
+     */
+    public function setPlayer(\Lider\Bundle\LiderBundle\Document\Player $player)
+    {
+        $this->player = $player;
+        return $this;
+    }
+
+    /**
+     * Get player
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Player $player
+     */
+    public function getPlayer()
+    {
+        return $this->player;
+    }
+
+    /**
+     * Set question
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Question $question
+     * @return self
+     */
+    public function setQuestion(\Lider\Bundle\LiderBundle\Document\Question $question)
+    {
+        $this->question = $question;
+        return $this;
+    }
+
+    /**
+     * Get question
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Question $question
+     */
+    public function getQuestion()
+    {
+        return $this->question;
+    }
+
+    /**
+     * Set reportText
+     *
+     * @param string $reportText
+     * @return self
+     */
+    public function setReportText($reportText)
+    {
+        $this->reportText = $reportText;
+        return $this;
+    }
+
+    /**
+     * Get reportText
+     *
+     * @return string $reportText
+     */
+    public function getReportText()
+    {
+        return $this->reportText;
+    }
+
+    /**
+     * Set reportDate
+     *
+     * @param date $reportDate
+     * @return self
+     */
+    public function setReportDate($reportDate)
+    {
+        $this->reportDate = $reportDate;
+        return $this;
+    }
+
+    /**
+     * Get reportDate
+     *
+     * @return date $reportDate
+     */
+    public function getReportDate()
+    {
+        return $this->reportDate;
+    }
+}

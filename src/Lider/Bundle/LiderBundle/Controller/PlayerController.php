@@ -121,6 +121,7 @@ class PlayerController extends Controller
     			"office" => $office,
     			"roles" => $roles,
     			"team" => array(),
+                "changePassword" => $user->getChangePassword()
     	);
     	
     	$team = $user->getTeam();
@@ -214,10 +215,9 @@ class PlayerController extends Controller
             $dm->persist($session);
             $dm->flush();
         }
-        //echo $user->getTeam()->getId();
+        
         $arr = array();
-        $roles = array();
-        //print_r($user->getRoles()->getId());
+        $roles = array();        
         foreach($user->getRoles() as $key => $value){
             $roles[$key] = array(
                 "id" => $value->getId(),
@@ -233,6 +233,8 @@ class PlayerController extends Controller
         
         $team = $user->getTeam();
         
+
+
         $arr['user'] = array(
             "email" => $user->getEmail(),
             "name" => $user->getName(),
@@ -241,6 +243,13 @@ class PlayerController extends Controller
             "office" => $office,
             "roles" => $roles,
             "team" => array(),
+            "changePassword" => $user->getChangePassword(),
+            "gameInfo" => array(
+                'win' => 0,
+                'lost' => 0,
+                'points' => 0
+            )
+            
         );
         
         if($team){
@@ -249,14 +258,26 @@ class PlayerController extends Controller
         		"name" => $user->getTeam()->getName()        		
         	) ;
         }
-        
 
-        $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
-        $arr['user']['gameInfo'] = $playerGameInfo;
+        $points = $user->getPlayerPoints()->toArray();
+
+        foreach ($points as $value) {
+            if($value->getTournament()->getActive()){
+                $arr['user']['win'] += $value->getWin();
+                $arr['user']['lost'] += $value->getLost();
+                $arr['user']['points'] += $value->getPoints();
+            }
+        }
+
+        // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
+        // $arr['user']['gameInfo'] = $playerGameInfo;
                
         return $this->get("talker")->response($arr);
     }
     
+    /**
+    * Devulve jugadores del equipo del usuario en session
+    */
     public function teamUserSessionAction() {
     
     	$user = $this->container->get('security.context')->getToken()->getUser();
@@ -269,6 +290,9 @@ class PlayerController extends Controller
     	return $this->get("talker")->response($entities);
     } 
     
+    /**
+     * Cambiar la foto de perfil del usuario
+     */
     public function changePhotoAction() {
     	 
     	$em = $this->getDoctrine()->getEntityManager();
@@ -300,5 +324,68 @@ class PlayerController extends Controller
 				"message" => $this->save_successful,
     			"image" => $image->getId()
 		));
+    }
+
+    /**
+     * Actualizar password del usuario
+     */
+    public function updatePasswordAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $request = $this->get("request");
+        $data = $request->getContent();
+
+        $data = json_decode($data, true);
+
+        $oldPassword = $data['oldPassword'];
+        $newPassword = $data['newPassword'];
+ 
+        $user = $this->container->get('security.context')->getToken()->getUser();
+       
+        $oldPassword = $this->generatePass($oldPassword);
+        $newPassword = $this->generatePass($newPassword);
+
+        if($oldPassword != $user->getPassword()){
+            throw new \Exception("Wrong Password");            
+        }
+
+        $this->changePassword($newPassword);
+
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+    }
+
+    private function changePassword($password)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $user->setPassword($password);
+
+        $em->flush();
+    }
+
+    /**
+     * Actualizar la contraseña en el login o reseteada por el administrador
+     */
+    public function resetPasswordAction()
+    {      
+        $em = $this->getDoctrine()->getEntityManager();  
+
+        $request = $this->get("request");
+        $data = $request->getContent();
+        $data = json_decode($data, true);
+
+        $password = $data['password'];
+
+        $password = $this->generatePass($password);
+
+        $this->changePassword($password);
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $user->setChangePassword(false);
+
+        $em->flush();
+
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
 }

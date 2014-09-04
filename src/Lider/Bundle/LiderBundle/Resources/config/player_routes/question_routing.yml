@@ -2,8 +2,13 @@ question_test:
     pattern:  /test
     defaults: { _controller: LiderBundle:Question:getTestQuestion }
     methods:  [GET]
-    
+
 answer_check:
     pattern:  /answer/check
     defaults: { _controller: LiderBundle:Question:checkAnswer }
-    methods:  [POST]      
+    methods:  [POST]
+
+question_report:
+    pattern:  /report
+    defaults: { _controller: LiderBundle:Question:questionReport }
+    methods:  [POST]

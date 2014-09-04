@@ -77,3 +77,8 @@
 	float: left;
 }
 
+.login-form > form > .login-alert-danger{
+	position: absolute;
+	top: 340px;
+	left: 35%;
+}
