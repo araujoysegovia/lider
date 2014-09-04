@@ -324,4 +324,17 @@ class Player implements AdvancedUserInterface, \Serializable{
     {
         return $this->team;
     }
+
+    /**
+     * Set password
+     *
+     * @param string $password
+     * @return Player
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
 }
