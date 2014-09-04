@@ -74,7 +74,18 @@ class Duel extends Entity
 	 * @ORM\Column(type="boolean")
 	 */
 	private $active = true;
+	
+	/**
+	 * @ORM\Column(type="integer")
+	 * @Assert\NotBlank()
+	 */
+	private $count_question_one = 0;
 
+	/**
+	 * @ORM\Column(type="integer")
+	 * @Assert\NotBlank()
+	 */
+	private $count_question_two = 0;
 	
 	
 	/**

@@ -388,4 +388,5 @@ class PlayerController extends Controller
 
         return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
+    
 }

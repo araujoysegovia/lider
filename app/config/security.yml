@@ -50,7 +50,7 @@ security:
 
                 #opciones para redirigir en ingreso fallido 
                 failure_path: admin_index_page
-                failure_forward: true                
+                failure_forward: true
 
             logout:
                  path:   admin_logout

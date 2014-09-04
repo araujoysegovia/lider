@@ -29,7 +29,7 @@ class QuestionManager {
 		if(!(is_null($duelId))){
 			$duel = $this->em->getRepository("LiderBundle:Duel")->findOneBy(array("id" =>$duelId, "deleted" => false));
 			
-			$questionsDuel = $dm->createQueryBuilder('LiderBundle:DuelQuestion')	  
+			$questionsDuel = $this->dm->createQueryBuilder('LiderBundle:DuelQuestion')	  
 	    			            ->field('gameId')->equals($duel->getGame()->getId())
 							    ->getQuery()
 								->execute();
