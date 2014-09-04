@@ -69,6 +69,11 @@ class QuestionHistory
      */        
     private $answers; 
 
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Tournament") 
+     */ 
+    private $tournament;    
+
     public function __construct()
     {
         $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
@@ -332,5 +337,27 @@ class QuestionHistory
     public function getTimeOut()
     {
         return $this->timeOut;
+    }
+
+    /**
+     * Set tournament
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Tournament $tournament
+     * @return self
+     */
+    public function setTournament(\Lider\Bundle\LiderBundle\Document\Tournament $tournament)
+    {
+        $this->tournament = $tournament;
+        return $this;
+    }
+
+    /**
+     * Get tournament
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Tournament $tournament
+     */
+    public function getTournament()
+    {
+        return $this->tournament;
     }
 }
