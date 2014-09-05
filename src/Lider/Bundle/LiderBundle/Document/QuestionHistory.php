@@ -5,7 +5,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @MongoDB\Document
+ * @MongoDB\Document(repositoryClass="Lider\Bundle\LiderBundle\Repository\QuestionHistoryRepository")
  */
 class QuestionHistory
 {

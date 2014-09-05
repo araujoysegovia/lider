@@ -58,4 +58,15 @@ player_current_duel:
     defaults: { _controller: LiderBundle:Duel:getHistoryDuel }
     methods:  [GET]
     
-    
+#Estadisticas del usuario en session
+player_statistics:
+    pattern:  /statistics
+    defaults: { _controller: LiderBundle:Player:getStatistics }
+    methods:  [GET]
+
+#Estadisticas de un usuario
+player_statistics:
+    pattern:  /statistics/{playerId}
+    defaults: { _controller: LiderBundle:Player:getStatistics }
+    methods:  [GET]
+        

@@ -389,4 +389,23 @@ class PlayerController extends Controller
         return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
     
+    /**
+     * Estadisticas del usuario
+     */
+    public function getStatisticsAction($playerId){
+    	$em = $this->getDoctrine()->getEntityManager();
+    	$request = $this->get("request");
+    	$user = $this->container->get('security.context')->getToken()->getUser();
+    	if($playerId){    		
+    		$user = $em->getRepository("LiderBundle:Player")->find($playerId);
+    		if(!$user)
+    			throw new \Exception("User not found");
+    	}
+    	
+    	$dm = $this->get('doctrine_mongodb')->getManager();
+    	$statistics = $dm->getRepository("LiderBundle:QuestionHistory").getPlayerReports($user);
+    	
+    	return $this->get("talker")->response($statistics);
+    }
+    
 }
