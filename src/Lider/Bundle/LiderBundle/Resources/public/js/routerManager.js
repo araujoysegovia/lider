@@ -12,6 +12,7 @@ var routerManager = Backbone.Router.extend({
 		"offices" : "offices",
 		"teams" : "teams",
 		"generateTeams": "generateTeams",
+		"reportquestions": "reportquestions",
 	},
 
 	home: function() {
@@ -1214,7 +1215,9 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field: "group",
 					title:"Grupo",					
-					template:  "#: group.name #",
+					template:  function (e) {
+						return e.group ? e.group.name : "No definido";
+					},
 					editor:	function (container, options) {
 						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
@@ -1334,14 +1337,20 @@ var routerManager = Backbone.Router.extend({
 						          '<input id="max"  type="number" class="form-control" placeholder="Máximo">'+
 						        '</div>'+						        
 						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+						        
-					        '</form>'+					        
+					        '</form>'+		
+					        '<ul class="nav navbar-nav navbar-left nav-totales-team">'+
+        						'<li>Total de equipos: <label class="total-global-teams">0</label></li>'+
+        						'<li>Total de jugadores: <label class="total-global-players">0</label></li>'+
+        					'</ul>'+
 					        '<ul class="nav navbar-nav navbar-right" style="margin-top:10px; margin-right: 10px;">'+
-					        	'<li><button type="button" class="btn btn-success save-popup" data-toggle="modal" data-target="#myModal">Guardar</button></li>'+
+					        	'<li><button type="button" class="btn btn-success save-popup" >Guardar</button></li>'+
 						    '</ul>'+
 				        '</div>'+
 			        '</nav>');
 		
 		$("#entity-content").append(navBar);
+
+
 		
 
 		var content = $("<div></div>");
@@ -1356,11 +1365,9 @@ var routerManager = Backbone.Router.extend({
 			min = $("#min").val();
 						
 			tb = new teamBuilder(content, min, max);
-
-
-
 		});
 		
+
 		var modal = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
 						  '<div class="modal-dialog">'+
 						    '<div class="modal-content">'+
@@ -1377,7 +1384,7 @@ var routerManager = Backbone.Router.extend({
 						      		'</div>'+
 						      		'<div class="form-group">'+
 						      			'<label>Nombre de los equipos(separados por coma)</label>'+
-						      			'<textarea class="form-control" rows="3"></textarea>'+
+						      			'<textarea class="form-control name-teams" rows="3"></textarea>'+
 						      		'</div>'+
 						      	'</form>'+
 						      '</div>'+
@@ -1389,10 +1396,11 @@ var routerManager = Backbone.Router.extend({
 						  '</div>'+
 						'</div>';
 
-		$("#entity-content").append(modal);
-
 		//Buscar torneos activos
-		$(".save-popup").click(function () {			
+		navBar.find(".save-popup").click(function () {
+			var modalObj = $(modal);
+			modalObj.modal("show");
+
 			parameters = {
 				type: "GET",     
 	            url: "http://localhost/lider/web/app_dev.php/admin/home/tournament/active",		            
@@ -1402,7 +1410,7 @@ var routerManager = Backbone.Router.extend({
 	            		$(modal).find(".select-tournaments")
 	            		var select = $(modal).find(".select-tournaments");	            		
 	            		_.each(data, function (value, key) {
-	            			var option = $('<option value='+value.id+'>'+value.name+'</option>');
+	            			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
 	            			
 	            			$(".select-tournaments").append(option);
 	            		});            		
@@ -1412,14 +1420,187 @@ var routerManager = Backbone.Router.extend({
 			
 			$.ajax(parameters);	
 
+			//Guardar equipos generados en BD
+			modalObj.find(".save-teams").click(function () {	
+
+				var dataTeam = modalObj.find("select.select-tournaments option:selected").attr("data-team");
+				
+				if(dataTeam > 0){
+					var r = confirm("Este torneo ya tiene equipos registrados.\n Desea remplazarlos");
+					if(!r){
+						return false;
+					}
+				}
+
+				if(tb != null){
+
+					var tournament = $(".select-tournaments").val();
+					var nameTeams = $(".name-teams").val();				
+					
+					
+					if(typeof nameTeams != 'undefined'){
+						var names = nameTeams.split(",");					
+					}
+					
+					var n = names;
+					var json = {};
+
+					_.each(tb.cities, function (value, cityKey) {
+						city = {
+							"name": value.name,
+							"teams": {}
+						};
+						_.each(value.teams, function (v, k) {
+							if(n.length > 0){
+								var r = Math.random();
+								var pos =parseInt(r * n.length)
+								if(pos<0)pos++;
+								if(pos>(n.length))pos--;
+								var name = n[pos];
+								if(name.substring(0,1) == " "){
+									name = name.substring(1);
+								}
+								//console.log("Cambio de nombre al equipo "+v.name+" por "+ name +" de la ciudad de " + value.name)	
+								v.name = name;
+
+								n.splice(pos, 1);		
+							}
+
+							
+							var team = {
+								"name": v.name,
+								"players": {}
+							};
+							// delete v.city;
+							_.each(v.players, function (val, key) {	
+								//team['players'].push({"id" : val['id']});			
+							 	team['players'][key] = {
+							 		"id" : val.id
+							 	};
+							});
+
+							city['teams'][k] = team;
+							//city['teams'].push(team);
+						});	
+						json[cityKey] = city;
+						//json.push(city);
+					});
+
+					
+
+					var data = {
+						"cities" : json,
+						"tournament": tournament
+					};
+
+					//console.log(data)
+
+					parameters = {
+						type: "POST", 
+						data: JSON.stringify(data),
+						//data: data,
+			            url: "http://localhost/lider/web/app_dev.php/admin/home/team/save",		            
+			            contentType: 'application/json',
+			            dataType: "json",
+			            success: function(data){
+			            	
+			            },
+			            error: function(){},
+					};
+											
+					var ajax = $.ajax(parameters);										
+				}
+
+				modalObj.modal('hide')
+			});			
 		});
 
-		$(".save-teams").click(function () {			
-			if(tb != null){
-				tb.jsonBuild();				
-			}
-		});
+
 		
+	},
+
+	reportquestions: function () {
+		
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Inicio: "",
+		  	Categorias: "reportquestions"
+		});
+
+		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
+		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+
+		var questionReport = new Entity({
+			container:  $("#entity-content"),
+			url: "home/question/report",
+			title: "Preguntas Reportadas",
+			model: {
+				id: "id",
+				fields: {
+					id: { editable: false, nullable: true },
+				    reportText: { type: "string" },	
+				    player: {},
+				    question: {},
+				    checked:{
+				    	type: "checked"
+				    }
+				}
+			},
+			columns: [
+				{ 
+					field:"reportText", 
+					title: "Causa del reporte" 
+				},		
+				{ 
+					field: "player",
+					title:"Jugador",										
+					template:  function(e){												
+						if(e.player){
+							return e.player.name+" "+e.player.lastname;
+						}
+					},									
+				},		
+				{ 
+					field: "question",
+					title:"Pregunta",										
+					template:  function(e){												
+						if(e.question){
+							return "<b># "+e.question.questionId+": </b>"+e.question.question;
+						}
+					},									
+				}
+
+			],
+			command: [
+			    {
+			    	 text: "Solucionar",
+			    	 click: function (e) {
+			    		 console.log("verificar")
+			    		 e.preventDefault();
+
+		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+		                 var id = dataItem.id;		                
+		                 console.log(id)		
+		                 config = {
+				            type: "PUT",           
+				            url: "home/question/report/solve/" + id,					            
+				            contentType: "application/json",
+				            dataType: "json",
+				            //data: JSON.stringify(param),
+							success: function(){
+							   questionReport.grid.data('kendoGrid').dataSource.read();
+							   questionReport.grid.data('kendoGrid').refresh();
+							},
+							error: function(){}
+		                 }
+
+		                 $.ajax(config);
+							
+		             } 
+			    },			
+			],
+
+		});
 	}
 	
 });

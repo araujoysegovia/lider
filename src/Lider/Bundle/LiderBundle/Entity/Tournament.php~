@@ -41,7 +41,13 @@ class Tournament extends Entity
 	 * @ORM\Column(type="boolean")
 	 */
 	private $active = true;
-		
+     
+    /**
+     * @ORM\OneToMany(targetEntity="Team", mappedBy="tournament")
+     */
+    private $teams;
+    
+
     /**
      * Get id
      *

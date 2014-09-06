@@ -3,6 +3,7 @@ namespace Lider\Bundle\LiderBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @MongoDB\Document(repositoryClass="Lider\Bundle\LiderBundle\Repository\QuestionHistoryRepository")

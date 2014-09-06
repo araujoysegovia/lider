@@ -5,7 +5,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @MongoDB\Document
+ * @MongoDB\Document(repositoryClass="Lider\Bundle\LiderBundle\Repository\QuestionDocumentRepository")
  */
 class ReportQuestion
 {
@@ -34,7 +34,10 @@ class ReportQuestion
      */
 	private  $reportDate;
     
-
+    /**
+     * @MongoDB\Boolean
+     */    
+    private $solved = false;
 
     /**
      * Get id
@@ -132,5 +135,28 @@ class ReportQuestion
     public function getReportDate()
     {
         return $this->reportDate;
+    }
+
+
+    /**
+     * Set solved
+     *
+     * @param boolean $solved
+     * @return self
+     */
+    public function setSolved($solved)
+    {
+        $this->solved = $solved;
+        return $this;
+    }
+
+    /**
+     * Get solved
+     *
+     * @return boolean $solved
+     */
+    public function getSolved()
+    {
+        return $this->solved;
     }
 }

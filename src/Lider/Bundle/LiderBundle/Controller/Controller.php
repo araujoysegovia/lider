@@ -28,6 +28,8 @@ abstract class Controller extends SymfonyController {
 	
 	private $propertyChanged = array();
 	
+	public $documentNameSpace = "Lider\Bundle\LiderBundle\Document\\";
+
 	public function getAnswer($success, $message) {
 		return array (
 				"success" => $success,
@@ -424,5 +426,35 @@ abstract class Controller extends SymfonyController {
 		}
 		return $pass;
 	}
+
+	protected function normalizer($entity, $entityName){
+    	
+    	$em = $this->get('doctrine_mongodb')->getManager();
+    	$md = $em->getClassMetadata($entityName);
+    	
+    	$fm = $md->fieldMappings;
+    	$arr = array();
+    	foreach($fm as $key => $value)
+    	{
+    		if(array_key_exists("targetDocument", $value)){
+    			$arr[$key] = $this->normalizer($entity->{'get'.ucfirst($key)}(), $value['targetDocument']);
+    		}else{
+    			$arr[$key] = $entity->{'get'.ucfirst($key)}();	
+    		}
+    		
+    	}
+    	return $arr;
+    }
+    
+    protected function encode($array){
+    	$type = $this->get("ownRequest")->getType();
+    	$value = $this->get("ownRequest")->getSerialize()->encode($array, $type['type']);
+    	return $value;
+    }
+    
+    protected function serialize($entity){
+    	$arr = $this->normalizer($entity);
+    	return $this->encode($arr);
+    }
 	
 }

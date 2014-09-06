@@ -8,12 +8,11 @@ var teamBuilder = function () {
 
 teamBuilder.prototype = {
 
-	cities : [],
-	teams: [],
-	players: [],
+	cities : {},
 	container: null,
 	dragElement: null,
-
+	totalTeams: 0,
+	totalPlayers: 0,
 	constructor: function (container, min, max) {
 		this.container = container;
 		this.getData(min, max);
@@ -23,9 +22,7 @@ teamBuilder.prototype = {
 			
 		var me = this;
 
-		me.cities = [],
-		me.teams = [],
-		me.players = [],
+		me.cities = {},
 
 		parameters = {
 			type: "GET",     
@@ -78,7 +75,9 @@ teamBuilder.prototype = {
     		
     		city['htmlObject'] = panel;
     		me.cities[key] = city;
+
     		
+	    	
     		me.generateTeamsByCity(value.teams, city);    		
     		if(value.out && value.out.length > 0){
     			me.generateOut(value.out, city);	
@@ -89,9 +88,20 @@ teamBuilder.prototype = {
 					name : "Equipo "+(me.cities[key].lastItem)
 				};
 	    		me.generateTeamsByCity([t], city, false);
-	    		city.htmlObject.find(".total-team").html(city.teams.length);
+	    		city.htmlObject.find(".total-team").html(city.teams.length);				
+				//$(".total-global-teams").val(t++);
+				me.totalTeams = me.totalTeams+1;
+				$(".total-global-teams").text(me.totalTeams);
 	    	});
 
+			me.totalTeams = me.totalTeams + city.teams.length;
+    		//console.log(me.totalTeam)
+    		$(".total-global-teams").text(me.totalTeams);
+
+    		me.totalPlayers = me.totalTeams + value.totalPlayers;
+    		// console.log(me.totalPlayers)
+    		$(".total-global-players").text(me.totalPlayers);
+	    	
     	});
 
     
@@ -148,6 +158,7 @@ teamBuilder.prototype = {
 			panel.on("dragover", function (ev) {
 					ev.preventDefault();
 			});
+
 
 			me.generatePlayersList(value.players, team);
 
@@ -342,6 +353,8 @@ teamBuilder.prototype = {
 	    	if(value.name == obj.name){
 	    		obj.city['teams'].splice(key, 1);
 	    		obj.city.htmlObject.find(".total-team").html(obj.city.teams.length);
+	    		me.totalTeams = me.totalTeams-1;
+				$(".total-global-teams").text(me.totalTeams);
 	    		if(obj.city.outTeam){
 	    			obj.city.htmlObject.find(".total-out").html(obj.city.outTeam.players.length);	
 	    		}	    		
@@ -359,9 +372,14 @@ teamBuilder.prototype = {
 		var name = obj.city.name+" - Equipo "+(obj.city.teams.lastItem);
 		obj.name = name;
 		obj.out = false;
-		console.log(obj)
+		
 		//console.log(obj.city.teams);
-		obj.city.htmlObject.find(".total-team").html(obj.city.teams.length + 1);
+		var totalCityTeams = obj.city.htmlObject.find(".total-team").html(obj.city.teams.length + 1);
+		
+		me.totalTeams = me.totalTeams+1;
+		$(".total-global-teams").text(me.totalTeams);
+
+
 		obj.city.htmlObject.find(".total-out").html(obj.city.outTeam.length - 1);
 
 		obj.city.teams.push(obj);
@@ -373,21 +391,21 @@ teamBuilder.prototype = {
 		me.validateNumberPlayers(obj);
 	},
 
-	jsonBuild: function () {
+	// jsonBuild: function (nameTeams) {
 
-		var me = this;
+	// 	var me = this;
 
-		console.log(me)
+	// 	console.log(me)
 		
-		var json = {};
-		_.each(me.cities, function (value, key) {
-			json['id'] = value.id,
-			json['name'] = value.name,
-			json['teams'] = value.teams
-		});
+	// 	// var json = {};
+	// 	// _.each(me.cities, function (value, key) {
+	// 	// 	json['id'] = value.id,
+	// 	// 	json['name'] = value.name,
+	// 	// 	json['teams'] = value.teams
+	// 	// });
 
-		console.log(json)
-	}
+	// 	// console.log(json)
+	// }
 
 }
 

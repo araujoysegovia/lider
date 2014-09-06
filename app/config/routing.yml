@@ -1,7 +1,3 @@
 liderBundle:
     resource: "@LiderBundle/Resources/config/routing.yml"
     prefix:   /
-
-hwi_oauth_login:
-    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
-    prefix:   /admin/login-check

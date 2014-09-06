@@ -40,6 +40,7 @@ class Question extends QuestionEntity
      */
     private $categoryName;
 
+    
 
     public function getDataFromQuestionEntity(QuestionEntity $question)
     {

@@ -34,7 +34,6 @@ class Team extends Entity
 	/**
 	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"})
 	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
-	 * @Assert\NotBlank()
 	 */
 	private $group;
 
@@ -43,6 +42,12 @@ class Team extends Entity
 	 */
 	private $active = true;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="teams")
+     * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
+     * @Assert\NotBlank()
+     */
+    private $tournament;
 
     /**
      * Get id
@@ -145,4 +150,5 @@ class Team extends Entity
     {
         return $this->group;
     }
+
 }

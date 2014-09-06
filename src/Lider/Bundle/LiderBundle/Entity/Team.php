@@ -34,7 +34,6 @@ class Team extends Entity
 	/**
 	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"})
 	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
-	 * @Assert\NotBlank()
 	 */
 	private $group;
 
@@ -43,6 +42,12 @@ class Team extends Entity
 	 */
 	private $active = true;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="teams")
+     * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
+     * @Assert\NotBlank()
+     */
+    private $tournament;
 
     /**
      * Get id
@@ -144,5 +149,29 @@ class Team extends Entity
     public function getGroup()
     {
         return $this->group;
+    }
+
+
+    /**
+     * Set tournament
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Tournament $tournament
+     * @return Team
+     */
+    public function setTournament(\Lider\Bundle\LiderBundle\Entity\Tournament $tournament = null)
+    {
+        $this->tournament = $tournament;
+
+        return $this;
+    }
+
+    /**
+     * Get tournament
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Tournament 
+     */
+    public function getTournament()
+    {
+        return $this->tournament;
     }
 }

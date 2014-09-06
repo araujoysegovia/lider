@@ -136,6 +136,25 @@ class PlayerController extends Controller
     	
     	$playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
     	$arr['user']['gameInfo'] = $playerGameInfo;
+    	
+    	$statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
+        $statistics = $statistics->toArray();
+        $count=0;
+        
+        $objLost = $statistics[0]; 
+        $lost = $objLost["lost"];
+        $count += $objLost["count"];
+        
+        $objWin = $statistics[1];
+        $win = $objWin["win"];
+        $count += $objWin["count"];
+        
+        
+        $eff = 0;
+        if($count > 0)
+        	$eff = ($win * 100) / $count;
+        
+        $arr['user']["effectiveness"] = $eff;
     	 
     	return $this->get("talker")->response($arr);
     }
@@ -268,6 +287,25 @@ class PlayerController extends Controller
                 $arr['user']['points'] += $value->getPoints();
             }
         }
+        
+        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
+        $statistics = $statistics->toArray();
+        $count=0;
+        
+        $objLost = $statistics[0]; 
+        $lost = $objLost["lost"];
+        $count += $objLost["count"];
+        
+        $objWin = $statistics[1];
+        $win = $objWin["win"];
+        $count += $objWin["count"];
+        
+        
+        $eff = 0;
+        if($count > 0)
+        	$eff = ($win * 100) / $count;
+        
+        $arr['user']["effectiveness"] = $eff;
 
         // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
         // $arr['user']['gameInfo'] = $playerGameInfo;
@@ -284,10 +322,15 @@ class PlayerController extends Controller
     	//echo $user->getId();
     	$em = $this->getDoctrine()->getEntityManager();
      	
-    	$entities = $em->getRepository("LiderBundle:Player")->getArrayEntityWithOneLevel(
-    					 array("team"=>$user->getTeam()->getId(), "deleted" => false));
+        if($user->getTeam()){
+            $entities = $em->getRepository("LiderBundle:Player")->getArrayEntityWithOneLevel(
+                         array("team"=>$user->getTeam()->getId(), "deleted" => false));
+        
+            return $this->get("talker")->response($entities);
+        }else{
+            return $this->get("talker")->response(array("total"=>0, "data"=>array()));
+        }
     	
-    	return $this->get("talker")->response($entities);
     } 
     
     /**
@@ -392,7 +435,7 @@ class PlayerController extends Controller
     /**
      * Estadisticas del usuario
      */
-    public function getStatisticsAction($playerId){
+    public function getStatisticsAction($playerId=null){
     	$em = $this->getDoctrine()->getEntityManager();
     	$request = $this->get("request");
     	$user = $this->container->get('security.context')->getToken()->getUser();
@@ -403,9 +446,47 @@ class PlayerController extends Controller
     	}
     	
     	$dm = $this->get('doctrine_mongodb')->getManager();
-    	$statistics = $dm->getRepository("LiderBundle:QuestionHistory").getPlayerReports($user);
+    	$statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerReports($user);
+    	$stArray = $statistics->toArray();
+    	$categories = array();
+    	foreach ($stArray as $obj){
+    		
+    		$wint = $obj["winTest"];
+    		$lostt = $obj["lostTest"];
+    		$countt = $obj["countTest"];
+    		
+    		$win = $obj["win"];
+    		$lost = $obj["lost"];
+    		$count = $obj["count"];
+    		
+    		if(!array_key_exists($obj["question.categoryName"], $categories)){
+    			$categories[$obj["question.categoryName"]] = array();
+    			$categories[$obj["question.categoryName"]]["practice"] = array();
+    			$categories[$obj["question.categoryName"]]["tournament"] = array();
+    		}
+    		
+    		$effT = 0;
+    		if($countt > 0)
+    			$effT = ($wint * 100) / $countt;
+    		
+    		$categories[$obj["question.categoryName"]]["practice"]["effectiveness"] = $effT;
+    		$categories[$obj["question.categoryName"]]["practice"]["count"] = $countt;
+    		$categories[$obj["question.categoryName"]]["practice"]["win"] = $wint;
+    		$categories[$obj["question.categoryName"]]["practice"]["lost"] = $lostt;
+    		
+    		
+    		$eff = 0;
+    		if($count > 0)
+    			$eff = ($win * 100) / $count;
+    		
+    		$categories[$obj["question.categoryName"]]["tournament"]["effectiveness"] = $eff;
+    		$categories[$obj["question.categoryName"]]["tournament"]["count"] = $count;
+    		$categories[$obj["question.categoryName"]]["tournament"]["win"] = $win;
+    		$categories[$obj["question.categoryName"]]["tournament"]["lost"] = $lost;
+    		
+    	}
     	
-    	return $this->get("talker")->response($statistics);
+    	return $this->get("talker")->response($categories);
     }
     
 }

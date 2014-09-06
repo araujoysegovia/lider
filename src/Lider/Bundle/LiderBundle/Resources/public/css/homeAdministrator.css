@@ -164,3 +164,15 @@
 .info-city > label{
 	margin-right: 50px;
 }
+
+.nav-totales-team{
+	margin-top: 15px;
+}
+
+.nav-totales-team > li {
+	margin-right: 10px;
+}
+
+.nav-totales-team > li > label{
+	font-weight: normal;	
+}

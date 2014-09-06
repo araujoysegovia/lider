@@ -4,6 +4,7 @@ namespace Lider\Bundle\LiderBundle\Controller;
 use Lider\Bundle\LiderBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Lider\Bundle\LiderBundle\Entity\Team;
 use Lider\Bundle\LiderBundle\Document\Image;
 
 class TeamController extends Controller
@@ -180,4 +181,44 @@ class TeamController extends Controller
     		}
     	}
     }
+
+    public function saveTeamAction(){
+        
+        $em = $this->getDoctrine()->getEntityManager(); 
+        $request = $this->get("request");
+        $data = $request->getContent();
+        $data = json_decode($data, true);
+        $cities = $data['cities'];
+        $tournamentId = $data['tournament'];
+
+        $tournament = $em->getRepository("LiderBundle:Tournament")->findOneBy(array("id" => $tournamentId, "deleted" => false));
+
+        foreach ($tournament->getTeams()->toArray() as $value) {
+            $value->setDeleted(true);
+        }
+        $em->flush();
+
+        foreach ($cities as $value) {
+            foreach ($value['teams'] as $val) {
+                $team = new Team();
+                $team->setName($val['name']);
+                $team->setTournament($tournament);
+                
+                foreach ($val['players'] as $v) {
+                    $player = $em->getRepository("LiderBundle:Player")->findOneBy(array("id" => $v['id'], "deleted" => false));
+                    if(!$player)
+                        throw new \Exception("Player no found");
+
+                    $player->setTeam($team);
+                }
+                $em->persist($team);
+                
+            }
+        }
+
+        $em->flush();
+
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+
 }

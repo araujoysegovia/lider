@@ -119,7 +119,7 @@ class QuestionController extends Controller
         $now = new \DateTime();
         $diffTime = $now->format('U') - $entity->getEntryDate()->format('U');
         
-        if($diffTime > $this->maxSec){
+        if($diffTime >= $this->maxSec || $questionId=="no-answer"){
             $res = array();
             $res['success'] = false;
             $res['code'] = '01';  /*Tiempo agotado*/
@@ -274,4 +274,7 @@ class QuestionController extends Controller
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
+
+
+    
 }
