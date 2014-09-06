@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Lider\Bundle\LiderBundle\Document\QuestionHistory;
 use Lider\Bundle\LiderBundle\Document\Image;
+use Lider\Bundle\LiderBundle\Document\ReportQuestion;
+
 
 class QuestionController extends Controller
 {
@@ -102,7 +104,7 @@ class QuestionController extends Controller
     		throw new \Exception("No entity found");  
 
     	$res = array();
-    	$res['success'] = false;
+    	$res['success'] = false;    	    	
     	if($answerId != "no-answer"){
     		foreach ($question->getAnswers()->toArray() as $value) {
     			if($value->getSelected()) {
@@ -194,5 +196,37 @@ class QuestionController extends Controller
     	
     	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }    
+    
+    
+    public function questionReportAction() {
+    	
+    	$dm = $this->get('doctrine_mongodb')->getManager();
+    	
+    	$request = $this->get("request");
+    	$data = $request->getContent();
+    	 
+    	if(empty($data) || !$data)
+    		throw new \Exception("No data");
+    	 
+    	$data = json_decode($data, true);
+    	 
+    	$user = $this->container->get('security.context')->getToken()->getUser();
+    	
+    	$questionId = $data['questionId'];
+    	$playerId = $user->getId();
+    	$reportText = $data['reportText'];
+    	
+    	
+    	$reportQuestion = new ReportQuestion();
+    	$reportQuestion->setQuestionId($questionId);
+    	$reportQuestion->setPlayerId($playerId);
+    	$reportQuestion->setReportText($reportText);
+    	$reportQuestion->setReportDate(new \MongoDate());
+    	
+    	$dm->persist($reportQuestion);
+    	$dm->flush();
+    	
+    	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
 
 }
