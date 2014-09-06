@@ -73,7 +73,7 @@ class HeaderAuthenticationListener implements ListenerInterface
 	
 	protected function requiresAuthentication(Request $request)
 	{
-		if ($request->isMethod('OPTION') || $request->isMethod('OPTIONS')) {
+		if ($request->isMethod('OPTION') || $request->isMethod('OPTIONS')) {	
 			return false;
 		}
 		

@@ -41,7 +41,21 @@ class Tournament extends Entity
 	 * @ORM\Column(type="boolean")
 	 */
 	private $active = true;
-		
+     
+    /**
+     * @ORM\OneToMany(targetEntity="Team", mappedBy="tournament")
+     */
+    private $teams;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->teams = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+
     /**
      * Get id
      *
@@ -142,5 +156,38 @@ class Tournament extends Entity
     public function getActive()
     {
         return $this->active;
+    }
+
+    /**
+     * Add teams
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Team $teams
+     * @return Tournament
+     */
+    public function addTeam(\Lider\Bundle\LiderBundle\Entity\Team $teams)
+    {
+        $this->teams[] = $teams;
+
+        return $this;
+    }
+
+    /**
+     * Remove teams
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Team $teams
+     */
+    public function removeTeam(\Lider\Bundle\LiderBundle\Entity\Team $teams)
+    {
+        $this->teams->removeElement($teams);
+    }
+
+    /**
+     * Get teams
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTeams()
+    {
+        return $this->teams;
     }
 }

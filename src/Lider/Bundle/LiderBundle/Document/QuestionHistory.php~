@@ -3,9 +3,10 @@ namespace Lider\Bundle\LiderBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @MongoDB\Document
+ * @MongoDB\Document(repositoryClass="Lider\Bundle\LiderBundle\Repository\QuestionHistoryRepository")
  */
 class QuestionHistory
 {
@@ -15,17 +16,17 @@ class QuestionHistory
     private $id;
     
     /**
-     * @MongoDB\Int
-     */
-    private $playerId;
+     * @MongoDB\EmbedOne(targetDocument="Player") 
+     */        
+    private $player; 
         
     /**
-     * @MongoDB\Int
+     * @MongoDB\EmbedOne(targetDocument="Question") 
      */
-    private $questionId;
+    private $question;
     
     /**
-     * @MongoDB\String
+     * @MongoDB\EmbedOne(targetDocument="Answer") 
      */
     private $selectedAnswer;
 
@@ -50,11 +51,39 @@ class QuestionHistory
     private $entryDate;
     
     /**
-     * @MongoDB\String
+     * @MongoDB\EmbedOne(targetDocument="Answer") 
      */
     private $answerOk;
-    
+        
+    /** 
+     * @MongoDB\Boolean
+     */
+    private $find = false;
 
+    /** 
+     * @MongoDB\Boolean
+     */
+    private $timeOut = false;
+
+    /**
+     * @MongoDB\EmbedMany(targetDocument="Answer") 
+     */        
+    private $answers; 
+
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Tournament") 
+     */ 
+    private $tournament;    
+
+    public function __construct()
+    {
+        $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
     /**
      * Get id
      *
@@ -66,6 +95,7 @@ class QuestionHistory
     }
 
     /**
+<<<<<<< HEAD
      * Set playerId
      *
      * @param int $playerId
@@ -74,10 +104,21 @@ class QuestionHistory
     public function setPlayerId($playerId)
     {
         $this->playerId = $playerId;
+=======
+     * Set player
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Player $player
+     * @return self
+     */
+    public function setPlayer(\Lider\Bundle\LiderBundle\Document\Player $player)
+    {
+        $this->player = $player;
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
         return $this;
     }
 
     /**
+<<<<<<< HEAD
      * Get playerId
      *
      * @return int $playerId
@@ -96,10 +137,31 @@ class QuestionHistory
     public function setQuestionId($questionId)
     {
         $this->questionId = $questionId;
+=======
+     * Get player
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Player $player
+     */
+    public function getPlayer()
+    {
+        return $this->player;
+    }
+
+    /**
+     * Set question
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Question $question
+     * @return self
+     */
+    public function setQuestion(\Lider\Bundle\LiderBundle\Document\Question $question)
+    {
+        $this->question = $question;
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
         return $this;
     }
 
     /**
+<<<<<<< HEAD
      * Get questionId
      *
      * @return int $questionId
@@ -107,15 +169,31 @@ class QuestionHistory
     public function getQuestionId()
     {
         return $this->questionId;
+=======
+     * Get question
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Question $question
+     */
+    public function getQuestion()
+    {
+        return $this->question;
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
     }
 
     /**
      * Set selectedAnswer
      *
+<<<<<<< HEAD
      * @param string $selectedAnswer
      * @return self
      */
     public function setSelectedAnswer($selectedAnswer)
+=======
+     * @param Lider\Bundle\LiderBundle\Document\Answer $selectedAnswer
+     * @return self
+     */
+    public function setSelectedAnswer(\Lider\Bundle\LiderBundle\Document\Answer $selectedAnswer)
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
     {
         $this->selectedAnswer = $selectedAnswer;
         return $this;
@@ -124,7 +202,11 @@ class QuestionHistory
     /**
      * Get selectedAnswer
      *
+<<<<<<< HEAD
      * @return string $selectedAnswer
+=======
+     * @return Lider\Bundle\LiderBundle\Document\Answer $selectedAnswer
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
      */
     public function getSelectedAnswer()
     {
@@ -222,10 +304,17 @@ class QuestionHistory
     /**
      * Set answerOk
      *
+<<<<<<< HEAD
      * @param string $answerOk
      * @return self
      */
     public function setAnswerOk($answerOk)
+=======
+     * @param Lider\Bundle\LiderBundle\Document\Answer $answerOk
+     * @return self
+     */
+    public function setAnswerOk(\Lider\Bundle\LiderBundle\Document\Answer $answerOk)
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
     {
         $this->answerOk = $answerOk;
         return $this;
@@ -234,10 +323,113 @@ class QuestionHistory
     /**
      * Get answerOk
      *
+<<<<<<< HEAD
      * @return string $answerOk
+=======
+     * @return Lider\Bundle\LiderBundle\Document\Answer $answerOk
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
      */
     public function getAnswerOk()
     {
         return $this->answerOk;
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Set find
+     *
+     * @param boolean $find
+     * @return self
+     */
+    public function setFind($find)
+    {
+        $this->find = $find;
+        return $this;
+    }
+
+    /**
+     * Get find
+     *
+     * @return boolean $find
+     */
+    public function getFind()
+    {
+        return $this->find;
+    }
+
+    /**
+     * Add answer
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Answer $answer
+     */
+    public function addAnswer(\Lider\Bundle\LiderBundle\Document\Answer $answer)
+    {
+        $this->answers[] = $answer;
+    }
+
+    /**
+     * Remove answer
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Answer $answer
+     */
+    public function removeAnswer(\Lider\Bundle\LiderBundle\Document\Answer $answer)
+    {
+        $this->answers->removeElement($answer);
+    }
+
+    /**
+     * Get answers
+     *
+     * @return Doctrine\Common\Collections\Collection $answers
+     */
+    public function getAnswers()
+    {
+        return $this->answers;
+    }
+
+    /**
+     * Set timeOut
+     *
+     * @param boolean $timeOut
+     * @return self
+     */
+    public function setTimeOut($timeOut)
+    {
+        $this->timeOut = $timeOut;
+        return $this;
+    }
+
+    /**
+     * Get timeOut
+     *
+     * @return boolean $timeOut
+     */
+    public function getTimeOut()
+    {
+        return $this->timeOut;
+    }
+
+    /**
+     * Set tournament
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Tournament $tournament
+     * @return self
+     */
+    public function setTournament(\Lider\Bundle\LiderBundle\Document\Tournament $tournament)
+    {
+        $this->tournament = $tournament;
+        return $this;
+    }
+
+    /**
+     * Get tournament
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Tournament $tournament
+     */
+    public function getTournament()
+    {
+        return $this->tournament;
+    }
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
 }

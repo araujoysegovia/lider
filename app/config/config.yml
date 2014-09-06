@@ -71,6 +71,7 @@ doctrine_mongodb:
     connections:
         default:
             server: mongodb://10.102.1.21:27017
+            #server: mongodb://localhost:27017
             options: {}
     default_database: lider
     document_managers:
@@ -97,33 +98,41 @@ swiftmailer:
 
 nelmio_cors:
     defaults:
-         allow_origin: ['*']
-         allow_headers: ['x-login']
-         allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS']
+         allow_origin: []
+         allow_headers: []
+         allow_methods: []
          max_age: 3600
     paths:
         '^/login':
             allow_origin: ['*']
             allow_headers: ['*']
+            allow_methods: ['POST', 'GET']
+            max_age: 3600
+        '^/home/':
+            allow_origin: ['*']
+            allow_headers: ['*']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS']
             max_age: 3600
-        '^/home/player/profile':
-            allow_origin: ['*']
-            allow_headers: ['*']
-            allow_methods: ['POST', 'OPTIONS']
-            max_age: 3600
-        '^/home/question/answer/check':
-            allow_origin: ['*']
-            allow_headers: ['*']
-            allow_methods: ['POST', 'OPTIONS']
-            max_age: 3600
-        '^/home/question/report':
-            allow_origin: ['*']
-            allow_headers: ['*']
-            allow_methods: ['POST', 'OPTIONS']
-            max_age: 3600       
-        '^/home/team':
-            allow_origin: ['*']
-            allow_headers: ['*']
-            allow_methods: ['GET', 'OPTIONS']
-            max_age: 3600              
+            
+        # '^/':
+        #     allow_origin: ['*']
+        #     allow_headers: ['*']
+        #     allow_methods: ['OPTIONS']
+        #     max_age: 3600
+
+        # '^/home/player/profile':
+        #     allow_origin: ['*']
+        #     allow_headers: ['*']
+        #     allow_methods: ['POST', 'OPTIONS']
+        #     max_age: 3600
+        # '^/home/question/answer/check':
+        #     allow_origin: ['*']
+        #     allow_headers: ['*']
+        #     allow_methods: ['POST', 'OPTIONS']
+        #     max_age: 3600
+        # '^/home/question/report':
+        #     allow_origin: ['*']
+        #     allow_headers: ['*']
+        #     allow_methods: ['POST', 'OPTIONS']
+        #     max_age: 3600       
+

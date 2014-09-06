@@ -15,8 +15,7 @@ class QuestionRepository extends MainRepository
 	public function getPlayerGamesInfo($playerId) {		
 		$em = $this->getEntityManager();
 		$query =  $em->createQuery('SELECT * FROM LiderBundle:Question  WHERE o.deleted = false');	
-		$data = $query->getArrayResult();
-		
+		$data = $query->getArrayResult();		
 		
 		return $data;
 	}
@@ -35,9 +34,9 @@ class QuestionRepository extends MainRepository
 		}
 		
 		$query = $query->getQuery();
-		//echo $query->getSQL()."<br/><br/>";
-		
+		//echo $query->getSQL()."<br/><br/>";		
 		return $query->getArrayResult();
 	}
+
 	
 }

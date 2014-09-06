@@ -22,7 +22,7 @@ admin_question_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
-      
+
 admin_question_checkbyid:
     pattern:  /check/{id}
     defaults: { _controller: LiderBundle:Question:check }
@@ -36,9 +36,20 @@ admin_question_image:
     methods:  [POST]
     requirements:
       id: \d+   
-      
+
 admin_question_remove_image:
     pattern:  /image/{id}/remove
     defaults: { _controller: LiderBundle:Question:removeImage }
     methods:  [POST]
-        
+
+admin_question_report:
+    pattern:  /report
+    defaults: { _controller: LiderBundle:ReportQuestion:getReportQuestions }
+    methods:  [GET]
+    requirements:
+      id: \d+
+
+admin_question_report_solve:
+    pattern:  /report/solve/{id}
+    defaults: { _controller: LiderBundle:ReportQuestion:reportSolve }
+    methods:  [PUT]

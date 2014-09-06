@@ -1,0 +1,209 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * PlayerPoint class
+ * @ORM\Table(name="player_point")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ */
+class PlayerPoint extends Entity
+{
+
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+	 * @ORM\Column(type="integer", length=100)
+	 * @Assert\NotBlank()
+	 */
+	private $win;
+     
+    /**
+	 * @ORM\Column(type="integer", length=100)
+	 * @Assert\NotBlank()
+	 */
+	private $lost;	
+
+    /**
+	 * @ORM\Column(type="integer", length=100)
+	 * @Assert\NotBlank()
+	 */
+	private $points;	
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"})
+	 * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
+	 */
+	private $tournament;	
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"})
+	 * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+	 */
+	private $team;	
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"}, inversedBy="playerPoints")
+	 * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
+	 */
+	private $player;	
+
+    
+
+   
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set win
+     *
+     * @param integer $win
+     * @return PlayerPoint
+     */
+    public function setWin($win)
+    {
+        $this->win = $win;
+
+        return $this;
+    }
+
+    /**
+     * Get win
+     *
+     * @return integer 
+     */
+    public function getWin()
+    {
+        return $this->win;
+    }
+
+    /**
+     * Set lost
+     *
+     * @param integer $lost
+     * @return PlayerPoint
+     */
+    public function setLost($lost)
+    {
+        $this->lost = $lost;
+
+        return $this;
+    }
+
+    /**
+     * Get lost
+     *
+     * @return integer 
+     */
+    public function getLost()
+    {
+        return $this->lost;
+    }
+
+    /**
+     * Set points
+     *
+     * @param integer $points
+     * @return PlayerPoint
+     */
+    public function setPoints($points)
+    {
+        $this->points = $points;
+
+        return $this;
+    }
+
+    /**
+     * Get points
+     *
+     * @return integer 
+     */
+    public function getPoints()
+    {
+        return $this->points;
+    }
+
+    /**
+     * Set tournament
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Tournament $tournament
+     * @return PlayerPoint
+     */
+    public function setTournament(\Lider\Bundle\LiderBundle\Entity\Tournament $tournament = null)
+    {
+        $this->tournament = $tournament;
+
+        return $this;
+    }
+
+    /**
+     * Get tournament
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Tournament 
+     */
+    public function getTournament()
+    {
+        return $this->tournament;
+    }
+
+    /**
+     * Set team
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Team $team
+     * @return PlayerPoint
+     */
+    public function setTeam(\Lider\Bundle\LiderBundle\Entity\Team $team = null)
+    {
+        $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * Get team
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Team 
+     */
+    public function getTeam()
+    {
+        return $this->team;
+    }
+
+    /**
+     * Set player
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Player $player
+     * @return PlayerPoint
+     */
+    public function setPlayer(\Lider\Bundle\LiderBundle\Entity\Player $player = null)
+    {
+        $this->player = $player;
+
+        return $this;
+    }
+
+    /**
+     * Get player
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     */
+    public function getPlayer()
+    {
+        return $this->player;
+    }
+}

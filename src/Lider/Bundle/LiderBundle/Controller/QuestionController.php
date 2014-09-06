@@ -8,9 +8,10 @@ use Lider\Bundle\LiderBundle\Document\QuestionHistory;
 use Lider\Bundle\LiderBundle\Document\Image;
 use Lider\Bundle\LiderBundle\Document\ReportQuestion;
 
-
 class QuestionController extends Controller
 {
+    private $maxSec = 30;
+
     public function getName(){
     	return "Question";
     }
@@ -41,18 +42,37 @@ class QuestionController extends Controller
      */
     public function getTestQuestionAction() {
     	
+        $em = $this->getDoctrine()->getEntityManager();
     	$dm = $this->get('doctrine_mongodb')->getManager();
     	    	
     	$question = $this->get("question_manager")->generateQuestions(1);
+        //echo $question;
     	$user = $this->container->get('security.context')->getToken()->getUser();
     	
-    	$questionHistory = new QuestionHistory();
-    	$questionHistory->setPlayerId($user->getId());
-    	$questionHistory->setQuestionId($question[0]['id']);
-    	//$questionHistory->setAnswerId();
-    	$questionHistory->setDuel(false);
-    	//$questionHistory->setDuelId();
-    	$questionHistory->setEntryDate(new \MongoDate());
+        $playerD = new \Lider\Bundle\LiderBundle\Document\Player();
+        $playerD->getDataFromPlayerEntity($user);
+
+        $q = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" => $question[0]['id'], "deleted" => false));
+        if(!$q)
+            throw new \Exception("Entity no found");
+
+        $questionD = new \Lider\Bundle\LiderBundle\Document\Question();
+        $questionD->getDataFromQuestionEntity($q);
+        $questionHistory = new QuestionHistory();
+        $questionHistory->setPlayer($playerD);    
+        $questionHistory->setQuestion($questionD);
+        $questionHistory->setDuel(false);
+      
+        $questionHistory->setEntryDate(new \MongoDate());
+
+         foreach ($q->getAnswers()->toArray() as $key => $value) {
+      
+            $ansD = new \Lider\Bundle\LiderBundle\Document\Answer();
+            $ansD->getDataFromAnswerEntity($value);
+
+            $questionHistory->addAnswer($ansD);
+         }
+      
     	
     	$dm->persist($questionHistory);
     	$dm->flush();
@@ -70,7 +90,7 @@ class QuestionController extends Controller
      */
     public function checkAnswerAction() {
     	
-    	    	
+    	
     	$em = $this->getDoctrine()->getEntityManager();
     	$request = $this->get("request");
     	$data = $request->getContent();
@@ -91,41 +111,55 @@ class QuestionController extends Controller
     	if(!$entity){
     		throw new \Exception("Question no found");
     	}
-    	
-    	$user = $this->container->get('security.context')->getToken()->getUser();
-    	//print_r($user);
-    	//print_r($this->container->get('security.context')->getToken());
-    	if($user->getId() != $entity->getPlayerId()){
-    		throw new \Exception("Question no found");
-    	}
-    	
-    	$question = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" =>$questionId, "deleted" => false));
-    	if(empty($question))
-    		throw new \Exception("No entity found");  
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        if($user->getId() != $entity->getPlayer()->getPlayerId()){
+            throw new \Exception("Question no found");
+        }
 
-    	$res = array();
-    	$res['success'] = false;    	    	
-    	if($answerId != "no-answer"){
+        $now = new \DateTime();
+        $diffTime = $now->format('U') - $entity->getEntryDate()->format('U');
+        
+        if($diffTime >= $this->maxSec || $questionId=="no-answer"){
+            $res = array();
+            $res['success'] = false;
+            $res['code'] = '01';  /*Tiempo agotado*/
+            $entity->setTimeOut(true);
+        }else{
+    	
+        	$question = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" =>$questionId, "deleted" => false));
+        	if(empty($question))
+        		throw new \Exception("No entity found");  
+
+        	$res = array();
+        	$res['success'] = false;
+            $res['code'] = '02';   /*Respuesta errada*/
+
     		foreach ($question->getAnswers()->toArray() as $value) {
     			if($value->getSelected()) {
-    				$entity->setAnswerOk($value->getId());
+                    $answerD = new \Lider\Bundle\LiderBundle\Document\Answer();
+                    $answerD->getDataFromAnswerEntity($value);    				
+                    $entity->setAnswerOk($answerD);
     				if($answerId == $value->getId()){
     					$res['success'] = true;
+                        $res['code'] = '00';
+                        $entity->setFind(true);
     					break;
     				}    				
     			}
     		}
-    	}   	
-    	
-    	
-    	if(!$entity){
-    		throw new \Exception("Entity not found");
+
+            $answerSelected = $em->getRepository("LiderBundle:Answer")->findOneBy(array("id" =>$answerId, "deleted" => false));
+            if(empty($answerSelected))
+                throw new \Exception("No entity found");  
+
+            $answerSelectedD = new \Lider\Bundle\LiderBundle\Document\Answer();
+                        $answerSelectedD->getDataFromAnswerEntity($answerSelected);
+               
+            $entity->setSelectedAnswer($answerSelectedD);      	
+        	
     	}
-    	
+        	    
     	$entity->setFinished(true);
-     	$entity->setSelectedAnswer($answerId);     	
-     	
-     	
      	$dm->flush();
      	
     	return $this->get("talker")->response($res);
@@ -196,37 +230,51 @@ class QuestionController extends Controller
     	
     	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }    
-    
-    
+
+    /**
+     * Reportar un error en la pregunta
+     */
     public function questionReportAction() {
-    	
-    	$dm = $this->get('doctrine_mongodb')->getManager();
-    	
-    	$request = $this->get("request");
-    	$data = $request->getContent();
-    	 
-    	if(empty($data) || !$data)
-    		throw new \Exception("No data");
-    	 
-    	$data = json_decode($data, true);
-    	 
-    	$user = $this->container->get('security.context')->getToken()->getUser();
-    	
-    	$questionId = $data['questionId'];
-    	$playerId = $user->getId();
-    	$reportText = $data['reportText'];
-    	
-    	
-    	$reportQuestion = new ReportQuestion();
-    	$reportQuestion->setQuestionId($questionId);
-    	$reportQuestion->setPlayerId($playerId);
-    	$reportQuestion->setReportText($reportText);
-    	$reportQuestion->setReportDate(new \MongoDate());
-    	
-    	$dm->persist($reportQuestion);
-    	$dm->flush();
-    	
-    	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        
+        $request = $this->get("request");
+        $data = $request->getContent();
+         
+        if(empty($data) || !$data)
+            throw new \Exception("No data");
+         
+        $data = json_decode($data, true);
+         
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        
+        $questionId = $data['questionId'];
+        $playerId = $user->getId();
+        $reportText = $data['reportText'];        
+        
+        $playerD = new \Lider\Bundle\LiderBundle\Document\Player();
+        $playerD->getDataFromPlayerEntity($user);
+        
+        $q = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" => $questionId, "deleted" => false));
+        if(!$q)
+            throw new \Exception("Entity no found");
+
+        $questionD = new \Lider\Bundle\LiderBundle\Document\Question();
+        $questionD->getDataFromQuestionEntity($q);
+
+        $reportQuestion = new ReportQuestion();
+        $reportQuestion->setQuestion($questionD);
+        $reportQuestion->setPlayer($playerD);
+        $reportQuestion->setReportText($reportText);
+        $reportQuestion->setReportDate(new \MongoDate());
+        
+        $dm->persist($reportQuestion);
+        $dm->flush();
+        
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
+
+    
 }

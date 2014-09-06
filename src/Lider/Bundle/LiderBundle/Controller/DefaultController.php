@@ -55,8 +55,12 @@ class DefaultController extends SymfonyController
     	$password = $codificador->encodePassword("araujo123", $user1->getSalt());
     	 
     	$user1->setPassword($password);
-    	
+
     	$em->persist($user1);
+
+
+
+
     }
     
     

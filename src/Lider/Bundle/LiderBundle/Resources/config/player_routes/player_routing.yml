@@ -22,13 +22,50 @@ player_player_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
-      
-player_team:
+
+#Jugadores del equipo del usuario en session
+player_team_session:
    pattern:  /team
    defaults: { _controller: LiderBundle:Player:teamUserSession }
    methods:  [GET]
 
+#Cambiar foto de perfil
 player_update_profile:
     pattern:  /profile
     defaults: { _controller: LiderBundle:Player:changePhoto }
-    methods:  [POST]    
+    methods:  [POST]
+
+#Cambiar contraseña del usuario
+player_update_password:
+    pattern:  /pass
+    defaults: { _controller: LiderBundle:Player:updatePassword }
+    methods:  [PUT]
+
+player_reset_password:
+    pattern:  /pass
+    defaults: { _controller: LiderBundle:Player:resetPassword }
+    methods:  [POST]
+
+#Duelo Actual
+player_current_duel:
+    pattern:  /duel
+    defaults: { _controller: LiderBundle:Duel:getCurrentDuel }
+    methods:  [GET]
+
+#Duelo Actual
+player_current_duel_history:
+    pattern:  /duel/history
+    defaults: { _controller: LiderBundle:Duel:getHistoryDuel }
+    methods:  [GET]
+
+#Estadisticas del usuario en session
+player_statistics:
+    pattern:  /statistics
+    defaults: { _controller: LiderBundle:Player:getStatistics }
+    methods:  [GET]
+
+#Estadisticas de un usuario
+player_statistics_player:
+    pattern:  /statistics/{playerId}
+    defaults: { _controller: LiderBundle:Player:getStatistics }
+    methods:  [GET]

@@ -38,6 +38,8 @@ class TeamTournamentPoint extends Entity
 	 */
 	private $point = 0;
 
+
+
     /**
      * Get id
      *

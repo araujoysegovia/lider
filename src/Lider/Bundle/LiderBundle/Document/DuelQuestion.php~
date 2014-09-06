@@ -20,43 +20,49 @@ class DuelQuestion
     private $gameId;
         
     /**
-     * @MongoDB\int
+     * @MongoDB\EmbedOne(targetDocument="Question") 
      */
-    private $questionId;
+    private $question;
 
 	/**
      * @MongoDB\int
      */
     private $duelId;
    
-    /**	@MongoDB\Timestamp */
+    /**	
+     * @MongoDB\Timestamp 
+     */
     private $starttime; 
 
-    /**	@MongoDB\Timestamp */
+    /** 
+     * @MongoDB\Timestamp 
+     */
 	private $endtime;
 	
-	/**	@MongoDB\Boolean */
+	/**
+     * @MongoDB\Boolean 
+     */
 	private $usehelp = false;
 	
-	/**
-     * @MongoDB\int
-     */
-	private $player_one_id;
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Player") 
+     */     
+	private $player_one;
 	
-	/**
-     * @MongoDB\int
-     */
-	private $player_two_id;
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Player") 
+     */     
+	private $player_two;
 	
-	/**
-     * @MongoDB\int
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Answer") 
      */
-	private $answer_one_id;
+	private $answer_one;
 	
-	/**
-     * @MongoDB\int
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Answer") 
      */
-	private $answer_two_id;
+	private $answer_two;
 	
 	/**
      * @MongoDB\int
@@ -80,27 +86,49 @@ class DuelQuestion
     }
 
     /**
-     * Set questionId
+     * Set gameId
      *
-     * @param int $questionId
+     * @param int $gameId
      * @return self
      */
-    public function setQuestionId($questionId)
+    public function setGameId($gameId)
     {
-        $this->questionId = $questionId;
+        $this->gameId = $gameId;
         return $this;
     }
 
     /**
-     * Get questionId
+     * Get gameId
      *
-     * @return int $questionId
+     * @return int $gameId
      */
-    public function getQuestionId()
+    public function getGameId()
     {
-        return $this->questionId;
+        return $this->gameId;
     }
-    
+
+    /**
+     * Set question
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Question $question
+     * @return self
+     */
+    public function setQuestion(\Lider\Bundle\LiderBundle\Document\Question $question)
+    {
+        $this->question = $question;
+        return $this;
+    }
+
+    /**
+     * Get question
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Question $question
+     */
+    public function getQuestion()
+    {
+        return $this->question;
+    }
+
     /**
      * Set duelId
      *
@@ -109,10 +137,10 @@ class DuelQuestion
      */
     public function setDuelId($duelId)
     {
-    	$this->duelId = $duelId;
-    	return $this;
+        $this->duelId = $duelId;
+        return $this;
     }
-    
+
     /**
      * Get duelId
      *
@@ -120,9 +148,9 @@ class DuelQuestion
      */
     public function getDuelId()
     {
-    	return $this->questionId;
-    }    
-    
+        return $this->duelId;
+    }
+
     /**
      * Set starttime
      *
@@ -131,20 +159,20 @@ class DuelQuestion
      */
     public function setStarttime($starttime)
     {
-    	$this->starttime = $starttime;
-    	return $this;
+        $this->starttime = $starttime;
+        return $this;
     }
-    
+
     /**
      * Get starttime
      *
-     * @return int $starttime
+     * @return timestamp $starttime
      */
     public function getStarttime()
     {
-    	return $this->starttime;
-    }    
-    
+        return $this->starttime;
+    }
+
     /**
      * Set endtime
      *
@@ -153,10 +181,10 @@ class DuelQuestion
      */
     public function setEndtime($endtime)
     {
-    	$this->endtime = $endtime;
-    	return $this;
+        $this->endtime = $endtime;
+        return $this;
     }
-    
+
     /**
      * Get endtime
      *
@@ -164,8 +192,8 @@ class DuelQuestion
      */
     public function getEndtime()
     {
-    	return $this->endtime;
-    }   
+        return $this->endtime;
+    }
 
     /**
      * Set usehelp
@@ -175,10 +203,10 @@ class DuelQuestion
      */
     public function setUsehelp($usehelp)
     {
-    	$this->usehelp = $usehelp;
-    	return $this;
+        $this->usehelp = $usehelp;
+        return $this;
     }
-    
+
     /**
      * Get usehelp
      *
@@ -186,227 +214,95 @@ class DuelQuestion
      */
     public function getUsehelp()
     {
-    	return $this->usehelp;
-    }  
+        return $this->usehelp;
+    }
 
     /**
-     * Set player_one_id
+     * Set playerOne
      *
-     * @param int $player_one_id
+     * @param Lider\Bundle\LiderBundle\Document\Player $playerOne
      * @return self
      */
-    public function setPlayer_one_id($player_one_id)
+    public function setPlayerOne(\Lider\Bundle\LiderBundle\Document\Player $playerOne)
     {
-    	$this->player_one_id = $player_one_id;
-    	return $this;
-    }
-    
-    /**
-     * Get player_one_id
-     *
-     * @return int $player_one_id
-     */
-    public function getPlayer_one_id()
-    {
-    	return $this->player_one_id;
-    }    
-    
-    /**
-     * Set player_two_id
-     *
-     * @param int $player_two_id
-     * @return self
-     */
-    public function setPlayer_two_id($player_two_id)
-    {
-    	$this->player_two_id = $player_two_id;
-    	return $this;
-    }
-    
-    /**
-     * Get player_two_id
-     *
-     * @return int $player_two_id
-     */
-    public function getPlayer_two_id()
-    {
-    	return $this->player_two_id;
-    } 
-
-    /**
-     * Set answer_one_id
-     *
-     * @param int $answer_one_id
-     * @return self
-     */
-    public function setAnswer_one_id($answer_one_id)
-    {
-    	$this->answer_one_id = $answer_one_id;
-    	return $this;
-    }
-    
-    /**
-     * Get answer_one_id
-     *
-     * @return int $answer_one_id
-     */
-    public function getAnswer_one_id()
-    {
-    	return $this->answer_one_id;
-    }   
-
-    /**
-     * Set answer_two_id
-     *
-     * @param int $answer_two_id
-     * @return self
-     */
-    public function setAnswer_two_id($answer_two_id)
-    {
-    	$this->answer_two_id = $answer_two_id;
-    	return $this;
-    }
-    
-    /**
-     * Get answer_two_id
-     *
-     * @return int $answer_two_id
-     */
-    public function getAnswer_two_id()
-    {
-    	return $this->answer_two_id;
-    }    
-    
-    /**
-     * Set point_one
-     *
-     * @param int $point_one
-     * @return self
-     */
-    public function setPoint_one($point_one)
-    {
-    	$this->point_one = $point_one;
-    	return $this;
-    }
-    
-    /**
-     * Get point_one
-     *
-     * @return int $point_one
-     */
-    public function getPoint_one()
-    {
-    	return $this->point_one;
-    }   
-
-    /**
-     * Set point_two
-     *
-     * @param int $point_two
-     * @return self
-     */
-    public function setPoint_two($point_two)
-    {
-    	$this->point_two = $point_two;
-    	return $this;
-    }
-    
-    /**
-     * Get point_two
-     *
-     * @return int $point_two
-     */
-    public function getPoint_two()
-    {
-    	return $this->point_two;
-    }    
-
-    /**
-     * Set playerOneId
-     *
-     * @param int $playerOneId
-     * @return self
-     */
-    public function setPlayerOneId($playerOneId)
-    {
-        $this->player_one_id = $playerOneId;
+        $this->player_one = $playerOne;
         return $this;
     }
 
     /**
-     * Get playerOneId
+     * Get playerOne
      *
-     * @return int $playerOneId
+     * @return Lider\Bundle\LiderBundle\Document\Player $playerOne
      */
-    public function getPlayerOneId()
+    public function getPlayerOne()
     {
-        return $this->player_one_id;
+        return $this->player_one;
     }
 
     /**
-     * Set playerTwoId
+     * Set playerTwo
      *
-     * @param int $playerTwoId
+     * @param Lider\Bundle\LiderBundle\Document\Player $playerTwo
      * @return self
      */
-    public function setPlayerTwoId($playerTwoId)
+    public function setPlayerTwo(\Lider\Bundle\LiderBundle\Document\Player $playerTwo)
     {
-        $this->player_two_id = $playerTwoId;
+        $this->player_two = $playerTwo;
         return $this;
     }
 
     /**
-     * Get playerTwoId
+     * Get playerTwo
      *
-     * @return int $playerTwoId
+     * @return Lider\Bundle\LiderBundle\Document\Player $playerTwo
      */
-    public function getPlayerTwoId()
+    public function getPlayerTwo()
     {
-        return $this->player_two_id;
+        return $this->player_two;
     }
 
     /**
-     * Set answerOneId
+     * Set answerOne
      *
-     * @param int $answerOneId
+     * @param Lider\Bundle\LiderBundle\Document\Answer $answerOne
      * @return self
      */
-    public function setAnswerOneId($answerOneId)
+    public function setAnswerOne(\Lider\Bundle\LiderBundle\Document\Answer $answerOne)
     {
-        $this->answer_one_id = $answerOneId;
+        $this->answer_one = $answerOne;
         return $this;
     }
 
     /**
-     * Get answerOneId
+     * Get answerOne
      *
-     * @return int $answerOneId
+     * @return Lider\Bundle\LiderBundle\Document\Answer $answerOne
      */
-    public function getAnswerOneId()
+    public function getAnswerOne()
     {
-        return $this->answer_one_id;
+        return $this->answer_one;
     }
 
     /**
-     * Set answerTwoId
+     * Set answerTwo
      *
-     * @param int $answerTwoId
+     * @param Lider\Bundle\LiderBundle\Document\Answer $answerTwo
      * @return self
      */
-    public function setAnswerTwoId($answerTwoId)
+    public function setAnswerTwo(\Lider\Bundle\LiderBundle\Document\Answer $answerTwo)
     {
-        $this->answer_two_id = $answerTwoId;
+        $this->answer_two = $answerTwo;
         return $this;
     }
 
     /**
-     * Get answerTwoId
+     * Get answerTwo
      *
-     * @return int $answerTwoId
+     * @return Lider\Bundle\LiderBundle\Document\Answer $answerTwo
      */
-    public function getAnswerTwoId()
+    public function getAnswerTwo()
     {
-        return $this->answer_two_id;
+        return $this->answer_two;
     }
 
     /**
@@ -451,27 +347,5 @@ class DuelQuestion
     public function getPointTwo()
     {
         return $this->point_two;
-    }
-
-    /**
-     * Set gameId
-     *
-     * @param int $gameId
-     * @return self
-     */
-    public function setGameId($gameId)
-    {
-        $this->gameId = $gameId;
-        return $this;
-    }
-
-    /**
-     * Get gameId
-     *
-     * @return int $gameId
-     */
-    public function getGameId()
-    {
-        return $this->gameId;
     }
 }

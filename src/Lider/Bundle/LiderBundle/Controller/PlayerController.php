@@ -121,6 +121,7 @@ class PlayerController extends Controller
     			"office" => $office,
     			"roles" => $roles,
     			"team" => array(),
+                "changePassword" => $user->getChangePassword()
     	);
     	
     	$team = $user->getTeam();
@@ -135,6 +136,27 @@ class PlayerController extends Controller
     	
     	$playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
     	$arr['user']['gameInfo'] = $playerGameInfo;
+    	
+        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
+        $statistics = $statistics->toArray();
+        $count=0;
+        $win=0; $lost=0;
+        if($statistics){
+	        $objLost = $statistics[0]; 
+	        $lost = $objLost["lost"];
+	        $count += $objLost["count"];
+	        
+	        $objWin = $statistics[1];
+	        $win = $objWin["win"];
+	        $count += $objWin["count"];
+        }
+        
+        
+        $eff = 0;
+        if($count > 0)
+        	$eff = ($win * 100) / $count;
+        
+        $arr['user']["effectiveness"] = $eff;
     	 
     	return $this->get("talker")->response($arr);
     }
@@ -214,10 +236,9 @@ class PlayerController extends Controller
             $dm->persist($session);
             $dm->flush();
         }
-        //echo $user->getTeam()->getId();
+        
         $arr = array();
-        $roles = array();
-        //print_r($user->getRoles()->getId());
+        $roles = array();        
         foreach($user->getRoles() as $key => $value){
             $roles[$key] = array(
                 "id" => $value->getId(),
@@ -233,6 +254,8 @@ class PlayerController extends Controller
         
         $team = $user->getTeam();
         
+
+
         $arr['user'] = array(
             "email" => $user->getEmail(),
             "name" => $user->getName(),
@@ -241,6 +264,13 @@ class PlayerController extends Controller
             "office" => $office,
             "roles" => $roles,
             "team" => array(),
+            "changePassword" => $user->getChangePassword(),
+            "gameInfo" => array(
+                'win' => 0,
+                'lost' => 0,
+                'points' => 0
+            )
+            
         );
         
         if($team){
@@ -249,26 +279,67 @@ class PlayerController extends Controller
         		"name" => $user->getTeam()->getName()        		
         	) ;
         }
-        
 
-        $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
-        $arr['user']['gameInfo'] = $playerGameInfo;
+        $points = $user->getPlayerPoints()->toArray();
+
+        foreach ($points as $value) {
+            if($value->getTournament()->getActive()){
+                $arr['user']['win'] += $value->getWin();
+                $arr['user']['lost'] += $value->getLost();
+                $arr['user']['points'] += $value->getPoints();
+            }
+        }
+        
+        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
+        $statistics = $statistics->toArray();
+        $count=0;
+        $win=0; $lost=0;
+        if($statistics){
+	        $objLost = $statistics[0]; 
+	        $lost = $objLost["lost"];
+	        $count += $objLost["count"];
+	        
+	        $objWin = $statistics[1];
+	        $win = $objWin["win"];
+	        $count += $objWin["count"];
+        }
+        
+        
+        $eff = 0;
+        if($count > 0)
+        	$eff = ($win * 100) / $count;
+        
+        $arr['user']["effectiveness"] = $eff;
+
+        // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
+        // $arr['user']['gameInfo'] = $playerGameInfo;
                
         return $this->get("talker")->response($arr);
     }
     
+    /**
+    * Devulve jugadores del equipo del usuario en session
+    */
     public function teamUserSessionAction() {
     
     	$user = $this->container->get('security.context')->getToken()->getUser();
     	//echo $user->getId();
     	$em = $this->getDoctrine()->getEntityManager();
      	
-    	$entities = $em->getRepository("LiderBundle:Player")->getArrayEntityWithOneLevel(
-    					 array("team"=>$user->getTeam()->getId(), "deleted" => false));
+        if($user->getTeam()){
+            $entities = $em->getRepository("LiderBundle:Player")->getArrayEntityWithOneLevel(
+                         array("team"=>$user->getTeam()->getId(), "deleted" => false));
+        
+            return $this->get("talker")->response($entities);
+        }else{
+            return $this->get("talker")->response(array("total"=>0, "data"=>array()));
+        }
     	
-    	return $this->get("talker")->response($entities);
     } 
     
+    /**
+     * Cambiar la foto de perfil del usuario
+     */
     public function changePhotoAction() {
     	 
     	$em = $this->getDoctrine()->getEntityManager();
@@ -301,4 +372,125 @@ class PlayerController extends Controller
     			"image" => $image->getId()
 		));
     }
+
+    /**
+     * Actualizar password del usuario
+     */
+    public function updatePasswordAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $request = $this->get("request");
+        $data = $request->getContent();
+
+        $data = json_decode($data, true);
+
+        $oldPassword = $data['oldPassword'];
+        $newPassword = $data['newPassword'];
+ 
+        $user = $this->container->get('security.context')->getToken()->getUser();
+       
+        $oldPassword = $this->generatePass($oldPassword);
+        $newPassword = $this->generatePass($newPassword);
+
+        if($oldPassword != $user->getPassword()){
+            throw new \Exception("Wrong Password");            
+        }
+
+        $this->changePassword($newPassword);
+
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+    }
+
+    private function changePassword($password)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $user->setPassword($password);
+
+        $em->flush();
+    }
+
+    /**
+     * Actualizar la contraseña en el login o reseteada por el administrador
+     */
+    public function resetPasswordAction()
+    {      
+        $em = $this->getDoctrine()->getEntityManager();  
+
+        $request = $this->get("request");
+        $data = $request->getContent();
+        $data = json_decode($data, true);
+
+        $password = $data['password'];
+
+        $password = $this->generatePass($password);
+
+        $this->changePassword($password);
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $user->setChangePassword(false);
+
+        $em->flush();
+
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+    }
+    
+    /**
+     * Estadisticas del usuario
+     */
+    public function getStatisticsAction($playerId=null){
+    	$em = $this->getDoctrine()->getEntityManager();
+    	$request = $this->get("request");
+    	$user = $this->container->get('security.context')->getToken()->getUser();
+    	if($playerId){    		
+    		$user = $em->getRepository("LiderBundle:Player")->find($playerId);
+    		if(!$user)
+    			throw new \Exception("User not found");
+    	}
+    	
+    	$dm = $this->get('doctrine_mongodb')->getManager();
+    	$statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerReports($user);
+    	$stArray = $statistics->toArray();
+    	$categories = array();
+    	foreach ($stArray as $obj){
+    		
+    		$wint = $obj["winTest"];
+    		$lostt = $obj["lostTest"];
+    		$countt = $obj["countTest"];
+    		
+    		$win = $obj["win"];
+    		$lost = $obj["lost"];
+    		$count = $obj["count"];
+    		
+    		if(!array_key_exists($obj["question.categoryName"], $categories)){
+    			$categories[$obj["question.categoryName"]] = array();
+    			$categories[$obj["question.categoryName"]]["practice"] = array();
+    			$categories[$obj["question.categoryName"]]["tournament"] = array();
+    		}
+    		
+    		$effT = 0;
+    		if($countt > 0)
+    			$effT = ($wint * 100) / $countt;
+    		
+    		$categories[$obj["question.categoryName"]]["practice"]["effectiveness"] = $effT;
+    		$categories[$obj["question.categoryName"]]["practice"]["count"] = $countt;
+    		$categories[$obj["question.categoryName"]]["practice"]["win"] = $wint;
+    		$categories[$obj["question.categoryName"]]["practice"]["lost"] = $lostt;
+    		
+    		
+    		$eff = 0;
+    		if($count > 0)
+    			$eff = ($win * 100) / $count;
+    		
+    		$categories[$obj["question.categoryName"]]["tournament"]["effectiveness"] = $eff;
+    		$categories[$obj["question.categoryName"]]["tournament"]["count"] = $count;
+    		$categories[$obj["question.categoryName"]]["tournament"]["win"] = $win;
+    		$categories[$obj["question.categoryName"]]["tournament"]["lost"] = $lost;
+    		
+    	}
+    	
+    	return $this->get("talker")->response($categories);
+    }
+    
 }

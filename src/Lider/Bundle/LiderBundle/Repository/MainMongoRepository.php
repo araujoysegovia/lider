@@ -8,6 +8,7 @@ class MainMongoRepository extends DocumentRepository
 	public function consultDocument($document, $dm, array $filter = null, $start = null, $limit = null)
     {
         $sql = $this->createQueryBuilder($document);
+        $dm = $this->getDocumentManager();
         $md = $dm->getClassMetadata("LiderBundle:".$document);
         $fieldMappings = $md->fieldMappings;
         $query = null;
