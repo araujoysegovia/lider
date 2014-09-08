@@ -157,6 +157,9 @@ class PlayerController extends Controller
         	$eff = ($win * 100) / $count;
         
         $arr['user']["effectiveness"] = $eff;
+        $arr['user']["counteffectiveness"] = $count;
+        $arr['user']["wineffectiveness"] = $win;
+
     	 
     	return $this->get("talker")->response($arr);
     }
@@ -310,6 +313,8 @@ class PlayerController extends Controller
         	$eff = ($win * 100) / $count;
         
         $arr['user']["effectiveness"] = $eff;
+        $arr['user']["counteffectiveness"] = $count;
+        $arr['user']["wineffectiveness"] = $win;
 
         // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
         // $arr['user']['gameInfo'] = $playerGameInfo;
@@ -318,7 +323,7 @@ class PlayerController extends Controller
     }
     
     /**
-    * Devulve jugadores del equipo del usuario en session
+    * Devulve los jugadores del equipo del usuario en session
     */
     public function teamUserSessionAction() {
     
