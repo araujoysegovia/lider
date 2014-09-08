@@ -1499,7 +1499,7 @@ var routerManager = Backbone.Router.extend({
 						type: "POST", 
 						data: JSON.stringify(data),
 						//data: data,
-			            url: "http://localhost/lider/web/app_dev.php/admin/home/team/save",		            
+			            url: "team/save",		            
 			            contentType: 'application/json',
 			            dataType: "json",
 			            success: function(data){
