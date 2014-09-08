@@ -26,7 +26,7 @@ teamBuilder.prototype = {
 
 		parameters = {
 			type: "GET",     
-            url: "http://localhost/lider/web/app_dev.php/admin/home/team/generate?max="+max+"&min="+min,		            
+            url: "home/team/generate?max="+max+"&min="+min,		            
             contentType: 'application/json',
             dataType: "json",
             success: function(data){

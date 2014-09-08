@@ -1403,7 +1403,7 @@ var routerManager = Backbone.Router.extend({
 
 			parameters = {
 				type: "GET",     
-	            url: "http://localhost/lider/web/app_dev.php/admin/home/tournament/active",		            
+	            url: "home/tournament/active",		            
 	            contentType: 'application/json',
 	            dataType: "json",
 	            success: function(data){	            		
@@ -1499,7 +1499,7 @@ var routerManager = Backbone.Router.extend({
 						type: "POST", 
 						data: JSON.stringify(data),
 						//data: data,
-			            url: "team/save",		            
+			            url: "home/team/save",
 			            contentType: 'application/json',
 			            dataType: "json",
 			            success: function(data){

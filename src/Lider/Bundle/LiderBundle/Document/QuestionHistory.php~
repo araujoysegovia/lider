@@ -80,6 +80,10 @@ class QuestionHistory
         $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
     /**
      * Get id
      *
@@ -91,6 +95,16 @@ class QuestionHistory
     }
 
     /**
+<<<<<<< HEAD
+     * Set playerId
+     *
+     * @param int $playerId
+     * @return self
+     */
+    public function setPlayerId($playerId)
+    {
+        $this->playerId = $playerId;
+=======
      * Set player
      *
      * @param Lider\Bundle\LiderBundle\Document\Player $player
@@ -99,10 +113,31 @@ class QuestionHistory
     public function setPlayer(\Lider\Bundle\LiderBundle\Document\Player $player)
     {
         $this->player = $player;
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
         return $this;
     }
 
     /**
+<<<<<<< HEAD
+     * Get playerId
+     *
+     * @return int $playerId
+     */
+    public function getPlayerId()
+    {
+        return $this->playerId;
+    }
+
+    /**
+     * Set questionId
+     *
+     * @param int $questionId
+     * @return self
+     */
+    public function setQuestionId($questionId)
+    {
+        $this->questionId = $questionId;
+=======
      * Get player
      *
      * @return Lider\Bundle\LiderBundle\Document\Player $player
@@ -121,10 +156,20 @@ class QuestionHistory
     public function setQuestion(\Lider\Bundle\LiderBundle\Document\Question $question)
     {
         $this->question = $question;
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
         return $this;
     }
 
     /**
+<<<<<<< HEAD
+     * Get questionId
+     *
+     * @return int $questionId
+     */
+    public function getQuestionId()
+    {
+        return $this->questionId;
+=======
      * Get question
      *
      * @return Lider\Bundle\LiderBundle\Document\Question $question
@@ -132,15 +177,23 @@ class QuestionHistory
     public function getQuestion()
     {
         return $this->question;
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
     }
 
     /**
      * Set selectedAnswer
      *
+<<<<<<< HEAD
+     * @param string $selectedAnswer
+     * @return self
+     */
+    public function setSelectedAnswer($selectedAnswer)
+=======
      * @param Lider\Bundle\LiderBundle\Document\Answer $selectedAnswer
      * @return self
      */
     public function setSelectedAnswer(\Lider\Bundle\LiderBundle\Document\Answer $selectedAnswer)
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
     {
         $this->selectedAnswer = $selectedAnswer;
         return $this;
@@ -149,7 +202,11 @@ class QuestionHistory
     /**
      * Get selectedAnswer
      *
+<<<<<<< HEAD
+     * @return string $selectedAnswer
+=======
      * @return Lider\Bundle\LiderBundle\Document\Answer $selectedAnswer
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
      */
     public function getSelectedAnswer()
     {
@@ -247,10 +304,17 @@ class QuestionHistory
     /**
      * Set answerOk
      *
+<<<<<<< HEAD
+     * @param string $answerOk
+     * @return self
+     */
+    public function setAnswerOk($answerOk)
+=======
      * @param Lider\Bundle\LiderBundle\Document\Answer $answerOk
      * @return self
      */
     public function setAnswerOk(\Lider\Bundle\LiderBundle\Document\Answer $answerOk)
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
     {
         $this->answerOk = $answerOk;
         return $this;
@@ -259,12 +323,18 @@ class QuestionHistory
     /**
      * Get answerOk
      *
+<<<<<<< HEAD
+     * @return string $answerOk
+=======
      * @return Lider\Bundle\LiderBundle\Document\Answer $answerOk
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
      */
     public function getAnswerOk()
     {
         return $this->answerOk;
     }
+<<<<<<< HEAD
+=======
 
     /**
      * Set find
@@ -361,4 +431,5 @@ class QuestionHistory
     {
         return $this->tournament;
     }
+>>>>>>> 8a27e5d8a8808b8a178f1cf65d7a851e123e0d3f
 }

@@ -137,17 +137,19 @@ class PlayerController extends Controller
     	$playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
     	$arr['user']['gameInfo'] = $playerGameInfo;
     	
-    	$statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
+        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
         $statistics = $statistics->toArray();
         $count=0;
-        
-        $objLost = $statistics[0]; 
-        $lost = $objLost["lost"];
-        $count += $objLost["count"];
-        
-        $objWin = $statistics[1];
-        $win = $objWin["win"];
-        $count += $objWin["count"];
+        $win=0; $lost=0;
+        if($statistics){
+	        $objLost = $statistics[0]; 
+	        $lost = $objLost["lost"];
+	        $count += $objLost["count"];
+	        
+	        $objWin = $statistics[1];
+	        $win = $objWin["win"];
+	        $count += $objWin["count"];
+        }
         
         
         $eff = 0;
@@ -291,14 +293,16 @@ class PlayerController extends Controller
         $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
         $statistics = $statistics->toArray();
         $count=0;
-        
-        $objLost = $statistics[0]; 
-        $lost = $objLost["lost"];
-        $count += $objLost["count"];
-        
-        $objWin = $statistics[1];
-        $win = $objWin["win"];
-        $count += $objWin["count"];
+        $win=0; $lost=0;
+        if($statistics){
+	        $objLost = $statistics[0]; 
+	        $lost = $objLost["lost"];
+	        $count += $objLost["count"];
+	        
+	        $objWin = $statistics[1];
+	        $win = $objWin["win"];
+	        $count += $objWin["count"];
+        }
         
         
         $eff = 0;

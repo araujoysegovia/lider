@@ -38,15 +38,5 @@ class QuestionRepository extends MainRepository
 		return $query->getArrayResult();
 	}
 
-	// public function getReportQuestions()
-	// {
-	// 	$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
-	// 				  ->field('checked')->equals(false)
-	// 				  ->getQuery()
-	// 				  ->execute();
-					  
-
-	// 	return $query;
-	}
 	
 }
