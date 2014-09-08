@@ -7,16 +7,45 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
 
 class ImageController extends SymfonyController
 {
-    
+    /**
+     * Obtener la imagen de mongo por id
+     */
 	public function getAction($id) {
-		
+				
 		$dm = $this->get('doctrine_mongodb')->getManager();
+		$request = $this->get("request");
+		$width = $request->get("width");
+		$height = $request->get("height");
+
 		$entity = $dm->getRepository("LiderBundle:Image")->findOneBy(array("id" => $id, "deleted" => false));
 		if(!$entity)
 			throw new \Exception("Entity no found");
+
+		//Redimensionar imagen
+		if($width && $height){
+			$imagine = new \Imagine\Gd\Imagine();
+			$image = $imagine->load($entity->getFile()->getBytes());
+			$image->resize(new \Imagine\Image\Box($width, $height));			
+	 		switch ($entity->getMimetype()) {
+	            case 'image/gif' :
+	                	$image->show('gif');
+	                break;
+	            case 'image/jpeg' :
+	                	$image->show('jpg');
+	                break;	                
+	            case "image/png":
+	                	$image->show('png');
+	                break;
+	            default             :
+	                throw new InvalidArgumentException("Image type $type not supported");
+	        }
+
+			$response = new Response();
+		}else{
+			$response = new Response($entity->getFile()->getBytes());
+		}
+
 		
-		
-		$response = new Response($entity->getFile()->getBytes());
 		//DISPOSITION_INLINE //DISPOSITION_ATTACHMENT
 		//$d = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, "png");
 		//$response->headers->set('Content-Disposition', $d);
@@ -28,5 +57,7 @@ class ImageController extends SymfonyController
 		$response->headers->add($headers);
 		
 		return $response;
+		
 	}
+
 }

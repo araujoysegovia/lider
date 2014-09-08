@@ -22,6 +22,7 @@ class AppKernel extends Kernel
             new Lider\Bundle\LiderBundle\LiderBundle(),
         	new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
         	new Nelmio\CorsBundle\NelmioCorsBundle(),
+            new Avalanche\Bundle\ImagineBundle\AvalancheImagineBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
