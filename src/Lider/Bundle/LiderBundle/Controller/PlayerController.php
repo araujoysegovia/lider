@@ -141,25 +141,23 @@ class PlayerController extends Controller
         $statistics = $statistics->toArray();
         $count=0;
         $win=0; $lost=0;
+
         if($statistics){
-	        $objLost = $statistics[0]; 
-	        $lost = $objLost["lost"];
-	        $count += $objLost["count"];
-	        
-	        $objWin = $statistics[1];
-	        $win = $objWin["win"];
-	        $count += $objWin["count"];
+
+            $obj = $statistics[0]; 
+            $lost = $obj["lost"];
+            $count = $obj["count"];
+            $win = $obj["win"];
         }
         
         
         $eff = 0;
         if($count > 0)
-        	$eff = ($win * 100) / $count;
+            $eff = ($win * 100) / $count;
         
         $arr['user']["effectiveness"] = $eff;
         $arr['user']["counteffectiveness"] = $count;
         $arr['user']["wineffectiveness"] = $win;
-
     	 
     	return $this->get("talker")->response($arr);
     }
@@ -297,14 +295,13 @@ class PlayerController extends Controller
         $statistics = $statistics->toArray();
         $count=0;
         $win=0; $lost=0;
+
         if($statistics){
-	        $objLost = $statistics[0]; 
-	        $lost = $objLost["lost"];
-	        $count += $objLost["count"];
-	        
-	        $objWin = $statistics[1];
-	        $win = $objWin["win"];
-	        $count += $objWin["count"];
+
+	        $obj = $statistics[0]; 
+	        $lost = $obj["lost"];
+	        $count = $obj["count"];
+	        $win = $obj["win"];
         }
         
         

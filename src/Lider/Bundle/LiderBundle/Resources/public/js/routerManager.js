@@ -145,8 +145,12 @@ var routerManager = Backbone.Router.extend({
 			    	answerFour: {
 			    		type: "string",	
 			    	},
-			    	selected: {},
-			    	help: {},
+			    	selected: {
+			    		defaultValue: "1"
+			    	},
+			    	help: {
+			    		defaultValue: "2"
+			    	},
 				    image: {
 				    	//type: "string"
 				    	editable: false
@@ -233,8 +237,16 @@ var routerManager = Backbone.Router.extend({
 			        	data.answers[parseInt(data.selected) - 1].selected = true;
 			        	data.answers[parseInt(data.help) - 1].help = true;			        				       
          	        	
+			        	//console.log(data)
+			        	if(data.selected == data.help){
+			        		alert("La respuesta correcta no puedo ser igual a la de ayuda");
+			        		throw "La respuesta correcta no puedo ser igual a la de ayuda";
+			        	}
+
 			            return kendo.stringify(data);		        
 		        }
+
+
 			},
 			width: "450px",
 			command: [
@@ -577,8 +589,8 @@ var routerManager = Backbone.Router.extend({
 			    	title: "Respuesta Correcta",
 			    	hidden: true,			    	
 			    	editor:	function (container, options) {
-						
-			    	    $('<input required data-text-field="text" data-value-field="value" data-bind="value:' + options.field + '"/>')
+						console.log("entro")
+			    	    var input = $('<input required data-text-field="text" data-value-field="value" data-bind="value:' + options.field + '"/>')
 			            .appendTo(container)
 			            .kendoDropDownList({
 			                autoBind: false,		                
@@ -587,10 +599,14 @@ var routerManager = Backbone.Router.extend({
 			                    {text: "Respuesta 2", value: "2"},
 			                    {text: "Respuesta 3", value: "3"},
 			                    {text: "Respuesta 4", value: "4"},
-			                ],
+			                ],			               
 			                dataTextField: "text",
-			                dataValueField:"value"
+			                dataValueField:"value",
+			                // select: function () {
+			                // 	input.data("kendoDropDownList").trigger("change");
+			                // }
 			            });
+			            input.data("kendoDropDownList").value("1");
 					},			    	
 			    },
 			    {
@@ -599,7 +615,7 @@ var routerManager = Backbone.Router.extend({
 			    	hidden: true,
 			    	editor:	function (container, options) {
 						
-			    	    $('<input required data-text-field="text" data-value-field="value" data-bind="value:' + options.field + '"/>')
+			    	    var input = $('<input required data-text-field="text" data-value-field="value" data-bind="value:' + options.field + '"/>')
 			            .appendTo(container)
 			            .kendoDropDownList({
 			                autoBind: false,		                
@@ -610,8 +626,12 @@ var routerManager = Backbone.Router.extend({
 			                    {text: "Respuesta 4", value: "4"},
 			                ],
 			                dataTextField: "text",
-			                dataValueField:"value"
+			                dataValueField:"value",
+			                // select: function (e) {
+			                // 	input.data("kendoDropDownList").trigger("change");
+			                // }
 			            });
+			            input.data("kendoDropDownList").value("1");
 					},					
 			    },
 				{ 

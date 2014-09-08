@@ -33,7 +33,7 @@ class QuestionHistoryRepository extends MainMongoRepository
 
 	public function getPlayerTotalReports($player){
 		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
-		->group(array('find' => 1),
+		->group(array('player.playerId' => 1),
 				array('count' => 0, 'win' => 0,'lost' => 0))
 				->reduce('function (obj, prev) {
 					prev.count++;
