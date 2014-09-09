@@ -173,14 +173,17 @@ class QuestionController extends Controller
      */
     public function setImageAction($id) {
     	 
+
+        echo "Entro set image";
+
     	$em = $this->getDoctrine()->getEntityManager();
     	$entity = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" => $id, "deleted" => false));
     	if(!$entity)
     		throw new \Exception("Entity no found");
     	 
     	$dm = $this->get('doctrine_mongodb')->getManager();
-    	$request = $this->get("request");
-    
+    	$request = $this->get("request");      
+
     	$uploadedFile = $request->files->get('imagen');
     	$className = self::$NAMESPACE.$this->getName();
     	 
@@ -274,7 +277,5 @@ class QuestionController extends Controller
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
-
-
     
 }

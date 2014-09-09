@@ -13,6 +13,7 @@ var routerManager = Backbone.Router.extend({
 		"teams" : "teams",
 		"generateTeams": "generateTeams",
 		"reportquestions": "reportquestions",
+		"parametersConfig": "parametersConfig",
 	},
 
 	home: function() {
@@ -1621,8 +1622,61 @@ var routerManager = Backbone.Router.extend({
 			],
 
 		});
-	}
+	},
+
+	parametersConfig: function () {
 	
+		this.removeContent();		
+
+		var container = $('<div><h4>Parametros del Juego</h4><hr/></div>');
+		var form = $('<form role="form">'+
+						  '<div class="form-group">'+
+						    '<label for="timeQuestionPractice">Tiempo de pregunta en practica (<i>segundos</i>)</label>'+
+						    '<input type="number" class="form-control" id="timeQuestionPractice">'+
+						  '</div>'+
+						  '<div class="form-group">'+
+						    '<label for="timeQuestionDuel">Tiempo de pregunta en duelo (<i>segundos</i>)</label>'+
+						    '<input type="number" class="form-control" id="timeQuestionDuel">'+
+						  '</div>'+
+						  '<div class="form-group">'+
+						    '<label for="timeGame">Tiempo de juego (<i>d&iacute;as</i>)</label>'+
+						    '<input type="number" class="form-control" id="timeGame">'+
+						  '</div>'+				
+						  '<div class="form-group">'+
+						    '<label for="timeDuel">Tiempo de duelo(<i>d&iacute;as</i>)</label>'+
+						    '<input type="number" class="form-control" id="timeDuel">'+
+						  '</div>'+							  		  
+						  '<button type="submit" class="btn btn-default btn-save-parameters">Guardar</button>'+
+					 '</form>');
+
+		container.append(form);	
+		$("#entity-content").append(container);
+		
+		//Enviar datos de parametrizacion				
+		$(".btn-save-parameters").click(function (e) {
+			e.preventDefault();
+
+			var data = {
+						"timeQuestionPractice" : $("#timeQuestionPractice").val(),
+						"timeQuestionDuel": $("#timeQuestionDuel").val(),
+						"timeGame": $("#timeGame").val(),
+						"timeDuel": $("#timeDuel").val()
+					};			
+
+			parameters = {
+				type: "POST", 
+				data: JSON.stringify(data),
+			    url: "params",
+		        contentType: 'application/json',
+		        dataType: "json",
+		        success: function(){
+		        	
+		        },
+		        error: function(){},
+			};
+			$.ajax(parameters);
+		});		
+	}
 });
 
 
