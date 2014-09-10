@@ -1,5 +1,5 @@
 gamesParameters:
-    timeQuestionPractice: ''
-    timeQuestionDuel: ''
-    timeGame: ''
-    timeDuel: ''
+    timeQuestionPractice: '30'
+    timeQuestionDuel: '30'
+    timeGame: '5'
+    timeDuel: '2'

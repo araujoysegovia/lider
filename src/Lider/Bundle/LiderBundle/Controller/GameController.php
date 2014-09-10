@@ -14,7 +14,7 @@ class GameController extends Controller
 
 
     /**
-     * Setear los parametros de configuracion para el juego
+     * Setear los parametros de configuración para el juego
      */
     public function setParametersAction(){
     	
@@ -24,8 +24,8 @@ class GameController extends Controller
     	$data = $request->getContent();
     	
     	if(empty($data))
-    	 	throw new \Exception("No data");
-    	//return $this->get("talker")->response($data);
+    	 	throw new \Exception("No data");    	
+
     	$data = json_decode($data, true);	
 
     	$yaml = new Parser();
@@ -61,16 +61,16 @@ class GameController extends Controller
 		return $this->get("talker")->response(array()); 
     }
 
-    
+    /**
+     * Obtener parametros de configuracion desde el archivo .yml
+     */    
     public function getParametersAction(){
 
 		$pathParameters = '/var/www/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
 		$yaml = new Parser();
 
 		try {
-		    $parameters = $yaml->parse(file_get_contents($pathParameters));		    
-
-		   // return $parameters;
+		    $parameters = $yaml->parse(file_get_contents($pathParameters));		   
 		} catch (ParseException $e) {
 		    printf("Unable to parse the YAML string: %s", $e->getMessage());
 		}

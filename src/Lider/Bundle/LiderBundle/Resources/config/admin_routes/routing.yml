@@ -75,7 +75,7 @@ admin_save_params:
     defaults: { _controller: LiderBundle:Game:setParameters }
     methods: [POST]
 
-# admin_get_parameters:
-#     pattern:  /home/parameters
-#     defaults: { _controller: LiderBundle:Game:getParameters }
-#     methods:  [GET]
+admin_get_parameters:
+    pattern:  /params
+    defaults: { _controller: LiderBundle:Game:getParameters }
+    methods:  [GET]

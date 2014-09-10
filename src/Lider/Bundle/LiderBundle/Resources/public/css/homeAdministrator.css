@@ -181,5 +181,15 @@
 /*****************************   Parametrizacion  ********************************/
 
 #entity-content > div > form > .form-group > input{
-	width: initial;
+	/*width: initial;*/
+	width: 180px;
+}
+
+#entity-content > div > form > .form-group > label{
+	font-weight: normal;
+}
+
+#entity-content > .parameters {
+	background: #FFFFFF;
+	padding: 15px;
 }

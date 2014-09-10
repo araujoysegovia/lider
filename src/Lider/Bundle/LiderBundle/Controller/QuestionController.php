@@ -172,9 +172,6 @@ class QuestionController extends Controller
      * @throws \Exception
      */
     public function setImageAction($id) {
-    	 
-
-        echo "Entro set image";
 
     	$em = $this->getDoctrine()->getEntityManager();
     	$entity = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" => $id, "deleted" => false));
