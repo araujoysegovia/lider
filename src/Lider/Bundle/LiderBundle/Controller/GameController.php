@@ -18,47 +18,25 @@ class GameController extends Controller
      */
     public function setParametersAction(){
     	
-    	echo "entro game Controller";
-    	$pathParameters = '/var/www/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
-    	$request = $this->get("request");
-    	$data = $request->getContent();
-    	
-    	if(empty($data))
-    	 	throw new \Exception("No data");    	
+        $request = $this->get("request");
+        $data = $request->getContent();
+        
+        if(empty($data))
+            throw new \Exception("No data");        
 
-    	$data = json_decode($data, true);	
+        $data = json_decode($data, true);   
 
-    	$yaml = new Parser();
-    	
-    	$timeQuestionPractice = $data['timeQuestionPractice'];
-    	$timeQuestionDuel = $data['timeQuestionDuel'];
-    	$timeGame = $data['timeGame'];
-    	$timeDuel = $data['timeDuel'];
+        $yaml = new Parser();
+        
+        $timeQuestionPractice = $data['timeQuestionPractice'];
+        $timeQuestionDuel = $data['timeQuestionDuel'];
+        $timeGame = $data['timeGame'];
+        $timeDuel = $data['timeDuel'];
 
-    	try{
-    		$parameters = $yaml->parse(file_get_contents($pathParameters));	
+        $parameters = $this->get('parameters_manager')->setParameters($timeQuestionPractice, $timeQuestionDuel, $timeGame, $timeDuel);
 
-    		if(!is_null($timeQuestionPractice))
-		    	$parameters['gamesParameters']['timeQuestionPractice'] = $timeQuestionPractice;		
-		    	
-		    if(!is_null($timeQuestionDuel))	    
-		 		$parameters['gamesParameters']['timeQuestionDuel'] = $timeQuestionDuel;		    	
-		 		
-		    if(!is_null($timeGame))	    
-		 		$parameters['gamesParameters']['timeGame'] = $timeGame;		
-
-		    if(!is_null($timeDuel))	    
-		 		$parameters['gamesParameters']['timeDuel'] = $timeDuel;				 	
-
-		 	$dumper = new Dumper();
-			$yaml = $dumper->dump($parameters, 2);
-			file_put_contents($pathParameters, $yaml);
-
-    	}catch (ParseException $e) {
-		    printf("Unable to parse the YAML string: %s", $e->getMessage());
-		}
 		 
-		return $this->get("talker")->response(array()); 
+		return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
 
     /**
@@ -66,14 +44,7 @@ class GameController extends Controller
      */    
     public function getParametersAction(){
 
-		$pathParameters = '/var/www/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
-		$yaml = new Parser();
-
-		try {
-		    $parameters = $yaml->parse(file_get_contents($pathParameters));		   
-		} catch (ParseException $e) {
-		    printf("Unable to parse the YAML string: %s", $e->getMessage());
-		}
+        $parameters = $this->get('parameters_manager')->getParameters();
 
     	return $this->get("talker")->response($parameters);
     }
