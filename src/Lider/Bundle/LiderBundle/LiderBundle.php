@@ -25,3 +25,4 @@ state=%2Fprofile&
 redirect_uri=http://soylider.sifinca.net/admin/login-check/google&
 response_type=token&
 client_id=288359316941-7uff5a28m5f5bvin18ohib499qj40acc.apps.googleusercontent.com
+*/

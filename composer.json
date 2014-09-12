@@ -21,7 +21,8 @@
         "hwi/oauth-bundle": "0.4.*@dev",
         "doctrine/mongodb-odm": "1.0.*@dev",
         "doctrine/mongodb-odm-bundle": "3.0.*@dev",
-        "nelmio/cors-bundle": "~1.0"
+        "nelmio/cors-bundle": "~1.0",
+        "mmoreram/gearman-bundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

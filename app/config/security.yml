@@ -74,5 +74,6 @@ security:
         - { path: ^/admin/home, roles: [ROLE_ADMIN] }
         - { path: ^/admin, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/send, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/home, roles: IS_AUTHENTICATED_FULLY }
         #- { path: ^/home, roles: IS_AUTHENTICATED_ANONYMOUSLY }

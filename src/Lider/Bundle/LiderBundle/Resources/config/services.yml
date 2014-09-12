@@ -8,6 +8,19 @@ services:
               entityManager: "@doctrine.orm.entity_manager"
               container: "@service_container"
 
+    notificationService:
+        class: Lider\Bundle\LiderBundle\Lib\NotificationService
+        arguments:
+          dm: "@doctrine.odm.mongodb.document_manager"
+          co: "@service_container"
+          mailer: "@mailer"
+          templating: "@templating"
+
+    notificationWorker:
+        class: Lider\Bundle\LiderBundle\Worker\NotificationWorker
+        arguments:
+          co: "@service_container"
+
     login.security.authentication.provider:
         class: Lider\Bundle\LiderBundle\Security\Authentication\Provider\Provider
 
@@ -29,10 +42,9 @@ services:
     lider_user_provider:
         class: "%lider.security.core.provider.class%"
         arguments: ["@service_container"]
-        
+
     question_manager:
         class: Lider\Bundle\LiderBundle\Lib\QuestionManager
         arguments:
               em: "@doctrine.orm.entity_manager"
               dm: "@doctrine.odm.mongodb.document_manager"
-                      

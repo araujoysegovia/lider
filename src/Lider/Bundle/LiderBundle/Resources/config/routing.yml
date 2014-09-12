@@ -16,3 +16,11 @@ image_route:
     pattern:  /image/{id}
     defaults: { _controller: LiderBundle:Image:get }
     methods:  [GET]
+
+send:
+    pattern:  /send
+    defaults: { _controller: LiderBundle:Default:sendEmail }
+
+mongo:
+    pattern:  /mongo
+    defaults: { _controller: LiderBundle:Default:mongoData }

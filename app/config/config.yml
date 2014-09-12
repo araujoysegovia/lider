@@ -71,12 +71,87 @@ doctrine_mongodb:
     connections:
         default:
             server: mongodb://10.102.1.21:27017
-            #server: mongodb://localhost:27017
+            # server: mongodb://localhost:27017
+            # server: mongodb://%mongo_user%:%mongo_pass%@%mongo_host%:%mongo_port%
             options: {}
     default_database: lider
     document_managers:
         default:
             auto_mapping: true
+
+doctrine_cache:
+    providers:
+        gearman_cache:
+            type: file_system
+            namespace: doctrine_cache.ns.gearman
+
+gearman:
+   # Bundles will parsed searching workers
+   bundles:
+      # Name of bundle
+      LiderBundle:
+
+         # Bundle name
+         name: LiderBundle
+
+         # Bundle search can be enabled or disabled
+         active: true
+
+         # If any include is defined, Only these namespaces will be parsed
+         # Otherwise, full Bundle will be parsed
+         include:
+            - Worker
+
+         # Namespaces this Bundle will ignore when parsing
+         ignore:
+            - DependencyInjection
+            - Resources
+
+   # default values
+   # All these values will be used if are not overwritten in Workers or jobs
+   defaults:
+
+      # Default method related with all jobs
+      # do // deprecated as of pecl/gearman 1.0.0. Use doNormal
+      # doNormal
+      # doBackground
+      # doHigh
+      # doHighBackground
+      # doLow
+      # doLowBackground
+      method: doNormal
+
+      # Default number of executions before job dies.
+      # If annotations defined, will be overwritten
+      # If empty, 0 is defined by default
+      iterations: 0
+
+      # execute callbacks after operations using Kernel events
+      callbacks: true
+
+      # Prefix in all jobs
+      # If empty name will not be modified
+      # Useful for rename jobs in different environments
+      job_prefix: null
+
+      # Autogenerate unique key in jobs/tasks if not set
+      # This key is unique given a Job name and a payload serialized
+      generate_unique_key: true
+
+      # Prepend namespace when callableName is built
+      # By default this variable is set as true
+      workers_name_prepend_namespace: true
+
+   # Server list where workers and clients will connect to
+   # Each server must contain host and port
+   # If annotations defined, will be full overwritten
+   #
+   # If servers empty, simple localhost server is defined by default
+   # If port empty, 4730 is defined by efault
+   servers:
+      localhost:
+         host: 127.0.0.1
+         port: 5000
 
 # Swiftmailer Configuration
 swiftmailer:
