@@ -12,6 +12,7 @@ var routerManager = Backbone.Router.extend({
 		"offices" : "offices",
 		"teams" : "teams",
 		"generateTeams": "generateTeams",
+		"generateGroups": "generateGroups",
 		"reportquestions": "reportquestions",
 		"parametersConfig": "parametersConfig",
 	},
@@ -1053,7 +1054,17 @@ var routerManager = Backbone.Router.extend({
 		        				        	
 		            return kendo.stringify(data);
 		        }
-			}		  	
+			},
+			toolbar: [
+  			    { name: "create", text: "Agregar registro" },
+  			    { 
+  			    	name: "generateGroup",
+  			    	template: function(){  			    		
+  			    		var btn = '<a class="k-button"  onclick="generateGroup()">Generar</a>';  			    		
+  			    		return btn;
+  			    	}
+  			    }
+		  	],	  	
 		});
 	},
 
@@ -1328,7 +1339,7 @@ var routerManager = Backbone.Router.extend({
 			toolbar: [
   			    { name: "create", text: "Agregar registro" },
   			    { 
-  			    	name: "generateGroups",
+  			    	name: "generateTeams",
   			    	template: function(){  			    		
   			    		var btn = '<a class="k-button"  onclick="generateTeam()">Generar</a>';  			    		
   			    		return btn;
@@ -1706,7 +1717,196 @@ var routerManager = Backbone.Router.extend({
 				alert("Uno o varios campos no cumplen con el formato")            
 		    }					
 		});		
-	}
+	},
+
+	generateGroups: function(){
+		
+		this.removeContent();
+
+		var navBar = $('<nav class="navbar navbar-default" role="navigation">'+	
+					 	'<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">'+
+						 	'<form class="navbar-form navbar-left" role="search">'+
+						 		'<div class="form-group">'+						         						          
+						          '<input id="min"  type="number" class="form-control" placeholder="Minimo">'+
+						        '</div>'+
+						        '<div class="form-group">'+						          						         
+						          '<input id="max"  type="number" class="form-control" placeholder="Máximo">'+
+						        '</div>'+						        
+						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+						        
+					        '</form>'+
+				        '</div>'+
+			        '</nav>');
+		
+		$("#entity-content").append(navBar);
+
+
+		
+
+		var content = $("<div></div>");
+		$("#entity-content").append(content);
+
+		var tb = null;
+
+		navBar.find("form").submit(function(e){
+			e.preventDefault();
+			
+			max = $("#max").val();
+			min = $("#min").val();
+						
+			tb = new groupBuilder(content, min, max);
+		});
+		
+
+		var modal = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
+						  '<div class="modal-dialog">'+
+						    '<div class="modal-content">'+
+						      '<div class="modal-header">'+
+						        '<button type="button" class="close" data-dismiss="modal">'+
+						        '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
+						        '<h4 class="modal-title" id="myModalLabel">Guardar equipos</h4>'+
+						      '</div>'+
+						      '<div class="modal-body">'+	
+						      	'<form>'+
+						      		'<div class="form-group">'+
+						      			'<label>Torneo</label>'+
+						      			'<select class="form-control select-tournaments"></select>'+
+						      		'</div>'+
+						      		'<div class="form-group">'+
+						      			'<label>Nombre de los equipos(separados por coma)</label>'+
+						      			'<textarea class="form-control name-teams" rows="3"></textarea>'+
+						      		'</div>'+
+						      	'</form>'+
+						      '</div>'+
+						      '<div class="modal-footer">'+
+						        '<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>'+
+						        '<button type="button" class="btn btn-primary save-teams">Guardar</button>'+
+						      '</div>'+
+						    '</div>'+
+						  '</div>'+
+						'</div>';
+
+		//Buscar torneos activos
+		navBar.find(".save-popup").click(function () {
+			var modalObj = $(modal);
+			modalObj.modal("show");
+
+			parameters = {
+				type: "GET",     
+	            url: "home/tournament/active",		            
+	            contentType: 'application/json',
+	            dataType: "json",
+	            success: function(data){	            		
+	            		$(modal).find(".select-tournaments")
+	            		var select = $(modal).find(".select-tournaments");	            		
+	            		_.each(data, function (value, key) {
+	            			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
+	            			
+	            			$(".select-tournaments").append(option);
+	            		});            		
+	            },
+	            error: function(){},            
+			};
+			
+			$.ajax(parameters);	
+
+			//Guardar equipos generados en BD
+			modalObj.find(".save-teams").click(function () {	
+
+				var dataTeam = modalObj.find("select.select-tournaments option:selected").attr("data-team");
+				
+				if(dataTeam > 0){
+					var r = confirm("Este torneo ya tiene equipos registrados.\n Desea remplazarlos");
+					if(!r){
+						return false;
+					}
+				}
+
+				if(tb != null){
+
+					var tournament = $(".select-tournaments").val();
+					var nameTeams = $(".name-teams").val();				
+					
+					
+					if(typeof nameTeams != 'undefined'){
+						var names = nameTeams.split(",");					
+					}
+					
+					var n = names;
+					var json = {};
+
+					_.each(tb.cities, function (value, cityKey) {
+						city = {
+							"name": value.name,
+							"teams": {}
+						};
+						_.each(value.teams, function (v, k) {
+							if(n.length > 0){
+								var r = Math.random();
+								var pos =parseInt(r * n.length)
+								if(pos<0)pos++;
+								if(pos>(n.length))pos--;
+								var name = n[pos];
+								if(name.substring(0,1) == " "){
+									name = name.substring(1);
+								}
+								//console.log("Cambio de nombre al equipo "+v.name+" por "+ name +" de la ciudad de " + value.name)	
+								v.name = name;
+
+								n.splice(pos, 1);		
+							}
+
+							
+							var team = {
+								"name": v.name,
+								"players": {}
+							};
+							// delete v.city;
+							_.each(v.players, function (val, key) {	
+								//team['players'].push({"id" : val['id']});			
+							 	team['players'][key] = {
+							 		"id" : val.id
+							 	};
+							});
+
+							city['teams'][k] = team;
+							//city['teams'].push(team);
+						});	
+						json[cityKey] = city;
+						//json.push(city);
+					});
+
+					
+
+					var data = {
+						"cities" : json,
+						"tournament": tournament
+					};
+
+					//console.log(data)
+
+					parameters = {
+						type: "POST", 
+						data: JSON.stringify(data),
+						//data: data,
+			            url: "home/team/save",
+			            contentType: 'application/json',
+			            dataType: "json",
+			            success: function(data){
+			            	
+			            },
+			            error: function(){},
+					};
+											
+					var ajax = $.ajax(parameters);										
+				}
+
+				modalObj.modal('hide')
+			});			
+		});
+
+
+		
+	},	
 });
 
 
@@ -1725,4 +1925,10 @@ function generateTeam(){
 	Backbone.history.navigate("generateTeams", true);
 }
 
+function generateGroup(){
+	
+	var router = new routerManager();	
+	//router.generateTeams();
+	Backbone.history.navigate("generateGroups", true);
+}
 
