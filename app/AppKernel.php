@@ -24,6 +24,7 @@ class AppKernel extends Kernel
         	new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
             new Mmoreram\GearmanBundle\GearmanBundle(),
+            new Avalanche\Bundle\ImagineBundle\AvalancheImagineBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

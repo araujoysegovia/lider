@@ -47,4 +47,11 @@ services:
         class: Lider\Bundle\LiderBundle\Lib\QuestionManager
         arguments:
               em: "@doctrine.orm.entity_manager"
+<<<<<<< HEAD
               dm: "@doctrine.odm.mongodb.document_manager"
+=======
+              dm: "@doctrine.odm.mongodb.document_manager"
+
+    parameters_manager:
+        class: Lider\Bundle\LiderBundle\Lib\ParametersManager
+>>>>>>> b66f61fab0c45b85e9277cdc9750720ffa320e11

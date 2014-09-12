@@ -12,7 +12,9 @@ var routerManager = Backbone.Router.extend({
 		"offices" : "offices",
 		"teams" : "teams",
 		"generateTeams": "generateTeams",
+		"generateGroups": "generateGroups",
 		"reportquestions": "reportquestions",
+		"parametersConfig": "parametersConfig",
 	},
 
 	home: function() {
@@ -1052,7 +1054,17 @@ var routerManager = Backbone.Router.extend({
 		        				        	
 		            return kendo.stringify(data);
 		        }
-			}		  	
+			},
+			toolbar: [
+  			    { name: "create", text: "Agregar registro" },
+  			    { 
+  			    	name: "generateGroup",
+  			    	template: function(){  			    		
+  			    		var btn = '<a class="k-button"  onclick="generateGroup()">Generar</a>';  			    		
+  			    		return btn;
+  			    	}
+  			    }
+		  	],	  	
 		});
 	},
 
@@ -1327,7 +1339,7 @@ var routerManager = Backbone.Router.extend({
 			toolbar: [
   			    { name: "create", text: "Agregar registro" },
   			    { 
-  			    	name: "generateGroups",
+  			    	name: "generateTeams",
   			    	template: function(){  			    		
   			    		var btn = '<a class="k-button"  onclick="generateTeam()">Generar</a>';  			    		
   			    		return btn;
@@ -1621,8 +1633,280 @@ var routerManager = Backbone.Router.extend({
 			],
 
 		});
-	}
+	},
+
+	parametersConfig: function () {
 	
+		this.removeContent();		
+
+		var container = $('<div class="panel panel-default parameters"><h4>Par&aacute;metros del Juego</h4><hr/></div>');
+		var form = $('<form id="form-params" role="form">'+						  
+						  '<div class="form-group">'+
+						    '<label for="timeQuestionPractice" class="required">Tiempo de pregunta en practica (<i>segundos</i>)</label>'+
+						    '<input type="number" class="form-control" id="timeQuestionPractice" required="required" >'+
+						  '</div>'+	
+						  '<div class="form-group">'+
+						    '<label for="timeQuestionDuel">Tiempo de pregunta en duelo (<i>segundos</i>)</label>'+						  
+						    '<input type="number" class="form-control" id="timeQuestionDuel">'+						  
+						  '</div>'+
+						  '<div class="form-group">'+
+						    '<label for="timeGame">Tiempo de juego (<i>d&iacute;as</i>)</label>'+
+						    '<input type="number" class="form-control" id="timeGame">'+
+						  '</div>'+				
+						  '<div class="form-group">'+
+						    '<label for="timeDuel">Tiempo de duelo(<i>d&iacute;as</i>)</label>'+
+						    '<input type="number" class="form-control" id="timeDuel">'+
+						  '</div>'+							  		  
+						  '<button type="submit" class="btn btn-primary btn-save-parameters">Guardar</button>'+
+					 '</form>');
+
+		container.append(form);	
+		$("#entity-content").append(container);
+		
+
+		//Setear valores de los parametros de configuracion
+		parameters = {
+			type: "GET", 			
+		    url: "params",
+	        contentType: 'application/json',
+	        dataType: "json",
+	        success: function(data){
+	        	if(!(_.isNull(data))){
+	        		$("#timeQuestionPractice").val(data['gamesParameters']['timeQuestionPractice']);
+		        	$("#timeQuestionDuel").val(data['gamesParameters']['timeQuestionDuel'])
+		        	$("#timeGame").val(data['gamesParameters']['timeGame'])
+		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])	
+	        	}	        	
+	        },
+	        error: function(){},
+		};
+		$.ajax(parameters);
+
+
+		var validator = $("#form-params").kendoValidator().data("kendoValidator"),
+        status = $(".status");
+        
+		//Enviar datos de parametrizacion				
+		$(".btn-save-parameters").click(function (e) {
+					
+			e.preventDefault();
+
+		 	if (validator.validate()) {
+		           
+					var data = {
+						"timeQuestionPractice" : $("#timeQuestionPractice").val(),
+						"timeQuestionDuel": $("#timeQuestionDuel").val(),
+						"timeGame": $("#timeGame").val(),
+						"timeDuel": $("#timeDuel").val()
+					};	
+
+		            parameters = {
+						type: "POST", 
+						data: JSON.stringify(data),
+					    url: "params",
+				        contentType: 'application/json',
+				        dataType: "json",
+				        success: function(){
+				        	
+				        },
+				        error: function(){},
+					};
+					$.ajax(parameters);
+		    }
+		    else {
+				alert("Uno o varios campos no cumplen con el formato")            
+		    }					
+		});		
+	},
+
+	generateGroups: function(){
+		
+		this.removeContent();
+
+		var navBar = $('<nav class="navbar navbar-default" role="navigation">'+	
+					 	'<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">'+
+						 	'<form class="navbar-form navbar-left" role="search">'+
+						 		'<div class="form-group">'+						         						          
+						          '<input id="min"  type="number" class="form-control" placeholder="Minimo">'+
+						        '</div>'+
+						        '<div class="form-group">'+						          						         
+						          '<input id="max"  type="number" class="form-control" placeholder="Máximo">'+
+						        '</div>'+						        
+						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+						        
+					        '</form>'+
+				        '</div>'+
+			        '</nav>');
+		
+		$("#entity-content").append(navBar);
+
+
+		
+
+		var content = $("<div></div>");
+		$("#entity-content").append(content);
+
+		var tb = null;
+
+		navBar.find("form").submit(function(e){
+			e.preventDefault();
+			
+			max = $("#max").val();
+			min = $("#min").val();
+						
+			tb = new groupBuilder(content, min, max);
+		});
+		
+
+		var modal = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
+						  '<div class="modal-dialog">'+
+						    '<div class="modal-content">'+
+						      '<div class="modal-header">'+
+						        '<button type="button" class="close" data-dismiss="modal">'+
+						        '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
+						        '<h4 class="modal-title" id="myModalLabel">Guardar equipos</h4>'+
+						      '</div>'+
+						      '<div class="modal-body">'+	
+						      	'<form>'+
+						      		'<div class="form-group">'+
+						      			'<label>Torneo</label>'+
+						      			'<select class="form-control select-tournaments"></select>'+
+						      		'</div>'+
+						      		'<div class="form-group">'+
+						      			'<label>Nombre de los equipos(separados por coma)</label>'+
+						      			'<textarea class="form-control name-teams" rows="3"></textarea>'+
+						      		'</div>'+
+						      	'</form>'+
+						      '</div>'+
+						      '<div class="modal-footer">'+
+						        '<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>'+
+						        '<button type="button" class="btn btn-primary save-teams">Guardar</button>'+
+						      '</div>'+
+						    '</div>'+
+						  '</div>'+
+						'</div>';
+
+		//Buscar torneos activos
+		navBar.find(".save-popup").click(function () {
+			var modalObj = $(modal);
+			modalObj.modal("show");
+
+			parameters = {
+				type: "GET",     
+	            url: "home/tournament/active",		            
+	            contentType: 'application/json',
+	            dataType: "json",
+	            success: function(data){	            		
+	            		$(modal).find(".select-tournaments")
+	            		var select = $(modal).find(".select-tournaments");	            		
+	            		_.each(data, function (value, key) {
+	            			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
+	            			
+	            			$(".select-tournaments").append(option);
+	            		});            		
+	            },
+	            error: function(){},            
+			};
+			
+			$.ajax(parameters);	
+
+			//Guardar equipos generados en BD
+			modalObj.find(".save-teams").click(function () {	
+
+				var dataTeam = modalObj.find("select.select-tournaments option:selected").attr("data-team");
+				
+				if(dataTeam > 0){
+					var r = confirm("Este torneo ya tiene equipos registrados.\n Desea remplazarlos");
+					if(!r){
+						return false;
+					}
+				}
+
+				if(tb != null){
+
+					var tournament = $(".select-tournaments").val();
+					var nameTeams = $(".name-teams").val();				
+					
+					
+					if(typeof nameTeams != 'undefined'){
+						var names = nameTeams.split(",");					
+					}
+					
+					var n = names;
+					var json = {};
+
+					_.each(tb.cities, function (value, cityKey) {
+						city = {
+							"name": value.name,
+							"teams": {}
+						};
+						_.each(value.teams, function (v, k) {
+							if(n.length > 0){
+								var r = Math.random();
+								var pos =parseInt(r * n.length)
+								if(pos<0)pos++;
+								if(pos>(n.length))pos--;
+								var name = n[pos];
+								if(name.substring(0,1) == " "){
+									name = name.substring(1);
+								}
+								//console.log("Cambio de nombre al equipo "+v.name+" por "+ name +" de la ciudad de " + value.name)	
+								v.name = name;
+
+								n.splice(pos, 1);		
+							}
+
+							
+							var team = {
+								"name": v.name,
+								"players": {}
+							};
+							// delete v.city;
+							_.each(v.players, function (val, key) {	
+								//team['players'].push({"id" : val['id']});			
+							 	team['players'][key] = {
+							 		"id" : val.id
+							 	};
+							});
+
+							city['teams'][k] = team;
+							//city['teams'].push(team);
+						});	
+						json[cityKey] = city;
+						//json.push(city);
+					});
+
+					
+
+					var data = {
+						"cities" : json,
+						"tournament": tournament
+					};
+
+					//console.log(data)
+
+					parameters = {
+						type: "POST", 
+						data: JSON.stringify(data),
+						//data: data,
+			            url: "home/team/save",
+			            contentType: 'application/json',
+			            dataType: "json",
+			            success: function(data){
+			            	
+			            },
+			            error: function(){},
+					};
+											
+					var ajax = $.ajax(parameters);										
+				}
+
+				modalObj.modal('hide')
+			});			
+		});
+
+
+		
+	},	
 });
 
 
@@ -1641,136 +1925,10 @@ function generateTeam(){
 	Backbone.history.navigate("generateTeams", true);
 }
 
-// function teamsCity(city, teams, content, out){	
-
+function generateGroup(){
 	
-// 	_.each(teams, function(value, key){
-		
-// 		var panel = $('<div class="panel panel-primary panel-team" ondrop="drop(event)" ondragover="allowDrop(event)">'+
-// 							'<div class="panel-heading title-team">'+value.name+'</div>'+
-// 							'<div class="panel-body panel-body-team">'+
-// 							'</div>'+ 
-// 					   '</div>');
-		
-// 		content.append(panel);
+	var router = new routerManager();	
+	//router.generateTeams();
+	Backbone.history.navigate("generateGroups", true);
+}
 
-// 		playersTeam(value.players, panel.find("div.panel-body"));
-// 	});
-	
-	
-// 	if(out.length > 0){	
-
-// 		var panelOut = $('<div class="panel panel-warning panel-team-out" ondrop="drop(event, '+teams.length+')" ondragover="allowDrop(event)">'+
-// 							'<div class="panel-heading title-team">Sin equipo</div>'+
-// 							'<div class="panel-body panel-body-team">'+
-// 							'</div>'+ 
-// 					   '</div>');
-		
-// 		panelOut.children('.title-team').addClass("team-out");
-// 		content.append(panelOut);
-
-// 		playersTeam(out, panelOut.find("div.panel-body"));
-// 	}
-// }
-
-// function playersTeam(players, content){
-	
-// 	_.each(players, function(value, key){
-// 		if(value){
-// 			var img = value.image;
-// 			if(!img){
-// 				img = 'http://soylider.sifinca.net/bundles/lider/images/avatar.png'
-// 			}
-// 			var panel = $('<div id="player-'+value.id+'" class="panel-player" draggable="true" ondragstart="drag(event)">'+
-// 							'<div class="img-player">'+
-// 								'<img src='+img+'>'+
-// 							'</div>'+
-// 							'<div class="name-player"><p>'+value.name.toLowerCase() +'</p></div>'+
-// 						+'</div>');
-
-			
-// 			content.append(panel);
-// 		}
-
-// 	})
-// }
-
-// function allowDrop(ev) {
-	
-//     ev.preventDefault();
-// }
-
-// function drag(ev) {
-	
-//     ev.dataTransfer.setData("Text", ev.target.id);
-// 	//console.log(ev.toElement)
-// 	var p = $(ev.toElement).parent();
-// 	var abu = p.parent();
-// 	//console.log(p)
-// 	var numPlayers = p[0].childElementCount;
-// 	numPlayers = numPlayers-1;
-// 	//console.log(numPlayers)
-// 	//console.log(numPlayers+" < "+min+" || "+ numPlayers+" > "+ max)
-// 	if((numPlayers < min) || (numPlayers > max)){
-		
-// 		abu.removeClass("panel-warning");
-// 		abu.addClass("panel-danger");
-// 	}else{
-		
-// 		abu.removeClass("panel-warning");
-// 		abu.removeClass("panel-danger");
-// 		abu.addClass("panel-primary");
-// 	}	
-	
-// }
-
-// /*
-//  * Ingresar
-//  * */
-// function drop(ev, numTeam) {
-//     ev.preventDefault();
-//     var data = ev.dataTransfer.getData("Text");
-//     var player = $("div#"+data);
-//     var target =  $(ev.target);
-//     //console.log(target)
-//     if(target.hasClass("panel-body")){
-//     	$(ev.target).append(player);
-//     }else{
-//     	var parent = target.parents("div.panel-body-team");
-//     	if(parent.length >0 ){
-//     		parent.append(player)
-// //    		console.log(parent)
-    		
-//     		var numPlayers = parent[0].childElementCount;
-
-// //    		console.log(numPlayers)
-//     		console.log(numPlayers+" < "+min+" || "+ numPlayers+" >"+ max)
-//     		if((numPlayers < min) || (numPlayers > max)){
-//     			//console.log("entro")
-// //    			console.log(parent.parent().children(".title-team"))
-//     			var t = parent.parent().children(".title-team");
-// //    			t.css("background", "red");
-//     			parent.parent().removeClass("panel-warning");
-//     			parent.parent().addClass("panel-danger");
-//     		}else{
-    			
-//     			var panel = parent.parent(); /* Panel del equipo */
-//     			panel.removeClass("panel-warning");
-//     			panel.removeClass("panel-danger");
-//     			panel.addClass("panel-primary");
-
-//     			if(panel.hasClass("panel-team-out")){
-//     				panel.children(".title-team").empty();
-    				
-
-//     				var newTitle = $('<label>Equipo '+(numTeam+1)+'<label>');
-//     				panel.children(".title-team").append(newTitle);
-//     			}
-    			
-//     		}
-    		
-//     	}
-//     }
-    
-//     //ev.target.appendChild(document.getElementById(data));
-// }
