@@ -18,4 +18,3 @@ player_team:
    resource: "@LiderBundle/Resources/config/player_routes/team_routing.yml"
    prefix:   /home/team
 
-   

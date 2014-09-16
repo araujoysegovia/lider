@@ -22,3 +22,13 @@ admin_group_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
+
+admin_group_geneate:
+    pattern:  /generate
+    defaults: { _controller: LiderBundle:Group:generateGroup }
+    methods:  [GET]
+
+admin_group_save:
+    pattern:  /save
+    defaults: { _controller: LiderBundle:Group:saveGroup }
+    methods:  [POST]

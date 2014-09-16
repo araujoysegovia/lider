@@ -178,6 +178,33 @@
 }
 
 
+/***************************** Generador de grupos ******************************/
+
+.panel-group{
+	background: #FFFFFF;
+	min-width: 200px;
+	float: left;
+	margin-right: 20px;
+}
+
+.g-panel-team > .g-img-team  {
+	float: left;
+	width: 30px;	
+	margin-right: 10px;
+}
+
+.g-panel-team > .g-img-team  > img{
+	-webkit-border-radius: 100px;
+	-moz-border-radius: 100px;
+	 border-radius: 100px;
+	width: 30px;
+}
+
+.bt-add-group{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
 /*****************************   Parametrizacion  ********************************/
 
 #entity-content > div > form > .form-group > input{
