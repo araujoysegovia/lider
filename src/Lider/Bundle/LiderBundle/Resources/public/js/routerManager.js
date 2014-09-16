@@ -760,7 +760,6 @@ var routerManager = Backbone.Router.extend({
 					title:"Oficina",					
 					//template:  "#: office.name #",
 					template:  function(e){						
-						
 						if(e.office){
 							return e.office.name;
 						}
