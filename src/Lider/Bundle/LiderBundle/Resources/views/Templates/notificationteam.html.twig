@@ -1,0 +1,29 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<div style="width:500px; min-height:500px; overflow:hidden;">
+			<div style="background-image: url('http://lider.sifinca.net/lider/src/Lider/Bundle/LiderBundle/Resources/public/images/email-header.png'); background-repeat: no-repeat; height: 40px;">
+				<img style="width: 25px; float: left; margin-top: 2px; margin-left:10px;" src="https://cdn0.iconfinder.com/data/icons/web-and-apps-develop/512/design_logo_development_process_create_web_product_graphic_element_production_illustrator_custom_project_sketch_making_flat_design_icon-128.png"/>
+			</div>
+			<div>
+				<div style="text-align: center;">
+					<img style="width: 50px; margin-top:15px;" src='http://lider.sifinca.net/web/app.php/image/{{ teamImage }}' />
+					<h2>{{ title }}</h2>
+				</div>
+				<div style="margin-top: 10px;">
+					<ul style="list-style: none;">
+						{% for member in members %}
+							<li>
+								<img style="width: 30px" src='http://lider.sifinca.net/web/app.php/image/{{ member.image }}'/>
+								<span style="margin-left: 10px;">{{ member.name }} {{ member.lastname }}</span>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			<div style="margin-top: 40px; background-image: url('http://lider.sifinca.net/lider/src/Lider/Bundle/LiderBundle/Resources/public/images/email-footer.png'); height: 25px;">
+			</div>
+		</div>
+	</body>
+</html>

@@ -302,28 +302,6 @@ class PlayerController extends Controller
                 $arr['user']['points'] += $value->getPoints();
             }
         }
-        
-        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
-        $statistics = $statistics->toArray();
-        $count=0;
-        $win=0; $lost=0;
-
-        if($statistics){
-
-	        $obj = $statistics[0]; 
-	        $lost = $obj["lost"];
-	        $count = $obj["count"];
-	        $win = $obj["win"];
-        }
-        
-        
-        $eff = 0;
-        if($count > 0)
-        	$eff = ($win * 100) / $count;
-        
-        $arr['user']["effectiveness"] = $eff;
-        $arr['user']["counteffectiveness"] = $count;
-        $arr['user']["wineffectiveness"] = $win;
 
         // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
         // $arr['user']['gameInfo'] = $playerGameInfo;
@@ -357,7 +335,36 @@ class PlayerController extends Controller
             return $this->get("talker")->response(array("total"=>0, "data"=>array()));
         }
     	
-    } 
+    }
+
+    public function getGeneraStatisticsAction(){
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
+        $statistics = $statistics->toArray();
+        $count=0;
+        $win=0; $lost=0;
+
+        if($statistics){
+
+            $obj = $statistics[0]; 
+            $lost = $obj["lost"];
+            $count = $obj["count"];
+            $win = $obj["win"];
+        }
+        
+        
+        $eff = 0;
+        if($count > 0)
+            $eff = ($win * 100) / $count;
+        $arr = array(
+            'effectiveness' => $eff,
+            'counteffectiveness' => $count,
+            'wineffectiveness' => $win 
+        );
+
+        return $this->get("talker")->response($arr);
+    }
     
     /**
      * Cambiar la foto de perfil del usuario
