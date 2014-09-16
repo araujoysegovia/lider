@@ -138,28 +138,6 @@ class PlayerController extends Controller
     	
     	$playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
     	$arr['user']['gameInfo'] = $playerGameInfo;
-    	
-        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
-        $statistics = $statistics->toArray();
-        $count=0;
-        $win=0; $lost=0;
-
-        if($statistics){
-
-            $obj = $statistics[0]; 
-            $lost = $obj["lost"];
-            $count = $obj["count"];
-            $win = $obj["win"];
-        }
-        
-        
-        $eff = 0;
-        if($count > 0)
-            $eff = ($win * 100) / $count;
-        
-        $arr['user']["effectiveness"] = $eff;
-        $arr['user']["counteffectiveness"] = $count;
-        $arr['user']["wineffectiveness"] = $win;
     	 
         $parameters = $this->get('parameters_manager')->getParameters();
 
@@ -337,8 +315,6 @@ class PlayerController extends Controller
     public function getGeneralStatisticsAction(){
         $dm = $this->get('doctrine_mongodb')->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
-
-
         $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
         $statistics = $statistics->toArray();
         $count=0;
