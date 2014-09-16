@@ -163,13 +163,11 @@ class PlayerController extends Controller
     	 
         $parameters = $this->get('parameters_manager')->getParameters();
 
-        $arr['cofig'] = array(
-            "parameters" => array(
-                "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'],
-                "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
-                "timeGame" => $parameters['gamesParameters']['timeGame'],
-                "timeDuel" => $parameters['gamesParameters']['timeDuel']
-            )
+        $arr['config'] = array(
+            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'],
+            "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
+            "timeGame" => $parameters['gamesParameters']['timeGame'],
+            "timeDuel" => $parameters['gamesParameters']['timeDuel']
         );
 
     	return $this->get("talker")->response($arr);
@@ -328,14 +326,12 @@ class PlayerController extends Controller
         // $arr['user']['gameInfo'] = $playerGameInfo;
         $parameters = $this->get('parameters_manager')->getParameters();
 
-        $arr['cofig'] = array(
-            "parameters" => array(
-                "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'],
-                "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
-                "timeGame" => $parameters['gamesParameters']['timeGame'],
-                "timeDuel" => $parameters['gamesParameters']['timeDuel']
-            )
-        );         
+        $arr['config'] = array(
+            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'],
+            "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
+            "timeGame" => $parameters['gamesParameters']['timeGame'],
+            "timeDuel" => $parameters['gamesParameters']['timeDuel']
+        ); 
                
         return $this->get("talker")->response($arr);
     }

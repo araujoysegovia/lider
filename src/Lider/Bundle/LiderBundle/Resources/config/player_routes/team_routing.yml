@@ -22,4 +22,3 @@ team_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
-      

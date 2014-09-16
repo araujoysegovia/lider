@@ -1734,6 +1734,9 @@ var routerManager = Backbone.Router.extend({
 						        '</div>'+						        
 						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+						        
 					        '</form>'+
+					         '<ul class="nav navbar-nav navbar-right" style="margin-top:10px; margin-right: 10px;">'+
+					        	'<li><button type="button" class="btn btn-success save-popup" >Guardar</button></li>'+
+						    '</ul>'+
 				        '</div>'+
 			        '</nav>');
 		
@@ -1763,23 +1766,19 @@ var routerManager = Backbone.Router.extend({
 						      '<div class="modal-header">'+
 						        '<button type="button" class="close" data-dismiss="modal">'+
 						        '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
-						        '<h4 class="modal-title" id="myModalLabel">Guardar equipos</h4>'+
+						        '<h4 class="modal-title" id="myModalLabel">Guardar grupos</h4>'+
 						      '</div>'+
 						      '<div class="modal-body">'+	
 						      	'<form>'+
 						      		'<div class="form-group">'+
 						      			'<label>Torneo</label>'+
 						      			'<select class="form-control select-tournaments"></select>'+
-						      		'</div>'+
-						      		'<div class="form-group">'+
-						      			'<label>Nombre de los equipos(separados por coma)</label>'+
-						      			'<textarea class="form-control name-teams" rows="3"></textarea>'+
-						      		'</div>'+
+						      		'</div>'+						      		
 						      	'</form>'+
 						      '</div>'+
 						      '<div class="modal-footer">'+
 						        '<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>'+
-						        '<button type="button" class="btn btn-primary save-teams">Guardar</button>'+
+						        '<button type="button" class="btn btn-primary save-groups">Guardar</button>'+
 						      '</div>'+
 						    '</div>'+
 						  '</div>'+
@@ -1810,7 +1809,7 @@ var routerManager = Backbone.Router.extend({
 			$.ajax(parameters);	
 
 			//Guardar equipos generados en BD
-			modalObj.find(".save-teams").click(function () {	
+			modalObj.find(".save-groups").click(function () {	
 
 				var dataTeam = modalObj.find("select.select-tournaments option:selected").attr("data-team");
 				
@@ -1824,61 +1823,32 @@ var routerManager = Backbone.Router.extend({
 				if(tb != null){
 
 					var tournament = $(".select-tournaments").val();
-					var nameTeams = $(".name-teams").val();				
-					
-					
-					if(typeof nameTeams != 'undefined'){
-						var names = nameTeams.split(",");					
-					}
-					
-					var n = names;
+				
 					var json = {};
 
-					_.each(tb.cities, function (value, cityKey) {
-						city = {
+					_.each(tb.groups, function (value, gKey) {
+						group = {
 							"name": value.name,
 							"teams": {}
 						};
 						_.each(value.teams, function (v, k) {
-							if(n.length > 0){
-								var r = Math.random();
-								var pos =parseInt(r * n.length)
-								if(pos<0)pos++;
-								if(pos>(n.length))pos--;
-								var name = n[pos];
-								if(name.substring(0,1) == " "){
-									name = name.substring(1);
-								}
-								//console.log("Cambio de nombre al equipo "+v.name+" por "+ name +" de la ciudad de " + value.name)	
-								v.name = name;
-
-								n.splice(pos, 1);		
-							}
-
-							
+														
 							var team = {
-								"name": v.name,
-								"players": {}
+								"id": v.id,
+								"name": v.name,								
 							};
-							// delete v.city;
-							_.each(v.players, function (val, key) {	
-								//team['players'].push({"id" : val['id']});			
-							 	team['players'][key] = {
-							 		"id" : val.id
-							 	};
-							});
-
-							city['teams'][k] = team;
+							
+							group['teams'][k] = team;
 							//city['teams'].push(team);
 						});	
-						json[cityKey] = city;
+						json[gKey] = group;
 						//json.push(city);
 					});
 
 					
 
 					var data = {
-						"cities" : json,
+						"groups" : json,
 						"tournament": tournament
 					};
 
@@ -1888,7 +1858,7 @@ var routerManager = Backbone.Router.extend({
 						type: "POST", 
 						data: JSON.stringify(data),
 						//data: data,
-			            url: "home/team/save",
+			            url: "home/group/save",
 			            contentType: 'application/json',
 			            dataType: "json",
 			            success: function(data){

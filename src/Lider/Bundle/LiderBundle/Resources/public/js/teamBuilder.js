@@ -391,21 +391,5 @@ teamBuilder.prototype = {
 		me.validateNumberPlayers(obj);
 	},
 
-	// jsonBuild: function (nameTeams) {
-
-	// 	var me = this;
-
-	// 	console.log(me)
-		
-	// 	// var json = {};
-	// 	// _.each(me.cities, function (value, key) {
-	// 	// 	json['id'] = value.id,
-	// 	// 	json['name'] = value.name,
-	// 	// 	json['teams'] = value.teams
-	// 	// });
-
-	// 	// console.log(json)
-	// }
-
 }
 

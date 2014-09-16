@@ -44,6 +44,9 @@ class TeamController extends Controller
     }
  
     
+    /**
+     * Generar equipos
+     */
     public function generateTeamAction() {
     	
     	$request = $this->get("request");
@@ -78,6 +81,9 @@ class TeamController extends Controller
     	return $this->get("talker")->response($rec);
     }
     
+    /**
+     * Crear equipos por ciudades
+     */
     private function createTeams($players, $min, $max, $cityName){
     	
     	$countPlayers = count($players);
@@ -119,40 +125,30 @@ class TeamController extends Controller
     			);
     			 
     			for ($i = 0; $i < $c; $i++) {
-    				$sp = $subPlayers;
-    				//echo count($sp);
+    				$sp = $subPlayers;    				
     				$found = false;
     				while (count($sp) > 0 && $found == false) {
     		    
     					$pos = rand(1, count($sp)) -1;
     					$player = $sp[$pos];
-    					//echo "<br/>".count($sp);
-    		    
+
     					if(count($team['players']) > 0){
     						$splayer = $team['players'][0];
-//     						if($splayer['office']['city'] == $player['office']['city']){
     							$team['players'][] = $player;
     							$this->removeItem($subPlayers, $player['id']);
     							$found = true;
-//     						}
-    						//unset($sp[$pos-1]);
     						array_splice($sp, $pos, 1);
     					}else{
     						$team['players'][] = $player;
-//     						$team['office'] = $player['office']['name'];
+
     						$this->removeItem($subPlayers, $player['id']);
     						$found = true;
-    						//return new Response("<br/>".count($team));
     					}
     				}
     			}
     			$team['countPlayers'] = count($team['players']);
     			 
     			if(count($team['countPlayers']) > 0){
-//     				$city =  $team['players'][0]['office']['city'];
-//     				if(!array_key_exists($city, $teams)){
-//     					$teams[$city] = array();
-//     				}
     				$teams[] = $team;
     				$count++;
     			}
@@ -182,6 +178,9 @@ class TeamController extends Controller
     	}
     }
 
+    /**
+     * Guardar equipos en BD
+     */
     public function saveTeamAction(){
         
         $em = $this->getDoctrine()->getEntityManager(); 
