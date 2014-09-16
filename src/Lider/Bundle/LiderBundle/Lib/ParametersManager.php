@@ -7,17 +7,16 @@ use Symfony\Component\Yaml\Dumper;
 
 class ParametersManager {
 
-
+	private $pathParameters = '/var/www/html/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
     /**
      * Setear los parametros de configuración para el juego
      */
     public function setParameters($timeQuestionPractice, $timeQuestionDuel, $timeGame, $timeDuel){
-    	    	
-    	$pathParameters = '/var/www/html/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
+
     	$yaml = new Parser();
 
     	try{
-    		$parameters = $yaml->parse(file_get_contents($pathParameters));	
+    		$parameters = $yaml->parse(file_get_contents($this->pathParameters));	
 
     		if(!is_null($timeQuestionPractice))
 		    	$parameters['gamesParameters']['timeQuestionPractice'] = $timeQuestionPractice;		
@@ -44,11 +43,14 @@ class ParametersManager {
 
     public function getParameters(){
 
-		$pathParameters = '/var/www/html/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
 		$yaml = new Parser();
 
+		if(!file_exists($this->pathParameters)){
+			file_put_contents($this->pathParameters, "");
+		}
+
 		try {
-		    $parameters = $yaml->parse(file_get_contents($pathParameters));		   
+		    $parameters = $yaml->parse(file_get_contents($this->pathParameters));		   
 		} catch (ParseException $e) {
 		    printf("Unable to parse the YAML string: %s", $e->getMessage());
 		}

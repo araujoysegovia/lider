@@ -722,6 +722,9 @@ var routerManager = Backbone.Router.extend({
 						editable: false,
 						nullable: true 
 					},
+				    image: {				    	
+				    	editable: false
+				    },
 					name: { 
 						type: "string" 
 					},
@@ -745,9 +748,28 @@ var routerManager = Backbone.Router.extend({
 		  	},
 			columns: [
 				{ 
+					field:"image", 
+					title: "Imagen" ,
+					width: "150px",					
+					template: function(e){
+						var src = 'http://10.102.1.22/lider/web';
+						if(_.isEmpty(e.image)){
+							src = src + "/bundles/lider/images/avatar.png";
+						}else{
+							src = src + "/app.php/image/"+e.image;
+						}
+						var img = "<div class='img-player'>"+
+								     	"<img  data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
+								     	"<input id='input-file-player-"+e.id+"' type='file' style = 'display: none;'/>"+
+								     "</div>";
+
+						return img;
+					}
+				},	
+				{ 
 					field:"name", 
 					title: "Nombre" 
-				},
+				},				
 				{ 
 					field:"lastname", 
 					title: "Apellido" 
@@ -902,7 +924,49 @@ var routerManager = Backbone.Router.extend({
 		        				        	
 		            return kendo.stringify(data);
 		        }
-			},			
+			},		
+			dataBound: function(e) {
+			    //console.log("dataBound");
+			    //console.log(e)
+			    $('.img-player').children("img").click(function(){
+			    	
+			    	var id = $(this).attr("data-id");
+					console.log($(this).attr("data-id"))
+					
+					//$('.input-file-team')
+					
+					var input = $(this).parent("div.img-player").children("input");
+					
+					input.click();
+					
+					input.change(function(){
+						//console.log("change")
+						var filename = $(this).val();
+						//console.log(filename)
+						if(filename){
+							
+							var formData = new FormData();
+							formData.append("imagen", $(this).get(0).files[0]);
+							//console.log(formData)
+							config = {
+					            type: "POST",           
+					            url: "home/team/image/"+id,
+					            data: formData,
+					            contentType: false,
+					            processData: false,
+								success: function(){
+								   office.grid.data('kendoGrid').dataSource.read();
+								   office.grid.data('kendoGrid').refresh();
+								},
+								error: function(){}
+							}
+
+							$.ajax(config);
+						}
+					});
+					
+				});
+			},					
 		})
 	},
 

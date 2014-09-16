@@ -50,6 +50,11 @@ class Team extends Entity
     private $tournament;
 
     /**
+     * @ORM\OneToMany(targetEntity="Player", mappedBy="team")
+     */
+    private $players;
+
+    /**
      * Get id
      *
      * @return integer 

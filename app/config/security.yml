@@ -76,4 +76,5 @@ security:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/send, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/home, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/image, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/home, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -10,7 +10,7 @@ admin_module:
 player_module:
     resource: "@LiderBundle/Resources/config/player_routes/routing.yml"
     prefix:   /
-   # host: soylider.sifinca.net   
+    host: soylider.sifinca.net   
 
 image_route:
     pattern:  /image/{id}
@@ -30,7 +30,10 @@ general_image:
     defaults: { _controller: LiderBundle:Image:saveImage }
     methods:  [POST]
 
+<<<<<<< HEAD
 #admin_question_prueba:
 #    pattern:  /parameters/prueba
 #    defaults: { _controller: LiderBundle:Question:prueba }
 #    # methods:  [POST]
+=======
+>>>>>>> 04274697c04bff3cf2d81cd0bac2621866642fd1

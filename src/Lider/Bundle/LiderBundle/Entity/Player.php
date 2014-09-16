@@ -66,7 +66,7 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
 	private $roles;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"}, inversedBy="players")
 	 * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
 	 */
 	private $team;
@@ -86,7 +86,7 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
 	/**
 	 * @ORM\Column(type="integer", nullable=true)
 	 */
-	private $wonLost;
+	private $lostGames;
 	
 	/**
 	 * @ORM\Column(type="boolean", nullable = true)	 	 
@@ -389,26 +389,26 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
     }
 
     /**
-     * Set wonLost
+     * Set lostGames
      *
-     * @param integer $wonLost
+     * @param integer $lostGames
      * @return Player
      */
-    public function setWonLost($wonLost)
+    public function setLostGames($lostGames)
     {
-        $this->wonLost = $wonLost;
+        $this->lostGames = $lostGames;
 
         return $this;
     }
 
     /**
-     * Get wonLost
+     * Get lostGames
      *
      * @return integer 
      */
-    public function getWonLost()
+    public function getlostGames()
     {
-        return $this->wonLost;
+        return $this->lostGames;
     }
 
     /**
