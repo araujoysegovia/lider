@@ -53,10 +53,11 @@ class Tournament extends Entity
     private $groups;    
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      * @Assert\Range(min=1, max=5)
      */
     private $level;
+
     /**
      * Constructor
      */
@@ -232,5 +233,28 @@ class Tournament extends Entity
     public function getGroups()
     {
         return $this->groups;
+    }
+
+    /**
+     * Set level
+     *
+     * @param integer $level
+     * @return Tournament
+     */
+    public function setLevel($level)
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    /**
+     * Get level
+     *
+     * @return integer 
+     */
+    public function getLevel()
+    {
+        return $this->level;
     }
 }

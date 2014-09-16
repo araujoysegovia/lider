@@ -759,7 +759,7 @@ var routerManager = Backbone.Router.extend({
 							src = src + "/app.php/image/"+e.image;
 						}
 						var img = "<div class='img-player'>"+
-								     	"<img  data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
+								     	"<img  data-id='"+e.id+"' src='"+src+"?width=40&height=40' width = '40px' height= '40px'/>"+
 								     	"<input id='input-file-player-"+e.id+"' type='file' style = 'display: none;'/>"+
 								     "</div>";
 
