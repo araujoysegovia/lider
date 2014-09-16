@@ -315,10 +315,13 @@ class PlayerController extends Controller
     	
     }
 
-    public function rangePositionAction()
+    public function getRangePositionAction()
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
-        
+        $repo = $dm->getRepository("LiderBundle:QuestionHistory");
+        $list = $repo->findRangePosition();
+        $list = $list->toArray();
+        return $this->get("talker")->response(array("total" => count($list), "data" => $list));
     }
 
     public function getGeneralStatisticsAction(){
