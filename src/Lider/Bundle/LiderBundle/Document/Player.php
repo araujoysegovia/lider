@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Lider\Bundle\LiderBundle\Entity\Player as PlayerEntity;
 
 /**
- * @MongoDB\EmbeddedDocument 
+ * @MongoDB\EmbeddedDocument
  */
 class Player extends PlayerEntity
 {

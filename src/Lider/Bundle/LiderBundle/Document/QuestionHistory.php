@@ -73,7 +73,17 @@ class QuestionHistory
     /**
      * @MongoDB\EmbedOne(targetDocument="Tournament") 
      */ 
-    private $tournament;    
+    private $tournament;
+
+    /** 
+     * @MongoDB\int
+     */
+    private $points;
+
+    /** 
+     * @MongoDB\Boolean
+     */
+    private $useHelp;
 
     public function __construct()
     {
@@ -360,5 +370,49 @@ class QuestionHistory
     public function getTournament()
     {
         return $this->tournament;
+    }
+
+    /**
+     * Set points
+     *
+     * @param int $points
+     * @return self
+     */
+    public function setPoints($points)
+    {
+        $this->points = $points;
+        return $this;
+    }
+
+    /**
+     * Get points
+     *
+     * @return int $points
+     */
+    public function getPoints()
+    {
+        return $this->points;
+    }
+
+    /**
+     * Set useHelp
+     *
+     * @param boolean $useHelp
+     * @return self
+     */
+    public function setUseHelp($useHelp)
+    {
+        $this->useHelp = $useHelp;
+        return $this;
+    }
+
+    /**
+     * Get useHelp
+     *
+     * @return boolean $useHelp
+     */
+    public function getUseHelp()
+    {
+        return $this->useHelp;
     }
 }

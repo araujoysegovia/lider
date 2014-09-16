@@ -312,6 +312,12 @@ class PlayerController extends Controller
     	
     }
 
+    public function rangePositionAction()
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        
+    }
+
     public function getGeneralStatisticsAction(){
         $dm = $this->get('doctrine_mongodb')->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
