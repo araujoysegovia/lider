@@ -138,28 +138,6 @@ class PlayerController extends Controller
     	
     	$playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
     	$arr['user']['gameInfo'] = $playerGameInfo;
-    	
-        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
-        $statistics = $statistics->toArray();
-        $count=0;
-        $win=0; $lost=0;
-
-        if($statistics){
-
-            $obj = $statistics[0]; 
-            $lost = $obj["lost"];
-            $count = $obj["count"];
-            $win = $obj["win"];
-        }
-        
-        
-        $eff = 0;
-        if($count > 0)
-            $eff = ($win * 100) / $count;
-        
-        $arr['user']["effectiveness"] = $eff;
-        $arr['user']["counteffectiveness"] = $count;
-        $arr['user']["wineffectiveness"] = $win;
     	 
         $parameters = $this->get('parameters_manager')->getParameters();
 
@@ -299,28 +277,6 @@ class PlayerController extends Controller
                 $arr['user']['points'] += $value->getPoints();
             }
         }
-        
-        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
-        $statistics = $statistics->toArray();
-        $count=0;
-        $win=0; $lost=0;
-
-        if($statistics){
-
-	        $obj = $statistics[0]; 
-	        $lost = $obj["lost"];
-	        $count = $obj["count"];
-	        $win = $obj["win"];
-        }
-        
-        
-        $eff = 0;
-        if($count > 0)
-        	$eff = ($win * 100) / $count;
-        
-        $arr['user']["effectiveness"] = $eff;
-        $arr['user']["counteffectiveness"] = $count;
-        $arr['user']["wineffectiveness"] = $win;
 
         // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
         // $arr['user']['gameInfo'] = $playerGameInfo;
@@ -354,7 +310,36 @@ class PlayerController extends Controller
             return $this->get("talker")->response(array("total"=>0, "data"=>array()));
         }
     	
-    } 
+    }
+
+    public function getGeneralStatisticsAction(){
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
+        $statistics = $statistics->toArray();
+        $count=0;
+        $win=0; $lost=0;
+
+        if($statistics){
+
+            $obj = $statistics[0]; 
+            $lost = $obj["lost"];
+            $count = $obj["count"];
+            $win = $obj["win"];
+        }
+        
+        
+        $eff = 0;
+        if($count > 0)
+            $eff = ($win * 100) / $count;
+        $arr = array(
+            'effectiveness' => $eff,
+            'counteffectiveness' => $count,
+            'wineffectiveness' => $win 
+        );
+
+        return $this->get("talker")->response($arr);
+    }
     
     /**
      * Cambiar la foto de perfil del usuario
@@ -512,4 +497,33 @@ class PlayerController extends Controller
     	return $this->get("talker")->response($categories);
     }
     
+    public function setImageAction($id) {
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $entity = $em->getRepository("LiderBundle:Team")->findOneBy(array("id" => $id, "deleted" => false));
+        if(!$entity)
+            throw new \Exception("Entity no found");
+        
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $request = $this->get("request");
+
+        $uploadedFile = $request->files->get('imagen');
+        $className = self::$NAMESPACE.$this->getName();
+        
+        $image = new Image();
+        $image->setName($uploadedFile->getClientOriginalName());
+        $image->setFile($uploadedFile->getPathname());
+        $image->setMimetype($uploadedFile->getClientMimeType());
+        $image->setEntity($className);
+        $image->setEntityId($id);
+        
+        $dm->persist($image);
+        $dm->flush();
+        
+        $entity->setImage($image->getId());
+        
+        $em->flush();
+        
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }    
 }

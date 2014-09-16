@@ -19,4 +19,3 @@ class LiderBundle extends Bundle
 	}
 }
 
-

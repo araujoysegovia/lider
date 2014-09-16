@@ -22,6 +22,8 @@ class AppKernel extends Kernel
             new Lider\Bundle\LiderBundle\LiderBundle(),
         	new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
         	new Nelmio\CorsBundle\NelmioCorsBundle(),
+            new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
+            new Mmoreram\GearmanBundle\GearmanBundle(),
             new Avalanche\Bundle\ImagineBundle\AvalancheImagineBundle(),
         );
 

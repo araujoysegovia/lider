@@ -22,3 +22,10 @@ admin_player_getbyid:
     methods:  [GET]
     requirements:
       id: \d+
+
+admin_player_image:
+    pattern:  /image/{id}
+    defaults: { _controller: LiderBundle:Player:setImage }
+    methods:  [POST]
+    requirements:
+      id: \d+

@@ -69,3 +69,9 @@ player_statistics_player:
     pattern:  /statistics/{playerId}
     defaults: { _controller: LiderBundle:Player:getStatistics }
     methods:  [GET]
+
+#Estadisticas del usuario en session
+player_statistics_general:
+    pattern:  /generalstatistics
+    defaults: { _controller: LiderBundle:Player:getGeneralStatistics }
+    methods:  [GET]
