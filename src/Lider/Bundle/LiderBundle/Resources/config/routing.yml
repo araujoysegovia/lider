@@ -22,7 +22,7 @@ general_image:
     defaults: { _controller: LiderBundle:Image:saveImage }
     methods:  [POST]
 
-admin_question_prueba:
-    pattern:  /parameters/prueba
-    defaults: { _controller: LiderBundle:Question:prueba }
-    # methods:  [POST]
+#admin_question_prueba:
+#    pattern:  /parameters/prueba
+#    defaults: { _controller: LiderBundle:Question:prueba }
+#    # methods:  [POST]

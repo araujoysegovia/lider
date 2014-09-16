@@ -13,7 +13,7 @@ class ParametersManager {
      */
     public function setParameters($timeQuestionPractice, $timeQuestionDuel, $timeGame, $timeDuel){
     	    	
-    	$pathParameters = '/var/www/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
+    	$pathParameters = '/var/www/html/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
     	$yaml = new Parser();
 
     	try{
@@ -44,7 +44,7 @@ class ParametersManager {
 
     public function getParameters(){
 
-		$pathParameters = '/var/www/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
+		$pathParameters = '/var/www/html/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
 		$yaml = new Parser();
 
 		try {
