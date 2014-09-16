@@ -20,7 +20,7 @@ class SerialListener
 		{
 			$gearman = $this->get("gearman");
 			$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~notificationTeam', json_encode(array(
-				"team" => $entity;
+				"team" => $entity
 			)));
 		}
 	}
