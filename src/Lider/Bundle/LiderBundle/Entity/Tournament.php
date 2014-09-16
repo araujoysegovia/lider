@@ -53,6 +53,11 @@ class Tournament extends Entity
     private $groups;    
 
     /**
+     * @ORM\Column(type="integer")
+     * @Assert\Range(min=1, max=5)
+     */
+    private $level;
+    /**
      * Constructor
      */
     public function __construct()

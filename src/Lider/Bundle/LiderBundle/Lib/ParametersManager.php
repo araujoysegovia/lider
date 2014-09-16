@@ -47,6 +47,10 @@ class ParametersManager {
 		$pathParameters = '/var/www/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
 		$yaml = new Parser();
 
+		if (!file_exists($pathParameters)){
+			file_put_contents($pathParameters, "");
+		}
+
 		try {
 		    $parameters = $yaml->parse(file_get_contents($pathParameters));		   
 		} catch (ParseException $e) {

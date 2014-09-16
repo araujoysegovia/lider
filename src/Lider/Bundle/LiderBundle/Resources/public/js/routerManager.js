@@ -951,13 +951,13 @@ var routerManager = Backbone.Router.extend({
 							//console.log(formData)
 							config = {
 					            type: "POST",           
-					            url: "home/team/image/"+id,
+					            url: "home/player/image/"+id,
 					            data: formData,
 					            contentType: false,
 					            processData: false,
 								success: function(){
-								   office.grid.data('kendoGrid').dataSource.read();
-								   office.grid.data('kendoGrid').refresh();
+								   player.grid.data('kendoGrid').dataSource.read();
+								   player.grid.data('kendoGrid').refresh();
 								},
 								error: function(){}
 							}
