@@ -30,10 +30,3 @@ general_image:
     defaults: { _controller: LiderBundle:Image:saveImage }
     methods:  [POST]
 
-<<<<<<< HEAD
-#admin_question_prueba:
-#    pattern:  /parameters/prueba
-#    defaults: { _controller: LiderBundle:Question:prueba }
-#    # methods:  [POST]
-=======
->>>>>>> 04274697c04bff3cf2d81cd0bac2621866642fd1
