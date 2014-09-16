@@ -79,3 +79,8 @@ admin_get_parameters:
     pattern:  /params
     defaults: { _controller: LiderBundle:Game:getParameters }
     methods:  [GET]
+
+general_image:
+    pattern:  /image
+    defaults: { _controller: LiderBundle:Image:saveImage }
+    methods:  [POST]
