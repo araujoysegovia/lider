@@ -51,12 +51,28 @@ class NotificationService
     }
 
     public function sendEmail($subject, $from, $to, $message = null, $viewName = null, array $viewparam = array()){
-        $em = $this->registerEmailInLog($subject, $message, $from, $to);
         $mail = \Swift_Message::newInstance()
         ->setSubject($subject)
         ->setFrom($from)
-        ->setTo($to)
+        // ->setTo($to)
         ->setBody($message);
+        if(is_array($to)){
+            $sw = false;
+            foreach($to as $value){
+                if(!$sw){
+                    $mail->setTo($value);
+                }
+                else{
+                    $mail->addCC($value);
+                }
+                $em = $this->registerEmailInLog($subject, $message, $from, $value);
+                $sw = true;
+            }
+        }
+        else{
+            $mail->setTo($to);
+            $em = $this->registerEmailInLog($subject, $message, $from, $to);
+        }
         if(!is_null($viewName))
             $mail->addPart($this->templating->render($viewName, $viewparam), 'text/html');
 

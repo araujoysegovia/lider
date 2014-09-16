@@ -4,7 +4,13 @@ imports:
 
 #parameters:
 
-#services:                
+services:
+    lider_listener:
+        class: Lider\Bundle\LiderBundle\EventListener\SerialListener
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+        arguments:
+              container: "@service_container"
 
 framework:
     #esi:             ~

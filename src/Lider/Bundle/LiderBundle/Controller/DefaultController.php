@@ -115,23 +115,43 @@ class DefaultController extends SymfonyController
         $em = $this->getDoctrine()->getEntityManager();
         $notificationService = $this->get("notificationService");
 
-        $subject = "Subject";
-        $subject2 = "Subject desde gearman";
-        $message = "Mensaje a enviar";
-        $message2 = "Mensaje a enviar desde gearman";
-        $title = "Titulo del Email";
-        $body = "CUerpo del mensaje";
+        // $subject = "Subject";
+        // $subject2 = "Subject desde gearman";
+        // $message = "Mensaje a enviar";
+        // $message2 = "Mensaje a enviar desde gearman";
+        // $title = "Titulo del Email";
+        // $body = "CUerpo del mensaje";
+        // $from = "eescallon@araujoysegovia.com";
+        // $to = "eduard.escallon@gmail.com";
+        
+        $subject2 = "Notificacion de equpo";
+        $teamImage = "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-48.png";
+        $members = array(
+            array("name" => "Eduardo", "lastname" => "Escallon", "image" => "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-48.png"),
+            array("name" => "Deiner", "lastname" => "Mejia", "image" => "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-48.png"),
+            array("name" => "Nafer", "lastname" => "Hernandez", "image" => "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-48.png"),
+            array("name" => "Lizeth", "lastname" => "Rodriguez", "image" => "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-48.png"),
+            array("name" => "Hernando", "lastname" => "Herrera", "image" => "https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-48.png"),
+        );
         $from = "eescallon@araujoysegovia.com";
-        $to = "eduard.escallon@gmail.com";
-        $viewName = "LiderBundle:Templates:email.html.twig";
+        $to = array(
+            "eduard.escallon@gmail.com",
+            "dmejia@araujoysegovia.com"
+        );
+        $title = "Equipo A";
+        $viewName = "LiderBundle:Templates:notificationteam.html.twig";
+
+
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
             "subject" => $subject2,
-            "message" => $message2,
             "from" => $from,
             "to" => $to,
             "viewName" => $viewName,
-            "title" => $title,
-            "body" => $body
+            "content" => array(
+                "title" => $title,
+                "teamImage" => $teamImage,
+                "members" => $members
+            )
         )));
         // $returnCode = $gearman->getReturnCode();
         // $send = $notificationService->sendEmail($subject, $message, $from, $to);
