@@ -2288,7 +2288,6 @@
         "doctrine/mongodb-odm-bundle": 20,
         "mmoreram/gearman-bundle": 20
     },
-    "prefer-stable": false,
     "platform": {
         "php": ">=5.3.3"
     },

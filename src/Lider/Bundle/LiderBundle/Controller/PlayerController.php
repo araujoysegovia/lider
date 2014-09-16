@@ -286,7 +286,7 @@ class PlayerController extends Controller
         $parameters = $this->get('parameters_manager')->getParameters();
 
         $arr['config'] = array(
-            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'],
+            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'] ,
             "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
             "timeGame" => $parameters['gamesParameters']['timeGame'],
             "timeDuel" => $parameters['gamesParameters']['timeDuel']
@@ -509,7 +509,7 @@ class PlayerController extends Controller
     public function setImageAction($id) {
         
         $em = $this->getDoctrine()->getEntityManager();
-        $entity = $em->getRepository("LiderBundle:Team")->findOneBy(array("id" => $id, "deleted" => false));
+        $entity = $em->getRepository("LiderBundle:Player")->findOneBy(array("id" => $id, "deleted" => false));
         if(!$entity)
             throw new \Exception("Entity no found");
         

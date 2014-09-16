@@ -179,44 +179,4 @@ class Team extends Entity
     {
         return $this->tournament;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->players = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add players
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Player $players
-     * @return Team
-     */
-    public function addPlayer(\Lider\Bundle\LiderBundle\Entity\Player $players)
-    {
-        $this->players[] = $players;
-
-        return $this;
-    }
-
-    /**
-     * Remove players
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Player $players
-     */
-    public function removePlayer(\Lider\Bundle\LiderBundle\Entity\Player $players)
-    {
-        $this->players->removeElement($players);
-    }
-
-    /**
-     * Get players
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPlayers()
-    {
-        return $this->players;
-    }
 }

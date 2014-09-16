@@ -45,6 +45,7 @@ class ParametersManager {
 
 		$yaml = new Parser();
 
+
 		if(!file_exists($this->pathParameters)){
 			file_put_contents($this->pathParameters, "");
 		}

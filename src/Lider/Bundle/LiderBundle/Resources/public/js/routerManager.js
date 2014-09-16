@@ -759,7 +759,7 @@ var routerManager = Backbone.Router.extend({
 							src = src + "/app.php/image/"+e.image;
 						}
 						var img = "<div class='img-player'>"+
-								     	"<img  data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
+								     	"<img  data-id='"+e.id+"' src='"+src+"?width=40&height=40' width = '40px' height= '40px'/>"+
 								     	"<input id='input-file-player-"+e.id+"' type='file' style = 'display: none;'/>"+
 								     "</div>";
 
@@ -950,13 +950,13 @@ var routerManager = Backbone.Router.extend({
 							//console.log(formData)
 							config = {
 					            type: "POST",           
-					            url: "home/team/image/"+id,
+					            url: "home/player/image/"+id,
 					            data: formData,
 					            contentType: false,
 					            processData: false,
 								success: function(){
-								   office.grid.data('kendoGrid').dataSource.read();
-								   office.grid.data('kendoGrid').refresh();
+								   player.grid.data('kendoGrid').dataSource.read();
+								   player.grid.data('kendoGrid').refresh();
 								},
 								error: function(){}
 							}
