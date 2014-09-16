@@ -29,10 +29,12 @@ services:
     lider_user_provider:
         class: "%lider.security.core.provider.class%"
         arguments: ["@service_container"]
-        
+
     question_manager:
         class: Lider\Bundle\LiderBundle\Lib\QuestionManager
         arguments:
               em: "@doctrine.orm.entity_manager"
               dm: "@doctrine.odm.mongodb.document_manager"
-                      
+
+    parameters_manager:
+        class: Lider\Bundle\LiderBundle\Lib\ParametersManager

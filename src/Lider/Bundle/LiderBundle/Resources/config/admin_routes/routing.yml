@@ -58,7 +58,7 @@ admin_role:
 admin_player:
     resource: "@LiderBundle/Resources/config/admin_routes/player_routing.yml"
     prefix:   /home/player
-    
+
 a_question_test:
     pattern:  /test
     defaults: { _controller: LiderBundle:Question:getTestQuestion }
@@ -67,5 +67,15 @@ a_question_test:
 a_answer_check:
     pattern:  /answer/check
     defaults: { _controller: LiderBundle:Question:checkAnswer }
-    methods:  [POST]    
-  
+    methods:  [POST]
+
+#Guardar parametros de configuracion del juego
+admin_save_params:
+    pattern:  /params
+    defaults: { _controller: LiderBundle:Game:setParameters }
+    methods: [POST]
+
+admin_get_parameters:
+    pattern:  /params
+    defaults: { _controller: LiderBundle:Game:getParameters }
+    methods:  [GET]

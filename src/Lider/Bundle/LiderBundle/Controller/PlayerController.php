@@ -4,6 +4,8 @@ namespace Lider\Bundle\LiderBundle\Controller;
 use Lider\Bundle\LiderBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Lider\Bundle\LiderBundle\Document\Image;
+use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Yaml\Dumper;
 
 class PlayerController extends Controller
 {
@@ -162,6 +164,15 @@ class PlayerController extends Controller
         $arr['user']["counteffectiveness"] = $count;
         $arr['user']["wineffectiveness"] = $win;
     	 
+        $parameters = $this->get('parameters_manager')->getParameters();
+
+        $arr['config'] = array(
+            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'],
+            "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
+            "timeGame" => $parameters['gamesParameters']['timeGame'],
+            "timeDuel" => $parameters['gamesParameters']['timeDuel']
+        );
+
     	return $this->get("talker")->response($arr);
     }
 
@@ -257,9 +268,7 @@ class PlayerController extends Controller
         $arr['token'] = $session->getToken();
         
         $team = $user->getTeam();
-        
-
-
+     
         $arr['user'] = array(
             "email" => $user->getEmail(),
             "name" => $user->getName(),
@@ -273,10 +282,10 @@ class PlayerController extends Controller
                 'win' => 0,
                 'lost' => 0,
                 'points' => 0
-            )
-            
+            )        
         );
         
+
         if($team){
         	$arr['user']['team'] = array(
         		"id" => $user->getTeam()->getId(),
@@ -318,6 +327,14 @@ class PlayerController extends Controller
 
         // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
         // $arr['user']['gameInfo'] = $playerGameInfo;
+        $parameters = $this->get('parameters_manager')->getParameters();
+
+        $arr['config'] = array(
+            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'],
+            "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
+            "timeGame" => $parameters['gamesParameters']['timeGame'],
+            "timeDuel" => $parameters['gamesParameters']['timeDuel']
+        ); 
                
         return $this->get("talker")->response($arr);
     }

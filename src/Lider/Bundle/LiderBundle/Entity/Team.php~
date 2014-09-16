@@ -151,4 +151,27 @@ class Team extends Entity
         return $this->group;
     }
 
+
+    /**
+     * Set tournament
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Tournament $tournament
+     * @return Team
+     */
+    public function setTournament(\Lider\Bundle\LiderBundle\Entity\Tournament $tournament = null)
+    {
+        $this->tournament = $tournament;
+
+        return $this;
+    }
+
+    /**
+     * Get tournament
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Tournament 
+     */
+    public function getTournament()
+    {
+        return $this->tournament;
+    }
 }

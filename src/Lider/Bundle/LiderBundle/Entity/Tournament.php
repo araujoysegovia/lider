@@ -48,6 +48,11 @@ class Tournament extends Entity
     private $teams;
 
     /**
+     * @ORM\OneToMany(targetEntity="Group", mappedBy="tournament")
+     */
+    private $groups;    
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -189,5 +194,38 @@ class Tournament extends Entity
     public function getTeams()
     {
         return $this->teams;
+    }
+
+    /**
+     * Add groups
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Group $groups
+     * @return Tournament
+     */
+    public function addGroup(\Lider\Bundle\LiderBundle\Entity\Group $groups)
+    {
+        $this->groups[] = $groups;
+
+        return $this;
+    }
+
+    /**
+     * Remove groups
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Group $groups
+     */
+    public function removeGroup(\Lider\Bundle\LiderBundle\Entity\Group $groups)
+    {
+        $this->groups->removeElement($groups);
+    }
+
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroups()
+    {
+        return $this->groups;
     }
 }

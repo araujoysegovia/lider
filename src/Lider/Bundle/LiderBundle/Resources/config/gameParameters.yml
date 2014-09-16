@@ -1,0 +1,5 @@
+gamesParameters:
+    timeQuestionPractice: '30'
+    timeQuestionDuel: '30'
+    timeGame: '13'
+    timeDuel: '3'

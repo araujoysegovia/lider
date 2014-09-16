@@ -60,4 +60,26 @@ class ImageController extends SymfonyController
 		
 	}
 
+
+	/**
+	 * Gurdar una imagen que no este asociada a una entidad
+	 */
+	public function saveImageAction(){
+
+		$dm = $this->get('doctrine_mongodb')->getManager();
+    	$request = $this->get("request");
+    
+    	$uploadedFile = $request->files->get('imagen');
+
+		$image = new Image();
+    	$image->setName($uploadedFile->getClientOriginalName());
+    	$image->setFile($uploadedFile->getPathname());
+    	$image->setMimetype($uploadedFile->getClientMimeType());    	
+    
+    	$dm->persist($image);
+    	$dm->flush();
+    	 
+    	return $this->get("talker")->response(array("id" => $image->getId()));
+	}
+
 }
