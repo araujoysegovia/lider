@@ -334,9 +334,11 @@ class PlayerController extends Controller
     	
     }
 
-    public function getGeneraStatisticsAction(){
+    public function getGeneralStatisticsAction(){
         $dm = $this->get('doctrine_mongodb')->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
+
+
         $statistics = $dm->getRepository("LiderBundle:QuestionHistory")->getPlayerTotalReports($user);
         $statistics = $statistics->toArray();
         $count=0;
