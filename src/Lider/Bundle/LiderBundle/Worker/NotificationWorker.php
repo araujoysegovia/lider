@@ -70,8 +70,8 @@ class NotificationWorker
         $from = "lider@araujoysegovia.com";
         $to = array();
         $content = array(
-            "teamImage" => $team->getImage();
-            "title" => $team->getName();
+            "teamImage" => $team->getImage(),
+            "title" => $team->getName(),
         );
         $members = array();
         if($list){
