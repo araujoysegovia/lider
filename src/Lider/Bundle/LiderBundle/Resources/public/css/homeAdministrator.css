@@ -222,6 +222,15 @@
 	padding: 15px;
 }
 
+
+#form-params{
+	overflow: hidden;
+}
+
+#form-params > .form-group > select{
+	width: 70px;
+}
+
 /***************************** Subir Imagenes **********************************/
 .panel-imagenes{
 	padding: 15px;
@@ -233,18 +242,12 @@
 	overflow: hidden;
 }
 
+/****************************** Notificaciones *********************************/
+
 #form-notification > div{
 	overflow: hidden;
 }
 
 #form-notification > .form-group > label{
 	padding-top: 5px;
-}
-
-#form-params{
-	overflow: hidden;
-}
-
-#form-params > .form-group > select{
-	width: 70px;
 }

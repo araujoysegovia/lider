@@ -8,6 +8,7 @@ use Symfony\Component\Yaml\Dumper;
 class ParametersManager {
 
 	private $pathParameters = '/var/www/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
+    
     /**
      * Setear los parametros de configuración para el juego
      */
@@ -35,6 +36,9 @@ class ParametersManager {
 		// $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
 
+    /**
+     * Obtener parametros del yml
+     */
     public function getParameters(){
 		$yaml = new Parser();
 

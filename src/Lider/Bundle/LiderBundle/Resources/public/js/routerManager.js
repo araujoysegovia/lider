@@ -1779,6 +1779,9 @@ var routerManager = Backbone.Router.extend({
 		});
 	},
 
+	/**
+	 * Obtener y guardar parametros de configuración
+	 */
 	parametersConfig: function () {
 	
 		this.removeContent();		
@@ -1883,7 +1886,9 @@ var routerManager = Backbone.Router.extend({
 		});		
 	},
 	
-
+	/**
+	 * Generar y guardar grupos
+	 */
 	generateGroups: function(){
 		
 		this.removeContent();
@@ -1907,9 +1912,6 @@ var routerManager = Backbone.Router.extend({
 		
 		$("#entity-content").append(navBar);
 
-
-		
-
 		var content = $("<div></div>");
 		$("#entity-content").append(content);
 
@@ -1924,7 +1926,6 @@ var routerManager = Backbone.Router.extend({
 			tb = new groupBuilder(content, min, max);
 		});
 		
-
 		var modal = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
 						  '<div class="modal-dialog">'+
 						    '<div class="modal-content">'+
@@ -2009,15 +2010,11 @@ var routerManager = Backbone.Router.extend({
 						json[gKey] = group;
 						//json.push(city);
 					});
-
-					
-
+				
 					var data = {
 						"groups" : json,
 						"tournament": tournament
 					};
-
-					//console.log(data)
 
 					parameters = {
 						type: "POST", 
@@ -2026,31 +2023,32 @@ var routerManager = Backbone.Router.extend({
 			            url: "home/group/save",
 			            contentType: 'application/json',
 			            dataType: "json",
-			            success: function(data){
-			            	
+			            success: function(data){			            	
 			            },
 			            error: function(){},
 					};
 											
 					var ajax = $.ajax(parameters);										
 				}
-
 				modalObj.modal('hide')
 			});			
 		});
 	},	
 
+	/**
+	 * Gurdar imagenes generales
+	 */
 	images: function () {
 
 		this.removeContent();
-		var container = $('<div class="panel panel-default panel-imagenes"><h4>Subir imagenes</h4><hr/></div>');
+		var container = $('<div class="panel panel-default panel-imagenes"><h4>Subir im&aacute;genes</h4><hr/></div>');
 		var form = $('<form id="form-images" role="form">'+
 						  '<div class="form-group">'+
 						    '<label  class="required">Nombre</label>'+
 						    '<input type="text" class="form-control" id="image-name" required="required" >'+
 						  '</div>'+							  
 						  '<div class="form-group">'+
-						    '<label  class="required">Imagen</label>'+
+						    '<label  class="required">Im&aacute;gen</label>'+
 						    '<input type="file" class="form-control" id="file-image" required="required" >'+
 						  '</div>'+							  				  		 
 						  '<button type="submit" class="btn btn-primary btn-save-image">Guardar</button>'+
@@ -2059,6 +2057,7 @@ var routerManager = Backbone.Router.extend({
 		container.append(form);	
 		$("#entity-content").append(container);
 
+		//Guardar imagen en BD mongo
 		form.submit(function (e) {		
 			e.preventDefault();	
 			var img = form.find('#file-image');
@@ -2083,9 +2082,7 @@ var routerManager = Backbone.Router.extend({
 			};
 
 			$.ajax(parameters);
-		})
-	
-
+		})	
 	},
 
 	sendNotifications: function () {
@@ -2111,6 +2108,7 @@ var routerManager = Backbone.Router.extend({
 		container.append(form);	
 		$("#entity-content").append(container);
 
+		//Enviar notificaciones del grupo
 		form.find(".send-not-groups").click(function () {
 			$.confirm({
 			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles del grupo al que pertenece su equipo ?",
@@ -2134,6 +2132,7 @@ var routerManager = Backbone.Router.extend({
 			});
 		});
 
+		//Enviar notificaciones del equipo
 		form.find(".send-not-teams").click(function () {
 			$.confirm({
 			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles el equipo al que pertenecen ?",
