@@ -14,6 +14,8 @@ use Mmoreram\GearmanBundle\Driver\Gearman;
 class NotificationWorker
 {
     private $co;
+
+    private $from = 'lider@araujoysegovia.com';
     // private $em
 
     public function __construct($co){
@@ -67,7 +69,6 @@ class NotificationWorker
         $repo = $em->getRepository("LiderBundle:Player");
         $list = $repo->findBy(array("team" => $team->getId(), "deleted" => FALSE));
         $subject = "Este es tu Equipo!!!";
-        $from = "lider@araujoysegovia.com";
         $to = array();
         $content = array(
             "teamImage" => $team->getImage(),
@@ -83,7 +84,46 @@ class NotificationWorker
             }
             $content['members'] = $members;
             try{
-                $send = $notificationService->sendEmail($ubject, $from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                echo "Mensaje Enviado";
+            }catch(\Exception $e){
+                echo $e->getMessage();
+            }
+        }
+        
+    }
+
+    /**
+     * Send Email when a team is created
+     *
+     * @param \GearmanJob $job Object with job parameters
+     *
+     * @return boolean
+     *
+     * @Gearman\Job(
+     *     name = "adminNotification",
+     *     description = "Send an Email to Admin when something happen"
+     * )
+     */
+    public function adminNotification(\GearmanJob $job){
+        $data = json_decode($job->workload(),true);
+        $em = $this->co->getDoctrine()->getEntityManager();
+        $repo = $em->getRepository("LiderBundle:Player");
+        $admins = $repo->findBy(array('roles' => 'ROLE_ADMIN'));
+        $admins = $admins->toArray();
+        if($admins){
+            $to = array();
+            $subject = $data['subject'];
+            $body = array(
+                'title' => $data['title'],
+                'body' => $data['body']
+            );
+            foreach($admins as $value)
+            {
+                $to[] = $value->getEmail();
+            }
+            try{
+                $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:emailnotification.html.twig", $body);
                 echo "Mensaje Enviado";
             }catch(\Exception $e){
                 echo $e->getMessage();

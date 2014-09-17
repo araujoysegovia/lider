@@ -542,7 +542,7 @@ class PlayerController extends Controller
     public function saveSuggestionAction() 
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
-        
+        $gearman = $this->get("gearman");
         $request = $this->get("request");
         $data = $request->getContent();
          
@@ -567,6 +567,11 @@ class PlayerController extends Controller
         
         $dm->persist($suggestion);
         $dm->flush();
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+            'subject' => 'Nueva Sugerencia Registrada',
+            'title' => $subject,
+            'body' => $text
+        )));
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
