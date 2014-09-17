@@ -110,7 +110,6 @@ class NotificationWorker
         $em = $this->co->get('doctrine_mongodb')->getManager();
         $repo = $em->getRepository("LiderBundle:Player");
         $admins = $repo->findBy(array('roles' => 'ROLE_ADMIN'));
-        $admins = $admins->toArray();
         if($admins){
             $to = array();
             $subject = $data['subject'];
