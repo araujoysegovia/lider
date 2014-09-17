@@ -184,4 +184,13 @@ class GroupController extends Controller
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
+    public function getGroupPositionAction()
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $repo = $dm->getRepository("LiderBundle:QuestionHistory");
+        $list = $repo->findGroupPosition();
+        $list = $list->toArray();
+        return $this->get("talker")->response(array("total" => count($list), "data" => $list));
+    }
+
 }

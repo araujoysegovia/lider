@@ -220,4 +220,17 @@ class TeamController extends Controller
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
+    public function notificationPlayersFromTeamAction($tournament){
+        $em = $this->getDoctrine()->getEntityManager();
+        $gearman = $this->get("gearman"); 
+        $repo = $em->getRepository("LiderBundle:Team");
+        $list = $->findBy(array("tournamentId" => $tournament));
+        $list = $list->toArray();
+        foreach($list as $value){
+            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationEmailCreate', json_encode(array(
+                "team" => $value
+            )));
+        }
+    }
+
 }

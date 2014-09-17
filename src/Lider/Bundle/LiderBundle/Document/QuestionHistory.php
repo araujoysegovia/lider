@@ -85,6 +85,16 @@ class QuestionHistory
      */
     private $useHelp;
 
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Group") 
+     */ 
+    private $groups;
+
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Team") 
+     */ 
+    private $team;
+
     public function __construct()
     {
         $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
@@ -414,5 +424,49 @@ class QuestionHistory
     public function getUseHelp()
     {
         return $this->useHelp;
+    }
+
+    /**
+     * Set groups
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Group $groups
+     * @return self
+     */
+    public function setGroups(\Lider\Bundle\LiderBundle\Document\Group $groups)
+    {
+        $this->groups = $groups;
+        return $this;
+    }
+
+    /**
+     * Get groups
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Group $groups
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
+     * Set team
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Team $team
+     * @return self
+     */
+    public function setTeam(\Lider\Bundle\LiderBundle\Document\Team $team)
+    {
+        $this->team = $team;
+        return $this;
+    }
+
+    /**
+     * Get team
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Team $team
+     */
+    public function getTeam()
+    {
+        return $this->team;
     }
 }
