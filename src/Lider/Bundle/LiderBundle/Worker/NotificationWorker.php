@@ -116,6 +116,7 @@ class NotificationWorker
             $subject = $data['subject'];
             $body = array(
                 'title' => $data['title'],
+                'subject' => $data['subjectUser'],
                 'body' => $data['body']
             );
             foreach($admins as $value)
@@ -123,7 +124,7 @@ class NotificationWorker
                 $to[] = $value->getEmail();
             }
             try{
-                $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:emailnotification.html.twig", $body);
+                $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:adminnotification.html.twig", $body);
                 echo "Mensaje Enviado";
             }catch(\Exception $e){
                 echo $e->getMessage();
