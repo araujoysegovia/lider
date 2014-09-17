@@ -569,9 +569,17 @@ class PlayerController extends Controller
         $dm->flush();
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
             'subject' => 'Nueva Sugerencia Registrada',
-            'title' => 'Nueva Sugerencia',
-            'subjectUser' => $subject,
-            'body' => $text
+            'templateData' => array(
+                'title' => 'Nueva Sugerencia',
+                'user' => array(
+                    'image' => $user->getImage(),
+                    'name' => $user->getName(),
+                    'lastname' => $user->getLastname()
+                ),
+                'subjectUser' => $subject,
+                'body' => $text
+            )
+            
         )));
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));

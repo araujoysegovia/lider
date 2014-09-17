@@ -2,12 +2,19 @@
 	<head>
 	</head>
 	<body>
-		<div style="width:500px; min-height:500px; overflow:hidden;">
+		<div style="width:100%; min-height:500px; overflow:hidden;">
 			<div style="background-image: url('http://lider.sifinca.net/lider/src/Lider/Bundle/LiderBundle/Resources/public/images/email-header.png'); background-repeat: no-repeat; height: 40px;">
 				<img style="width: 25px; float: left; margin-top: 2px; margin-left:10px;" src="https://cdn0.iconfinder.com/data/icons/web-and-apps-develop/512/design_logo_development_process_create_web_product_graphic_element_production_illustrator_custom_project_sketch_making_flat_design_icon-128.png"/>
-				<h2 style="margin-left:30px; color:white;">{{ title }}</h2>
+				<h2 style="margin-left:55px; line-height: 30px; color:white;">{{ title }}</h2>
 			</div>
-			<div>
+			<div style='padding: 0px 15px;'>
+				{% if user %}
+				    <div style='text-align: center;'>
+						<img style='-webkit-border-radius: 100px; -moz-border-radius: 100px; border-radius: 100px; border: 1px solid #DDD;' src='http://soylider.sifinca.net/images/{{ user.image }}' />
+						<h5>{{ user.name }} {{ user.lastname }}</h5>
+					</div>
+				{% endif %}
+				
 				<div style="text-align: center;">
 					<h2>{{ subject }}</h2>
 				</div>
@@ -15,7 +22,7 @@
 					<p>{{ body }}</p>
 				</div>
 			</div>
-			<div style="margin-top: 40px; background-image: url('http://lider.sifinca.net/lider/src/Lider/Bundle/LiderBundle/Resources/public/images/email-footer.png'); height: 25px;">
+			<div style="margin-top: 40px; background-image: url('http://lider.sifinca.net/lider/src/Lider/Bundle/LiderBundle/Resources/public/images/email-footer.png'); height: 25px; position:absolute; left: 0px; right: 0px; bottom: 35px;">
 			</div>
 		</div>
 	</body>
