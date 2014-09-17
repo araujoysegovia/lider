@@ -569,7 +569,8 @@ class PlayerController extends Controller
         $dm->flush();
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
             'subject' => 'Nueva Sugerencia Registrada',
-            'title' => $subject,
+            'title' => 'Nueva Sugerencia',
+            'subjectUser' => $subject,
             'body' => $text
         )));
         
