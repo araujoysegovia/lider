@@ -224,7 +224,7 @@ class TeamController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $gearman = $this->get("gearman"); 
         $repo = $em->getRepository("LiderBundle:Team");
-        $list = $->findBy(array("tournamentId" => $tournament));
+        $list = $repo->findBy(array("tournamentId" => $tournament));
         $list = $list->toArray();
         foreach($list as $value){
             $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationEmailCreate', json_encode(array(
