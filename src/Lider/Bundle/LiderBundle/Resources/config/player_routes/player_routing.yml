@@ -81,3 +81,8 @@ player_range_position:
     pattern:  /positions
     defaults: { _controller: LiderBundle:Player:getRangePosition }
     methods:  [GET]
+
+player_suggestion:
+    pattern:  /suggestion
+    defaults: { _controller: LiderBundle:Player:saveSuggestion }
+    methods:  [POST]
