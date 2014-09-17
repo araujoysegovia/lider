@@ -115,7 +115,6 @@ class NotificationWorker
             $to = array();
             $subject = $data['subject'];
             $body = $data['templateData'];
-            );
             foreach($admins as $value)
             {
                 $to[] = $value->getEmail();
