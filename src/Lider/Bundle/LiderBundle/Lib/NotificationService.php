@@ -29,10 +29,10 @@ class NotificationService
         $email->setTo($to);
         $email->setProviderId(null);
     
-        $eState = $this->findSateByName("Sent");
+        // $eState = $this->findSateByName("Sent");
     
     
-        $email->setState($eState);
+        // $email->setState($eState);
     
         $this->dm->persist($email);
         $this->dm->flush();
