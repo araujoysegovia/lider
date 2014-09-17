@@ -107,7 +107,7 @@ class NotificationWorker
      */
     public function adminNotification(\GearmanJob $job){
         $data = json_decode($job->workload(),true);
-        $em = $this->co->get('doctrine_mongodb')->getManager();
+        $em = $this->co->get('doctrine')->getEntityManager();
         $repo = $em->getRepository("LiderBundle:Player");
         $admins = $repo->findAdmin();
         if($admins){
