@@ -55,5 +55,15 @@ class PlayerRepository extends MainRepository
 		
 		return $query->getArrayResult();
 	}
+
+	public function findAdmin(){
+		$query = $this->createQueryBuilder('p')
+		->select('p')
+		->join('p.roles', 'r', 'WITH', "r.deleted = false AND r.name = 'ADMIN'")
+		->where('p.active = true AND p.deleted = false')
+		->getQuery();
+
+		return $query->getResult();
+	}
 		
 }
