@@ -114,10 +114,7 @@ class NotificationWorker
         if($admins){
             $to = array();
             $subject = $data['subject'];
-            $body = array(
-                'title' => $data['title'],
-                'subject' => $data['subjectUser'],
-                'body' => $data['body']
+            $body = $data['templateData'];
             );
             foreach($admins as $value)
             {
