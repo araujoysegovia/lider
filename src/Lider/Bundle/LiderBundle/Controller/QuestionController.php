@@ -119,6 +119,8 @@ class QuestionController extends Controller
         $now = new \DateTime();
         $diffTime = $now->format('U') - $entity->getEntryDate()->format('U');
         
+        $parameters = $this->get('parameters_manager')->getParameters();
+
         if($diffTime >= $this->maxSec || $questionId=="no-answer"){
             $res = array();
             $res['success'] = false;

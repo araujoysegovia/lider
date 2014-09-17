@@ -3,3 +3,5 @@ gamesParameters:
     timeQuestionDuel: '30'
     timeGame: '13'
     timeDuel: '3'
+    answerShowPractice: 'false'
+    answerShowGame: 'true'
