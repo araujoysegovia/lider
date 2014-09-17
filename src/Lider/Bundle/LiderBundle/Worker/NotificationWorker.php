@@ -108,6 +108,7 @@ class NotificationWorker
     public function adminNotification(\GearmanJob $job){
         $data = json_decode($job->workload(),true);
         $em = $this->co->get('doctrine')->getManager();
+        $notificationService = $this->co->get("notificationService");
         $repo = $em->getRepository("LiderBundle:Player");
         $admins = $repo->findAdmin();
         if($admins){
