@@ -757,12 +757,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/mongodb-odm.git",
-                "reference": "10e7e22a200b6d1e1565651486534b12267dd9f0"
+                "reference": "01146e1fa8a3c855d6f22f2c459666ce8e445e9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/10e7e22a200b6d1e1565651486534b12267dd9f0",
-                "reference": "10e7e22a200b6d1e1565651486534b12267dd9f0",
+                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/01146e1fa8a3c855d6f22f2c459666ce8e445e9d",
+                "reference": "01146e1fa8a3c855d6f22f2c459666ce8e445e9d",
                 "shasum": ""
             },
             "require": {
@@ -792,7 +792,7 @@
                     "Doctrine\\ODM\\MongoDB": "lib/"
                 }
             },
-            "notification-url": "http://packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -822,7 +822,7 @@
                 "odm",
                 "persistence"
             ],
-            "time": "2014-09-04 19:16:50"
+            "time": "2014-09-16 13:30:57"
         },
         {
             "name": "doctrine/mongodb-odm-bundle",
@@ -1355,17 +1355,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mmoreram/GearmanBundle.git",
-                "reference": "e5693ecb471b2f1c155dffe81900a499f235071f"
+                "reference": "2e38e81909d1ac5f721c6339106d8bbb5e7bc297"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mmoreram/GearmanBundle/zipball/e5693ecb471b2f1c155dffe81900a499f235071f",
-                "reference": "e5693ecb471b2f1c155dffe81900a499f235071f",
+                "url": "https://api.github.com/repos/mmoreram/GearmanBundle/zipball/2e38e81909d1ac5f721c6339106d8bbb5e7bc297",
+                "reference": "2e38e81909d1ac5f721c6339106d8bbb5e7bc297",
                 "shasum": ""
             },
             "require": {
                 "doctrine/common": "~2.2",
                 "doctrine/doctrine-cache-bundle": "~1.0",
+                "ext-gearman": "*",
                 "php": ">=5.3.3",
                 "symfony/config": "~2.1",
                 "symfony/console": "~2.1",
@@ -1407,7 +1408,7 @@
             "keywords": [
                 "gearman"
             ],
-            "time": "2014-09-14 00:22:16"
+            "time": "2014-09-16 10:19:27"
         },
         {
             "name": "monolog/monolog",

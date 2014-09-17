@@ -54,19 +54,22 @@ class QuestionHistoryRepository extends MainMongoRepository
 
 	public function findRangePosition(){
 		$query = $this->createQueryBuilder("LiderBundle:QuestionHistory")
-			->group(array("player.id" => 1),
-					array('win' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0))
+			->group(array("player.playerId" => 1, "player.name" => 2, 'player.lastname' => 2),
+					array('win' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0, 'fullname' => ''))
 			->reduce('function (obj, prev){
-					prev.count++;
-					prev.totalPoint += obj.points;
-		    		if(obj.find){
-		    			prev.win++;
-					}else{
-		    			prev.lost++;
-		    		}
+					prev.fullname = obj.player.name + " " + obj.player.lastname;
+					if(obj.duel){
+						prev.count++;
+						prev.totalPoint += obj.points;
+			    		if(obj.find){
+			    			prev.win++;
+						}else{
+			    			prev.lost++;
+			    		}
+					}
 			}')
 			->field('finished')->equals(true)
-			->field('duel')->equals(true)
+			// ->field('duel')->equals(true)
 			->sort('points', 'asc')
 			->getQuery()
 			->execute();

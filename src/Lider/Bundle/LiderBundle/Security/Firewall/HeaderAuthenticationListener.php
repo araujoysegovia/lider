@@ -124,7 +124,7 @@ class HeaderAuthenticationListener implements ListenerInterface
 		    return;
 		} catch (AuthenticationException $failed) {}
 
-		$response = new Response("Hola Eduardo");
+		$response = new Response("Usuario No Registrado");
 		$response->setStatusCode(Response::HTTP_FORBIDDEN);
 		
 		$event->setResponse($response);
