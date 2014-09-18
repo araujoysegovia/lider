@@ -6,6 +6,10 @@ login_google:
     pattern:  /login/google
     defaults: { _controller: LiderBundle:Player:loginWithGoogle }
 
+player_group:
+    resource: "@LiderBundle/Resources/config/player_routes/group_routing.yml"
+    prefix:   /home/group
+
 player_player:
     resource: "@LiderBundle/Resources/config/player_routes/player_routing.yml"
     prefix:   /home/player

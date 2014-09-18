@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Lider\Bundle\LiderBundle\Document\Image;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Dumper;
+use Lider\Bundle\LiderBundle\Document\Suggestion;
 
 class PlayerController extends Controller
 {
@@ -155,7 +156,6 @@ class PlayerController extends Controller
     }
 
     public function loginAction(){
-    	
         $em = $this->getDoctrine()->getEntityManager();
 
         $dm = $this->get('doctrine_mongodb')->getManager();
@@ -538,4 +538,59 @@ class PlayerController extends Controller
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }    
+
+    /**
+     * Guardar una sugerencia
+     */
+    public function saveSuggestionAction() 
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $gearman = $this->get("gearman");
+        $request = $this->get("request");
+        $data = $request->getContent();
+         
+        if(empty($data) || !$data)
+            throw new \Exception("No data");
+         
+        $data = json_decode($data, true);
+         
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        
+        $subject = $data['subject'];
+        $text = $data['text'];
+        
+        $playerD = new \Lider\Bundle\LiderBundle\Document\Player();
+        $playerD->getDataFromPlayerEntity($user);
+
+        $suggestion = new Suggestion();
+        $suggestion->setSubject($subject);
+        $suggestion->setPlayer($playerD);
+        $suggestion->setText($text);
+        $suggestion->setSuggestionDate(new \MongoDate());
+        
+        $dm->persist($suggestion);
+        $dm->flush();
+       // try{
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+            'subject' => 'Nueva Sugerencia Registrada',
+            'templateData' => array(
+                'title' => 'Nueva Sugerencia',
+                'user' => array(
+                    'image' => $user->getImage(),
+                    'name' => $user->getName(),
+                    'lastname' => $user->getLastname()
+                ),
+                'subjectUser' => $subject,
+                'body' => $text
+            )
+            
+        )));
+//         }catch(\Exception $e){
+//         	$salida = shell_exec('nmap 10.102.1.21');
+//         	echo "<pre>$salida</pre>";
+//         	print_r($e->getTraceAsString());
+//         }
+        
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
 }

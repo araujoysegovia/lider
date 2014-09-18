@@ -77,7 +77,7 @@ doctrine_mongodb:
     connections:
         default:
             server: mongodb://10.102.1.21:27017
-            # server: mongodb://10.101.1.135:27017
+            #server: mongodb://10.101.1.135:27017
             # server: mongodb://%mongo_user%:%mongo_pass%@%mongo_host%:%mongo_port%
 
             options: {}
@@ -157,8 +157,8 @@ gearman:
    # If port empty, 4730 is defined by efault
    servers:
       localhost:
-         host: 127.0.0.1
-         port: 5000
+         host: 10.102.1.21
+         port: 4730
 
 # Swiftmailer Configuration
 swiftmailer:

@@ -70,6 +70,33 @@ class QuestionHistoryRepository extends MainMongoRepository
 			}')
 			->field('finished')->equals(true)
 			// ->field('duel')->equals(true)
+			->sort('points', 'desc')
+			->getQuery()
+			->execute();
+	
+		return $query;
+	}
+
+	public function findGroupPosition(){
+		$query = $this->createQueryBuilder("LiderBundle:QuestionHistory")
+			->group(array("groups.id" => 1, 'team.id' => 1, "groups.name" => 2, 'team.name' => 2),
+					array('win' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0, 'name' => ''))
+			->reduce('function (obj, prev){
+					if(obj.groups){
+						prev.fullname = obj.group.name;
+					}
+					if(obj.duel){
+						prev.count++;
+						prev.totalPoint += obj.points;
+			    		if(obj.find){
+			    			prev.win++;
+						}else{
+			    			prev.lost++;
+			    		}
+					}
+			}')
+			->field('finished')->equals(true)
+			// ->field('duel')->equals(true)
 			->sort('points', 'asc')
 			->getQuery()
 			->execute();

@@ -80,7 +80,12 @@ admin_get_parameters:
     defaults: { _controller: LiderBundle:Game:getParameters }
     methods:  [GET]
 
-general_image:
+general_save_image:
     pattern:  /image
     defaults: { _controller: LiderBundle:Image:saveImage }
     methods:  [POST]
+
+general_get_image:
+    pattern:  /image
+    defaults: { _controller: LiderBundle:Image:getAllImage }
+    methods:  [GET]

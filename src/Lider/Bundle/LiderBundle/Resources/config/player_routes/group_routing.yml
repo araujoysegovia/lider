@@ -1,0 +1,5 @@
+#Estadisticas del usuario en session
+group_position:
+    pattern:  /positions
+    defaults: { _controller: LiderBundle:Group:getGroupPosition }
+    methods:  [GET]

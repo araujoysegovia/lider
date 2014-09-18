@@ -4,6 +4,7 @@ namespace Lider\Bundle\LiderBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
+use Lider\Bundle\LiderBundle\Document\Image;
 
 class ImageController extends SymfonyController
 {
@@ -69,10 +70,13 @@ class ImageController extends SymfonyController
 		$dm = $this->get('doctrine_mongodb')->getManager();
     	$request = $this->get("request");
     
-    	$uploadedFile = $request->files->get('imagen');
-
+    	$uploadedFile = $request->files->get('image');
+    	$name = $request->get('name');
+    	if($name == ""){
+    		$name = $uploadedFile->getClientOriginalName();
+    	}    	
 		$image = new Image();
-    	$image->setName($uploadedFile->getClientOriginalName());
+    	$image->setName($name);
     	$image->setFile($uploadedFile->getPathname());
     	$image->setMimetype($uploadedFile->getClientMimeType());    	
     
@@ -82,4 +86,27 @@ class ImageController extends SymfonyController
     	return $this->get("talker")->response(array("id" => $image->getId()));
 	}
 
+
+	// public function getAllImageAction(){
+
+	// 	$dm = $this->get('doctrine_mongodb')->getManager();
+
+	// 	$entity = $dm->getRepository("LiderBundle:Image")->findOneBy(array("deleted" => false, "entity" => null));
+	// 	if(!$entity)
+	// 		throw new \Exception("Entity no found");
+
+	// 	//echo $entity->getName();
+	// 	$arr = array();
+	// 	foreach ($entity as $key => $value) {
+			
+	// 		$arr['imageId'] = $value->getId(),
+	// 		$arr['name'] = $value->getName()
+	// 		//"image" => $entity->getFile()->getBytes()
+		
+	// 	}
+		
+	// 	//print_r($arr);
+
+	// 	return $this->get("talker")->response(array("images" => $arr));
+	// }
 }

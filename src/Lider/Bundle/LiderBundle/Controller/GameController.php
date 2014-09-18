@@ -24,16 +24,9 @@ class GameController extends Controller
         if(empty($data))
             throw new \Exception("No data");        
 
-        $data = json_decode($data, true);   
+        $data = json_decode($data, true);
 
-        $yaml = new Parser();
-        
-        $timeQuestionPractice = $data['timeQuestionPractice'];
-        $timeQuestionDuel = $data['timeQuestionDuel'];
-        $timeGame = $data['timeGame'];
-        $timeDuel = $data['timeDuel'];
-
-        $parameters = $this->get('parameters_manager')->setParameters($timeQuestionPractice, $timeQuestionDuel, $timeGame, $timeDuel);
+        $parameters = $this->get('parameters_manager')->setParameters($data);
 
 		 
 		return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));

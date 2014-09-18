@@ -49,7 +49,6 @@ class Tournament extends TournamentEntity
         $this->setStartdate($tournament->getStartdate());
         $this->setEnddate($tournament->getEnddate());
         $this->setActive($tournament->getActive());           
-
     }
 
 
