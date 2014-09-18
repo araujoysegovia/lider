@@ -254,6 +254,7 @@ class QuestionController extends Controller
         
         $em = $this->getDoctrine()->getEntityManager();
         $dm = $this->get('doctrine_mongodb')->getManager();
+        $gearman = $this->get('gearman');
         
         $request = $this->get("request");
         $data = $request->getContent();
@@ -287,6 +288,27 @@ class QuestionController extends Controller
         
         $dm->persist($reportQuestion);
         $dm->flush();
+        $body = '<p>'+$questionD->getQuestion()+'</p>'
+                '<ul>';
+        foreach($q->getAnswers()->toArray() as $value){
+            $body .= '<li>'+$value->getAnswer()+'</li>';
+        }
+        $body .= '</ul>';
+        
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+            'subject' => 'Nueva Reporte de pregunta',
+            'templateData' => array(
+                'title' => 'Nuevo Reporte',
+                'user' => array(
+                    'image' => $user->getImage(),
+                    'name' => $user->getName(),
+                    'lastname' => $user->getLastname()
+                ),
+                'subjectUser' => $reportText,
+                'body' => $body
+            )
+            
+        )));
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
