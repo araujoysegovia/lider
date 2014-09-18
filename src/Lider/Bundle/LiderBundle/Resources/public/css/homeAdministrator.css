@@ -242,6 +242,10 @@
 	overflow: hidden;
 }
 
+#form-images{
+	margin-bottom: 20px;
+}
+
 /****************************** Notificaciones *********************************/
 
 #form-notification > div{
