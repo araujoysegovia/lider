@@ -577,7 +577,7 @@ class PlayerController extends Controller
                     'lastname' => $user->getLastname()
                 ),
                 'subjectUser' => $subject,
-                'body' => $text
+                'body' => '<p>'.$text.'</p>'
             )
             
         )));
