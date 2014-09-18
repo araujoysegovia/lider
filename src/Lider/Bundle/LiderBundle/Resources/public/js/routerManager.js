@@ -2057,6 +2057,8 @@ var routerManager = Backbone.Router.extend({
 		container.append(form);	
 		$("#entity-content").append(container);
 
+		var well = $("<div></div>");
+		container.append(well);
 		//Guardar imagen en BD mongo
 		form.submit(function (e) {		
 			e.preventDefault();	
@@ -2074,9 +2076,15 @@ var routerManager = Backbone.Router.extend({
 			    url: "image",
 		        contentType: false,	  
 		        processData: false,      
-		        success: function(data){	 
-		        	console.log(data)
-		        	alert("Imagen gurdada exitosamente: "+data.id);
+		        success: function(data){	 		        	
+		        	//alert("Imagen gurdada exitosamente: "+data.id);
+		        	// var well = container.find(".well");
+		        	well.empty();
+					var r = '<div class="well">'+
+								'<p>Imagen gurdada exitosamente: '+data.id+
+							'</div>';
+
+					well.append(r);
 		        },
 		        error: function(){},
 			};
