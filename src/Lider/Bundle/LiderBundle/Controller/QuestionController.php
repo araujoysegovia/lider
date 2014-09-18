@@ -295,7 +295,7 @@ class QuestionController extends Controller
         $body .= '</ul>';
         
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
-            'subject' => 'Nueva Reporte de pregunta',
+            'subject' => 'Nuevo reporte de pregunta',
             'templateData' => array(
                 'title' => 'Nuevo Reporte',
                 'user' => array(
