@@ -119,34 +119,50 @@ class QuestionController extends Controller
         $now = new \DateTime();
         $diffTime = $now->format('U') - $entity->getEntryDate()->format('U');
         
+        $parameters = $this->get('parameters_manager')->getParameters();
+
+        $question = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" =>$questionId, "deleted" => false));
+        if(empty($question))
+            throw new \Exception("No entity found");  
+
+        $isOk = false;
+
+        foreach ($question->getAnswers()->toArray() as $value) {
+            if($value->getSelected()) {
+                $answerD = new \Lider\Bundle\LiderBundle\Document\Answer();
+                $answerD->getDataFromAnswerEntity($value);                  
+                $entity->setAnswerOk($answerD);
+                if($answerId == $value->getId()){
+                    $isOk = true;
+                    break;
+                }                   
+            }
+        }        
+
         if($diffTime >= $this->maxSec || $questionId=="no-answer"){
             $res = array();
             $res['success'] = false;
             $res['code'] = '01';  /*Tiempo agotado*/
+            // if($parameters['gamesParameters']['answerShowPractice']){
+            //     $res['answerOk'] = $entity->getAnswerOk()->getAnswerId();
+            // }
             $entity->setTimeOut(true);
         }else{
     	
-        	$question = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" =>$questionId, "deleted" => false));
-        	if(empty($question))
-        		throw new \Exception("No entity found");  
+        	if($isOk){
+                $res['success'] = true;
+                $res['code'] = '00';
+                $entity->setFind(true);
+            }else{
+            	$res = array();
+            	$res['success'] = false;
+                $res['code'] = '02';   /*Respuesta errada*/
 
-        	$res = array();
-        	$res['success'] = false;
-            $res['code'] = '02';   /*Respuesta errada*/
-
-    		foreach ($question->getAnswers()->toArray() as $value) {
-    			if($value->getSelected()) {
-                    $answerD = new \Lider\Bundle\LiderBundle\Document\Answer();
-                    $answerD->getDataFromAnswerEntity($value);    				
-                    $entity->setAnswerOk($answerD);
-    				if($answerId == $value->getId()){
-    					$res['success'] = true;
-                        $res['code'] = '00';
-                        $entity->setFind(true);
-    					break;
-    				}    				
-    			}
-    		}
+                if($parameters['gamesParameters']['answerShowPractice'] == 'true'){
+                    $res['answerOk'] = $entity->getAnswerOk()->getAnswerId();
+                }
+            }
+    		
 
             $answerSelected = $em->getRepository("LiderBundle:Answer")->findOneBy(array("id" =>$answerId, "deleted" => false));
             if(empty($answerSelected))

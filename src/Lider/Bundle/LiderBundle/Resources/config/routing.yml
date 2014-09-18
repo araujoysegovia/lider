@@ -25,8 +25,4 @@ mongo:
     pattern:  /mongo
     defaults: { _controller: LiderBundle:Default:mongoData }
 
-general_image:
-    pattern:  /image
-    defaults: { _controller: LiderBundle:Image:saveImage }
-    methods:  [POST]
 

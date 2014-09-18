@@ -15,6 +15,8 @@ var routerManager = Backbone.Router.extend({
 		"generateGroups": "generateGroups",
 		"reportquestions": "reportquestions",
 		"parametersConfig": "parametersConfig",
+		"images": "images",
+		"sendNotifications": "sendNotifications"
 	},
 
 	home: function() {
@@ -1199,8 +1201,8 @@ var routerManager = Backbone.Router.extend({
 		  	Inicio: "",
 		    Equipos: "teams"
 		});
-		
-		var office = new Entity({
+		var me = this;
+		var team = new Entity({
 			container:  $("#entity-content"),
 			url: "home/team/",
 			title: "Equipos",
@@ -1210,6 +1212,9 @@ var routerManager = Backbone.Router.extend({
 					id: { editable: false, nullable: true },
 				    name: { 
 				    	type: "string" 
+				    },
+				    tournament: {
+
 				    },
 				    group: {
 				    	
@@ -1308,14 +1313,15 @@ var routerManager = Backbone.Router.extend({
 					field:"name", 
 					title: "Nombre" 
 				},
-				{ 
-					field: "group",
-					title:"Grupo",					
-					template:  function (e) {
-						return e.group ? e.group.name : "No definido";
+				{
+					field: "tournament",
+					title: "Torneo",
+					template: function (e) {
+						return e.tournament.name;
 					},
-					editor:	function (container, options) {
-						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+					editor: function (container, options){
+						
+						var input =  $('<input id="tournamentField" required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
 					        .kendoDropDownList({
 					            autoBind: true,	
@@ -1324,7 +1330,81 @@ var routerManager = Backbone.Router.extend({
 					            },
 					            dataSource: {		                	
 					                transport: {
-					                    read: "home/group/"
+					                    read: "home/tournament/"
+					                },
+					                schema: {
+					    			  	total: "total",
+					    		    	data: "data",
+					    		        model: {
+					    				    id: "id",
+					    				    fields: {
+					    				    	id: { editable: false, nullable: true },
+					    				        name: { type: "string" },		        				        
+					    				    }
+					    		        }
+					                },
+					            },
+					            dataTextField: "name",
+					            dataValueField:"id",				            
+
+					        });
+					}
+				},
+				{ 
+					field: "group",
+					title:"Grupo",					
+					template:  function (e) {
+						return e.group ? e.group.name : "No definido";
+					},
+					editor:	function (container, options) {
+						var sw= true;
+						var val = options.model.group.get('id');
+						var input =  $('<input id="group-field" required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+					        .appendTo(container)
+					        .kendoDropDownList({
+					            autoBind: false,	
+					            cascadeFrom: "tournamentField",
+					            cascadeFromField: "tournament.id",
+					            value: options.model.group.get('id'),
+					            dataBound: function(e) {
+									input.data("kendoDropDownList").trigger("change");
+					            },	
+					            change: function(){
+					            	if(sw){
+					            		console.log("Entro: " + val);
+					            		this.value(val);
+					            		sw = false;
+					            	}
+					            },				            					         
+					            dataSource: {	
+					            	serverFiltering: true,	                	
+					                transport: {
+					                    read: "home/group/",
+						                parameterMap: function(data, type) {
+
+						                  if (type == "read") {               
+
+						                    //Modificar filtro(s) kendo para compatibilidad con sifinca (backend)
+						                    if(data.filter){
+						  
+						                        dataFilter = data.filter["filters"];
+
+						                        _.each(dataFilter, function (value, key) {                            
+
+						                            value["property"] = value["field"];                            
+						                            value["operator"] = me.validationOperator(value["operator"]);
+
+						                            delete dataFilter[key].field;
+						                                                
+						                        });
+						                        
+						                        data.filter = JSON.stringify(dataFilter);
+
+						                    }                                      
+						                    return data;
+						                  }
+
+						                },
 					                },
 					                schema: {
 					    			  	total: "total",
@@ -1388,8 +1468,8 @@ var routerManager = Backbone.Router.extend({
 					            contentType: false,
 					            processData: false,
 								success: function(){
-								   office.grid.data('kendoGrid').dataSource.read();
-								   office.grid.data('kendoGrid').refresh();
+								   team.grid.data('kendoGrid').dataSource.read();
+								   team.grid.data('kendoGrid').refresh();
 								},
 								error: function(){}
 							}
@@ -1699,29 +1779,48 @@ var routerManager = Backbone.Router.extend({
 		});
 	},
 
+	/**
+	 * Obtener y guardar parametros de configuración
+	 */
 	parametersConfig: function () {
 	
 		this.removeContent();		
 
 		var container = $('<div class="panel panel-default parameters"><h4>Par&aacute;metros del Juego</h4><hr/></div>');
 		var form = $('<form id="form-params" role="form">'+						  
-						  '<div class="form-group">'+
+						  '<div class="form-group col-sm-4">'+
 						    '<label for="timeQuestionPractice" class="required">Tiempo de pregunta en practica (<i>segundos</i>)</label>'+
 						    '<input type="number" class="form-control" id="timeQuestionPractice" required="required" >'+
 						  '</div>'+	
-						  '<div class="form-group">'+
+						  '<div class="form-group col-sm-4">'+
 						    '<label for="timeQuestionDuel">Tiempo de pregunta en duelo (<i>segundos</i>)</label>'+						  
 						    '<input type="number" class="form-control" id="timeQuestionDuel">'+						  
 						  '</div>'+
-						  '<div class="form-group">'+
+						  '<div class="form-group col-sm-4">'+
 						    '<label for="timeGame">Tiempo de juego (<i>d&iacute;as</i>)</label>'+
 						    '<input type="number" class="form-control" id="timeGame">'+
 						  '</div>'+				
-						  '<div class="form-group">'+
+						  '<div class="form-group col-sm-4">'+
 						    '<label for="timeDuel">Tiempo de duelo(<i>d&iacute;as</i>)</label>'+
 						    '<input type="number" class="form-control" id="timeDuel">'+
-						  '</div>'+							  		  
-						  '<button type="submit" class="btn btn-primary btn-save-parameters">Guardar</button>'+
+						  '</div>'+
+						  '<div class="form-group col-sm-4">'+
+						    '<label >Mostrar respuesta correcta en modo practica</label>'+						    
+					    	'<select id="answerShowPractice" class="form-control">'+
+					    		'<option value=true>Si</option>'+
+					    		'<option value=false>No</option>'+
+					    	'</select>'+
+						  '</div>'+
+						  '<div class="form-group col-sm-4">'+
+						    '<label >Mostrar respuesta correcta en modo juego</label>'+						    
+					    	'<select id="answerShowGame" class="form-control">'+
+					    		'<option value=true>Si</option>'+
+					    		'<option value=false>No</option>'+
+					    	'</select>'+
+						  '</div>'+							  
+						  '<div class="form-group col-sm-12">'+
+						  	'<button type="submit" class="btn btn-primary btn-save-parameters">Guardar</button>'+
+						  '</div>'+
 					 '</form>');
 
 		container.append(form);	
@@ -1740,6 +1839,8 @@ var routerManager = Backbone.Router.extend({
 		        	$("#timeQuestionDuel").val(data['gamesParameters']['timeQuestionDuel'])
 		        	$("#timeGame").val(data['gamesParameters']['timeGame'])
 		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])	
+		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])	
+		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])	
 	        	}	        	
 	        },
 	        error: function(){},
@@ -1761,7 +1862,9 @@ var routerManager = Backbone.Router.extend({
 						"timeQuestionPractice" : $("#timeQuestionPractice").val(),
 						"timeQuestionDuel": $("#timeQuestionDuel").val(),
 						"timeGame": $("#timeGame").val(),
-						"timeDuel": $("#timeDuel").val()
+						"timeDuel": $("#timeDuel").val(),
+						"answerShowPractice": $('#answerShowPractice').val(),
+						"answerShowGame": $('#answerShowGame').val()
 					};	
 
 		            parameters = {
@@ -1771,7 +1874,7 @@ var routerManager = Backbone.Router.extend({
 				        contentType: 'application/json',
 				        dataType: "json",
 				        success: function(){
-				        	
+				        	alert("Parametros guardados exitosamente");
 				        },
 				        error: function(){},
 					};
@@ -1782,7 +1885,10 @@ var routerManager = Backbone.Router.extend({
 		    }					
 		});		
 	},
-
+	
+	/**
+	 * Generar y guardar grupos
+	 */
 	generateGroups: function(){
 		
 		this.removeContent();
@@ -1806,9 +1912,6 @@ var routerManager = Backbone.Router.extend({
 		
 		$("#entity-content").append(navBar);
 
-
-		
-
 		var content = $("<div></div>");
 		$("#entity-content").append(content);
 
@@ -1823,7 +1926,6 @@ var routerManager = Backbone.Router.extend({
 			tb = new groupBuilder(content, min, max);
 		});
 		
-
 		var modal = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
 						  '<div class="modal-dialog">'+
 						    '<div class="modal-content">'+
@@ -1908,15 +2010,11 @@ var routerManager = Backbone.Router.extend({
 						json[gKey] = group;
 						//json.push(city);
 					});
-
-					
-
+				
 					var data = {
 						"groups" : json,
 						"tournament": tournament
 					};
-
-					//console.log(data)
 
 					parameters = {
 						type: "POST", 
@@ -1925,22 +2023,170 @@ var routerManager = Backbone.Router.extend({
 			            url: "home/group/save",
 			            contentType: 'application/json',
 			            dataType: "json",
-			            success: function(data){
-			            	
+			            success: function(data){			            	
 			            },
 			            error: function(){},
 					};
 											
 					var ajax = $.ajax(parameters);										
 				}
-
 				modalObj.modal('hide')
 			});			
 		});
-
-
-		
 	},	
+
+	/**
+	 * Gurdar imagenes generales
+	 */
+	images: function () {
+
+		this.removeContent();
+		var container = $('<div class="panel panel-default panel-imagenes"><h4>Subir im&aacute;genes</h4><hr/></div>');
+		var form = $('<form id="form-images" role="form">'+
+						  '<div class="form-group">'+
+						    '<label  class="required">Nombre</label>'+
+						    '<input type="text" class="form-control" id="image-name" required="required" >'+
+						  '</div>'+							  
+						  '<div class="form-group">'+
+						    '<label  class="required">Im&aacute;gen</label>'+
+						    '<input type="file" class="form-control" id="file-image" required="required" >'+
+						  '</div>'+							  				  		 
+						  '<button type="submit" class="btn btn-primary btn-save-image">Guardar</button>'+
+					 '</form>');
+
+		container.append(form);	
+		$("#entity-content").append(container);
+
+		var well = $("<div></div>");
+		container.append(well);
+		//Guardar imagen en BD mongo
+		form.submit(function (e) {		
+			e.preventDefault();	
+			var img = form.find('#file-image');
+			var imageName = form.find('#image-name').val();			
+			var file = img[0].files[0];
+
+			var formData = new FormData();
+			formData.append("name", imageName);
+			formData.append("image", file);
+
+			parameters = {
+				type: "POST", 
+				data: formData,
+			    url: "image",
+		        contentType: false,	  
+		        processData: false,      
+		        success: function(data){	 		        	
+		        	//alert("Imagen gurdada exitosamente: "+data.id);
+		        	// var well = container.find(".well");
+		        	well.empty();
+					var r = '<div class="well">'+
+								'<p>Imagen gurdada exitosamente: '+data.id+
+							'</div>';
+
+					well.append(r);
+		        },
+		        error: function(){},
+			};
+
+			$.ajax(parameters);
+		})	
+	},
+
+	sendNotifications: function () {
+
+		this.removeContent();
+		var container = $('<div class="panel panel-default panel-notifications"><h4>Notificaciones</h4><hr/></div>');
+		var form = $('<form id="form-notification" role="form">'+
+						  '<div class="form-group">'+
+						    '<label  class="col-sm-2 control-label">Notificación de grupos</label>'+
+						    '<div class="col-sm-10">'+
+						    	'<button type="button" class="btn btn-primary send-not-groups">Enviar</button>'+
+						    '</div>'+
+						  '</div>'+							  	
+						  '<div class="form-group">'+
+						    '<label  class="col-sm-2 control-label">Notificación de equipos</label>'+
+						    '<div class="col-sm-10">'+
+						    	'<button type="button" class="btn btn-primary send-not-teams">Enviar</button>'+
+						    '</div>'+
+						  '</div>'+							  					  
+						  
+					 '</form>');
+
+		container.append(form);	
+		$("#entity-content").append(container);
+
+		//Enviar notificaciones del grupo
+		form.find(".send-not-groups").click(function () {
+			$.confirm({
+			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles del grupo al que pertenece su equipo ?",
+			    confirm: function(button) {
+			        parameters = {
+						type: "POST", 					
+					    url: "notification/group",
+				        contentType: 'application/json',
+		            	dataType: "json",    
+				        success: function(data){	 			        	
+				        	alert("Notificaciones enviadas");
+				        },
+				        error: function(){}
+					};
+
+					$.ajax(parameters);
+			    },
+			    cancel: function(button) {
+			        // do something
+			    }
+			});
+		});
+
+		//Enviar notificaciones del equipo
+		form.find(".send-not-teams").click(function () {
+			$.confirm({
+			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles el equipo al que pertenecen ?",
+			    confirm: function(button) {
+        			parameters = {
+						type: "POST", 					
+					    url: "notification/team",
+				        contentType: 'application/json',
+		            	dataType: "json",    
+				        success: function(data){	 			        	
+				        	alert("Notificaciones enviadas");
+				        },
+				        error: function(){}
+					};
+
+					$.ajax(parameters);
+			    },
+			    cancel: function(button) {
+			        // do something
+			    }
+			});
+		});
+
+		form.submit(function (e) {		
+			e.preventDefault();	
+		
+		})
+	},	
+
+	validationOperator: function (operator) {
+        
+        if(operator == "startswith") {
+            operator = "start_with";
+        }
+        
+        if(operator == "eq") {
+            operator = "equal";
+        }
+        
+        if(operator == "contains") {
+            operator = "has";
+        }
+
+        return operator;
+
+    },
 });
 
 
@@ -1954,15 +2200,13 @@ $(document).ready(function () {
  */
 function generateTeam(){
 	
-	var router = new routerManager();	
-	//router.generateTeams();
+	var router = new routerManager();		
 	Backbone.history.navigate("generateTeams", true);
 }
 
 function generateGroup(){
 	
-	var router = new routerManager();	
-	//router.generateTeams();
+	var router = new routerManager();		
 	Backbone.history.navigate("generateGroups", true);
 }
 

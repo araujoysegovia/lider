@@ -233,4 +233,22 @@ class TeamController extends Controller
         }
     }
 
+    /**
+     * Actualizar el id del torneo en el equipo
+     */
+    public function updateTeamTournamentAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $teams = $em->getRepository("LiderBundle:Team")->findBy(array("deleted" => false));
+        
+        foreach ($teams as $team) {
+            if($team->getGroup()){               
+                $team->setTournament($team->getGroup()->getTournament());    
+            }            
+        }
+        $em->flush();
+
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+    }
 }
