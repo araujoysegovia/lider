@@ -288,10 +288,9 @@ class QuestionController extends Controller
         
         $dm->persist($reportQuestion);
         $dm->flush();
-        $body = '<p>'+$questionD->getQuestion()+'</p>
-                <ul>';
+        $body = '<p>'.$questionD->getQuestion().'</p><ul>';
         foreach($q->getAnswers()->toArray() as $value){
-            $body .= '<li>'+$value->getAnswer()+'</li>';
+            $body .= '<li>'.$value->getAnswer().'</li>';
         }
         $body .= '</ul>';
         
