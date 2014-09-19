@@ -2102,39 +2102,66 @@ var routerManager = Backbone.Router.extend({
 		  	Inicio: "",
 		  	Juegos: "games"
 		});
-		var config = {
+		var container = $('<div></div>').addClass('panel panel-default');
+		var panelHeading = $('<div></div>').addClass('panel-heading');
+		var panelBody = $('<div></div>').addClass('panel-body');
+		var form = $('<form></form>').addClass('form-inline').attr('role', 'form');
+		var div = $('<div></div>').addClass('form-group');
+		var title = $('<h3></h3>').html('Juegos');
+		panelHeading.append(title).append(form.append(form.append(div)));
+		container.append(panelHeading).append(panelBody);
+		$("#entity-content").append(container);
+		var select = $('<select></select>').addClass('form-control select-tournament');
+		var option = $('<option></option>').attr('value', '0').html('Seleccione un torneo');
+		var configTorunament = {
 			type: "GET",
-            url: "home/game/group",					            
+            url: "home/tournament/tournament",
             contentType: "application/json",
             dataType: "json",
             //data: JSON.stringify(param),
 			success: function(response){
-				var data = response.data;
-				console.log(data);
-				_.each(data, function(group){
-					var containerGroup = $('<div></div>').addClass('panel panel-default');
-					var heading = $('<div></div>').addClass('panel-heading').html(group.name);
-					containerGroup.append(heading);
-					var body = $('<div></div>');
-					var duelDate;
-					_.each(group.games, function(game){
-						var temp = game.startdate;
-						if(temp != duelDate){
-							duelDate = game.startdate;
-						}
-						else{
-
-						}
-						
-						
-						
-					})
-					$("#entity-content").append(containerGroup);
+				var data = response;
+				select.append(option);
+				_.each(data, function(tournament){
+					var option = $('<option></option>').attr('value', tournament.id).html(tournament.name);
+					select.append(option)
 				})
+				div.append(select);
 			},
 			error: function(){}
         }
-        $.ajax(config);
+        $.ajax(configTorunament);
+
+        select.change(function(op){
+        	panelBody.empty();
+        	var config = {
+				type: "GET",
+	            url: "home/game/group/"+select.val(),					            
+	            contentType: "application/json",
+	            dataType: "json",
+	            //data: JSON.stringify(param),
+				success: function(response){
+					var data = response.data;
+					console.log(data);
+					_.each(data, function(group){
+						var containerGroup = $('<div></div>').addClass('panel panel-default panel-game');
+						var heading = $('<div></div>').addClass('panel-heading').html(group.name);
+						containerGroup.append(heading);
+						var body = $('<div></div>').addClass('panel-body');
+						_.each(group.games, function(game){
+							if($('fieldset[data-id='+game.round+']')){
+								console.log("entre");
+							}
+							var duel = $('<div></div>');
+						})
+						containerGroup.append(body);
+						panelBody.append(containerGroup);
+					})
+				},
+				error: function(){}
+	        }
+	        $.ajax(config);
+		})
 	},
 
 	sendNotifications: function () {

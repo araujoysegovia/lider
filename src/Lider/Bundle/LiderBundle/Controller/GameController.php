@@ -49,10 +49,10 @@ class GameController extends Controller
         return $this->get("talker")->response(array());
     }
 
-    public function getGamesByGroupAction(){
+    public function getGamesByGroupAction($tournament = null){
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $em->getRepository('LiderBundle:Group');
-        $list = $repo->findGamesByGroup();
+        $list = $repo->findGamesByGroup($tournament);
         return $this->get("talker")->response(array('count' => count($list), 'data' => $list));
     }
 }

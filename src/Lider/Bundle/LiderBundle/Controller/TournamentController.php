@@ -22,4 +22,14 @@ class TournamentController extends Controller
 
     	return $this->get("talker")->response($entity);
     }
+
+    public function getOnlyTournamentsAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $entity = $em->getRepository("LiderBundle:Tournament")->findBy(array());
+        if(!$entity)
+            throw new \Exception("Entity no found");
+
+        return $this->get("talker")->response($entity);
+    }
 }

@@ -29,3 +29,7 @@ admin_tournament_active:
     defaults: { _controller: LiderBundle:Tournament:activeTournament }
     methods:  [GET]
 
+admin_tournament_alone:
+    pattern:  /tournament
+    defaults: { _controller: LiderBundle:Tournament:getOnlyTournaments }
+    methods:  [GET]
