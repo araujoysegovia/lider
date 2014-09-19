@@ -7,6 +7,7 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Lider\Bundle\LiderBundle\Lib\Normalizer;
 use Lider\Bundle\LiderBundle\Entity\Game;
+use Lider\Bundle\LiderBundle\Entity\Duel;
 
 class GameManager
 {
@@ -143,6 +144,58 @@ class GameManager
 	private function generateGameForSecondLevel()
 	{
 		# code...
+	}
+
+	public function generateDuel($tournamentId)
+	{
+		$tournament = $this->em->getRepository("LiderBundle:Tournament")->getTournament($tournamentId);
+
+		$games = $tournament->getGames();
+
+		foreach ($games as $key => $game) {
+			
+			$teamOne = $game->getTeamOne();
+			$teamTwo = $game->getTeamTwo();
+
+			$playersTeamOne = $teamOne->getPlayers();
+			$playersTeamTwo= $teamTwo->getPlayers();
+
+			$countPlayersTeamOne = count($playersTeamOne);
+			$countPlayersTeamTwo = count($playersTeamTwo);
+
+			$x = $countPlayersTeamOne;
+			
+			$firtsPlayers = $playersTeamOne;
+			$secondPlayers = $playersTeamTwo;
+
+			if($countPlayersTeamOne != $countPlayersTeamTwo){				
+				if($countPlayersTeamOne > $countPlayersTeamTwo){					
+					$x = $countPlayersTeamTwo;
+					$firtsPlayers = $playersTeamTwo;
+					$secondPlayers = $playersTeamOne;
+				}
+			}
+
+			
+			
+			echo $x;
+
+			for ($i=0; $i < $x ; $i++) { 
+				
+				$rand = rand(0, (count($secondPlayers) -1));	
+				
+				$playerOne = $firtsPlayers[$i];
+				$playerTwo = $secondPlayers[$rand];
+
+				array_splice($secondPlayers, $rand, 1);
+
+				$duel = new Duel();
+				$duel->setGame($game);
+				$duel->setPlayerOne($playerOne);
+				$duel->setPlayerTwo($playerTwo);
+			}
+			break;
+		}
 	}
 }
 ?>

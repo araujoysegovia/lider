@@ -44,6 +44,18 @@ class GameController extends Controller
 
     public function generateGameAction()
     {
+        $request = $this->get("request");
+        // $data = $request->getContent();
+        
+        // if(empty($data))
+        //     throw new \Exception("No data");        
+
+        // $data = json_decode($data, true);        
+        // $tournamentId = $data['tournamentId'];
+        // $interval = $data['interval'];
+    
+        // $this->get('game_manager')->generateGame($tournamentId, $interval);
+
         $this->get('game_manager')->generateGame(3, 7);
 
         return $this->get("talker")->response(array());
@@ -55,4 +67,14 @@ class GameController extends Controller
         $list = $repo->findGamesByGroup($tournament);
         return $this->get("talker")->response(array('count' => count($list), 'data' => $list));
     }
+
+    public function generateDuelAction()
+    {
+        $request = $this->get("request");
+
+        $this->get('game_manager')->generateDuel(3);
+
+        return $this->get("talker")->response(array());
+    }    
+
 }
