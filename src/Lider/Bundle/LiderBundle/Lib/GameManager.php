@@ -30,15 +30,34 @@ class GameManager
 		$this->em->flush();
 	}
 
-
+	/**
+	 * Generar juegos
+	 */
 	public function generateGame($tournamentId, $interval){
 
 		//$tournament = $this->em->getRepository("LiderBundle:Tournament")->findOneBy(array("id" =>$tournamentId, "deleted" => false));
 		$tournament = $this->em->getRepository("LiderBundle:Tournament")->getTournament($tournamentId);
 
+		$games = $tournament->getGames();
+		$duels = $tournament->getDuels();
+
+		//Borrar equipos del torneo
+		if(!is_null($games)){
+			foreach ($games as $key => $value) {			
+			$value->setDeleted(true);
+			}
+		}
+		
+
+		//Borrar duelos del torneo
+		if(!is_null($duels)){
+			foreach ($duels as $key => $value) {
+				$value->setDeleted(true);
+			}
+		}
+
 		if(!$tournament){
-			throw new \Exception("Entity no found", 1);
-			
+			throw new \Exception("Entity no found", 1);			
 		}
 
 		//print_r($tournament->getTeams());
@@ -51,6 +70,9 @@ class GameManager
 		}
 	}
 
+	/**
+	 * Generar juegos para el primer nivel
+	 */
 	private function generateGameForFirtsLevel($tournament, $interval)
 	{
 		$groups = $tournament->getGroups()->toArray();		
@@ -88,8 +110,7 @@ class GameManager
 							$v = $v - $countTeams;
 						}
 
-						//echo "\t $p=".$teams[$p]->getName()." VS $v=".$teams[$v]->getName()."\n";						
-
+						//echo "\t $p=".$teams[$p]->getName()." VS $v=".$teams[$v]->getName()."\n";
 						//$now = new Date();
 						$lastDate->modify('+'.$interval.' day');
 						
@@ -101,7 +122,8 @@ class GameManager
 						$game->setStartDate($lastDate);
 						$game->setFinished(false);
 						$game->setLevel($tournament->getLevel());
-
+						$game->setRound($i);
+						$game->setTournament($tournament);
 						$this->em->persist($game);
 						
 						$pos = $i +1;

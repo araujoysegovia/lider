@@ -59,6 +59,16 @@ class Tournament extends Entity
     private $level;
 
     /**
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="tournament")
+     */
+    private $games;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Duel", mappedBy="tournament")
+     */
+    private $duels;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -256,5 +266,71 @@ class Tournament extends Entity
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * Add games
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Game $games
+     * @return Tournament
+     */
+    public function addGame(\Lider\Bundle\LiderBundle\Entity\Game $games)
+    {
+        $this->games[] = $games;
+
+        return $this;
+    }
+
+    /**
+     * Remove games
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Game $games
+     */
+    public function removeGame(\Lider\Bundle\LiderBundle\Entity\Game $games)
+    {
+        $this->games->removeElement($games);
+    }
+
+    /**
+     * Get games
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGames()
+    {
+        return $this->games;
+    }
+
+    /**
+     * Add duels
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Duel $duels
+     * @return Tournament
+     */
+    public function addDuel(\Lider\Bundle\LiderBundle\Entity\Duel $duels)
+    {
+        $this->duels[] = $duels;
+
+        return $this;
+    }
+
+    /**
+     * Remove duels
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Duel $duels
+     */
+    public function removeDuel(\Lider\Bundle\LiderBundle\Entity\Duel $duels)
+    {
+        $this->duels->removeElement($duels);
+    }
+
+    /**
+     * Get duels
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDuels()
+    {
+        return $this->duels;
     }
 }

@@ -59,6 +59,16 @@ class Tournament extends Entity
     private $level;
 
     /**
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="tournament")
+     */
+    private $games;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Duel", mappedBy="tournament")
+     */
+    private $duels;
+
+    /**
      * Constructor
      */
     public function __construct()

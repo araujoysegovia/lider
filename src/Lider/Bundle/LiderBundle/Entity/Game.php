@@ -79,6 +79,20 @@ class Game extends Entity
     private $level;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Range(min=1, max=3)
+     */
+    private $round;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="games")
+     * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
+     * @Assert\NotBlank()
+     */
+    private $tournament;
+
+
+    /**
      * Get id
      *
      * @return integer 
@@ -316,5 +330,51 @@ class Game extends Entity
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * Set round
+     *
+     * @param integer $round
+     * @return Game
+     */
+    public function setRound($round)
+    {
+        $this->round = $round;
+
+        return $this;
+    }
+
+    /**
+     * Get round
+     *
+     * @return integer 
+     */
+    public function getRound()
+    {
+        return $this->round;
+    }
+
+    /**
+     * Set tournament
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Tournament $tournament
+     * @return Game
+     */
+    public function setTournament(\Lider\Bundle\LiderBundle\Entity\Tournament $tournament = null)
+    {
+        $this->tournament = $tournament;
+
+        return $this;
+    }
+
+    /**
+     * Get tournament
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Tournament 
+     */
+    public function getTournament()
+    {
+        return $this->tournament;
     }
 }
