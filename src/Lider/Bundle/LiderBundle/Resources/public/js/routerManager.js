@@ -2143,16 +2143,37 @@ var routerManager = Backbone.Router.extend({
 				success: function(response){
 					var data = response.data;
 					console.log(data);
+
 					_.each(data, function(group){
 						var containerGroup = $('<div></div>').addClass('panel panel-default panel-game');
 						var heading = $('<div></div>').addClass('panel-heading').html(group.name);
 						containerGroup.append(heading);
 						var body = $('<div></div>').addClass('panel-body');
+						var round = {};
 						_.each(group.games, function(game){
-							if($('fieldset[data-id='+game.round+']')){
-								console.log("entre");
+							console.log(game);
+							if(!round[game.round]){
+								round[game.round] = [];
 							}
-							var duel = $('<div></div>');
+							// round[game.round][] = game;
+							console.log(round);
+							// var fieldset = $('fieldset[data-id='+game.round+']');
+							// console.log("hola");
+							// console.log(fieldset);
+							// if(!fieldset){
+							// 	console.log("entre1");
+							// 	fieldset = $('<fieldset></fieldset>').attr('legend', 'Prueba').attr('data-id', game.round);
+							// }
+							// var div1 = $('<div></div>');
+							// var img1 = $('<img/>').attr('src', game.team_one.image);
+							// var name1 = $('<label></label>').html(game.team_one.name);
+							// var div2 = $('<div></div>');
+							// var img2 = $('<img/>').attr('src', game.team_two.image);
+							// var name2 = $('<label></label>').html(game.team_two.name);
+							// var duel = $('<div></div>');
+							// duel.append(div1.append(img1).append(name1)).append(div2.append(name2).append(img2));
+							// fieldset.append(duel);
+							// body.append(fieldset);
 						})
 						containerGroup.append(body);
 						panelBody.append(containerGroup);
