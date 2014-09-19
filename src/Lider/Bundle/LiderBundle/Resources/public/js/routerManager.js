@@ -16,7 +16,7 @@ var routerManager = Backbone.Router.extend({
 		"reportquestions": "reportquestions",
 		"parametersConfig": "parametersConfig",
 		"images": "images",
-		"sendNotifications": "sendNotifications"
+		"sendNotifications": "sendNotifications",
 		"games": "games"
 	},
 
@@ -2094,6 +2094,47 @@ var routerManager = Backbone.Router.extend({
 
 			$.ajax(parameters);
 		})	
+	},
+
+	games: function(){
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Inicio: "",
+		  	Juegos: "games"
+		});
+		var config = {
+			type: "GET",
+            url: "home/game/group",					            
+            contentType: "application/json",
+            dataType: "json",
+            //data: JSON.stringify(param),
+			success: function(response){
+				var data = response.data;
+				console.log(data);
+				_.each(data, function(group){
+					var containerGroup = $('<div></div>').addClass('panel panel-default');
+					var heading = $('<div></div>').addClass('panel-heading').html(group.name);
+					containerGroup.append(heading);
+					var body = $('<div></div>');
+					var duelDate;
+					_.each(group.games, function(game){
+						var temp = game.startdate;
+						if(temp != duelDate){
+							duelDate = game.startdate;
+						}
+						else{
+
+						}
+						
+						
+						
+					})
+					$("#entity-content").append(containerGroup);
+				})
+			},
+			error: function(){}
+        }
+        $.ajax(config);
 	},
 
 	sendNotifications: function () {

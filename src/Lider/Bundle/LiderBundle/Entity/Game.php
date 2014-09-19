@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Game class
  * @ORM\Table(name="game")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\GameRepository")
  */
 class Game extends Entity
 {
@@ -19,7 +19,7 @@ class Game extends Entity
     private $id;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"}, inversedBy="games")
 	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
 	 * @Assert\NotBlank()
 	 */

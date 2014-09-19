@@ -31,6 +31,10 @@ admin_category:
     resource: "@LiderBundle/Resources/config/admin_routes/category_routing.yml"
     prefix:   /home/category
 
+admin_game:
+    resource: "@LiderBundle/Resources/config/admin_routes/game_routing.yml"
+    prefix:   /home/game
+
 admin_group:
     resource: "@LiderBundle/Resources/config/admin_routes/group_routing.yml"
     prefix:   /home/group
