@@ -17,7 +17,7 @@ class ImageController extends SymfonyController
 		$request = $this->get("request");
 		$width = $request->get("width");
 		$height = $request->get("height");
-
+			
 		$entity = $dm->getRepository("LiderBundle:Image")->findOneBy(array("id" => $id, "deleted" => false));
 		if(!$entity)
 			throw new \Exception("Entity no found");
@@ -52,8 +52,8 @@ class ImageController extends SymfonyController
 		//$response->headers->set('Content-Disposition', $d);
 		
 		$headers = array(
-				"Content-Type" => $entity->getMimetype(),
-				"filename" => $entity->getName()
+			"Content-Type" => $entity->getMimetype(),
+			"filename" => $entity->getName()
 		);
 		$response->headers->add($headers);
 		
