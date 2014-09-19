@@ -7,6 +7,7 @@ use Lider\Bundle\LiderBundle\Document\Image;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Dumper;
 use Lider\Bundle\LiderBundle\Document\Suggestion;
+use Lider\Bundle\LiderBundle\Entity\Player;
 
 class PlayerController extends Controller
 {
@@ -583,5 +584,57 @@ class PlayerController extends Controller
         )));
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+
+    /**
+     * Actualizar juegador
+     */
+    public function updateAction() {
+        
+        //$ec = $this->getRequestEntity($id);     
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $request = $this->get("request");
+        $data = $request->getContent();
+         
+        if(empty($data) || !$data)
+            throw new \Exception("No data");
+         
+        $data = json_decode($data, true);
+        
+        $player = $em->getRepository("LiderBundle:Player")->findOneBy(array("id" => $data['id'], "deleted" => false));
+        if(!$player)
+            throw new \Exception("Player no found");
+        
+
+        $office = $em->getRepository("LiderBundle:Office")->findOneBy(array("id" => $data['office']['id'], "deleted" => false));
+        if(!$office)
+            throw new \Exception("Office no found");
+
+        $role = $em->getRepository("LiderBundle:Role")->findOneBy(array("id" => $data['roles'][0]['id'], "deleted" => false));
+        if(!$role)
+            throw new \Exception("Role no found");
+
+        $team = $em->getRepository("LiderBundle:Team")->findOneBy(array("id" => $data['team']['id'], "deleted" => false));
+        if(!$team)
+            throw new \Exception("Team no found");       
+        
+        $player->setName($data['name']);
+        $player->setLastname($data['lastname']);
+        $player->setEmail($data['email']);
+        $player->setOffice($office);
+
+        $roles = $player->getRoles();        
+        foreach ($roles as $key => $value) {
+            $player->removeRole($value);
+        }        
+        $player->addRole($role);
+
+        $player->setTeam($team);
+        $player->setActive($data['active']);
+
+        $em->flush();
+
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
 }

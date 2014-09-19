@@ -728,14 +728,17 @@ var routerManager = Backbone.Router.extend({
 				    	editable: false
 				    },
 					name: { 
-						type: "string" 
+						type: "string",
+						validation: { required: true}
 					},
 					lastname: { 
-						type: "string" 
+						type: "string",
+						validation: { required: true}
 					},
 					email: { 
 						//editable: false,
-						type: "string" 
+						type: "string",
+						validation: { required: true}
 					},
 					office: {
 						//type: "string"
@@ -922,9 +925,8 @@ var routerManager = Backbone.Router.extend({
 	        			data.office = {
 			        			id: data.office
 			        	}		        		
-		        	}		        
-		        	
-		        				        	
+		        	}		        		        		        
+
 		            return kendo.stringify(data);
 		        }
 			},		
