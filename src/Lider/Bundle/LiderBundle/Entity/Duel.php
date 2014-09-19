@@ -100,7 +100,13 @@ class Duel extends Entity
 	 */	
 	private $player_lost;
 
-  
+    /**
+     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="duels")
+     * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
+     * @Assert\NotBlank()
+     */    
+    private $tournament;
+
     /**
      * @ORM\Column(type="boolean")
      */
@@ -482,5 +488,28 @@ class Duel extends Entity
     public function getFinished()
     {
         return $this->finished;
+    }
+
+    /**
+     * Set tournament
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Tournament $tournament
+     * @return Duel
+     */
+    public function setTournament(\Lider\Bundle\LiderBundle\Entity\Tournament $tournament = null)
+    {
+        $this->tournament = $tournament;
+
+        return $this;
+    }
+
+    /**
+     * Get tournament
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Tournament 
+     */
+    public function getTournament()
+    {
+        return $this->tournament;
     }
 }
