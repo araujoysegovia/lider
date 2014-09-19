@@ -17,6 +17,7 @@ var routerManager = Backbone.Router.extend({
 		"parametersConfig": "parametersConfig",
 		"images": "images",
 		"sendNotifications": "sendNotifications"
+		"games": "games"
 	},
 
 	home: function() {
