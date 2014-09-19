@@ -127,6 +127,7 @@ class Normalizer extends GetSetMethodNormalizer
 		foreach ($data as $key => $value) {
 			if(in_array($key, $this->ignoreProperties)) continue;
 			if(!empty($value) || is_bool($value)){
+				$getter = "get" . ucwords ( $key );
 				$setter = "set" . ucwords ( $key );
 				if (array_key_exists ( $key, $associations )) {
 						
@@ -226,12 +227,18 @@ class Normalizer extends GetSetMethodNormalizer
 								}else{
 									$value = new \DateTime ();
 								}
-							}
-								
-							if (method_exists ( $newClass, $setter )) {
-								if(is_bool($value) && !$value) $value = "false";
-								$newClass->$setter ( $value );
-							}
+					}
+						
+					if (method_exists ( $newClass, $setter )) {
+						// if(is_bool($value) && !$value) $value = "false";
+						// elseif(is_bool($value) && $value) $value = "true";
+						// echo "<br/><br/>".$setter;
+						// echo "<br/>".$value;
+
+						//echo '<br/>'.$newClass->$getter();
+						$newClass->$setter ( $value );
+						//echo "<br/>".$newClass->$getter();
+					}
 				}
 			}
 		}

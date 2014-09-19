@@ -41,4 +41,11 @@ class GameController extends Controller
 
     	return $this->get("talker")->response($parameters);
     }
+
+    public function generateGameAction()
+    {
+        $this->get('game_manager')->generateGame(3, 7);
+
+        return $this->get("talker")->response(array());
+    }
 }

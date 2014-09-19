@@ -89,3 +89,8 @@ general_get_image:
     pattern:  /image
     defaults: { _controller: LiderBundle:Image:getAllImage }
     methods:  [GET]
+
+generate_game:
+    pattern:  /game/generate
+    defaults: { _controller: LiderBundle:Game:generateGame }
+    methods:  [GET]

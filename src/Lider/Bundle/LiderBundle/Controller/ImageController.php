@@ -50,7 +50,7 @@ class ImageController extends SymfonyController
 		//DISPOSITION_INLINE //DISPOSITION_ATTACHMENT
 		//$d = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, "png");
 		//$response->headers->set('Content-Disposition', $d);
-		
+		//print_r($entity);
 		$headers = array(
 			"Content-Type" => $entity->getMimetype(),
 			"filename" => $entity->getName()
