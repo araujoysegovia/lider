@@ -94,3 +94,8 @@ generate_game:
     pattern:  /game/generate
     defaults: { _controller: LiderBundle:Game:generateGame }
     methods:  [GET]
+
+generate_duel:
+    pattern:  /duel/generate
+    defaults: { _controller: LiderBundle:Game:generateDuel }
+    methods:  [GET]
