@@ -78,8 +78,10 @@ class GameManager
 	{
 		$groups = $tournament->getGroups()->toArray();		
 		
-		$lastDate = $tournament->getStartdate();
+		
+
 		foreach ($groups as $key => $value) {
+			$lastDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
 			//echo "\n\n";
 			//echo "\n ----------------------------- ".$value->getName()." ---------------------------------------";
 			$teams = $value->getTeams()->toArray();
@@ -94,7 +96,8 @@ class GameManager
 				for ($i=1; $i <= self::$COUNT_GAMES ; $i++) { 
 					$pos = 0;
 					$vs = 0;
-
+					$lastDate->modify('+'.$interval.' day');
+					echo "\n".$lastDate->format('Y-m-d H:i:s');
 					for ($j=1; $j <= (floor($countTeams/2)) ; $j++) { 
 						if($pos >= $countTeams){
 							//echo "\n pos = ".$pos;
@@ -113,14 +116,14 @@ class GameManager
 
 						//echo "\t $p=".$teams[$p]->getName()." VS $v=".$teams[$v]->getName()."\n";
 						//$now = new Date();
-						$lastDate->modify('+'.$interval.' day');
+						
 						
 						$game = new Game();
 						$game->setGroup($value);
 						$game->setTeamOne($teams[$p]);
 						$game->setTeamTwo($teams[$v]);
 						$game->setActive(false);
-						$game->setStartDate($lastDate);
+						$game->setStartDate(new \DateTime($lastDate->format('Y-m-d H:i:s')));
 						$game->setFinished(false);
 						$game->setLevel($tournament->getLevel());
 						$game->setRound($i);
@@ -146,14 +149,16 @@ class GameManager
 		# code...
 	}
 
-	public function generateDuel($tournamentId)
+	public function generateDuel($game, $interval)
 	{
 		$tournament = $this->em->getRepository("LiderBundle:Tournament")->getTournament($tournamentId);
 
 		$games = $tournament->getGames();
-
+		
 		foreach ($games as $key => $game) {
 			
+			$lastDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));
+
 			$teamOne = $game->getTeamOne();
 			$teamTwo = $game->getTeamTwo();
 
@@ -176,10 +181,6 @@ class GameManager
 				}
 			}
 
-			
-			
-			echo $x;
-
 			for ($i=0; $i < $x ; $i++) { 
 				
 				$rand = rand(0, (count($secondPlayers) -1));	
@@ -187,15 +188,24 @@ class GameManager
 				$playerOne = $firtsPlayers[$i];
 				$playerTwo = $secondPlayers[$rand];
 
-				array_splice($secondPlayers, $rand, 1);
+				array_splice($secondPlayers->toArray(), $rand, 1);
+
+				$lastDate->modify('+'.$interval.' day');
 
 				$duel = new Duel();
 				$duel->setGame($game);
 				$duel->setPlayerOne($playerOne);
 				$duel->setPlayerTwo($playerTwo);
+				$duel->setActive(false);
+				$duel->setTournament($tournament);
+				$duel->setStartDate(new \DateTime($lastDate->format('Y-m-d H:i:s')));
+
+				$this->em->persist($duel);
 			}
-			break;
+			
 		}
+
+		$this->em->flush();
 	}
 }
 ?>

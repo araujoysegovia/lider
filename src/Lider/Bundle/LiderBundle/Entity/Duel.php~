@@ -66,20 +66,7 @@ class Duel extends Entity
 	 * @ORM\Column(type="boolean")
 	 */
 	private $active = true;
-	
-	/**
-	 * @ORM\Column(type="integer")
-	 * @Assert\NotBlank()
-	 */
-	private $count_question_one = 0;
-
-	/**
-	 * @ORM\Column(type="integer")
-	 * @Assert\NotBlank()
-	 */
-	private $count_question_two = 0;
-	
-	
+		
 	/**
 	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
 	 * @ORM\JoinColumn(name="player_win_id", referencedColumnName="id")
@@ -229,52 +216,6 @@ class Duel extends Entity
     public function getActive()
     {
         return $this->active;
-    }
-
-    /**
-     * Set count_question_one
-     *
-     * @param integer $countQuestionOne
-     * @return Duel
-     */
-    public function setCountQuestionOne($countQuestionOne)
-    {
-        $this->count_question_one = $countQuestionOne;
-
-        return $this;
-    }
-
-    /**
-     * Get count_question_one
-     *
-     * @return integer 
-     */
-    public function getCountQuestionOne()
-    {
-        return $this->count_question_one;
-    }
-
-    /**
-     * Set count_question_two
-     *
-     * @param integer $countQuestionTwo
-     * @return Duel
-     */
-    public function setCountQuestionTwo($countQuestionTwo)
-    {
-        $this->count_question_two = $countQuestionTwo;
-
-        return $this;
-    }
-
-    /**
-     * Get count_question_two
-     *
-     * @return integer 
-     */
-    public function getCountQuestionTwo()
-    {
-        return $this->count_question_two;
     }
 
     /**

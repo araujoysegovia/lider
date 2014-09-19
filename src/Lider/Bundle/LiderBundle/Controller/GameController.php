@@ -72,7 +72,7 @@ class GameController extends Controller
     {
         $request = $this->get("request");
 
-        $this->get('game_manager')->generateDuel(3);
+        $this->get('game_manager')->generateDuel(3, 4);
 
         return $this->get("talker")->response(array());
     }    
