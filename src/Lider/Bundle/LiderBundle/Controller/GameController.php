@@ -45,13 +45,11 @@ class GameController extends Controller
     /**
      * Obeter los duelos de un juego
      */
-    public function getGameDuels($gameId)
+    public function getGameDuelsAction($gameId)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        
-        $game = $repository->findOneBy(array('id' => $gameId));
 
-        $duels = $em->getRepository('LiderBundle:Duel')->getArrayOneLevel(array('game' => $game));        
+        $duels = $em->getRepository('LiderBundle:Duel')->getArrayEntityWithOneLevel(array('game' => $gameId));        
 
         return $this->get("talker")->response($duels);   
     }

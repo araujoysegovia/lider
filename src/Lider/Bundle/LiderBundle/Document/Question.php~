@@ -1,0 +1,60 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Symfony\Component\Validator\Constraints as Assert;
+use Lider\Bundle\LiderBundle\Entity\Question as QuestionEntity;
+
+/**
+ * @MongoDB\EmbeddedDocument 
+ */
+class Question extends QuestionEntity
+{
+    /**
+     * @MongoDB\Id  
+     */
+    private $id;
+    
+    /**
+     * @MongoDB\Int
+     */
+    private  $questionId;
+
+    /**
+     * @MongoDB\String
+     */
+    private $question;
+        
+    /**
+     * @MongoDB\Boolean
+     */
+    private $hasImage;
+
+    /**
+     * @MongoDB\String
+     */
+    private $image;    
+   
+    /**
+     * @MongoDB\EmbedOne(targetDocument="Category") 
+     */ 
+    private $category; 
+
+
+    public function getDataFromQuestionEntity(QuestionEntity $question)
+    {
+        $this->setQuestionId($question->getId());
+        $this->setQuestion($question->getQuestion());
+        $this->setHasImage($question->getHasImage());
+        $this->setImage($question->getImage());
+
+        $categoryD = new \Lider\Bundle\LiderBundle\Document\Category();
+        $categoryD->getDataFromCategoryEntity($question->getCategory());
+        $this->setCategory($categoryD);
+    }
+
+
+    
+
+   
+}

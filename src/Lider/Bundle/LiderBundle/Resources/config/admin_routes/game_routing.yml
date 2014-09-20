@@ -1,0 +1,4 @@
+duels_game_params:
+    pattern:  /duels/{gameId}
+    defaults: { _controller: LiderBundle:Game:getGameDuels}
+    methods: [GET]
