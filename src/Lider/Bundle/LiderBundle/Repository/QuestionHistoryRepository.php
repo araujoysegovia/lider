@@ -103,4 +103,16 @@ class QuestionHistoryRepository extends MainMongoRepository
 	
 		return $query;
 	}
+
+	public function getMissingQuestionByDuel($duelId, array $question)
+	{
+		$query = $this->createQueryBuilder("LiderBundle:QuestionHistory")
+					->field('duel')->equals(true)
+					->field('duelId')->equals($duelId)
+					->field('question.id')->notIn($question)
+					->getQuery()
+                    ->execute();
+                    
+        return $query;			
+	}
 }

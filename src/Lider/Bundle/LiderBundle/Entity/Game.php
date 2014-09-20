@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Game class
  * @ORM\Table(name="game")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\GameRepository")
  */
 class Game extends Entity
 {
@@ -91,6 +91,10 @@ class Game extends Entity
      */
     private $tournament;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Duel", mappedBy="game")
+     */
+    private $duels;
 
     /**
      * Get id
@@ -376,5 +380,45 @@ class Game extends Entity
     public function getTournament()
     {
         return $this->tournament;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->duels = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add duels
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Duel $duels
+     * @return Game
+     */
+    public function addDuel(\Lider\Bundle\LiderBundle\Entity\Duel $duels)
+    {
+        $this->duels[] = $duels;
+
+        return $this;
+    }
+
+    /**
+     * Remove duels
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Duel $duels
+     */
+    public function removeDuel(\Lider\Bundle\LiderBundle\Entity\Duel $duels)
+    {
+        $this->duels->removeElement($duels);
+    }
+
+    /**
+     * Get duels
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDuels()
+    {
+        return $this->duels;
     }
 }

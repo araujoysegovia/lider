@@ -20,7 +20,7 @@ class QuestionRepository extends MainRepository
 		return $data;
 	}
 
-	public function getQuestionListNotIn(array $listId = array()) {
+	public function getQuestionListNotIn(array $listId = array(), $asArray = true) {
 		
 		$query =  $this->createQueryBuilder('q')
 						->select('q, r, c')
@@ -34,8 +34,14 @@ class QuestionRepository extends MainRepository
 		}
 		
 		$query = $query->getQuery();
-		//echo $query->getSQL()."<br/><br/>";		
-		return $query->getArrayResult();
+		//echo $query->getSQL()."<br/><br/>";
+
+		if($asArray){
+			return $query->getArrayResult();	
+		}else{
+			return $query->getResult();
+		}
+		
 	}
 
 	

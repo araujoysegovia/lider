@@ -19,7 +19,7 @@ class Duel extends Entity
     private $id;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Game",cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="Game",cascade={"persist"}, inversedBy="duels")
 	 * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
 	 * @Assert\NotBlank()
 	 */

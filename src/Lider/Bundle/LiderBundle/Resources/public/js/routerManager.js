@@ -16,7 +16,7 @@ var routerManager = Backbone.Router.extend({
 		"reportquestions": "reportquestions",
 		"parametersConfig": "parametersConfig",
 		"images": "images",
-		"sendNotifications": "sendNotifications"
+		"sendNotifications": "sendNotifications",
 		"games": "games"
 	},
 
@@ -1820,7 +1820,19 @@ var routerManager = Backbone.Router.extend({
 					    		'<option value=true>Si</option>'+
 					    		'<option value=false>No</option>'+
 					    	'</select>'+
-						  '</div>'+							  
+						  '</div>'+		
+						  '<div class="form-group col-sm-4">'+
+						    '<label >Tiempo del duelo extra (desempate)</label>'+						    
+					    	'<input type="number" class="form-control" id="timeDuelExtra">'+
+						  '</div>'+
+						  '<div class="form-group col-sm-4">'+
+						    '<label >Cantidad de preguntas para el duelo</label>'+						    
+					    	'<input type="number" class="form-control" id="countQuestionDuel">'+
+						  '</div>'+	
+						  '<div class="form-group col-sm-4">'+
+						    '<label >Cantidad de preguntas para el duelo extra</label>'+						    
+					    	'<input type="number" class="form-control" id="countQuestionDuelExtra">'+
+						  '</div>'+	
 						  '<div class="form-group col-sm-12">'+
 						  	'<button type="submit" class="btn btn-primary btn-save-parameters">Guardar</button>'+
 						  '</div>'+
@@ -1844,6 +1856,9 @@ var routerManager = Backbone.Router.extend({
 		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])	
 		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])	
 		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])	
+		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])	
+		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])	
+		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])	
 	        	}	        	
 	        },
 	        error: function(){},
@@ -1867,7 +1882,10 @@ var routerManager = Backbone.Router.extend({
 						"timeGame": $("#timeGame").val(),
 						"timeDuel": $("#timeDuel").val(),
 						"answerShowPractice": $('#answerShowPractice').val(),
-						"answerShowGame": $('#answerShowGame').val()
+						"answerShowGame": $('#answerShowGame').val(),
+						"timeDuelExtra": $("#timeDuelExtra").val(),
+						"countQuestionDuel": $("#countQuestionDuel").val(),
+						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
 					};	
 
 		            parameters = {

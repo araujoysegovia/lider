@@ -57,3 +57,5 @@ services:
         arguments:
               em: "@doctrine.orm.entity_manager"
               dm: "@doctrine.odm.mongodb.document_manager"
+              pm: "@parameters_manager"
+              qm: "@question_manager"
