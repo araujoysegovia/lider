@@ -110,6 +110,7 @@ class QuestionHistoryRepository extends MainMongoRepository
 					->field('duel')->equals(true)
 					->field('duelId')->equals($duelId)
 					->field('question.id')->notIn($question)
+					->field('finished')->equals(true)
 					->getQuery()
                     ->execute();
                     

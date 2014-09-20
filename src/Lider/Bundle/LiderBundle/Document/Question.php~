@@ -36,11 +36,18 @@ class Question extends QuestionEntity
     private $image;    
    
     /**
+<<<<<<< HEAD
+     * @MongoDB\EmbedOne(targetDocument="Category") 
+     */ 
+    private $category; 
+
+=======
      * @MongoDB\String
      */
     private $categoryName;
 
     
+>>>>>>> 634a608ac17c46b82460ae2550c6416e090058b9
 
     public function getDataFromQuestionEntity(QuestionEntity $question)
     {
@@ -48,6 +55,18 @@ class Question extends QuestionEntity
         $this->setQuestion($question->getQuestion());
         $this->setHasImage($question->getHasImage());
         $this->setImage($question->getImage());
+<<<<<<< HEAD
+
+        $categoryD = new \Lider\Bundle\LiderBundle\Document\Category();
+        $categoryD->getDataFromCategoryEntity($question->getCategory());
+        $this->setCategory($categoryD);
+    }
+
+
+    
+
+   
+=======
         $this->setCategoryName($question->getCategory()->getName());   
         //$this->setAnswers($question->getAnswers());
 
@@ -173,4 +192,5 @@ class Question extends QuestionEntity
     {
         return $this->categoryName;
     }
+>>>>>>> 634a608ac17c46b82460ae2550c6416e090058b9
 }

@@ -63,6 +63,10 @@ admin_player:
     resource: "@LiderBundle/Resources/config/admin_routes/player_routing.yml"
     prefix:   /home/player
 
+admin_game:
+    resource: "@LiderBundle/Resources/config/admin_routes/game_routing.yml"
+    prefix:   /home/game
+
 a_question_test:
     pattern:  /test
     defaults: { _controller: LiderBundle:Question:getTestQuestion }
@@ -106,7 +110,7 @@ generate_duel:
 
 stop_game:
     pattern:  /game/stop
-    defaults: { _controller: LiderBundle:Game:gameStop }
+    defaults: { _controller: LiderBundle:Game:stopGames }
     methods:  [GET]
 
 start_game:
