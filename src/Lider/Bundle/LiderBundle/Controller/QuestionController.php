@@ -499,7 +499,7 @@ class QuestionController extends Controller
         foreach($q->getAnswers()->toArray() as $value){
             $body .= '<li>'.$value->getAnswer().'</li>';
         }
-        $body .= '</ul>';
+        $body .= '</ul><br><br><h3>CAUSAL:</h3><p>'.$causal.'</p>';
 
         try{
         
