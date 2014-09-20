@@ -8,17 +8,22 @@ use Symfony\Component\Serializer\Serializer;
 use Lider\Bundle\LiderBundle\Lib\Normalizer;
 use Lider\Bundle\LiderBundle\Entity\Game;
 use Lider\Bundle\LiderBundle\Entity\Duel;
+use Lider\Bundle\LiderBundle\Entity\DuelQuestion;
 
 class GameManager
 {
 	private $em;
 	private $dm;
 	private $co;
+	private $pm;
+	private $qm;
 	public static $COUNT_GAMES = 3;
 
-	public function __construct($em, $dm){
+	public function __construct($em, $dm, $pm, $qm){
 		$this->em = $em;
 		$this->dm = $dm;		
+		$this->pm = $pm;		
+		$this->qm = $qm;
 	}
 
 	public function endDuels(){
@@ -38,31 +43,24 @@ class GameManager
 
 		//$tournament = $this->em->getRepository("LiderBundle:Tournament")->findOneBy(array("id" =>$tournamentId, "deleted" => false));
 		$tournament = $this->em->getRepository("LiderBundle:Tournament")->getTournament($tournamentId);
-
-		$games = $tournament->getGames();
-		$duels = $tournament->getDuels();
-
-		//Borrar equipos del torneo
-		if(!is_null($games)){
-			foreach ($games as $key => $value) {			
-			$value->setDeleted(true);
-			}
-		}
-		
-
-		//Borrar duelos del torneo
-		if(!is_null($duels)){
-			foreach ($duels as $key => $value) {
-				$value->setDeleted(true);
-			}
-		}
-
 		if(!$tournament){
 			throw new \Exception("Entity no found", 1);			
 		}
+		$games = $tournament->getGames();
+		//$duels = $tournament->getDuels();
 
-		//print_r($tournament->getTeams());
-		//echo get_class($tournament);
+		//Borrar juegos del torneo
+		if(!is_null($games)){
+			foreach ($games as $key => $game) {			
+				$game->setDeleted(true);
+				//Borrar duelos del torneo
+				if(!is_null($game->getDuels())){
+					foreach ($game->getDuels() as $key => $duel) {
+						$duel->setDeleted(true);
+					}
+				}
+			}
+		}
 
 		if($tournament->getLevel() == 1){
 			$this->generateGameForFirtsLevel($tournament, $interval);
@@ -78,10 +76,8 @@ class GameManager
 	{
 		$groups = $tournament->getGroups()->toArray();		
 		
-		
-
 		foreach ($groups as $key => $value) {
-			$lastDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
+			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
 			//echo "\n\n";
 			//echo "\n ----------------------------- ".$value->getName()." ---------------------------------------";
 			$teams = $value->getTeams()->toArray();
@@ -96,8 +92,11 @@ class GameManager
 				for ($i=1; $i <= self::$COUNT_GAMES ; $i++) { 
 					$pos = 0;
 					$vs = 0;
-					$lastDate->modify('+'.$interval.' day');
-					echo "\n".$lastDate->format('Y-m-d H:i:s');
+
+					$startDate->modify('+'.$interval.' day');
+					$endDate = new \DateTime($startDate->format('Y-m-d H:i:s'));
+					$endDate->modify('+'.($interval - 1).' day');
+					//echo "\n".$lastDate->format('Y-m-d H:i:s');
 					for ($j=1; $j <= (floor($countTeams/2)) ; $j++) { 
 						if($pos >= $countTeams){
 							//echo "\n pos = ".$pos;
@@ -117,17 +116,18 @@ class GameManager
 						//echo "\t $p=".$teams[$p]->getName()." VS $v=".$teams[$v]->getName()."\n";
 						//$now = new Date();
 						
-						
 						$game = new Game();
 						$game->setGroup($value);
 						$game->setTeamOne($teams[$p]);
 						$game->setTeamTwo($teams[$v]);
 						$game->setActive(false);
-						$game->setStartDate(new \DateTime($lastDate->format('Y-m-d H:i:s')));
+						$game->setStartDate(new \DateTime($startDate->format('Y-m-d H:i:s')));
 						$game->setFinished(false);
 						$game->setLevel($tournament->getLevel());
 						$game->setRound($i);
 						$game->setTournament($tournament);
+						$game->setEnddate(new \DateTime($endDate->format('Y-m-d').' 23:59:00'));
+
 						$this->em->persist($game);
 						
 						$pos = $i +1;
@@ -149,60 +149,163 @@ class GameManager
 		# code...
 	}
 
+	/**
+	 * Generar los duelos de un juego
+	 */
 	public function generateDuel($game, $interval)
-	{
-		$tournament = $this->em->getRepository("LiderBundle:Tournament")->getTournament($tournamentId);
+	{		
+		//$game = $this->em->getRepository("LiderBundle:Game")->findOneBy(array("id" => $gameId, "deleted" => false));
 
-		$games = $tournament->getGames();
+		$teamOne = $game->getTeamOne();
+		$teamTwo = $game->getTeamTwo();
+
+		$playersTeamOne = $teamOne->getPlayers();
+		$playersTeamTwo= $teamTwo->getPlayers();
+
+		$countPlayersTeamOne = count($playersTeamOne);
+		$countPlayersTeamTwo = count($playersTeamTwo);
+
+		$x = $countPlayersTeamOne;
 		
+		$firtsPlayers = $playersTeamOne;
+		$secondPlayers = $playersTeamTwo;
+
+		if($countPlayersTeamOne != $countPlayersTeamTwo){				
+			if($countPlayersTeamOne > $countPlayersTeamTwo){					
+				$x = $countPlayersTeamTwo;
+				$firtsPlayers = $playersTeamTwo;
+				$secondPlayers = $playersTeamOne;
+			}
+		}
+
+		$params = $this->pm->getParameters();
+		$countQuestion = $params['gamesParameters']['countQuestionDuel'];
+		
+		for ($i=0; $i < $x ; $i++) { 
+			$startDate = new \DateTime($game->getStartdate()->format('Y-m-d H:i:s'));
+			$endDate = new \DateTime($game->getStartdate()->format('Y-m-d H:i:s'));
+			$rand = rand(0, (count($secondPlayers) -1));	
+			
+			$playerOne = $firtsPlayers[$i];
+			$playerTwo = $secondPlayers[$rand];
+
+			array_splice($secondPlayers->toArray(), $rand, 1);
+
+			$endDate->modify('+'.($interval-1).' day');
+
+			$duel = new Duel();
+			$duel->setGame($game);
+			$duel->setPlayerOne($playerOne);
+			$duel->setPlayerTwo($playerTwo);
+			$duel->setActive(true);
+			$duel->setTournament($game->getTournament());
+			$duel->setStartDate($startDate);
+			$duel->setEnddate(new \DateTime($endDate->format('Y-m-d').' 23:59:00'));
+			$this->em->persist($duel);
+
+			$this->generateQuestions($countQuestion, $duel);
+		}			
+
+		$this->em->flush();
+	}
+
+
+	public function stopGames()
+	{
+		$date = new \DateTime();		
+		$games = $this->em->getRepository("LiderBundle:Game")->getExpiredGame($date);
+				
 		foreach ($games as $key => $game) {
 			
-			$lastDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));
+			$game->setFinished(true);
+			$game->setActive(false);
+			$this->em->persist($game);
+			$duels = $game->getDuels();
 
-			$teamOne = $game->getTeamOne();
-			$teamTwo = $game->getTeamTwo();
-
-			$playersTeamOne = $teamOne->getPlayers();
-			$playersTeamTwo= $teamTwo->getPlayers();
-
-			$countPlayersTeamOne = count($playersTeamOne);
-			$countPlayersTeamTwo = count($playersTeamTwo);
-
-			$x = $countPlayersTeamOne;
-			
-			$firtsPlayers = $playersTeamOne;
-			$secondPlayers = $playersTeamTwo;
-
-			if($countPlayersTeamOne != $countPlayersTeamTwo){				
-				if($countPlayersTeamOne > $countPlayersTeamTwo){					
-					$x = $countPlayersTeamTwo;
-					$firtsPlayers = $playersTeamTwo;
-					$secondPlayers = $playersTeamOne;
-				}
-			}
-
-			for ($i=0; $i < $x ; $i++) { 
-				
-				$rand = rand(0, (count($secondPlayers) -1));	
-				
-				$playerOne = $firtsPlayers[$i];
-				$playerTwo = $secondPlayers[$rand];
-
-				array_splice($secondPlayers->toArray(), $rand, 1);
-
-				$lastDate->modify('+'.$interval.' day');
-
-				$duel = new Duel();
-				$duel->setGame($game);
-				$duel->setPlayerOne($playerOne);
-				$duel->setPlayerTwo($playerTwo);
+			foreach ($duels as $key => $duel) {
+				$duel->setFinished(true);
 				$duel->setActive(false);
-				$duel->setTournament($tournament);
-				$duel->setStartDate(new \DateTime($lastDate->format('Y-m-d H:i:s')));
-
 				$this->em->persist($duel);
 			}
+		}
+
+		$this->em->flush();
+	}
+
+
+	public function startGames()
+	{
+		$date = new \DateTime();		
+		$games = $this->em->getRepository("LiderBundle:Game")->getGamesToStart($date);
+
+		$params = $this->pm->getParameters();
+		$duelInterval = $params['gamesParameters']['timeDuel'];
+				
+		foreach ($games as $key => $game) {
 			
+			$game->setFinished(false);
+			$game->setActive(true);
+			$this->em->persist($game);
+			$this->generateDuel($game, $duelInterval);
+		}
+
+		$this->em->flush();
+	}	
+
+	public function stopDuels()
+	{
+		$date = new \DateTime();		
+		$duels = $this->em->getRepository("LiderBundle:Duel")->getExpiredDuels($date);
+				
+		foreach ($duels as $key => $duel) {
+			
+			$duel->setFinished(true);
+			$duel->setActive(false);
+					
+		}
+
+		$this->em->flush();
+	}	
+
+	public function generateQuestions($count, $duel)
+	{
+		$questions = $this->qm->generateEntityQuestions($count, $duel);
+
+		foreach ($questions as $key => $question) {
+			$duelQuestion = new DuelQuestion();
+
+			$duelQuestion->setQuestion($question);
+			$duelQuestion->setDuel($duel);
+			$duelQuestion->setGame($duel->getGame());
+			$this->em->persist($duelQuestion);
+		}
+
+		$this->em->flush();
+	}
+
+	public function stopDuel($duel)
+	{
+		$duel->setActive(false);
+		$duel->setFinished(true);
+
+		$this->em->flush();
+	}
+
+	public function stopGame($gameId)
+	{
+		$game = $this->em->getRepository("LiderBundle:Game")->findOneBy(array("id" => $gameId, "deleted" => false));	
+		if(!$game){
+			throw new \Exception("Game no found", 1);			
+		}
+
+		$game->setActive(false);
+		$game->setFinished(true);
+
+		$duels = $game->getDuels();
+
+		foreach ($duels as $key => $duel) {
+			$duel->setActive(false);
+			$duel->setFinished(true);
 		}
 
 		$this->em->flush();

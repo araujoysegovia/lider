@@ -23,11 +23,11 @@ class QuestionManager {
 	 * @param string $duelId, 
 	 * @return $questions
 	 */
-	function generateQuestions($count, $duelId = null) {
+	function generateQuestions($count, $duel = null) {
 		
 		$arr = array();
-		if(!(is_null($duelId))){
-			$duel = $this->em->getRepository("LiderBundle:Duel")->findOneBy(array("id" =>$duelId, "deleted" => false));
+		if(!(is_null($duel))){
+			//$duel = $this->em->getRepository("LiderBundle:Duel")->findOneBy(array("id" =>$duelId, "deleted" => false));
 			
 			$questionsDuel = $this->dm->createQueryBuilder('LiderBundle:DuelQuestion')	  
 	    			            ->field('gameId')->equals($duel->getGame()->getId())
@@ -59,9 +59,45 @@ class QuestionManager {
 			$ql['answers'] = $arrayAss;
 			
 			$questions[] = $ql;
+			array_splice($questionList, ($pos-1), 1);
+			$c = count($questionList);
 		}
 		
 		return $questions;
 		
 	}
+
+	function generateEntityQuestions($count, $duel = null) {
+		
+		$arr = array();
+		if(!(is_null($duel))){
+			//$duel = $this->em->getRepository("LiderBundle:Duel")->findOneBy(array("id" =>$duelId, "deleted" => false));
+			
+			$questionsDuel = $this->dm->createQueryBuilder('LiderBundle:DuelQuestion')	  
+	    			            ->field('gameId')->equals($duel->getGame()->getId())
+							    ->getQuery()
+								->execute();
+			
+			foreach ($questionsDuel->toArray() as $value) {
+				$arr[] = $value->getQuestionId();
+			}
+		}
+		//$arr[] = 100; 
+		$questionList = $this->em->getRepository("LiderBundle:Question")->getQuestionListNotIn($arr, false);
+
+		$c = count($questionList);
+
+		$questions = array();
+		for ($i = 0; $i < $count && $c > 0; $i++){			
+			$pos = rand(1, $c);
+			
+			$ql = $questionList[$pos-1];			
+			$questions[] = $ql;
+			array_splice($questionList, ($pos-1), 1);
+			$c = count($questionList);
+		}
+		
+		return $questions;
+		
+	}	
 }

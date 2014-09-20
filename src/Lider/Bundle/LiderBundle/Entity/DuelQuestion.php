@@ -32,39 +32,14 @@ class DuelQuestion extends Entity
 	 */
 	private $duel;
 	
-	/**
-	 * @ORM\Column(type="time")
-	 * @Assert\NotBlank()
-	 */
-	private $starttime;
-	
-	/**
-	 * @ORM\Column(type="time")
-	 * @Assert\NotBlank()
-	 */
-	private $endtime;
-	
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
-	private $usehelp = false;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
-	 * @ORM\JoinColumn(name="playerone_id", referencedColumnName="id")
-	 * @Assert\NotBlank()
-	 */
-	private $player_one;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
-	 * @ORM\JoinColumn(name="playertwo_id", referencedColumnName="id")
-	 * @Assert\NotBlank()
-	 */
-	private $player_two;
-		
+    /**
+     * @ORM\ManyToOne(targetEntity="Game",cascade={"persist"})
+     * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
+     * @Assert\NotBlank()
+     */    
+    private $game;		
 
-  
+    
 
     /**
      * Get id
@@ -192,48 +167,25 @@ class DuelQuestion extends Entity
     }
 
     /**
-     * Set player_one
+     * Set game
      *
-     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerOne
+     * @param \Lider\Bundle\LiderBundle\Entity\Game $game
      * @return DuelQuestion
      */
-    public function setPlayerOne(\Lider\Bundle\LiderBundle\Entity\Player $playerOne = null)
+    public function setGame(\Lider\Bundle\LiderBundle\Entity\Game $game = null)
     {
-        $this->player_one = $playerOne;
+        $this->game = $game;
 
         return $this;
     }
 
     /**
-     * Get player_one
+     * Get game
      *
-     * @return \Lider\Bundle\LiderBundle\Entity\Player 
+     * @return \Lider\Bundle\LiderBundle\Entity\Game 
      */
-    public function getPlayerOne()
+    public function getGame()
     {
-        return $this->player_one;
-    }
-
-    /**
-     * Set player_two
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerTwo
-     * @return DuelQuestion
-     */
-    public function setPlayerTwo(\Lider\Bundle\LiderBundle\Entity\Player $playerTwo = null)
-    {
-        $this->player_two = $playerTwo;
-
-        return $this;
-    }
-
-    /**
-     * Get player_two
-     *
-     * @return \Lider\Bundle\LiderBundle\Entity\Player 
-     */
-    public function getPlayerTwo()
-    {
-        return $this->player_two;
+        return $this->game;
     }
 }

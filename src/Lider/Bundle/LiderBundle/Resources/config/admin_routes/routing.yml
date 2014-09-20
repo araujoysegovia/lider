@@ -103,3 +103,18 @@ generate_duel:
     pattern:  /duel/generate
     defaults: { _controller: LiderBundle:Game:generateDuel }
     methods:  [GET]
+
+stop_game:
+    pattern:  /game/stop
+    defaults: { _controller: LiderBundle:Game:gameStop }
+    methods:  [GET]
+
+start_game:
+    pattern:  /game/start
+    defaults: { _controller: LiderBundle:Game:startGames }
+    methods:  [GET]
+
+stop_duels:
+    pattern:  /duel/stop
+    defaults: { _controller: LiderBundle:Game:stopDuels }
+    methods:  [GET]
