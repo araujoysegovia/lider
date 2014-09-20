@@ -295,21 +295,25 @@ class QuestionController extends Controller
             $body .= '<li>'.$value->getAnswer().'</li>';
         }
         $body .= '</ul>';
+
+        try{
         
-        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
-            'subject' => 'Nuevo reporte de pregunta',
-            'templateData' => array(
-                'title' => 'Nuevo Reporte',
-                'user' => array(
-                    'image' => $user->getImage(),
-                    'name' => $user->getName(),
-                    'lastname' => $user->getLastname()
-                ),
-                'subjectUser' => $reportText,
-                'body' => $body
-            )
-            
-        )));
+            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+                'subject' => 'Nuevo reporte de pregunta',
+                'templateData' => array(
+                    'title' => 'Nuevo Reporte',
+                    'user' => array(
+                        'image' => $user->getImage(),
+                        'name' => $user->getName(),
+                        'lastname' => $user->getLastname()
+                    ),
+                    'subjectUser' => $reportText,
+                    'body' => $body
+                )
+                
+            )));
+
+        }catch(\Exception $e){}
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
