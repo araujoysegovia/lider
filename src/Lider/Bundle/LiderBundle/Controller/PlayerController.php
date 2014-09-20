@@ -589,7 +589,7 @@ class PlayerController extends Controller
     /**
      * Actualizar juegador
      */
-    public function updateAction() {
+    public function updateAction($id = null) {
         
         //$ec = $this->getRequestEntity($id);     
 

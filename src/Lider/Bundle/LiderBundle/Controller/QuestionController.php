@@ -45,7 +45,7 @@ class QuestionController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
     	$dm = $this->get('doctrine_mongodb')->getManager();
     	    	
-    	$question = $this->get("question_manager")->generateQuestions(1);
+    	$question = $this->get("question_manager")->getQuestions(1);
         //echo $question;
     	$user = $this->container->get('security.context')->getToken()->getUser();
     	
@@ -182,6 +182,68 @@ class QuestionController extends Controller
     	
     }
     
+    public function getQuestionAction($duelId)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repository = $em->getRepository('LiderBundle:Duel');
+
+        $duel = $repository->findOneBy(array('id' => $duelId));
+
+        $playerOne = $duel->getPlayerOne();
+        $playerTwo = $duel->getPlayerTwo();
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
+        if(($user->getId() == $playerOne->getId()) || ($user->getId() == $playerTwo->getId())){                
+            
+            $playerD = new \Lider\Bundle\LiderBundle\Document\Player();
+            $playerD->getDataFromPlayerEntity($user);
+
+            $question = $this->get('question_manager')->getQuestions(1, $duel);
+            $q = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" => $question[0]['id'], "deleted" => false));
+            if(!$q)
+                throw new \Exception("Entity no found");
+            
+            $questionD = new \Lider\Bundle\LiderBundle\Document\Question();
+            $questionD->getDataFromQuestionEntity($q);
+
+            $tourmanetD = new \Lider\Bundle\LiderBundle\Document\Tournament();
+            $tourmanetD->getDataFromTournamentEntity($duel->getTournament());
+
+            $groupD = new \Lider\Bundle\LiderBundle\Document\Group();
+            $groupD->getDataFromTournamentEntity($user->getTeam()->getGroup());
+
+            $questionHistory = new QuestionHistory();
+            $questionHistory->setPlayer($playerD);    
+            $questionHistory->setQuestion($questionD);
+            $questionHistory->setDuel(true);
+            $questionHistory->setEntryDate(new \MongoDate());
+            $questionHistory->setDuelId($duel->getId());
+            $questionHistory->setFinished(false);
+            $questionHistory->setTournament($tourmanetD);  
+            $questionHistory->setGroup($groupD);
+
+            foreach ($q->getAnswers()->toArray() as $key => $value) {
+          
+                $ansD = new \Lider\Bundle\LiderBundle\Document\Answer();
+                $ansD->getDataFromAnswerEntity($value);
+
+                $questionHistory->addAnswer($ansD);
+            }                        
+
+            $dm->persist($questionHistory);
+            $dm->flush();
+            
+            $array = array(
+                'token' => $questionHistory->getId(),
+                'question' => $q
+            ); 
+               
+        }
+
+        return $this->get("talker")->response($array);
+    }
+
     /**	
      * Setear una imagen a una pregunta y guardarla en la BD mongo
      * @param unknown $id
@@ -311,5 +373,6 @@ class QuestionController extends Controller
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
-    
+   
+
 }

@@ -210,6 +210,9 @@ class GameManager
 	}
 
 
+	/**
+	 * Detener los juegos hasta la fecha actual
+	 */
 	public function stopGames()
 	{
 		$date = new \DateTime();		
@@ -232,7 +235,9 @@ class GameManager
 		$this->em->flush();
 	}
 
-
+	/**
+	 * Iniciar juegos hasta la fecha actual
+	 */
 	public function startGames()
 	{
 		$date = new \DateTime();		
@@ -252,6 +257,9 @@ class GameManager
 		$this->em->flush();
 	}	
 
+	/**
+	 * Detener duelos hasta la fecha actual
+	 */
 	public function stopDuels()
 	{
 		$date = new \DateTime();		
@@ -267,6 +275,9 @@ class GameManager
 		$this->em->flush();
 	}	
 
+	/**
+	 * Generar preguntas para un duelo
+	 */
 	public function generateQuestions($count, $duel)
 	{
 		$questions = $this->qm->generateEntityQuestions($count, $duel);
@@ -283,6 +294,9 @@ class GameManager
 		$this->em->flush();
 	}
 
+	/**
+	 * Detener un duelo
+	 */
 	public function stopDuel($duel)
 	{
 		$duel->setActive(false);
@@ -291,17 +305,15 @@ class GameManager
 		$this->em->flush();
 	}
 
-	public function stopGame($gameId)
+	/**
+	 * Detener un juego y finalizer sus duelos
+	 */
+	public function stopGame($game)
 	{
-		$game = $this->em->getRepository("LiderBundle:Game")->findOneBy(array("id" => $gameId, "deleted" => false));	
-		if(!$game){
-			throw new \Exception("Game no found", 1);			
-		}
-
 		$game->setActive(false);
 		$game->setFinished(true);
 
-		$duels = $game->getDuels();
+		$duels = $game->getDuels();		
 
 		foreach ($duels as $key => $duel) {
 			$duel->setActive(false);

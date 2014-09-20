@@ -61,7 +61,12 @@ class CheckerWorker
     }
 
 	private function checkGame($game)
-    {
-
+    {				
+		$duels = $game->getDuels()->findBy(array("active" => false, "finished" => true));
+		
+		if(count($duels) == 0){
+			$qm = $this->co->get('game_manager')->stopGame($game);
+		}
+		
     }    
 }

@@ -20,6 +20,9 @@ class QuestionRepository extends MainRepository
 		return $data;
 	}
 
+	/**
+	 * 
+	 */
 	public function getQuestionListNotIn(array $listId = array(), $asArray = true) {
 		
 		$query =  $this->createQueryBuilder('q')
@@ -44,5 +47,44 @@ class QuestionRepository extends MainRepository
 		
 	}
 
+
+	public function getQuestionList($asArray = true) {
+		
+		$query =  $this->createQueryBuilder('q')
+						->select('q, r, c')
+						->join('q.answers', 'r', 'WITH','r.deleted = false')
+						->join('q.category', 'c', 'WITH','c.deleted = false')
+						->where('q.deleted = false AND q.checked = true');
+									
+		$query = $query->getQuery();
+
+		if($asArray){
+			return $query->getArrayResult();	
+		}else{
+			return $query->getResult();
+		}
+		
+	}
+
+	public function getQuestionListFromDuel($duel, $asArray = true) {
+		
+		$repo = $this->em->getRepository('LiderBundle:DuelQuestion');
+		$query =  $repo->createQueryBuilder('dq')
+						->select('q, r, c')
+						->join('dq.question','q','WITH', 'q.deleted = false AND q.checked = true')
+						->join('q.answers', 'r', 'WITH','r.deleted = false')
+						->join('q.category', 'c', 'WITH','c.deleted = false')
+						->where('dq.deleted = false AND dq.duel  =:duel')
+						->setParameter('duel', $duel);
+							
+		$query = $query->getQuery();
+
+		if($asArray){
+			return $query->getArrayResult();	
+		}else{
+			return $query->getResult();
+		}
+		
+	}	
 	
 }

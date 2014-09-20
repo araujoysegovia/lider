@@ -42,6 +42,20 @@ class GameController extends Controller
     	return $this->get("talker")->response($parameters);
     }
 
+    /**
+     * Obeter los duelos de un juego
+     */
+    public function getGameDuels($gameId)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        
+        $game = $repository->findOneBy(array('id' => $gameId));
+
+        $duels = $em->getRepository('LiderBundle:Duel')->getArrayOneLevel(array('game' => $game));        
+
+        return $this->get("talker")->response($duels);   
+    }
+
     public function generateGameAction()
     {
         $request = $this->get("request");
@@ -70,7 +84,7 @@ class GameController extends Controller
         return $this->get("talker")->response(array());
     }    
 
-    public function gameStopAction()
+    public function stopGamesAction()
     {
         $this->get('game_manager')->stopGames();
 
