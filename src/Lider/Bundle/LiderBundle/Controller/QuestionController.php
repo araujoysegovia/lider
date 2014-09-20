@@ -269,6 +269,7 @@ class QuestionController extends Controller
         $questionId = $data['questionId'];
         $playerId = $user->getId();
         $reportText = $data['reportText'];        
+        $causal = $data['causal']; 
         
         $playerD = new \Lider\Bundle\LiderBundle\Document\Player();
         $playerD->getDataFromPlayerEntity($user);
@@ -285,6 +286,7 @@ class QuestionController extends Controller
         $reportQuestion->setPlayer($playerD);
         $reportQuestion->setReportText($reportText);
         $reportQuestion->setReportDate(new \MongoDate());
+        $reportQuestion->setCausal($causal);
         
         $dm->persist($reportQuestion);
         $dm->flush();

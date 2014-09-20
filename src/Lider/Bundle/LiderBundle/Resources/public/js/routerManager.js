@@ -2097,6 +2097,7 @@ var routerManager = Backbone.Router.extend({
 	},
 
 	games: function(){
+		var me = this;
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
@@ -2104,15 +2105,20 @@ var routerManager = Backbone.Router.extend({
 		});
 		var container = $('<div></div>').addClass('panel panel-default');
 		var panelHeading = $('<div></div>').addClass('panel-heading');
-		var panelBody = $('<div></div>').addClass('panel-body');
+		var panelBody = $('<div></div>').addClass('panel-body').attr('data-id', 'general');
 		var form = $('<form></form>').addClass('form-inline').attr('role', 'form');
 		var div = $('<div></div>').addClass('form-group');
-		var title = $('<h3></h3>').html('Juegos');
+		var title = $('<h3></h3>').html('Juegos').css({
+			float: 'left',
+			lineHeight: '0px'
+		});
 		panelHeading.append(title).append(form.append(form.append(div)));
 		container.append(panelHeading).append(panelBody);
 		$("#entity-content").append(container);
 		var select = $('<select></select>').addClass('form-control select-tournament');
 		var option = $('<option></option>').attr('value', '0').html('Seleccione un torneo');
+		var loader = $(document.body).loaderPanel();
+		loader.show();
 		var configTorunament = {
 			type: "GET",
             url: "home/tournament/tournament",
@@ -2128,12 +2134,17 @@ var routerManager = Backbone.Router.extend({
 				})
 				div.append(select);
 			},
-			error: function(){}
+			error: function(){},
+	    	complete: function(){
+	    		loader.hide();
+	    	}
         }
         $.ajax(configTorunament);
 
         select.change(function(op){
         	panelBody.empty();
+        	var loader1 = $(document.body).loaderPanel();
+			loader1.show();
         	var config = {
 				type: "GET",
 	            url: "home/game/group/"+select.val(),					            
@@ -2142,47 +2153,125 @@ var routerManager = Backbone.Router.extend({
 	            //data: JSON.stringify(param),
 				success: function(response){
 					var data = response.data;
-					console.log(data);
-
-					_.each(data, function(group){
-						var containerGroup = $('<div></div>').addClass('panel panel-default panel-game');
-						var heading = $('<div></div>').addClass('panel-heading').html(group.name);
-						containerGroup.append(heading);
-						var body = $('<div></div>').addClass('panel-body');
-						var round = {};
-						_.each(group.games, function(game){
-							console.log(game);
-							if(!round[game.round]){
-								round[game.round] = [];
-							}
-							// round[game.round][] = game;
-							console.log(round);
-							// var fieldset = $('fieldset[data-id='+game.round+']');
-							// console.log("hola");
-							// console.log(fieldset);
-							// if(!fieldset){
-							// 	console.log("entre1");
-							// 	fieldset = $('<fieldset></fieldset>').attr('legend', 'Prueba').attr('data-id', game.round);
-							// }
-							// var div1 = $('<div></div>');
-							// var img1 = $('<img/>').attr('src', game.team_one.image);
-							// var name1 = $('<label></label>').html(game.team_one.name);
-							// var div2 = $('<div></div>');
-							// var img2 = $('<img/>').attr('src', game.team_two.image);
-							// var name2 = $('<label></label>').html(game.team_two.name);
-							// var duel = $('<div></div>');
-							// duel.append(div1.append(img1).append(name1)).append(div2.append(name2).append(img2));
-							// fieldset.append(duel);
-							// body.append(fieldset);
-						})
-						containerGroup.append(body);
-						panelBody.append(containerGroup);
-					})
+					// console.log(data);
+					me.data = data;
+					me.viewOne();
 				},
-				error: function(){}
+				error: function(){},
+				complete: function(){
+		    		loader1.hide();
+		    	}
 	        }
 	        $.ajax(config);
 		})
+	},
+
+	viewOne: function(){
+		var me = this;
+		var groups = me.orderV1();
+		console.log(groups);
+		_.each(groups, function(group){
+			var container = $('<div></div>');
+			_.each(group.rounds, function(round, key){
+				var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html('Ronda '+key+" : "+round.date)).css("padding", "0 20px 40px 0");
+
+				_.each(round.games, function(game){
+					var divGame = $('<div></div>').css('display', 'table').addClass('div-game');
+					var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
+					var img1 = $('<img/>').attr('src', 'image/'+game.team_one.image).addClass('img-circle').css({
+						width: 50,
+						height: 50
+					});
+					var name1 = $('<span></span>').html(game.team_one.name).css('margin-left', '5px');
+					div1.append(img1).append(name1);
+
+					var divVS = $('<div></div>').css('display', 'table-cell').html("VS").css('width', '30px').css("text-align", 'center');
+
+					var div2 = $('<div></div>').css('display', 'table-cell').css("text-align", 'right');
+					var img2 = $('<img/>').attr('src', 'image/'+game.team_two.image).addClass('img-circle').css({
+						width: 50,
+						height: 50
+					});
+					var name2 = $('<span></span>').html(game.team_two.name).css('margin-right', '5px');
+					div2.append(name2).append(img2);
+
+
+					divGame.append(div1).append(divVS).append(div2);
+
+
+					divGame.click(function(){
+						me.showDuelFromGame(game.id);
+					})
+
+					fieldset.append(divGame);
+				})
+				container.append(fieldset);
+			})
+			me.createPanel(group.name, container);
+		})
+	},
+
+	showDuelFromGame: function(){
+		var me = this;
+
+		
+
+
+		
+		var modal = $("<div></div>").addClass("modal fade");
+		var modalDialog = $("<div></div>").addClass("modal-dialog");
+		var modalHeader = $("<div></div>").addClass("modal-header");
+		var btnClose = $("<button></button>").attr("type", "button").attr("data-dismiss", "modal").addClass("close");
+		var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
+		var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
+		btnClose.append(spanClose).append(spanClose2);
+		var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos de de juego");
+		modalHeader.append(btnClose).append(titleHeading);
+
+		var modalBody = $("<div></div>").addClass("modal-body");
+
+		var modalContent = $("<div></div>").addClass("modal-content");
+		modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
+		$(document.body).append(modal);
+		modal.modal("show");
+		modal.on("hidden.bs.modal", function(){
+    		modal.remove();
+    	})
+	},
+
+	createPanel: function(title, content){
+		var panel = $('<div></div>').addClass('panel panel-default');
+		var head = $('<div></div>').addClass('panel-heading').html(title);
+		var body = $('<div></div>').addClass('panel-body').append(content);
+		panel.append(head).append(body).css({
+				float: 'left',
+				width:500,
+				marginLeft: 20
+			});
+		$('div[data-id=general]').append(panel);
+	},
+
+	orderV1: function(){
+		var me = this;
+		var group = {};
+		_.each(me.data, function(g){
+			var round = {};
+			_.each(g.games, function(game){
+				if(!round[game.round]){
+					round[game.round] = {
+						"date": game.startdate.date,
+						"games": []
+					};
+				}
+				round[game.round]['games'].push(game);
+			})
+			var temp = {
+				"name": g.name,
+				"rounds": round
+			}
+			group[g.id] = temp;
+		})
+		return group;
 	},
 
 	sendNotifications: function () {

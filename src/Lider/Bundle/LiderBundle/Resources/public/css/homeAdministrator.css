@@ -268,3 +268,14 @@
 	width: 300px;
 	margin-left: 15px;
 }
+
+
+
+
+.div-game{
+	cursor: pointer;
+}
+
+.div-game:HOVER{
+	background-color: #EEE;
+}
