@@ -39,6 +39,14 @@ class ReportQuestion
      */    
     private $solved = false;
 
+<<<<<<< HEAD
+=======
+      /**
+     * @MongoDB\String
+     */
+    private $causal;
+
+>>>>>>> 634a608ac17c46b82460ae2550c6416e090058b9
     /**
      * Get id
      *

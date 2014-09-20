@@ -331,6 +331,7 @@ class QuestionController extends Controller
         $questionId = $data['questionId'];
         $playerId = $user->getId();
         $reportText = $data['reportText'];        
+        $causal = $data['causal']; 
         
         $playerD = new \Lider\Bundle\LiderBundle\Document\Player();
         $playerD->getDataFromPlayerEntity($user);
@@ -347,6 +348,7 @@ class QuestionController extends Controller
         $reportQuestion->setPlayer($playerD);
         $reportQuestion->setReportText($reportText);
         $reportQuestion->setReportDate(new \MongoDate());
+        $reportQuestion->setCausal($causal);
         
         $dm->persist($reportQuestion);
         $dm->flush();
@@ -355,21 +357,25 @@ class QuestionController extends Controller
             $body .= '<li>'.$value->getAnswer().'</li>';
         }
         $body .= '</ul>';
+
+        try{
         
-        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
-            'subject' => 'Nuevo reporte de pregunta',
-            'templateData' => array(
-                'title' => 'Nuevo Reporte',
-                'user' => array(
-                    'image' => $user->getImage(),
-                    'name' => $user->getName(),
-                    'lastname' => $user->getLastname()
-                ),
-                'subjectUser' => $reportText,
-                'body' => $body
-            )
-            
-        )));
+            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+                'subject' => 'Nuevo reporte de pregunta',
+                'templateData' => array(
+                    'title' => 'Nuevo Reporte',
+                    'user' => array(
+                        'image' => $user->getImage(),
+                        'name' => $user->getName(),
+                        'lastname' => $user->getLastname()
+                    ),
+                    'subjectUser' => $reportText,
+                    'body' => $body
+                )
+                
+            )));
+
+        }catch(\Exception $e){}
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }

@@ -255,3 +255,27 @@
 #form-notification > .form-group > label{
 	padding-top: 5px;
 }
+
+
+/***************************** Estilos para visualizacion de los juegos **************************/
+.panel-game{
+	width: 700px;
+	float: left;
+	margin-left: 10px;
+}
+
+.select-tournament{
+	width: 300px;
+	margin-left: 15px;
+}
+
+
+
+
+.div-game{
+	cursor: pointer;
+}
+
+.div-game:HOVER{
+	background-color: #EEE;
+}

@@ -88,14 +88,21 @@ class QuestionHistory
     /**
      * @MongoDB\EmbedOne(targetDocument="Group") 
      */ 
+<<<<<<< HEAD
     private $group;
+=======
+    private $groups;
+>>>>>>> 634a608ac17c46b82460ae2550c6416e090058b9
 
     /**
      * @MongoDB\EmbedOne(targetDocument="Team") 
      */ 
     private $team;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 634a608ac17c46b82460ae2550c6416e090058b9
     public function __construct()
     {
         $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
@@ -427,6 +434,30 @@ class QuestionHistory
         return $this->useHelp;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Set groups
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Group $groups
+     * @return self
+     */
+    public function setGroups(\Lider\Bundle\LiderBundle\Document\Group $groups)
+    {
+        $this->groups = $groups;
+        return $this;
+    }
+
+    /**
+     * Get groups
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Group $groups
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+>>>>>>> 634a608ac17c46b82460ae2550c6416e090058b9
 
     /**
      * Set team
@@ -449,6 +480,9 @@ class QuestionHistory
     {
         return $this->team;
     }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 634a608ac17c46b82460ae2550c6416e090058b9
 }
