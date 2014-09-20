@@ -1,0 +1,4 @@
+get_duelById:
+    pattern:  /{duelId}
+    defaults: { _controller: LiderBundle:Duel:getDuel }
+    methods:  [GET]

@@ -55,6 +55,11 @@ class Team extends Entity
     private $players;
 
     /**
+     * @ORM\Column(type="integer", nullable = true)
+     */
+    private $points = 0;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -218,5 +223,28 @@ class Team extends Entity
     public function getPlayers()
     {
         return $this->players;
+    }
+
+    /**
+     * Set points
+     *
+     * @param integer $points
+     * @return Team
+     */
+    public function setPoints($points)
+    {
+        $this->points = $points;
+
+        return $this;
+    }
+
+    /**
+     * Get points
+     *
+     * @return integer 
+     */
+    public function getPoints()
+    {
+        return $this->points;
     }
 }

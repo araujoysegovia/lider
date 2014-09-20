@@ -55,6 +55,11 @@ class Team extends Entity
     private $players;
 
     /**
+     * @ORM\Column(type="integer", nullable = true)
+     */
+    private $points = 0;
+
+    /**
      * Get id
      *
      * @return integer 

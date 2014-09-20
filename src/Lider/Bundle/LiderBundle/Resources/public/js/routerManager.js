@@ -1833,6 +1833,14 @@ var routerManager = Backbone.Router.extend({
 						    '<label >Cantidad de preguntas para el duelo extra</label>'+						    
 					    	'<input type="number" class="form-control" id="countQuestionDuelExtra">'+
 						  '</div>'+	
+						  '<div class="form-group col-sm-4">'+
+						    '<label>Puntos por juego sin ayuda</label>'+						    
+					    	'<input type="number" class="form-control" id="gamePoints">'+
+						  '</div>'+	
+						  '<div class="form-group col-sm-4">'+
+						    '<label>Puntos por juego con ayuda</label>'+						    
+					    	'<input type="number" class="form-control" id="gamePointsHelp">'+
+						  '</div>'+								  						  
 						  '<div class="form-group col-sm-12">'+
 						  	'<button type="submit" class="btn btn-primary btn-save-parameters">Guardar</button>'+
 						  '</div>'+
@@ -1859,6 +1867,8 @@ var routerManager = Backbone.Router.extend({
 		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])	
 		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])	
 		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])	
+		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])	
+		        	$("#gamePointsHelp").val(data['gamesParameters']['gamePointsHelp'])	
 	        	}	        	
 	        },
 	        error: function(){},
@@ -1886,6 +1896,8 @@ var routerManager = Backbone.Router.extend({
 						"timeDuelExtra": $("#timeDuelExtra").val(),
 						"countQuestionDuel": $("#countQuestionDuel").val(),
 						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
+						"gamePoints": $("#gamePoints").val(),
+						"gamePointsHelp": $("#gamePointsHelp").val(),
 					};	
 
 		            parameters = {

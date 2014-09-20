@@ -19,7 +19,7 @@ class Game extends Entity
     private $id;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"}, inversedBy="games")
 	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
 	 * @Assert\NotBlank()
 	 */

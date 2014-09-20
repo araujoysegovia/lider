@@ -28,8 +28,12 @@ class QuestionManager {
 		$arr = array();
 		if(!(is_null($duel))){
 			//$duel = $this->em->getRepository("LiderBundle:Duel")->findOneBy(array("id" =>$duelId, "deleted" => false));		
-			$questionList = $this->em->getRepository("LiderBundle:Question")->getQuestionListFromDuel($duel);
-
+			$dq = $this->em->getRepository("LiderBundle:Question")->getQuestionListFromDuel($duel);
+			//print_r($dq);
+			$questionList = array();
+			foreach ($dq as $key => $value) {
+				$questionList[] = $value['question'];
+			}			
 		}else{
 			//$arr[] = 100; 
 			$questionList = $this->em->getRepository("LiderBundle:Question")->getQuestionList();
@@ -47,7 +51,9 @@ class QuestionManager {
 			foreach ($ass as $value) {
 				$arrayAss[] = array(
 					'id' => $value['id'],
-					'answer' => $value['answer']
+					'answer' => base64_encode($value['answer']),
+					'oa' => $value['selected'],
+					'help' => $value['help']
 				);
 			}
 			$ql['answers'] = $arrayAss;

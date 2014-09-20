@@ -47,33 +47,19 @@ class DuelQuestion
     /**
      * @MongoDB\EmbedOne(targetDocument="Player") 
      */     
-	private $player_one;
-	
-    /**
-     * @MongoDB\EmbedOne(targetDocument="Player") 
-     */     
-	private $player_two;
+	private $player;
 	
     /**
      * @MongoDB\EmbedOne(targetDocument="Answer") 
      */
-	private $answer_one;
-	
-    /**
-     * @MongoDB\EmbedOne(targetDocument="Answer") 
-     */
-	private $answer_two;
-	
+	private $answer;
+
 	/**
      * @MongoDB\int
      */
-	private $point_one = 0;
-	
-	/**
-     * @MongoDB\int
-     */
-	private $point_two = 0;
+	private $point = 0;
 		
+
 
     /**
      * Get id
@@ -218,134 +204,68 @@ class DuelQuestion
     }
 
     /**
-     * Set playerOne
+     * Set player
      *
-     * @param Lider\Bundle\LiderBundle\Document\Player $playerOne
+     * @param Lider\Bundle\LiderBundle\Document\Player $player
      * @return self
      */
-    public function setPlayerOne(\Lider\Bundle\LiderBundle\Document\Player $playerOne)
+    public function setPlayer(\Lider\Bundle\LiderBundle\Document\Player $player)
     {
-        $this->player_one = $playerOne;
+        $this->player = $player;
         return $this;
     }
 
     /**
-     * Get playerOne
+     * Get player
      *
-     * @return Lider\Bundle\LiderBundle\Document\Player $playerOne
+     * @return Lider\Bundle\LiderBundle\Document\Player $player
      */
-    public function getPlayerOne()
+    public function getPlayer()
     {
-        return $this->player_one;
+        return $this->player;
     }
 
     /**
-     * Set playerTwo
+     * Set answer
      *
-     * @param Lider\Bundle\LiderBundle\Document\Player $playerTwo
+     * @param Lider\Bundle\LiderBundle\Document\Answer $answer
      * @return self
      */
-    public function setPlayerTwo(\Lider\Bundle\LiderBundle\Document\Player $playerTwo)
+    public function setAnswer(\Lider\Bundle\LiderBundle\Document\Answer $answer)
     {
-        $this->player_two = $playerTwo;
+        $this->answer = $answer;
         return $this;
     }
 
     /**
-     * Get playerTwo
+     * Get answer
      *
-     * @return Lider\Bundle\LiderBundle\Document\Player $playerTwo
+     * @return Lider\Bundle\LiderBundle\Document\Answer $answer
      */
-    public function getPlayerTwo()
+    public function getAnswer()
     {
-        return $this->player_two;
+        return $this->answer;
     }
 
     /**
-     * Set answerOne
+     * Set point
      *
-     * @param Lider\Bundle\LiderBundle\Document\Answer $answerOne
+     * @param int $point
      * @return self
      */
-    public function setAnswerOne(\Lider\Bundle\LiderBundle\Document\Answer $answerOne)
+    public function setPoint($point)
     {
-        $this->answer_one = $answerOne;
+        $this->point = $point;
         return $this;
     }
 
     /**
-     * Get answerOne
+     * Get point
      *
-     * @return Lider\Bundle\LiderBundle\Document\Answer $answerOne
+     * @return int $point
      */
-    public function getAnswerOne()
+    public function getPoint()
     {
-        return $this->answer_one;
-    }
-
-    /**
-     * Set answerTwo
-     *
-     * @param Lider\Bundle\LiderBundle\Document\Answer $answerTwo
-     * @return self
-     */
-    public function setAnswerTwo(\Lider\Bundle\LiderBundle\Document\Answer $answerTwo)
-    {
-        $this->answer_two = $answerTwo;
-        return $this;
-    }
-
-    /**
-     * Get answerTwo
-     *
-     * @return Lider\Bundle\LiderBundle\Document\Answer $answerTwo
-     */
-    public function getAnswerTwo()
-    {
-        return $this->answer_two;
-    }
-
-    /**
-     * Set pointOne
-     *
-     * @param int $pointOne
-     * @return self
-     */
-    public function setPointOne($pointOne)
-    {
-        $this->point_one = $pointOne;
-        return $this;
-    }
-
-    /**
-     * Get pointOne
-     *
-     * @return int $pointOne
-     */
-    public function getPointOne()
-    {
-        return $this->point_one;
-    }
-
-    /**
-     * Set pointTwo
-     *
-     * @param int $pointTwo
-     * @return self
-     */
-    public function setPointTwo($pointTwo)
-    {
-        $this->point_two = $pointTwo;
-        return $this;
-    }
-
-    /**
-     * Get pointTwo
-     *
-     * @return int $pointTwo
-     */
-    public function getPointTwo()
-    {
-        return $this->point_two;
+        return $this->point;
     }
 }

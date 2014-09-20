@@ -39,14 +39,11 @@ class ReportQuestion
      */    
     private $solved = false;
 
-<<<<<<< HEAD
-=======
       /**
      * @MongoDB\String
      */
     private $causal;
 
->>>>>>> 634a608ac17c46b82460ae2550c6416e090058b9
     /**
      * Get id
      *
@@ -166,5 +163,27 @@ class ReportQuestion
     public function getSolved()
     {
         return $this->solved;
+    }
+
+    /**
+     * Set causal
+     *
+     * @param string $causal
+     * @return self
+     */
+    public function setCausal($causal)
+    {
+        $this->causal = $causal;
+        return $this;
+    }
+
+    /**
+     * Get causal
+     *
+     * @return string $causal
+     */
+    public function getCausal()
+    {
+        return $this->causal;
     }
 }

@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Group class
  * @ORM\Table(name="team_group")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\GameRepository")
  */
 class Group extends Entity
 {
@@ -41,6 +41,11 @@ class Group extends Entity
      * @ORM\OneToMany(targetEntity="Team", mappedBy="group")
      */
     private $teams;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="group")
+     */
+    private $games;
 
     /**
      * Get id

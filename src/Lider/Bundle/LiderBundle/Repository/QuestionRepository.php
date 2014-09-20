@@ -68,9 +68,9 @@ class QuestionRepository extends MainRepository
 
 	public function getQuestionListFromDuel($duel, $asArray = true) {
 		
-		$repo = $this->em->getRepository('LiderBundle:DuelQuestion');
+		$repo = $this->getEntityManager()->getRepository('LiderBundle:DuelQuestion');
 		$query =  $repo->createQueryBuilder('dq')
-						->select('q, r, c')
+						->select('q, r, c, dq')
 						->join('dq.question','q','WITH', 'q.deleted = false AND q.checked = true')
 						->join('q.answers', 'r', 'WITH','r.deleted = false')
 						->join('q.category', 'c', 'WITH','c.deleted = false')

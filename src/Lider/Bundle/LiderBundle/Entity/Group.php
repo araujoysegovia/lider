@@ -165,4 +165,37 @@ class Group extends Entity
     {
         return $this->teams;
     }
+
+    /**
+     * Add games
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Game $games
+     * @return Group
+     */
+    public function addGame(\Lider\Bundle\LiderBundle\Entity\Game $games)
+    {
+        $this->games[] = $games;
+
+        return $this;
+    }
+
+    /**
+     * Remove games
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Game $games
+     */
+    public function removeGame(\Lider\Bundle\LiderBundle\Entity\Game $games)
+    {
+        $this->games->removeElement($games);
+    }
+
+    /**
+     * Get games
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGames()
+    {
+        return $this->games;
+    }
 }

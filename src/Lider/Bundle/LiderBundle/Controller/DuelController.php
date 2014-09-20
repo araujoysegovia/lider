@@ -20,7 +20,7 @@ class DuelController extends Controller
     	if(!$duel)
     		return $this->get("talker")->response(array());
     	else 
-    		return $this->get("talker")->response($duel);
+    		return $this->get("talker")->response(array('total'=>count($duel), 'data'=>$duel));
     }
     
     
@@ -36,5 +36,27 @@ class DuelController extends Controller
     	else
     		return $this->get("talker")->response($duel);
     }
-    
+ 
+
+    public function getDuelAction($duelId)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $duels = $em->getRepository("LiderBundle:Duel")->findCurrentPlayerDuel($user);
+
+        $d = null;
+        foreach ($duels as $key => $duel) {
+            if($duel['id'] == $duelId){
+                $d = $duel;
+                break;
+            }
+        }
+        if(!$d){
+            throw new \Exception("El duelo no pertenece al usuario", 1);            
+        }
+
+       return $this->get("talker")->response($d);
+        
+    }   
 }

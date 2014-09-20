@@ -139,7 +139,10 @@ class QuestionController extends Controller
             }
         }        
 
-        if($diffTime >= $this->maxSec || $questionId=="no-answer"){
+        $parameters = $this->get('parameters_manager')->getParameters();
+        $maxSec = $parameters['gamesParameters']['timeQuestionPractice'];
+
+        if($diffTime >= $maxSec || $questionId=="no-answer"){
             $res = array();
             $res['success'] = false;
             $res['code'] = '01';  /*Tiempo agotado*/
@@ -185,6 +188,7 @@ class QuestionController extends Controller
     public function getQuestionAction($duelId)
     {
         $em = $this->getDoctrine()->getEntityManager();
+        $dm = $this->get('doctrine_mongodb')->getManager();
         $repository = $em->getRepository('LiderBundle:Duel');
 
         $duel = $repository->findOneBy(array('id' => $duelId));
@@ -200,6 +204,7 @@ class QuestionController extends Controller
             $playerD->getDataFromPlayerEntity($user);
 
             $question = $this->get('question_manager')->getQuestions(1, $duel);
+
             $q = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" => $question[0]['id'], "deleted" => false));
             if(!$q)
                 throw new \Exception("Entity no found");
@@ -236,12 +241,150 @@ class QuestionController extends Controller
             
             $array = array(
                 'token' => $questionHistory->getId(),
-                'question' => $q
+                'question' => $question
             ); 
                
         }
 
         return $this->get("talker")->response($array);
+    }
+
+
+    public function checkAnswerDuelAction() {
+        
+        
+        $em = $this->getDoctrine()->getEntityManager();        
+        $request = $this->get("request");
+        $data = $request->getContent();
+        
+        if(empty($data) || !$data)
+            throw new \Exception("No data");
+        
+        $data = json_decode($data, true);        
+
+        $questionId = $data['questionId'];
+        $answerId = $data['answerId'];
+        $token = $data['token'];
+        
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $questionHistory = $dm->getRepository("LiderBundle:QuestionHistory")
+                     ->findOneBy(array("id" => $token));
+        
+        if(!$questionHistory){
+            throw new \Exception("Question no found");
+        }
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        if($user->getId() != $questionHistory->getPlayer()->getPlayerId()){
+            throw new \Exception("Question no found");
+        }
+
+        $now = new \DateTime();
+        $diffTime = $now->format('U') - $questionHistory->getEntryDate()->format('U');
+        
+        $parameters = $this->get('parameters_manager')->getParameters();
+        $maxSec = $parameters['gamesParameters']['timeQuestionDuel'];
+
+        $question = $em->getRepository("LiderBundle:Question")
+                       ->findOneBy(array("id" =>$questionId, "deleted" => false));
+
+        if(empty($question))
+            throw new \Exception("No entity found");  
+
+        $isOk = false;
+
+        foreach ($question->getAnswers()->toArray() as $value) {
+            if($value->getSelected()) {
+                $answerD = new \Lider\Bundle\LiderBundle\Document\Answer();
+                $answerD->getDataFromAnswerEntity($value);                  
+                $questionHistory->setAnswerOk($answerD);
+                if($answerId == $value->getId()){
+                    $isOk = true;
+                    break;
+                }                   
+            }
+        }        
+
+        $wonGames = $user->getWonGames();
+        $lostGames = $user->getLostGames();
+        $playerPoints = $user->getPlayerPoints();
+        
+        $team = $user->getTeam();
+        $teamPoints = $team->getPoints();
+
+        if($diffTime >= $maxSec || $questionId=="no-answer"){
+            $res = array();
+            $res['success'] = false;
+            $res['code'] = '01';  /*Tiempo agotado*/
+
+            $questionHistory->setTimeOut(true);
+            $user->setLostGames($lostGames + 1);
+
+        }else{
+        
+            if($isOk){
+
+                $res['success'] = true;
+                $res['code'] = '00';   /*Respuesta correcta*/
+
+                $questionHistory->setFind(true);                
+                $user->setWonGames($wonGames + 1);
+
+                if($questionHistory->getUseHelp()){
+                    $pointsHelp = $parameters['gamesParameters']['gamePointsHelp'];
+                    $user->setPlayerPoints($playerPoints + $pointsHelp);    
+                    $team->setPoints($teamPoints + $pointsHelp);
+                }else{
+                    $points = $parameters['gamesParameters']['gamePoints'];
+                    $user->setPlayerPoints($playerPoints + $points);
+                    $team->setPoints($teamPoints + $pointsHelp);
+                }
+                
+            }else{
+                $res = array();
+                $res['success'] = false;
+                $res['code'] = '02';   /*Respuesta errada*/
+
+                if($parameters['gamesParameters']['answerShowPractice'] == 'true'){
+                    $res['answerOk'] = $questionHistory->getAnswerOk()->getAnswerId();
+                }
+
+                $user->setLostGames($lostGames + 1);
+            }
+            
+
+            $answerSelected = $em->getRepository("LiderBundle:Answer")->findOneBy(array("id" =>$answerId, "deleted" => false));
+            if(empty($answerSelected))
+                throw new \Exception("No entity found");  
+
+            $answerSelectedD = new \Lider\Bundle\LiderBundle\Document\Answer();
+            $answerSelectedD->getDataFromAnswerEntity($answerSelected);
+               
+            $questionHistory->setSelectedAnswer($answerSelectedD);       
+            
+        }
+                
+        $questionHistory->setFinished(true);
+        $dm->flush();
+        $em->flush();
+
+        return $this->get("talker")->response($res);
+        
+    }
+
+    public function setHelpAction($token)
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $questionHistory = $dm->getRepository("LiderBundle:QuestionHistory")
+                              ->findOneBy(array("id" => $token));
+
+        $anwerHelp = $questionHistory->getAnswers()->findOneBy(array("help" => true));
+
+        $questionHistory->setUseHelp(true);
+
+        $dm->flush();
+
+        return $this->get("talker")->response($anwerHelp);
     }
 
     /**	

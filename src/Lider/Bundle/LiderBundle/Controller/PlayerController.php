@@ -117,38 +117,51 @@ class PlayerController extends Controller
     	
     	$arr['token'] = $session->getToken();
     	
-    	$arr['user'] = array(
-    			"email" => $user->getEmail(),
-    			"name" => $user->getName(),
-    			"latname" => $user->getLastname(),
-    			"image" => $user->getImage(),
-    			"office" => $office,
-    			"roles" => $roles,
-    			"team" => array(),
-                "changePassword" => $user->getChangePassword()
-    	);
-    	
-    	$team = $user->getTeam();
-    	
-    	if($team){
-    		$arr['user']['team'] = array(
-    			"id" => $user->getTeam()->getId(),
-    			"name" => $user->getTeam()->getName()
-    		) ;
-    	}
-    	
-    	
-    	$playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
-    	$arr['user']['gameInfo'] = $playerGameInfo;
-    	 
+      $arr['user'] = array(
+            'id' => $user->getId(),
+            "email" => $user->getEmail(),
+            "name" => $user->getName(),
+            "latname" => $user->getLastname(),
+            "image" => $user->getImage(),
+            "office" => $office,
+            "roles" => $roles,
+            "team" => array(),
+            "changePassword" => $user->getChangePassword(),
+            "gameInfo" => array(
+                'win' => 0,
+                'lost' => 0,
+                'points' => 0
+            )        
+        );
+        
+
+        if($team){
+            $arr['user']['team'] = array(
+                "id" => $user->getTeam()->getId(),
+                "name" => $user->getTeam()->getName()               
+            ) ;
+        }
+
+        $points = $user->getPlayerPoints()->toArray();
+
+        foreach ($points as $value) {
+            if($value->getTournament()->getActive()){
+                $arr['user']['win'] += $value->getWin();
+                $arr['user']['lost'] += $value->getLost();
+                $arr['user']['points'] += $value->getPoints();
+            }
+        }
+
+        // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
+        // $arr['user']['gameInfo'] = $playerGameInfo;
         $parameters = $this->get('parameters_manager')->getParameters();
 
         $arr['config'] = array(
-            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'],
+            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'] ,
             "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
             "timeGame" => $parameters['gamesParameters']['timeGame'],
             "timeDuel" => $parameters['gamesParameters']['timeDuel']
-        );
+        ); 
 
     	return $this->get("talker")->response($arr);
     }
@@ -246,6 +259,7 @@ class PlayerController extends Controller
         $team = $user->getTeam();
      
         $arr['user'] = array(
+            'id' => $user->getId(),
             "email" => $user->getEmail(),
             "name" => $user->getName(),
             "latname" => $user->getLastname(),

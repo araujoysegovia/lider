@@ -8,3 +8,5 @@ gamesParameters:
     timeDuelExtra: '1'
     countQuestionDuel: '5'
     countQuestionDuelExtra: '1'
+    gamePoints: '5'
+    gamePointsHelp: '3'
