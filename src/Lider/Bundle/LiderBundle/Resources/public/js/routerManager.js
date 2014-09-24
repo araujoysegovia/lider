@@ -2242,11 +2242,6 @@ var routerManager = Backbone.Router.extend({
 
 	showDuelFromGame: function(){
 		var me = this;
-
-		
-
-
-		
 		var modal = $("<div></div>").addClass("modal fade");
 		var modalDialog = $("<div></div>").addClass("modal-dialog");
 		var modalHeader = $("<div></div>").addClass("modal-header");
@@ -2269,7 +2264,7 @@ var routerManager = Backbone.Router.extend({
 	},
 
 	createPanel: function(title, content){
-		var panel = $('<div></div>').addClass('panel panel-default');
+		var panel = $('<div></div>').addClass('panel panel-info');
 		var head = $('<div></div>').addClass('panel-heading').html(title);
 		var body = $('<div></div>').addClass('panel-body').append(content);
 		panel.append(head).append(body).css({

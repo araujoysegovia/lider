@@ -7,7 +7,7 @@ use Symfony\Component\Yaml\Dumper;
 
 class ParametersManager {
 
-	private $pathParameters = '/var/www/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
+	private $pathParameters = '/var/www/html/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
     
     /**
      * Setear los parametros de configuración para el juego
