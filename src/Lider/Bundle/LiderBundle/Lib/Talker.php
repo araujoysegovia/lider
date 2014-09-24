@@ -91,6 +91,7 @@ class Talker{
 		}
 		
 		if (!is_null($encoder) && isset($obj)) {
+			print_r($obj);
 			$value = $this->serializer->encode($obj, $encoder['type']);
 		}else {
 			if(is_array($value)){

@@ -2243,11 +2243,6 @@ var routerManager = Backbone.Router.extend({
 
 	showDuelFromGame: function(){
 		var me = this;
-
-		
-
-
-		
 		var modal = $("<div></div>").addClass("modal fade");
 		var modalDialog = $("<div></div>").addClass("modal-dialog");
 		var modalHeader = $("<div></div>").addClass("modal-header");
