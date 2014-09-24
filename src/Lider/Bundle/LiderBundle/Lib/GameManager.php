@@ -75,7 +75,7 @@ class GameManager
 	private function generateGameForFirtsLevel($tournament, $interval)
 	{
 		$groups = $tournament->getGroups()->toArray();		
-		
+	
 		foreach ($groups as $key => $value) {
 			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
 			//echo "\n\n";
@@ -93,7 +93,10 @@ class GameManager
 					$pos = 0;
 					$vs = 0;
 
-					$startDate->modify('+'.$interval.' day');
+					if($i !=1){
+						$startDate->modify('+'.$interval.' day');
+					}										
+
 					$endDate = new \DateTime($startDate->format('Y-m-d H:i:s'));
 					$endDate->modify('+'.($interval - 1).' day');
 					//echo "\n".$lastDate->format('Y-m-d H:i:s');

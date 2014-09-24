@@ -49,4 +49,10 @@ class GameRepository extends MainRepository
 		
 		return $r;
     }
+
+
+    public function getDuelsForGame($game)
+    {
+    	
+    }
 }

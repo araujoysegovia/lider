@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Lider\Bundle\LiderBundle\Document\QuestionHistory;
 use Lider\Bundle\LiderBundle\Document\Image;
 use Lider\Bundle\LiderBundle\Document\ReportQuestion;
+use Lider\Bundle\LiderBundle\Entity\PlayerPoint;
 
 class QuestionController extends Controller
 {
@@ -192,6 +193,8 @@ class QuestionController extends Controller
         $repository = $em->getRepository('LiderBundle:Duel');
 
         $duel = $repository->findOneBy(array('id' => $duelId));
+        if(!$duel)
+            throw new \Exception("Duel no found");
 
         $playerOne = $duel->getPlayerOne();
         $playerTwo = $duel->getPlayerTwo();
@@ -204,6 +207,14 @@ class QuestionController extends Controller
             $playerD->getDataFromPlayerEntity($user);
 
             $question = $this->get('question_manager')->getQuestions(1, $duel);
+
+            if(count($question) == 0){
+                $array = array(
+                    'token' => null,
+                    'question' => null
+                ); 
+                return $this->get("talker")->response($array);
+            }
 
             $q = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" => $question[0]['id'], "deleted" => false));
             if(!$q)
@@ -238,10 +249,10 @@ class QuestionController extends Controller
 
             $dm->persist($questionHistory);
             $dm->flush();
-            
+         
             $array = array(
                 'token' => $questionHistory->getId(),
-                'question' => $question
+                'question' => $question[0]                
             ); 
                
         }
@@ -332,14 +343,33 @@ class QuestionController extends Controller
 
                 if($questionHistory->getUseHelp()){
                     $pointsHelp = $parameters['gamesParameters']['gamePointsHelp'];
-                    $user->setPlayerPoints($playerPoints + $pointsHelp);    
+                 
+                    $playerPoint = new PlayerPoint();                   
+                    $playerPoint->setPoints($pointsHelp);
+                    $playerPoint->setTournament($team->getTournament());
+                    //$PlayerPoint->setTeam($team);
+                    $playerPoint->setPlayer($user);
+
+                    $em->persist($playerPoint);
+
+                    $user->addPlayerPoint($playerPoint);
                     $team->setPoints($teamPoints + $pointsHelp);
                 }else{
                     $points = $parameters['gamesParameters']['gamePoints'];
-                    $user->setPlayerPoints($playerPoints + $points);
-                    $team->setPoints($teamPoints + $pointsHelp);
+
+                    $playerPoint = new PlayerPoint();                   
+                    $playerPoint->setPoints($points);
+                    $playerPoint->setTournament($team->getTournament());
+                    //$PlayerPoint->setTeam($team);
+                    $playerPoint->setPlayer($user);
+
+                    $em->persist($playerPoint);
+                    $user->addPlayerPoint($playerPoint);
+                    $team->setPoints($teamPoints + $points);
                 }
                 
+
+
             }else{
                 $res = array();
                 $res['success'] = false;
@@ -364,27 +394,50 @@ class QuestionController extends Controller
             
         }
                 
+        $user = $this->get('security.context')->getToken()->getUser();
+        $duel = $em->getRepository('LiderBundle:Duel') ->findOneBy(array('id'=>$questionHistory->getDuelId()));
+
+        $questionMissing = $this->get('question_manager')->getMissingQuestionFromDuel($user, $duel);
+        $lastOne = false;        
+
+        if(count($questionMissing) == 1){
+            $lastOne = true;
+        }
+
+        $res['lastOne'] = $lastOne;
+
+        $gearman = $this->get('gearman');
+        try{
+            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequer~checkDuel', json_encode(array(
+                        'duelId' => $duel->getId() 
+                      )));
+        }catch(\Exception $e){
+            return $e;
+        }
+        
+
         $questionHistory->setFinished(true);
         $dm->flush();
         $em->flush();
+
+   
+        
 
         return $this->get("talker")->response($res);
         
     }
 
     public function setHelpAction($token)
-    {
+    {        
         $dm = $this->get('doctrine_mongodb')->getManager();
         $questionHistory = $dm->getRepository("LiderBundle:QuestionHistory")
-                              ->findOneBy(array("id" => $token));
-
-        $anwerHelp = $questionHistory->getAnswers()->findOneBy(array("help" => true));
+                              ->findOneBy(array("id" => $token));       
 
         $questionHistory->setUseHelp(true);
 
         $dm->flush();
 
-        return $this->get("talker")->response($anwerHelp);
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
 
     /**	

@@ -11,10 +11,13 @@ class QuestionManager {
 	
 	private $em;
 	private $dm;
-	
-	public function __construct($em, $dm) {
-		$this->em = $em;
-		$this->dm = $dm;
+	private $co;
+
+	public function __construct($co) {
+		$this->co = $co;
+		$this->em = $co->get('doctrine')->getManager();
+		$this->dm = $co->get('doctrine_mongodb')->getManager();
+		
 	}
 	
 	/**	
@@ -27,20 +30,15 @@ class QuestionManager {
 		
 		$arr = array();
 		if(!(is_null($duel))){
-			//$duel = $this->em->getRepository("LiderBundle:Duel")->findOneBy(array("id" =>$duelId, "deleted" => false));		
-			$dq = $this->em->getRepository("LiderBundle:Question")->getQuestionListFromDuel($duel);
-			//print_r($dq);
-			$questionList = array();
-			foreach ($dq as $key => $value) {
-				$questionList[] = $value['question'];
-			}			
+			$user = $this->co->get('security.context')->getToken()->getUser();
+			$questionList = $this->getMissingQuestionFromDuel($duel, $user);
 		}else{
 			//$arr[] = 100; 
 			$questionList = $this->em->getRepository("LiderBundle:Question")->getQuestionList();
 		}
 
 		$c = count($questionList);
-
+		//echo $c;
 		$questions = array();
 		for ($i = 0; $i < $count && $c > 0; $i++) {
 			$pos = rand(1, $c);
@@ -51,7 +49,7 @@ class QuestionManager {
 			foreach ($ass as $value) {
 				$arrayAss[] = array(
 					'id' => $value['id'],
-					'answer' => base64_encode($value['answer']),
+					'answer' => $value['answer'],
 					'oa' => $value['selected'],
 					'help' => $value['help']
 				);
@@ -62,7 +60,8 @@ class QuestionManager {
 			array_splice($questionList, ($pos-1), 1);
 			$c = count($questionList);
 		}
-			
+		
+		//print_r($questions);
 		return $questions;		
 	}
 
@@ -102,4 +101,28 @@ class QuestionManager {
 		
 	}	
 
+
+	public function getMissingQuestionFromDuel($duel, $user)
+	{			
+		$listHistory = $this->dm->getRepository("LiderBundle:QuestionHistory")
+								->getQuestionFinishedForDuel($user, $duel);
+		
+		$listId = array();
+		foreach ($listHistory->toArray() as $key => $value) {								
+			$listId[] = $value->getQuestion()->getQuestionId();
+		}
+
+		//print_r($listId);
+
+		$dq = $this->em->getRepository("LiderBundle:Question")->getQuestionListFromDuel($listId, $duel);
+		//echo count($dq);
+		$questionList = array();
+		foreach ($dq as $key => $value) {
+			//print_r($value);
+			$questionList[] = $value['question'];
+		}			
+
+		//print_r($questionList);
+		return $questionList;
+	}
 }

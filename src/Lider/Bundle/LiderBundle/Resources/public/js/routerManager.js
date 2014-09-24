@@ -700,8 +700,7 @@ var routerManager = Backbone.Router.extend({
 
 							$.ajax(config);
 						}
-					});
-					
+					});					
 				});
 			},
 

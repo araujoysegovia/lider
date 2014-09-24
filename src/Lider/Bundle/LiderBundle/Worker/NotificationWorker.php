@@ -64,7 +64,7 @@ class NotificationWorker
     public function sendNotificationEmailCreate(\GearmanJob $job){
         $data = json_decode($job->workload(),true);
         $team = $data['team'];
-        $em = $this->co->getDoctrine()->getEntityManager();
+        $em = $this->co->get('doctrine')->getManager();
         $notificationService = $this->co->get("notificationService");
         $repo = $em->getRepository("LiderBundle:Player");
         $list = $repo->findBy(array("team" => $team->getId(), "deleted" => FALSE));
