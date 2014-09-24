@@ -155,8 +155,9 @@ class GroupController extends Controller
         $tournamentId = $data['tournament'];
 
         $tournament = $em->getRepository("LiderBundle:Tournament")->findOneBy(array("id" => $tournamentId, "deleted" => false));
-
-        foreach ($tournament->getGroups()->toArray() as $value) {
+		$tournamentGroups = $em->getRepository("LiderBundle:Group")->findBy(array("tournament" => $tournamentId, "deleted" => false));
+        
+        foreach ($tournamentGroups as $value) {
             $value->setDeleted(true);
         }
         $em->flush();

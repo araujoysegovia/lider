@@ -30,30 +30,30 @@ class CheckerWorker
     {
 		$data = json_decode($job->workload(),true);
 		$duelId = $data['duelId'];
+		$userId = $data['userId'];
 
 		$em = $this->co->get('doctrine')->getManager();
 
 		$duel = $em->getRepository('LiderBundle:Duel')->find($duelId);
-		$questions = $em->getRepository('LiderBundle:DuelQuestion')
-						->findBy(array("duel" => $duelId, "deleted" =>false));
+		$user = $em->getRepository('LiderBundle:Player')->find($userId);
 
 		if(!$duel){
 			return ;
 		}
-
-		$questionIds = array();
-		foreach ($questions as $key => $question) {
-			$questionIds[] = $question->getId();
-		}
-
-		if(count($questionIds) == 0){
-			return ;
-		}
+		
+		
 
 		$dm = $this->co->get('doctrine_mongodb')->getManager();
-		$qh = $dm->getRepository('LiderBundle:QuestionHistory')->getMissingQuestionByDuel($duelId, $questionIds);
+		
 
-		if(count($qh->toArray()) == 0){
+
+		$qhf = $this->co->get('question_manager')
+						->getMissingQuestionFromDuel($duel, $duel->getPlayerOne());
+		
+		$qhs = $this->co->get('question_manager')
+						->getMissingQuestionFromDuel($duel, $duel->getPlayerTwo());
+
+		if(count($qhf) == 0 && count($qhs) == 0){
 			echo "entro";
 			$this->co->get('game_manager')->stopDuel($duel);
 			$this->checkGame($duel->getGame());

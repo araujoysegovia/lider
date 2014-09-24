@@ -395,12 +395,17 @@ class QuestionController extends Controller
         }
                 
         $user = $this->get('security.context')->getToken()->getUser();
-        $duel = $em->getRepository('LiderBundle:Duel') ->findOneBy(array('id'=>$questionHistory->getDuelId()));
+        $duel = $em->getRepository('LiderBundle:Duel') ->find($questionHistory->getDuelId());        
 
-        $questionMissing = $this->get('question_manager')->getMissingQuestionFromDuel($user, $duel);
-        $lastOne = false;        
+        $questionHistory->setFinished(true);
+        $dm->flush();
+        $em->flush();
 
-        if(count($questionMissing) == 1){
+
+        $questionMissing = $this->get('question_manager')->getMissingQuestionFromDuel($duel, $user);
+        $lastOne = false;  
+
+        if(count($questionMissing) == 0){
             $lastOne = true;
         }
 
@@ -408,19 +413,14 @@ class QuestionController extends Controller
 
         $gearman = $this->get('gearman');
         try{
-            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequer~checkDuel', json_encode(array(
-                        'duelId' => $duel->getId() 
+            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~checkDuel', json_encode(array(
+                        'duelId' => $duel->getId(),
+                        'userId' => $user->getId()
                       )));
         }catch(\Exception $e){
             return $e;
         }
-        
 
-        $questionHistory->setFinished(true);
-        $dm->flush();
-        $em->flush();
-
-   
         
 
         return $this->get("talker")->response($res);

@@ -46,7 +46,8 @@ class GameManager
 		if(!$tournament){
 			throw new \Exception("Entity no found", 1);			
 		}
-		$games = $tournament->getGames();
+		$games = $this->em->getRepository("LiderBundle:Game")
+						  ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
 		//$duels = $tournament->getDuels();
 
 		//Borrar juegos del torneo
@@ -73,8 +74,9 @@ class GameManager
 	 * Generar juegos para el primer nivel
 	 */
 	private function generateGameForFirtsLevel($tournament, $interval)
-	{
-		$groups = $tournament->getGroups()->toArray();		
+	{		
+		$groups = $this->em->getRepository("LiderBundle:Group")
+									 ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
 	
 		foreach ($groups as $key => $value) {
 			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
