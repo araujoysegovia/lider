@@ -16,11 +16,14 @@ class TournamentController extends Controller
     public function activeTournamentAction()
     {
     	$em = $this->getDoctrine()->getEntityManager();
-    	$entity = $em->getRepository("LiderBundle:Tournament")->findBy(array("active" => true, "deleted" => false));
-    	if(!$entity)
+    	$tournament = $em->getRepository("LiderBundle:Tournament")->findBy(array("active" => true, "deleted" => false));
+//     	$entity = $em->getRepository("LiderBundle:Tournament")->activeTournament();
+    	if(!$tournament)
     		throw new \Exception("Entity no found");
 
-    	return $this->get("talker")->response($entity);
+    	$teams = $em->getRepository("LiderBundle:Team")->findBy(array("tournament" => $tournament, "deleted" => false));
+    	
+    	return $this->get("talker")->response($teams);
     }
 
     public function getOnlyTournamentsAction()
