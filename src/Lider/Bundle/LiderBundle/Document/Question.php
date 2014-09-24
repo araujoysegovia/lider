@@ -38,7 +38,7 @@ class Question extends QuestionEntity
     /**
      * @MongoDB\EmbedOne(targetDocument="Category") 
      */ 
-    private $category; 
+    private $categoryDocuent; 
 
 
     public function getDataFromQuestionEntity(QuestionEntity $question)
@@ -53,10 +53,6 @@ class Question extends QuestionEntity
         $this->setCategory($categoryD);
     }
 
-
-    
-
-   
 
     /**
      * Get id
@@ -157,24 +153,24 @@ class Question extends QuestionEntity
     }
 
     /**
-     * Set category
+     * Set categoryDocuent
      *
-     * @param Lider\Bundle\LiderBundle\Document\Category $category
+     * @param Lider\Bundle\LiderBundle\Document\Category $categoryDocuent
      * @return self
      */
-    public function setCategory(\Lider\Bundle\LiderBundle\Document\Category $category)
+    public function setCategoryDocuent(\Lider\Bundle\LiderBundle\Document\Category $categoryDocuent)
     {
-        $this->category = $category;
+        $this->categoryDocuent = $categoryDocuent;
         return $this;
     }
 
     /**
-     * Get category
+     * Get categoryDocuent
      *
-     * @return Lider\Bundle\LiderBundle\Document\Category $category
+     * @return Lider\Bundle\LiderBundle\Document\Category $categoryDocuent
      */
-    public function getCategory()
+    public function getCategoryDocuent()
     {
-        return $this->category;
+        return $this->categoryDocuent;
     }
 }

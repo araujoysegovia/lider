@@ -5,7 +5,7 @@ use Mmoreram\GearmanBundle\Driver\Gearman;
 
 /**
  * @Gearman\Work(
- *     name = "chequer",
+ *     name = "chequear",
  *     description = "Worker for check games",
  *     defaultMethod = "doBackground",
  *     service="checkerWorker"
@@ -35,7 +35,7 @@ class CheckerWorker
 
 		$duel = $em->getRepository('LiderBundle:Duel')->find($duelId);
 		$questions = $em->getRepository('LiderBundle:DuelQuestion')
-						 ->findBy(array("duel" => $duelId, "deleted" =>false));
+						->findBy(array("duel" => $duelId, "deleted" =>false));
 
 		if(!$duel){
 			return ;
@@ -54,6 +54,7 @@ class CheckerWorker
 		$qh = $dm->getRepository('LiderBundle:QuestionHistory')->getMissingQuestionByDuel($duelId, $questionIds);
 
 		if(count($qh->toArray()) == 0){
+			echo "entro";
 			$this->co->get('game_manager')->stopDuel($duel);
 			$this->checkGame($duel->getGame());
 		}
@@ -62,8 +63,9 @@ class CheckerWorker
 
 	private function checkGame($game)
     {				
-		$duels = $game->getDuels()->findBy(array("active" => false, "finished" => true));
-		
+		//$duels = $game->getDuels()->findBy(array("active" => false, "finished" => true));
+		$em = $this->co->get('doctrine')->getManager();
+		$duels = $em->getRepository('LiderBundle:Duel')->findBy(array("active" => false, "finished" => true, "game" =>$game));
 		if(count($duels) == 0){
 			$qm = $this->co->get('game_manager')->stopGame($game);
 		}

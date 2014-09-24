@@ -128,8 +128,8 @@ class PlayerController extends Controller
             "team" => array(),
             "changePassword" => $user->getChangePassword(),
             "gameInfo" => array(
-                'win' => 0,
-                'lost' => 0,
+                'win' => $user->getWonGames(),
+                'lost' => $user->getLostGames(),
                 'points' => 0
             )        
         );
@@ -145,10 +145,8 @@ class PlayerController extends Controller
         $points = $user->getPlayerPoints()->toArray();
 
         foreach ($points as $value) {
-            if($value->getTournament()->getActive()){
-                $arr['user']['win'] += $value->getWin();
-                $arr['user']['lost'] += $value->getLost();
-                $arr['user']['points'] += $value->getPoints();
+            if($value->getTournament()->getActive()){               
+                $arr['user']['gameInfo']['points'] += $value->getPoints();
             }
         }
 
@@ -258,6 +256,16 @@ class PlayerController extends Controller
         
         $team = $user->getTeam();
      
+        $wonGames = 0;
+        if($user->getWonGames()){
+            $wonGames = $user->getWonGames();
+        }
+
+        $lostGames = 0;
+        if($user->getLostGames()){
+            $lostGames = $user->getLostGames();
+        }        
+
         $arr['user'] = array(
             'id' => $user->getId(),
             "email" => $user->getEmail(),
@@ -269,8 +277,8 @@ class PlayerController extends Controller
             "team" => array(),
             "changePassword" => $user->getChangePassword(),
             "gameInfo" => array(
-                'win' => 0,
-                'lost' => 0,
+                'win' => $wonGames,
+                'lost' => $lostGames,
                 'points' => 0
             )        
         );
@@ -282,14 +290,11 @@ class PlayerController extends Controller
         		"name" => $user->getTeam()->getName()        		
         	) ;
         }
-
+    
         $points = $user->getPlayerPoints()->toArray();
-
         foreach ($points as $value) {
-            if($value->getTournament()->getActive()){
-                $arr['user']['win'] += $value->getWin();
-                $arr['user']['lost'] += $value->getLost();
-                $arr['user']['points'] += $value->getPoints();
+            if($value->getTournament()->getActive()){                
+                $arr['user']['gameInfo']['points'] += $value->getPoints();
             }
         }
 

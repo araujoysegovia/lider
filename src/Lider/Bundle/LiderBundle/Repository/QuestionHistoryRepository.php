@@ -116,4 +116,20 @@ class QuestionHistoryRepository extends MainMongoRepository
                     
         return $query;			
 	}
+
+
+	public function getQuestionFinishedForDuel($user, $duel)
+	{	
+
+		$questionFinished = $this->createQueryBuilder('LiderBundle:QuestionHistory') 
+							->field('finished')->equals(true)
+							->field('duel')->equals(true)
+							->field('duelId')->equals($duel->getId())
+							->field('player.playerId')->equals($user->getId())
+							->getQuery()
+							->execute();
+
+		return $questionFinished;
+							
+	}		
 }
