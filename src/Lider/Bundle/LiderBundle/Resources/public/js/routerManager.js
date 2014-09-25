@@ -2150,7 +2150,7 @@ var routerManager = Backbone.Router.extend({
 		loader.show();
 		var configTorunament = {
 			type: "GET",
-            url: "home/tournament/tournament",
+            url: "home/tournament/active",
             contentType: "application/json",
             dataType: "json",
             //data: JSON.stringify(param),
@@ -2328,7 +2328,7 @@ var routerManager = Backbone.Router.extend({
 			    confirm: function(button) {
 			        parameters = {
 						type: "POST", 					
-					    url: "notification/group",
+					    url: "group/notification",
 				        contentType: 'application/json',
 		            	dataType: "json",    
 				        success: function(data){	 			        	
@@ -2352,7 +2352,7 @@ var routerManager = Backbone.Router.extend({
 			    confirm: function(button) {
         			parameters = {
 						type: "POST", 					
-					    url: "notification/team",
+					    url: "team/notification",
 				        contentType: 'application/json',
 		            	dataType: "json",    
 				        success: function(data){	 			        	

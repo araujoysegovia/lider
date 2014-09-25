@@ -193,4 +193,10 @@ class GroupController extends Controller
         return $this->get("talker")->response(array("total" => count($list), "data" => $list));
     }
 
+    public function notificationGroupAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+    }
+
 }

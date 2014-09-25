@@ -227,7 +227,7 @@ class TeamController extends Controller
         $list = $repo->findBy(array("tournamentId" => $tournament));
         $list = $list->toArray();
         foreach($list as $value){
-            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationEmailCreate', json_encode(array(
+            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationTeam', json_encode(array(
                 "team" => $value
             )));
         }

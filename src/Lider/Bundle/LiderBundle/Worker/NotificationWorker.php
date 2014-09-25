@@ -57,13 +57,14 @@ class NotificationWorker
      * @return boolean
      *
      * @Gearman\Job(
-     *     name = "notificationTeam",
+     *     name = "sendNotificationTeam",
      *     description = "Send an Email when need a notification for the members of the team"
      * )
      */
-    public function sendNotificationEmailCreate(\GearmanJob $job){
+    public function sendNotificationTeam(\GearmanJob $job){
         $data = json_decode($job->workload(),true);
         $team = $data['team'];
+        // print_r($team->getId());
         $em = $this->co->get('doctrine')->getManager();
         $notificationService = $this->co->get("notificationService");
         $repo = $em->getRepository("LiderBundle:Player");
@@ -90,7 +91,49 @@ class NotificationWorker
                 echo $e->getMessage();
             }
         }
-        
+    }
+
+    /**
+     * Send Email when a team is created
+     *
+     * @param \GearmanJob $job Object with job parameters
+     *
+     * @return boolean
+     *
+     * @Gearman\Job(
+     *     name = "sendNotificationGroup",
+     *     description = "Send an Email when need a notification for the members of the team"
+     * )
+     */
+    public function sendNotificationGroup(\GearmanJob $job){
+        $data = json_decode($job->workload(),true);
+        $tournament = $data['tournament'];
+        $em = $this->co->get('doctrine')->getManager();
+        $notificationService = $this->co->get("notificationService");
+        $repo = $em->getRepository("LiderBundle:Group");
+        $list = $repo->findBy(array("tournament" => $tournament->getId(), "deleted" => FALSE));
+        $subject = "Este es tu Grupo!!!";
+        $to = array();
+        $content = array(
+            "teamImage" => $team->getImage(),
+            "title" => $team->getName(),
+        );
+        $members = array();
+        if($list){
+            foreach($list->toArray() as $key => $value){
+                $to[] = $value->getId();
+                $members[$key]['image'] = $value->getImage();
+                $members[$key]['name'] = $value->getName();
+                $members[$key]['lastname'] = $value->getLastname();
+            }
+            $content['members'] = $members;
+            try{
+                $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                echo "Mensaje Enviado";
+            }catch(\Exception $e){
+                echo $e->getMessage();
+            }
+        }
     }
 
     /**
