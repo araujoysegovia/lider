@@ -1,4 +1,4 @@
-<?php
+<?php 
 namespace Lider\Bundle\LiderBundle\Controller;
 
 use Lider\Bundle\LiderBundle\Controller\Controller;
@@ -191,8 +191,10 @@ class TeamController extends Controller
         $tournamentId = $data['tournament'];
 
         $tournament = $em->getRepository("LiderBundle:Tournament")->findOneBy(array("id" => $tournamentId, "deleted" => false));
-
-        foreach ($tournament->getTeams()->toArray() as $value) {
+		
+        $tournamentTeams = $em->getRepository("LiderBundle:Team")->findBy(array("tournament" => $tournamentId, "deleted" => false));
+        
+        foreach ($tournamentTeams as $value) {
             $value->setDeleted(true);
         }
         $em->flush();

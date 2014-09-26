@@ -19,28 +19,28 @@ class Team extends Entity
     private $id;
 
     /**
-	 * @ORM\Column(type="string", length=100)
-	 * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
      * @Assert\Length(max=100)
-	 */
-	private $name;
-	
-	
-	/**
-	 * @ORM\Column(type="string", nullable = true)	 
-	 */
-	private $image;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"}, inversedBy="teams")
-	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
-	 */
-	private $group;
+     */
+    private $name;
+    
+    
+    /**
+     * @ORM\Column(type="string", nullable = true)   
+     */
+    private $image;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"}, inversedBy="teams")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     */
+    private $group;
 
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
-	private $active = true;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active = true;
 
     /**
      * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="teams")

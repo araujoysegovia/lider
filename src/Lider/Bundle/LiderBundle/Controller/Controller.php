@@ -60,8 +60,7 @@ abstract class Controller extends SymfonyController {
 				break;
 			case 'multipart/form-data':
 				return $this->applicationForm();
-				break;
-					
+				break;		
 			default:
 				return $this->applicationJson($id);
 				break;
@@ -132,9 +131,9 @@ abstract class Controller extends SymfonyController {
 			$idField = $metadata->identifier[0];
 			$data[$idField] = $id;
 		}
-		
-		
+		  
 		$newClass = $this->get("talker")->denormalizeEntity($className, $data);
+
 		
 		return $newClass;
 	}
@@ -256,7 +255,7 @@ abstract class Controller extends SymfonyController {
 		if (count($errors) > 0) {
 			throw new RuntimeException($errors->__toString());
 		}
-		
+
 		$em->flush();
 		$this->afterSave($entity);
 		return $entity;

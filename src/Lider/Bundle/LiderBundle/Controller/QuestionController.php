@@ -238,6 +238,7 @@ class QuestionController extends Controller
             $questionHistory->setFinished(false);
             $questionHistory->setTournament($tourmanetD);  
             $questionHistory->setGroup($groupD);
+            $questionHistory->setGameId($duel->getGame()->getId());
 
             foreach ($q->getAnswers()->toArray() as $key => $value) {
           
@@ -321,7 +322,6 @@ class QuestionController extends Controller
         $playerPoints = $user->getPlayerPoints();
         
         $team = $user->getTeam();
-        $teamPoints = $team->getPoints();
 
         if($diffTime >= $maxSec || $questionId=="no-answer"){
             $res = array();
@@ -342,7 +342,7 @@ class QuestionController extends Controller
                 $user->setWonGames($wonGames + 1);
 
                 if($questionHistory->getUseHelp()){
-                    $pointsHelp = $parameters['gamesParameters']['gamePointsHelp'];
+                    $pointsHelp = $parameters['gamesParameters']['questionPointsHelp'];
                  
                     $playerPoint = new PlayerPoint();                   
                     $playerPoint->setPoints($pointsHelp);
@@ -353,9 +353,9 @@ class QuestionController extends Controller
                     $em->persist($playerPoint);
 
                     $user->addPlayerPoint($playerPoint);
-                    $team->setPoints($teamPoints + $pointsHelp);
+                    
                 }else{
-                    $points = $parameters['gamesParameters']['gamePoints'];
+                    $points = $parameters['gamesParameters']['questionPoints'];
 
                     $playerPoint = new PlayerPoint();                   
                     $playerPoint->setPoints($points);
@@ -365,7 +365,7 @@ class QuestionController extends Controller
 
                     $em->persist($playerPoint);
                     $user->addPlayerPoint($playerPoint);
-                    $team->setPoints($teamPoints + $points);
+                    
                 }
                 
 
@@ -395,12 +395,17 @@ class QuestionController extends Controller
         }
                 
         $user = $this->get('security.context')->getToken()->getUser();
-        $duel = $em->getRepository('LiderBundle:Duel') ->findOneBy(array('id'=>$questionHistory->getDuelId()));
+        $duel = $em->getRepository('LiderBundle:Duel') ->find($questionHistory->getDuelId());        
 
-        $questionMissing = $this->get('question_manager')->getMissingQuestionFromDuel($user, $duel);
-        $lastOne = false;        
+        $questionHistory->setFinished(true);
+        $dm->flush();
+        $em->flush();
 
-        if(count($questionMissing) == 1){
+
+        $questionMissing = $this->get('question_manager')->getMissingQuestionFromDuel($duel, $user);
+        $lastOne = false;  
+
+        if(count($questionMissing) == 0){
             $lastOne = true;
         }
 
@@ -408,19 +413,14 @@ class QuestionController extends Controller
 
         $gearman = $this->get('gearman');
         try{
-            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequer~checkDuel', json_encode(array(
-                        'duelId' => $duel->getId() 
+            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~checkDuel', json_encode(array(
+                        'duelId' => $duel->getId(),
+                        'userId' => $user->getId()
                       )));
         }catch(\Exception $e){
             return $e;
         }
-        
 
-        $questionHistory->setFinished(true);
-        $dm->flush();
-        $em->flush();
-
-   
         
 
         return $this->get("talker")->response($res);

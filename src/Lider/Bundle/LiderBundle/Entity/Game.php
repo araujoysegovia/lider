@@ -19,13 +19,6 @@ class Game extends Entity
     private $id;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"}, inversedBy="games")
-	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
-	 * @Assert\NotBlank()
-	 */
-	private $group;
-	
-	/**
 	 * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"})
 	 * @ORM\JoinColumn(name="teamone_id", referencedColumnName="id")
 	 * @Assert\NotBlank()
@@ -219,29 +212,6 @@ class Game extends Entity
     public function getActive()
     {
         return $this->active;
-    }
-
-    /**
-     * Set group
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Group $group
-     * @return Game
-     */
-    public function setGroup(\Lider\Bundle\LiderBundle\Entity\Group $group = null)
-    {
-        $this->group = $group;
-
-        return $this;
-    }
-
-    /**
-     * Get group
-     *
-     * @return \Lider\Bundle\LiderBundle\Entity\Group 
-     */
-    public function getGroup()
-    {
-        return $this->group;
     }
 
     /**

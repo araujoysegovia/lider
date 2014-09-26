@@ -63,12 +63,13 @@ class NotificationWorker
      */
     public function sendNotificationTeam(\GearmanJob $job){
         $data = json_decode($job->workload(),true);
-        $team = $data['team'];
+        $tournamentId = $data['tournament'];
         // print_r($team->getId());
         $em = $this->co->get('doctrine')->getManager();
         $notificationService = $this->co->get("notificationService");
-        $repo = $em->getRepository("LiderBundle:Player");
-        $list = $repo->findBy(array("team" => $team->getId(), "deleted" => FALSE));
+        $repoPlayer = $em->getRepository("LiderBundle:Player");
+        $repoTeam = $em->getRepository("LiderBundle:Team");
+        $list = $repoPlayer->findBy(array("team" => $teamId, "deleted" => FALSE));
         $subject = "Este es tu Equipo!!!";
         $to = array();
         $content = array(

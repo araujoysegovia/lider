@@ -95,6 +95,16 @@ class QuestionHistory
      */ 
     private $team;
 
+    /** 
+     * @MongoDB\int
+     */
+    private $gameId;
+
+    /** 
+     * @MongoDB\Boolean
+     */
+    private $extraWuestion = false;
+
 
     public function __construct()
     {

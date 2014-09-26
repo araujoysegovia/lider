@@ -16,11 +16,40 @@ class TournamentController extends Controller
     public function activeTournamentAction()
     {
     	$em = $this->getDoctrine()->getEntityManager();
-    	$entity = $em->getRepository("LiderBundle:Tournament")->findBy(array("active" => true, "deleted" => false));
-    	if(!$entity)
+    	$tournaments = $em->getRepository("LiderBundle:Tournament")->findBy(array("active" => true, "deleted" => false));
+//     	$entity = $em->getRepository("LiderBundle:Tournament")->activeTournament();
+    	if(!$tournaments)
     		throw new \Exception("Entity no found");
 
-    	return $this->get("talker")->response($entity);
+        $array = array();
+        foreach ($tournaments as $tournament) {
+            $arr = array();
+            
+
+            $teams = $em->getRepository("LiderBundle:Team")
+                    ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
+
+            $arr['id'] = $tournament->getId();
+            $arr['name'] = $tournament->getName();
+            $arr['teams'] = $teams;
+            $array[] = $arr;
+        }
+
+       
+    	return $this->get("talker")->response($array);
+        //return $this->get("talker")->response($tournaments);
+    }
+
+    public function tournamentTemsAction($tournamentId)
+    {
+        $teams = $em->getRepository("LiderBundle:Team")
+                    ->findBy(array("tournament" => $tournamentId, "deleted" => false));
+
+        if(!$teams)
+            throw new \Exception("Entity no found");
+
+        
+        return $this->get("talker")->response($teams);
     }
 
     public function getOnlyTournamentsAction()

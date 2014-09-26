@@ -1360,20 +1360,22 @@ var routerManager = Backbone.Router.extend({
 					},
 					editor:	function (container, options) {
 						var sw= true;
-						var val = options.model.group.get('id');
+						var val = null;
+						if(options.model.group)
+							val = options.model.group.get('id');
+						
 						var input =  $('<input id="group-field" required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
 					        .kendoDropDownList({
 					            autoBind: false,	
 					            cascadeFrom: "tournamentField",
 					            cascadeFromField: "tournament.id",
-					            value: options.model.group.get('id'),
+					            value: val,
 					            dataBound: function(e) {
 									input.data("kendoDropDownList").trigger("change");
 					            },	
 					            change: function(){
-					            	if(sw){
-					            		console.log("Entro: " + val);
+					            	if(sw && val){
 					            		this.value(val);
 					            		sw = false;
 					            	}
@@ -1833,12 +1835,16 @@ var routerManager = Backbone.Router.extend({
 					    	'<input type="number" class="form-control" id="countQuestionDuelExtra">'+
 						  '</div>'+	
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Puntos por juego sin ayuda</label>'+						    
-					    	'<input type="number" class="form-control" id="gamePoints">'+
+						    '<label>Puntos por pregunta sin ayuda</label>'+						    
+					    	'<input type="number" class="form-control" id="questionPoints">'+
 						  '</div>'+	
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Puntos por juego con ayuda</label>'+						    
-					    	'<input type="number" class="form-control" id="gamePointsHelp">'+
+						    '<label>Puntos por pregunta con ayuda</label>'+						    
+					    	'<input type="number" class="form-control" id="questionPointsHelp">'+
+						  '</div>'+
+						  '<div class="form-group col-sm-4">'+
+						    '<label>Puntos por juego</label>'+						    
+					    	'<input type="number" class="form-control" id="gamePoints">'+
 						  '</div>'+								  						  
 						  '<div class="form-group col-sm-12">'+
 						  	'<button type="submit" class="btn btn-primary btn-save-parameters">Guardar</button>'+
@@ -1866,8 +1872,9 @@ var routerManager = Backbone.Router.extend({
 		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])	
 		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])	
 		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])	
+		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])	
+		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])	
 		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])	
-		        	$("#gamePointsHelp").val(data['gamesParameters']['gamePointsHelp'])	
 	        	}	        	
 	        },
 	        error: function(){},
@@ -1895,8 +1902,9 @@ var routerManager = Backbone.Router.extend({
 						"timeDuelExtra": $("#timeDuelExtra").val(),
 						"countQuestionDuel": $("#countQuestionDuel").val(),
 						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
+						"questionPoints": $("#questionPoints").val(),
+						"questionPointsHelp": $("#questionPointsHelp").val(),
 						"gamePoints": $("#gamePoints").val(),
-						"gamePointsHelp": $("#gamePointsHelp").val(),
 					};	
 
 		            parameters = {

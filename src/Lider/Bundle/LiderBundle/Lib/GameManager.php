@@ -17,6 +17,7 @@ class GameManager
 	private $co;
 	private $pm;
 	private $qm;
+	private $base2;
 	public static $COUNT_GAMES = 3;
 
 	public function __construct($em, $dm, $pm, $qm){
@@ -40,13 +41,28 @@ class GameManager
 	 * Generar juegos
 	 */
 	public function generateGame($tournamentId, $interval){
+		$teams = $this->em->getRepository("LiderBundle:Team")
+									 ->findBy(array("tournament" => $tournamentId, "deleted" => false));
+		if(count($teams) > 0)
+		{
+			$this->base2 = array();
+			$i = 0;
+			$x = 0;
+			while($i <= count($teams))
+			{
+				$i = 2^$x;
+				$this->base2[] = $i;
+				$x++;
+			}
 
+		}
 		//$tournament = $this->em->getRepository("LiderBundle:Tournament")->findOneBy(array("id" =>$tournamentId, "deleted" => false));
 		$tournament = $this->em->getRepository("LiderBundle:Tournament")->getTournament($tournamentId);
 		if(!$tournament){
 			throw new \Exception("Entity no found", 1);			
 		}
-		$games = $tournament->getGames();
+		$games = $this->em->getRepository("LiderBundle:Game")
+						  ->findBy(array("tournament" => $tournament->getId(), "deleted" => false, "level" => $tournament->getLevel()));
 		//$duels = $tournament->getDuels();
 
 		//Borrar juegos del torneo
@@ -64,7 +80,7 @@ class GameManager
 
 		if($tournament->getLevel() == 1){
 			$this->generateGameForFirtsLevel($tournament, $interval);
-		}else if($tournament->getLevel() == 2){
+		}elseif($tournament->getLevel() == 2){
 			$this->generateGameForSecondLevel();
 		}
 	}
@@ -73,8 +89,9 @@ class GameManager
 	 * Generar juegos para el primer nivel
 	 */
 	private function generateGameForFirtsLevel($tournament, $interval)
-	{
-		$groups = $tournament->getGroups()->toArray();		
+	{		
+		$groups = $this->em->getRepository("LiderBundle:Group")
+									 ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
 	
 		foreach ($groups as $key => $value) {
 			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
@@ -120,7 +137,6 @@ class GameManager
 						//$now = new Date();
 						
 						$game = new Game();
-						$game->setGroup($value);
 						$game->setTeamOne($teams[$p]);
 						$game->setTeamTwo($teams[$v]);
 						$game->setActive(false);
@@ -147,9 +163,107 @@ class GameManager
 		$this->em->flush();
 	}
 
-	private function generateGameForSecondLevel()
+	private function generateGameForSecondLevel($tournamentId)
 	{
-		# code...
+		$teams = $this->em->getRepository("LiderBundle:Team")
+									 ->findBy(array("tournament" => $tournamentId, "deleted" => false));
+
+		$groups = $this->em->getRepository("LiderBundle:Group")
+									 ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
+		$duelRepo = $this->em->getRepository('LiderBundle:Duel');
+		$questionHistoryRepository = $this->em->getRepository('LiderBundle:QuestionHistory');
+		$countTeams = count($teams);
+		$nextRound = 0;
+		$totalGroups = count($groups);
+		for($i=0; $i < count($this->base2); $i++)
+		{
+			if($countTeams < $this->base2[$i])
+			{
+				$nextRound = $this->base2[$i-1];
+				break;
+			}
+			elseif($countTeams == $this->base2[$i])
+			{
+				$nextRound = $this->base2[$i];
+				break;
+			}
+		}
+		$mod = $nextRound % $totalGroups;
+		$tot = $nextRound / $totalGroups;
+		$total = intval($tot);
+		$arr1 = array();
+		$arr2 = array();
+		$thids = array();
+		$teamGroups = array();
+		foreach($groups as $group)
+		{
+			$teamGroups[$group->getName()] = array();
+			$teams = array();
+			foreach($group->getTeams() as $team)
+			{
+				$teams[$team->getId()] = $team->getPoints();
+			}
+			arsort($teams);
+			$keys = array_keys($teams);
+			for($i = 0;$i < count($teams); $i++)
+			{
+				$z = $i;
+				$ct = $teams[$key[$i]];
+				for($y = $i+1; $y <= count($teams); $y++)
+				{
+					$st = $teams[$key[$y]];
+					if($ct <= $st){
+						$result1 = $duelRepo->getTotalDuelWinnerByTeam($teams[$keys[$i]], $tournamentId);
+						$result2 = $duelRepo->getTotalDuelWinnerByTeam($teams[$keys[$y]], $tournamentId);
+						$percent1 = $result1['total'] * $result1['win'] / 100;
+						$percent2 = $result2['total'] * $result2['win'] / 100;
+						if($percent1 < $percent2)
+						{
+							$teams = $this->sort($percent1, $percent2, $teams, $i, $y);
+							$keys = array_keys($teams);
+							$i--;
+						}
+						elseif($percent1 == $percent2))
+						{
+							$result1 = $questionHistoryRepository->findpercentOfQuestionWinByTeam($teams[$keys[$i]], $tournamentId);
+							$result2 = $questionHistoryRepository->findpercentOfQuestionWinByTeam($teams[$keys[$y]], $tournamentId);
+							$percent1 = $result1['total'] * $result1['win'] / 100;
+							$percent2 = $result2['total'] * $result2['win'] / 100;
+							if($percent1 < $percent2)
+							{
+								$teams = $this->sort($percent1, $percent2, $teams, $i, $y);
+								$keys = array_keys($teams);
+								$i--;
+							}
+						}
+					}
+				}
+			}
+			$teamGroups[$group->getName()] = $keys;
+		}
+		// Esparcir los Equipos
+	}
+
+	private function sort($percent1, $percente2, $teams, $i, $y)
+	{
+		$keys = array_keys($teams);
+		$st2 = array();
+		for($a = 0; $a <= count($teams); $a++)
+		{
+			if($a == $i)
+			{
+				$st2[$keys[$a]] = $teams[$keys[$y]];
+			}
+			elseif($a == $y)
+			{
+				$st2[$keys[$a]] = $teams[$keys[$i]];
+			}
+			else
+			{
+				$st2[$keys[$a]] = $teams[$keys[$a]];
+			}
+		}
+		return $st2;
 	}
 
 	/**

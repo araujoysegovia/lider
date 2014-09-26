@@ -19,23 +19,23 @@ class Group extends Entity
     private $id;
 
     /**
-	 * @ORM\Column(type="string", length=100)
-	 * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
      * @Assert\Length(max=100)
-	 */
-	private $name;
-	
+     */
+    private $name;
+    
     /**
      * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="groups")
      * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
      * @Assert\NotBlank()
      */
-	private $tournament;
-	
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
-	private $active = true;
+    private $tournament;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active = true;
 
     /**
      * @ORM\OneToMany(targetEntity="Team", mappedBy="group")

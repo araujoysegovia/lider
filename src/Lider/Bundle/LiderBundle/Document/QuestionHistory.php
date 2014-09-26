@@ -95,6 +95,16 @@ class QuestionHistory
      */ 
     private $team;
 
+    /** 
+     * @MongoDB\int
+     */
+    private $gameId;
+
+    /** 
+     * @MongoDB\Boolean
+     */
+    private $extraWuestion = false;
+
 
     public function __construct()
     {
@@ -472,5 +482,49 @@ class QuestionHistory
     public function getGroup()
     {
         return $this->group;
+    }
+
+    /**
+     * Set gameId
+     *
+     * @param int $gameId
+     * @return self
+     */
+    public function setGameId($gameId)
+    {
+        $this->gameId = $gameId;
+        return $this;
+    }
+
+    /**
+     * Get gameId
+     *
+     * @return int $gameId
+     */
+    public function getGameId()
+    {
+        return $this->gameId;
+    }
+
+    /**
+     * Set extraWuestion
+     *
+     * @param boolean $extraWuestion
+     * @return self
+     */
+    public function setExtraWuestion($extraWuestion)
+    {
+        $this->extraWuestion = $extraWuestion;
+        return $this;
+    }
+
+    /**
+     * Get extraWuestion
+     *
+     * @return boolean $extraWuestion
+     */
+    public function getExtraWuestion()
+    {
+        return $this->extraWuestion;
     }
 }

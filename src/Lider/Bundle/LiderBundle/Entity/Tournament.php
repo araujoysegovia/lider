@@ -19,28 +19,28 @@ class Tournament extends Entity
     private $id;
 
     /**
-	 * @ORM\Column(type="string", length=100)
-	 * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
      * @Assert\Length(max=100)
-	 */
-	private $name;
+     */
+    private $name;
 
-	/**
-	 * @ORM\Column(type="date")
-	 * @Assert\NotBlank()
-	 */
-	private $startdate;
-	
-	/**
-	 * @ORM\Column(type="date")
-	 * @Assert\NotBlank()
-	 */
-	private $enddate;
-	
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
-	private $active = true;
+    /**
+     * @ORM\Column(type="date")
+     * @Assert\NotBlank()
+     */
+    private $startdate;
+    
+    /**
+     * @ORM\Column(type="date")
+     * @Assert\NotBlank()
+     */
+    private $enddate;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active = true;
      
     // /**
     //  * @ORM\OneToMany(targetEntity="Team", mappedBy="tournament")
