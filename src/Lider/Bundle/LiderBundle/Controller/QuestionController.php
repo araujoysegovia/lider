@@ -10,7 +10,7 @@ use Lider\Bundle\LiderBundle\Document\ReportQuestion;
 
 class QuestionController extends Controller
 {
-    private $maxSec = 30;
+    private $maxSec = 45;
 
     public function getName(){
     	return "Question";
