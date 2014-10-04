@@ -48,15 +48,52 @@ class ReportQuestionController extends Controller
      	$request = $this->get("request");
 
      	$id = $request->get("id");
+        $data = $request->getContent();
+        
+        if(empty($data) || !$data)
+            throw new \Exception("No data");
+        
+        $data = json_decode($data, true);        
+
      	//$reportQuestion = $dm->getRepository('LiderBundle:ReportQuestion')->findBy(array("id" => $id));
      	$reportQuestion = $dm->getRepository('LiderBundle:ReportQuestion')->find($id);
+
+
 
 		if(!$reportQuestion)
             throw new \Exception("Report no found");    
 
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $player = $reportQuestion->getPlayer();
+
      	$reportQuestion->setSolved(true);
+        if($data['descriptionSolve']){
+            $reportQuestion->setDescription($data['descriptionSolve']);
+        }
 
      	$dm->flush();
+
+
+        $gearman = $this->get("gearman");  
+        $em = $this->getDoctrine()->getEntityManager();
+        $notificationService = $this->get("notificationService");       
+
+
+        $viewName = "LiderBundle:Templates:emailnotification.html.twig";
+
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', 
+            json_encode(array(
+            "subject" => 'Lider - Pregunta reportada',
+            "from" => $user->getEmail(),
+            "to" => $player->getEmail(),
+            "viewName" => $viewName,
+            "content" => array(
+                "title" => 'Lider - Pregunta reportada',
+                "subjectMessage" => "",
+                "body"=> $reportQuestion->getDescription()
+            )
+        )));
+
 
      	return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
      } 

@@ -8,7 +8,27 @@ answer_check:
     defaults: { _controller: LiderBundle:Question:checkAnswer }
     methods:  [POST]
 
+question_duel:
+    pattern:  /duel/{duelId}
+    defaults: { _controller: LiderBundle:Question:getQuestion }
+    methods:  [GET]
+
+answer_duel_check:
+    pattern:  /answer/duel/check
+    defaults: { _controller: LiderBundle:Question:checkAnswerDuel }
+    methods:  [POST]
+
 question_report:
     pattern:  /report
     defaults: { _controller: LiderBundle:Question:questionReport }
     methods:  [POST]
+
+question_use_help:
+    pattern:  /help/{token}
+    defaults: { _controller: LiderBundle:Question:setHelp }
+    methods:  [GET]
+
+question_countbyduel:
+    pattern:  /duel/{duelId}/count
+    defaults: { _controller: LiderBundle:Question:countQuestionFromDuel }
+    methods:  [GET]

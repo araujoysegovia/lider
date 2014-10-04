@@ -19,38 +19,43 @@ class Tournament extends Entity
     private $id;
 
     /**
-	 * @ORM\Column(type="string", length=100)
-	 * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
      * @Assert\Length(max=100)
-	 */
-	private $name;
+     */
+    private $name;
 
-	/**
-	 * @ORM\Column(type="date")
-	 * @Assert\NotBlank()
-	 */
-	private $startdate;
-	
-	/**
-	 * @ORM\Column(type="date")
-	 * @Assert\NotBlank()
-	 */
-	private $enddate;
-	
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
-	private $active = true;
+    /**
+     * @ORM\Column(type="date")
+     * @Assert\NotBlank()
+     */
+    private $startdate;
+    
+    /**
+     * @ORM\Column(type="date")
+     * @Assert\NotBlank()
+     */
+    private $enddate;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $enabledLevel = false;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active = true;
      
-    /**
-     * @ORM\OneToMany(targetEntity="Team", mappedBy="tournament")
-     */
-    private $teams;
+    // /**
+    //  * @ORM\OneToMany(targetEntity="Team", mappedBy="tournament")
+    //  */
+    // private $teams;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Group", mappedBy="tournament")
-     */
-    private $groups;    
+    // /**
+    //  * @ORM\OneToMany(targetEntity="Group", mappedBy="tournament")
+    //  */
+    // private $groups;    
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -58,12 +63,22 @@ class Tournament extends Entity
      */
     private $level;
 
+    // /**
+    //  * @ORM\OneToMany(targetEntity="Game", mappedBy="tournament")
+    //  */
+    // private $games;
+
+    // /**
+    //  * @ORM\OneToMany(targetEntity="Duel", mappedBy="tournament")
+    //  */
+    // private $duels;
+
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->teams = new \Doctrine\Common\Collections\ArrayCollection();
+        // $this->teams = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -170,72 +185,6 @@ class Tournament extends Entity
     }
 
     /**
-     * Add teams
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Team $teams
-     * @return Tournament
-     */
-    public function addTeam(\Lider\Bundle\LiderBundle\Entity\Team $teams)
-    {
-        $this->teams[] = $teams;
-
-        return $this;
-    }
-
-    /**
-     * Remove teams
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Team $teams
-     */
-    public function removeTeam(\Lider\Bundle\LiderBundle\Entity\Team $teams)
-    {
-        $this->teams->removeElement($teams);
-    }
-
-    /**
-     * Get teams
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getTeams()
-    {
-        return $this->teams;
-    }
-
-    /**
-     * Add groups
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Group $groups
-     * @return Tournament
-     */
-    public function addGroup(\Lider\Bundle\LiderBundle\Entity\Group $groups)
-    {
-        $this->groups[] = $groups;
-
-        return $this;
-    }
-
-    /**
-     * Remove groups
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Group $groups
-     */
-    public function removeGroup(\Lider\Bundle\LiderBundle\Entity\Group $groups)
-    {
-        $this->groups->removeElement($groups);
-    }
-
-    /**
-     * Get groups
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
-
-    /**
      * Set level
      *
      * @param integer $level
@@ -256,5 +205,28 @@ class Tournament extends Entity
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * Set enabledLevel
+     *
+     * @param boolean $enabledLevel
+     * @return Tournament
+     */
+    public function setEnabledLevel($enabledLevel)
+    {
+        $this->enabledLevel = $enabledLevel;
+
+        return $this;
+    }
+
+    /**
+     * Get enabledLevel
+     *
+     * @return boolean 
+     */
+    public function getEnabledLevel()
+    {
+        return $this->enabledLevel;
     }
 }

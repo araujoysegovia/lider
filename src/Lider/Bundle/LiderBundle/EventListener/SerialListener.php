@@ -16,12 +16,5 @@ class SerialListener
 	{
 		$entity = $args->getEntity();
 		$em = $args->getEntityManager();
-		if($entity instanceof \Lider\Bundle\LiderBundle\Entity\Team)
-		{
-			$gearman = $this->get("gearman");
-			$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~notificationTeam', json_encode(array(
-				"team" => $entity
-			)));
-		}
 	}
 }

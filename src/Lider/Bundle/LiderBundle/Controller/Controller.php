@@ -60,8 +60,7 @@ abstract class Controller extends SymfonyController {
 				break;
 			case 'multipart/form-data':
 				return $this->applicationForm();
-				break;
-					
+				break;		
 			default:
 				return $this->applicationJson($id);
 				break;
@@ -132,9 +131,9 @@ abstract class Controller extends SymfonyController {
 			$idField = $metadata->identifier[0];
 			$data[$idField] = $id;
 		}
-		
-		
+		  
 		$newClass = $this->get("talker")->denormalizeEntity($className, $data);
+
 		
 		return $newClass;
 	}
@@ -180,12 +179,15 @@ abstract class Controller extends SymfonyController {
 			}
 			
 			$page = $request->get("page");
-			$start = $request->get("start");
-			$limit = $request->get("limit");			
-	
+			$skip = $request->get("skip");
+			$pageSize = $request->get('pageSize');
+			//$limit = $request->get("limit");			
+			$limit = $skip + $pageSize;	
+			$sort = $request->get('sort');			
+
 			$bundleName = $this->getBundleName();
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$list = $repo->getArrayEntityWithOneLevel($criteria, "id", $start, $limit, $filter);
+			$list = $repo->getArrayEntityWithOneLevel($criteria, $sort, $skip, $pageSize, $filter);
 			$this->afterList($list);
 			
 			return $this->get("talker")->response($list);
@@ -256,7 +258,7 @@ abstract class Controller extends SymfonyController {
 		if (count($errors) > 0) {
 			throw new RuntimeException($errors->__toString());
 		}
-		
+
 		$em->flush();
 		$this->afterSave($entity);
 		return $entity;
@@ -439,7 +441,9 @@ abstract class Controller extends SymfonyController {
     		if(array_key_exists("targetDocument", $value)){
     			$arr[$key] = $this->normalizer($entity->{'get'.ucfirst($key)}(), $value['targetDocument']);
     		}else{
-    			$arr[$key] = $entity->{'get'.ucfirst($key)}();	
+    			if(method_exists ( $entity, 'get'.ucfirst($key) )){
+    				$arr[$key] = $entity->{'get'.ucfirst($key)}();	
+    			}    			
     		}
     		
     	}

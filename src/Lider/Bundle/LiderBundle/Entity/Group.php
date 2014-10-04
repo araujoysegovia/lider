@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Group class
  * @ORM\Table(name="team_group")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\GameRepository")
  */
 class Group extends Entity
 {
@@ -19,28 +19,33 @@ class Group extends Entity
     private $id;
 
     /**
-	 * @ORM\Column(type="string", length=100)
-	 * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
      * @Assert\Length(max=100)
-	 */
-	private $name;
-	
+     */
+    private $name;
+    
     /**
-     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="groups")
+     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"})
      * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
      * @Assert\NotBlank()
      */
-	private $tournament;
-	
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
-	private $active = true;
+    private $tournament;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active = true;
 
     /**
      * @ORM\OneToMany(targetEntity="Team", mappedBy="group")
      */
     private $teams;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="group")
+     */
+    private $games;
 
     /**
      * Get id
@@ -159,5 +164,38 @@ class Group extends Entity
     public function getTeams()
     {
         return $this->teams;
+    }
+
+    /**
+     * Add games
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Game $games
+     * @return Group
+     */
+    public function addGame(\Lider\Bundle\LiderBundle\Entity\Game $games)
+    {
+        $this->games[] = $games;
+
+        return $this;
+    }
+
+    /**
+     * Remove games
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Game $games
+     */
+    public function removeGame(\Lider\Bundle\LiderBundle\Entity\Game $games)
+    {
+        $this->games->removeElement($games);
+    }
+
+    /**
+     * Get games
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGames()
+    {
+        return $this->games;
     }
 }

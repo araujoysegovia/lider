@@ -40,6 +40,16 @@ class ReportQuestion
     private $solved = false;
 
     /**
+     * @MongoDB\String
+     */
+    private $causal;
+
+    /**
+     * @MongoDB\String
+     */
+    private $description;
+
+    /**
      * Get id
      *
      * @return id $id
@@ -158,5 +168,49 @@ class ReportQuestion
     public function getSolved()
     {
         return $this->solved;
+    }
+
+    /**
+     * Set causal
+     *
+     * @param string $causal
+     * @return self
+     */
+    public function setCausal($causal)
+    {
+        $this->causal = $causal;
+        return $this;
+    }
+
+    /**
+     * Get causal
+     *
+     * @return string $causal
+     */
+    public function getCausal()
+    {
+        return $this->causal;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return self
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string $description
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

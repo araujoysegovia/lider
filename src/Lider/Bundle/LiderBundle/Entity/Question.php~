@@ -57,6 +57,15 @@ class Question extends Entity
 	 */
 	private $image;
 	
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
     /**
      * Get id
      *
@@ -114,6 +123,52 @@ class Question extends Entity
     }
 
     /**
+     * Set checked
+     *
+     * @param boolean $checked
+     * @return Question
+     */
+    public function setChecked($checked)
+    {
+        $this->checked = $checked;
+
+        return $this;
+    }
+
+    /**
+     * Get checked
+     *
+     * @return boolean 
+     */
+    public function getChecked()
+    {
+        return $this->checked;
+    }
+
+    /**
+     * Set image
+     *
+     * @param string $image
+     * @return Question
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return string 
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
      * Set category
      *
      * @param \Lider\Bundle\LiderBundle\Entity\Category $category
@@ -134,13 +189,6 @@ class Question extends Entity
     public function getCategory()
     {
         return $this->category;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -177,29 +225,6 @@ class Question extends Entity
     }
 
     /**
-     * Set checked
-     *
-     * @param boolean $checked
-     * @return Question
-     */
-    public function setChecked($checked)
-    {
-        $this->checked = $checked;
-
-        return $this;
-    }
-
-    /**
-     * Get checked
-     *
-     * @return boolean 
-     */
-    public function getChecked()
-    {
-        return $this->checked;
-    }
-
-    /**
      * Set user
      *
      * @param \Lider\Bundle\LiderBundle\Entity\Player $user
@@ -220,28 +245,5 @@ class Question extends Entity
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * Set image
-     *
-     * @param string $image
-     * @return Question
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    /**
-     * Get image
-     *
-     * @return string 
-     */
-    public function getImage()
-    {
-        return $this->image;
     }
 }

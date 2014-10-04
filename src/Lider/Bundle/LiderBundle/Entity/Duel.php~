@@ -17,16 +17,9 @@ class Duel extends Entity
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
-    /**
-	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"})
-	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
-	 * @Assert\NotBlank()
-	 */
-	private $group;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="Game",cascade={"persist"})
+	 * @ORM\ManyToOne(targetEntity="Game",cascade={"persist"}, inversedBy="duels")
 	 * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
 	 * @Assert\NotBlank()
 	 */
@@ -39,8 +32,7 @@ class Duel extends Entity
 	private $startdate;
 	
 	/**
-	 * @ORM\Column(type="datetime")
-	 * @Assert\NotBlank()
+	 * @ORM\Column(type="datetime", nullable=true)	 
 	 */
 	private $enddate;
 	
@@ -74,20 +66,7 @@ class Duel extends Entity
 	 * @ORM\Column(type="boolean")
 	 */
 	private $active = true;
-	
-	/**
-	 * @ORM\Column(type="integer")
-	 * @Assert\NotBlank()
-	 */
-	private $count_question_one = 0;
-
-	/**
-	 * @ORM\Column(type="integer")
-	 * @Assert\NotBlank()
-	 */
-	private $count_question_two = 0;
-	
-	
+		
 	/**
 	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
 	 * @ORM\JoinColumn(name="player_win_id", referencedColumnName="id")
@@ -100,11 +79,22 @@ class Duel extends Entity
 	 */	
 	private $player_lost;
 
-  
+    /**
+     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="duels")
+     * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
+     * @Assert\NotBlank()
+     */    
+    private $tournament;
+
     /**
      * @ORM\Column(type="boolean")
      */
     private $finished = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $extraDuel = false; 
 
     /**
      * Get id
@@ -232,26 +222,26 @@ class Duel extends Entity
     }
 
     /**
-     * Set group
+     * Set finished
      *
-     * @param \Lider\Bundle\LiderBundle\Entity\Group $group
+     * @param boolean $finished
      * @return Duel
      */
-    public function setGroup(\Lider\Bundle\LiderBundle\Entity\Group $group = null)
+    public function setFinished($finished)
     {
-        $this->group = $group;
+        $this->finished = $finished;
 
         return $this;
     }
 
     /**
-     * Get group
+     * Get finished
      *
-     * @return \Lider\Bundle\LiderBundle\Entity\Group 
+     * @return boolean 
      */
-    public function getGroup()
+    public function getFinished()
     {
-        return $this->group;
+        return $this->finished;
     }
 
     /**
@@ -324,52 +314,6 @@ class Duel extends Entity
     }
 
     /**
-     * Set player_win_id
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerWinId
-     * @return Duel
-     */
-    public function setPlayerWinId(\Lider\Bundle\LiderBundle\Entity\Player $playerWinId = null)
-    {
-        $this->player_win_id = $playerWinId;
-
-        return $this;
-    }
-
-    /**
-     * Get player_win_id
-     *
-     * @return \Lider\Bundle\LiderBundle\Entity\Player 
-     */
-    public function getPlayerWinId()
-    {
-        return $this->player_win_id;
-    }
-
-    /**
-     * Set player_lost_id
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Player $playerLostId
-     * @return Duel
-     */
-    public function setPlayerLostId(\Lider\Bundle\LiderBundle\Entity\Player $playerLostId = null)
-    {
-        $this->player_lost_id = $playerLostId;
-
-        return $this;
-    }
-
-    /**
-     * Get player_lost_id
-     *
-     * @return \Lider\Bundle\LiderBundle\Entity\Player 
-     */
-    public function getPlayerLostId()
-    {
-        return $this->player_lost_id;
-    }
-
-    /**
      * Set player_win
      *
      * @param \Lider\Bundle\LiderBundle\Entity\Player $playerWin
@@ -416,71 +360,48 @@ class Duel extends Entity
     }
 
     /**
-     * Set count_question_one
+     * Set tournament
      *
-     * @param integer $countQuestionOne
+     * @param \Lider\Bundle\LiderBundle\Entity\Tournament $tournament
      * @return Duel
      */
-    public function setCountQuestionOne($countQuestionOne)
+    public function setTournament(\Lider\Bundle\LiderBundle\Entity\Tournament $tournament = null)
     {
-        $this->count_question_one = $countQuestionOne;
+        $this->tournament = $tournament;
 
         return $this;
     }
 
     /**
-     * Get count_question_one
+     * Get tournament
      *
-     * @return integer 
+     * @return \Lider\Bundle\LiderBundle\Entity\Tournament 
      */
-    public function getCountQuestionOne()
+    public function getTournament()
     {
-        return $this->count_question_one;
+        return $this->tournament;
     }
 
     /**
-     * Set count_question_two
+     * Set extraDuel
      *
-     * @param integer $countQuestionTwo
+     * @param boolean $extraDuel
      * @return Duel
      */
-    public function setCountQuestionTwo($countQuestionTwo)
+    public function setExtraDuel($extraDuel)
     {
-        $this->count_question_two = $countQuestionTwo;
+        $this->extraDuel = $extraDuel;
 
         return $this;
     }
 
     /**
-     * Get count_question_two
-     *
-     * @return integer 
-     */
-    public function getCountQuestionTwo()
-    {
-        return $this->count_question_two;
-    }
-
-    /**
-     * Set finished
-     *
-     * @param boolean $finished
-     * @return Duel
-     */
-    public function setFinished($finished)
-    {
-        $this->finished = $finished;
-
-        return $this;
-    }
-
-    /**
-     * Get finished
+     * Get extraDuel
      *
      * @return boolean 
      */
-    public function getFinished()
+    public function getExtraDuel()
     {
-        return $this->finished;
+        return $this->extraDuel;
     }
 }

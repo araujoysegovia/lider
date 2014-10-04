@@ -155,8 +155,9 @@ class GroupController extends Controller
         $tournamentId = $data['tournament'];
 
         $tournament = $em->getRepository("LiderBundle:Tournament")->findOneBy(array("id" => $tournamentId, "deleted" => false));
-
-        foreach ($tournament->getGroups()->toArray() as $value) {
+		$tournamentGroups = $em->getRepository("LiderBundle:Group")->findBy(array("tournament" => $tournamentId, "deleted" => false));
+        
+        foreach ($tournamentGroups as $value) {
             $value->setDeleted(true);
         }
         $em->flush();
@@ -186,11 +187,80 @@ class GroupController extends Controller
 
     public function getGroupPositionAction()
     {
-        $dm = $this->get('doctrine_mongodb')->getManager();
-        $repo = $dm->getRepository("LiderBundle:QuestionHistory");
-        $list = $repo->findGroupPosition();
-        $list = $list->toArray();
-        return $this->get("talker")->response(array("total" => count($list), "data" => $list));
+        $em = $this->getDoctrine()->getEntityManager();
+        //$dm = $this->get('doctrine_mongodb')->getManager();
+        $repo = $em->getRepository("LiderBundle:Group");
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $tournamentId = $user->getTeam()->getTournament()->getId();
+
+        $gameRepo = $em->getRepository("LiderBundle:Game");
+
+        $list = $repo->findBy(array('tournament' => $tournamentId, "deleted" => false));
+        $l = array();
+        foreach ($list as $group) {
+            $teams = array();
+            $g = array(
+                "id" => $group->getId(),
+                "name" => $group->getName(),
+                "teams" => array()
+            );
+            foreach ($group->getTeams() as $team) {
+                $teams[]= $team->getId();
+            }
+            $games = $gameRepo->getTeamPositions($teams);
+            foreach ($group->getTeams() as $team) {
+                $ls = array(
+                    'id' => $team->getId(),
+                    'name' => $team->getName(),
+                    'points' => $team->getPoints(),
+                    'total' => 0,
+                    'win' => 0,
+                    'loose' => 0,
+                );
+                foreach ($games as $game) {
+                    if($game->getTeamOne()->getId() == $team->getId() || $game->getTeamTwo()->getId() == $team->getId()){
+                        $ls['total']++;
+                        if($game->getTeamWinner()){
+                            if($game->getTeamWinner()->getId() == $team->getId()){
+                                $ls['win']++;
+                            }else{
+                                $ls['loose']++;
+                            }
+                        }
+                    }
+                }
+                $g["teams"][] = $ls;
+               
+            }
+            $l[] = $g;
+        }
+
+        $orderBy = function($data, $field){
+            $code = "return strnatcmp(\$a['$field'], \$b['$field']);";
+            usort($data, create_function('$a, $b', $code));
+            return $data;
+        };
+        foreach ($l as $value) {
+           $teams = $orderBy($value["teams"], "points");
+           $list=array();
+            foreach ($teams as $value) {
+                array_unshift($list, $value);
+            }
+            $value["teams"] = $teams;
+        }
+
+        return $this->get("talker")->response(array("total" => count($l), "data" => $l));
+    }
+
+    public function notificationGroupAction()
+    {
+        $gearman = $this->get('gearman');
+        $request = $this->get("request");
+        $tournament = $request->get('tournamentId');
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationGroup', json_encode(array(
+                'tournament' => $tournament,
+            )));
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
 }

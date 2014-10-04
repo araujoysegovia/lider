@@ -16,6 +16,13 @@ class NotificationWorker
     private $co;
 
     private $from = 'lider@araujoysegovia.com';
+
+    private $to = array(
+        "eescallon@araujoysegovia.com" => array("999", "1002", "996", "1009"),
+        "dmejia@araujoysegovia.com" => array("1004", "1011", "1005", "998"),
+        "lrodriguez@araujoysegovia.com" => array("1001", "1008", "1006", "997"),
+        "eduard.escallon@gmail.com" => array("1003", "1007", "1000", "1010")
+    );
     // private $em
 
     public function __construct($co){
@@ -40,13 +47,25 @@ class NotificationWorker
         $data = json_decode($job->workload(),true);
         //print_r($data);
         $notificationService = $this->co->get("notificationService");
+        $player = $this->co->get('doctrine')->getManager()->getRepository("LiderBundle:Player")->findOneByEmail($data['to']);
+        $team = $player->getTeam();
+        $to = $this->getEmailFromTeamId($team->getId());
         try{
-            $send = $notificationService->sendEmail($data['subject'], $data['from'], $data['to'], null, $data['viewName'], $data['content']);
+            $send = $notificationService->sendEmail($data['subject'], $this->from, $to, null, $data['viewName'], $data['content']);
             echo "Mensaje Enviado";
         }catch(\Exception $e){
             echo $e->getMessage();
         }
-        
+    }
+
+    private function getEmailFromTeamId($teamId)
+    {
+        foreach($this->to as $key => $value)
+        {
+            if(in_array($teamId, $value)){
+                return $key;
+            }
+        }
     }
 
     /**
@@ -57,40 +76,101 @@ class NotificationWorker
      * @return boolean
      *
      * @Gearman\Job(
-     *     name = "notificationTeam",
+     *     name = "sendNotificationTeam",
      *     description = "Send an Email when need a notification for the members of the team"
      * )
      */
-    public function sendNotificationEmailCreate(\GearmanJob $job){
+    public function sendNotificationTeam(\GearmanJob $job){
         $data = json_decode($job->workload(),true);
-        $team = $data['team'];
-        $em = $this->co->getDoctrine()->getEntityManager();
+        $tournamentId = $data['tournament'];
+        // print_r($team->getId());
+        $em = $this->co->get('doctrine')->getManager();
         $notificationService = $this->co->get("notificationService");
-        $repo = $em->getRepository("LiderBundle:Player");
-        $list = $repo->findBy(array("team" => $team->getId(), "deleted" => FALSE));
+        $repoTeam = $em->getRepository("LiderBundle:Team");
+        $list = $repoTeam->findBy(array("tournament" => $tournamentId, "deleted" => FALSE));
         $subject = "Este es tu Equipo!!!";
-        $to = array();
-        $content = array(
-            "teamImage" => $team->getImage(),
-            "title" => $team->getName(),
-        );
-        $members = array();
         if($list){
-            foreach($list->toArray() as $key => $value){
-                $to[] = $value->getId();
-                $members[$key]['image'] = $value->getImage();
-                $members[$key]['name'] = $value->getName();
-                $members[$key]['lastname'] = $value->getLastname();
+            foreach($list as $team){
+                // $to = array();
+                $content = array(
+                    "teamImage" => $team->getImage(),
+                    "title" => $team->getName(),
+                );
+                $members = array();
+                $players = $team->getPlayers();
+                foreach($players as $player)
+                {
+                    // $to[] = $player->getEmail();
+
+                    $members[$player->getId()]['image'] = $player->getImage();
+                    $members[$player->getId()]['name'] = $player->getName().' '.$player->getLastname();
+                }
+                $content['members'] = $members;
+                $to = $this->getEmailFromTeamId($team->getId());
+                try{
+                    $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                    echo "Mensaje Enviado";
+                }catch(\Exception $e){
+                    echo $e->getMessage();
+                }
+                
             }
-            $content['members'] = $members;
-            try{
-                $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
-                echo "Mensaje Enviado";
-            }catch(\Exception $e){
-                echo $e->getMessage();
-            }
+            
         }
+    }
+
+    /**
+     * Send Email when a team is created
+     *
+     * @param \GearmanJob $job Object with job parameters
+     *
+     * @return boolean
+     *
+     * @Gearman\Job(
+     *     name = "sendNotificationGroup",
+     *     description = "Send an Email when need a notification for the members of the team"
+     * )
+     */
+    public function sendNotificationGroup(\GearmanJob $job){
+        $data = json_decode($job->workload(),true);
+        $tournamentId = $data['tournament'];
+        $em = $this->co->get('doctrine')->getManager();
+        $notificationService = $this->co->get("notificationService");
+        $repo = $em->getRepository("LiderBundle:Group");
+        $list = $repo->findBy(array("tournament" => $tournamentId, "deleted" => FALSE));
+        $subject = "Este es tu Grupo!!!";
         
+        if($list){
+            foreach($list as $group){
+                $content = array(
+                    'title' => $group->getName()
+                );
+                $to = array();
+                $members = array();
+                $teams = $group->getTeams();
+                foreach($teams as $team)
+                {
+                    $players = $team->getPlayers();
+                    foreach($players as $player)
+                    {
+                        // $to[] = $player->getEmail();
+                    }
+                    $members[$team->getId()]['name'] = $team->getName();
+                    $members[$team->getId()]['image'] = $team->getImage();
+                    $to[] = $this->getEmailFromTeamId($team->getId());
+                }
+                $content['members'] = $members;
+                try{
+                    $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                    echo "Mensaje Enviado";
+                }catch(\Exception $e){
+                    echo $e->getMessage();
+                }
+            }
+                // $members[$key]['name'] = $value->getName();
+            
+            
+        }
     }
 
     /**
@@ -102,16 +182,14 @@ class NotificationWorker
      *
      * @Gearman\Job(
      *     name = "adminNotification",
-     *     description = "Send an Email to Admin when something happen"
+     *     description = "Send an Email to Admin when one player do something"
      * )
      */
     public function adminNotification(\GearmanJob $job){
         $data = json_decode($job->workload(),true);
-        $em = $this->co->get('doctrine')->getManager();
-        $notificationService = $this->co->get("notificationService");
-        $repo = $em->getRepository("LiderBundle:Player");
-        $admins = $repo->findAdmin();
-        if($admins){
+        $admins = $this->getAdmins();
+        if($admins)
+        {
             $to = array();
             $subject = $data['subject'];
             $body = $data['templateData'];
@@ -126,7 +204,15 @@ class NotificationWorker
                 echo $e->getMessage();
             }
         }
-        
+    }
+
+    private function getAdmins()
+    {
+        $em = $this->co->get('doctrine')->getManager();
+        $notificationService = $this->co->get("notificationService");
+        $repo = $em->getRepository("LiderBundle:Player");
+        $admins = $repo->findAdmin();
+        return $admins;
     }
 }
 ?>

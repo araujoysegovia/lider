@@ -8,7 +8,9 @@
 			</div>
 			<div style='padding: 0px 15px;'>
 				<div style="text-align: center;">
-					<img style="width: 50px; margin-top:15px;" src='http://lider.sifinca.net/web/app.php/image/{{ teamImage }}' />
+					{% if teamImage is defined %}
+						<img style="width: 50px; margin-top:15px;" src='http://lider.sifinca.net/web/app.php/image/{{ teamImage }}' />
+					{% endif %}
 					<h2>{{ title }}</h2>
 				</div>
 				<div style="margin-top: 10px;">
@@ -16,7 +18,7 @@
 						{% for member in members %}
 							<li>
 								<img style="width: 30px" src='http://lider.sifinca.net/web/app.php/image/{{ member.image }}'/>
-								<span style="margin-left: 10px;">{{ member.name }} {{ member.lastname }}</span>
+								<span style="margin-left: 10px;">{{ member.name }}</span>
 							</li>
 						{% endfor %}
 					</ul>

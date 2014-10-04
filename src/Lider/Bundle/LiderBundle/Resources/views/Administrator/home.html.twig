@@ -12,11 +12,13 @@
 	
     <script src="{{ asset('bundles/lider/js/kendo/js/jquery.min.js') }}"></script>  	
 	<script src="{{ asset('bundles/lider/js/kendo/js/kendo.all.min.js') }}"></script>
-
+	<script src="{{ asset('bundles/lider/js/noty/packaged/jquery.noty.packaged.min.js') }}"></script>
 	<script src="{{ asset('bundles/lider/js/underscore.js') }}"></script>
 	<script src="{{ asset('bundles/lider/js/backbone.js') }}"></script>
 	<script src="{{ asset('bundles/lider/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('bundles/lider/js/date.format.js') }}"></script>
 	
+	<script type="text/javascript" src="{{ asset('bundles/lider/js/loader.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('bundles/lider/js/entity.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('bundles/lider/js/homeAdministrator.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('bundles/lider/js/routerManager.js') }}"></script>
@@ -56,6 +58,7 @@
 									Par&aacute;metros</a></li>
 								<li><a id="linkImages" href="#" data-url="images">Im&aacute;genes</a></li>
 								<li><a id="linkNotificaciones" href="#" data-url="sendNotifications">Envio de notificaciones</a></li>
+								<li><a id="linkGames" href="#" data-url="games">Juegos</a></li>
 							</ul>
 						</li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
@@ -68,7 +71,8 @@
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown">Reportes<span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">								
-								<li><a id="linkReportQuestion" href="#" data-url="reportquestions">Preguntas Reportadas</a></li>
+								<li><a id="linkReportQuestion" href="#" data-url="reportquestions">Preguntas Reportadas</a></li>	
+								<li><a id="linkReportPlayerAnalysis" href="#" data-url="reportPlayerAnalysis">Analisis por jugador</a></li>							
 							</ul>
 						</li>						
 					</ul>

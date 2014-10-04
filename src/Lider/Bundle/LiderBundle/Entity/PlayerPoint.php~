@@ -23,18 +23,6 @@ class PlayerPoint extends Entity
 	 * @ORM\Column(type="integer", length=100)
 	 * @Assert\NotBlank()
 	 */
-	private $win;
-     
-    /**
-	 * @ORM\Column(type="integer", length=100)
-	 * @Assert\NotBlank()
-	 */
-	private $lost;	
-
-    /**
-	 * @ORM\Column(type="integer", length=100)
-	 * @Assert\NotBlank()
-	 */
 	private $points;	
 
 	/**
@@ -53,10 +41,7 @@ class PlayerPoint extends Entity
 	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"}, inversedBy="playerPoints")
 	 * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
 	 */
-	private $player;	
-
-    
-
+	private $player;
    
 
     /**
@@ -67,52 +52,6 @@ class PlayerPoint extends Entity
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set win
-     *
-     * @param integer $win
-     * @return PlayerPoint
-     */
-    public function setWin($win)
-    {
-        $this->win = $win;
-
-        return $this;
-    }
-
-    /**
-     * Get win
-     *
-     * @return integer 
-     */
-    public function getWin()
-    {
-        return $this->win;
-    }
-
-    /**
-     * Set lost
-     *
-     * @param integer $lost
-     * @return PlayerPoint
-     */
-    public function setLost($lost)
-    {
-        $this->lost = $lost;
-
-        return $this;
-    }
-
-    /**
-     * Get lost
-     *
-     * @return integer 
-     */
-    public function getLost()
-    {
-        return $this->lost;
     }
 
     /**

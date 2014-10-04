@@ -78,7 +78,7 @@ class QuestionHistory
     /** 
      * @MongoDB\int
      */
-    private $points;
+    private $points = 0;
 
     /** 
      * @MongoDB\Boolean
@@ -88,12 +88,23 @@ class QuestionHistory
     /**
      * @MongoDB\EmbedOne(targetDocument="Group") 
      */ 
-    private $groups;
+    private $group;
 
     /**
      * @MongoDB\EmbedOne(targetDocument="Team") 
      */ 
     private $team;
+
+    /** 
+     * @MongoDB\int
+     */
+    private $gameId;
+
+    /** 
+     * @MongoDB\Boolean
+     */
+    private $extraQuestion = false;
+
 
     public function __construct()
     {
@@ -426,27 +437,6 @@ class QuestionHistory
         return $this->useHelp;
     }
 
-    /**
-     * Set groups
-     *
-     * @param Lider\Bundle\LiderBundle\Document\Group $groups
-     * @return self
-     */
-    public function setGroups(\Lider\Bundle\LiderBundle\Document\Group $groups)
-    {
-        $this->groups = $groups;
-        return $this;
-    }
-
-    /**
-     * Get groups
-     *
-     * @return Lider\Bundle\LiderBundle\Document\Group $groups
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
 
     /**
      * Set team
@@ -468,5 +458,73 @@ class QuestionHistory
     public function getTeam()
     {
         return $this->team;
+    }
+
+
+
+    /**
+     * Set group
+     *
+     * @param Lider\Bundle\LiderBundle\Document\Group $group
+     * @return self
+     */
+    public function setGroup(\Lider\Bundle\LiderBundle\Document\Group $group)
+    {
+        $this->group = $group;
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return Lider\Bundle\LiderBundle\Document\Group $group
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    /**
+     * Set gameId
+     *
+     * @param int $gameId
+     * @return self
+     */
+    public function setGameId($gameId)
+    {
+        $this->gameId = $gameId;
+        return $this;
+    }
+
+    /**
+     * Get gameId
+     *
+     * @return int $gameId
+     */
+    public function getGameId()
+    {
+        return $this->gameId;
+    }
+
+    /**
+     * Set extraQuestion
+     *
+     * @param boolean $extraQuestion
+     * @return self
+     */
+    public function setExtraQuestion($extraQuestion)
+    {
+        $this->extraQuestion = $extraQuestion;
+        return $this;
+    }
+
+    /**
+     * Get extraQuestion
+     *
+     * @return boolean $extraQuestion
+     */
+    public function getExtraQuestion()
+    {
+        return $this->extraQuestion;
     }
 }

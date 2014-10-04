@@ -21,6 +21,11 @@ services:
         arguments:
           co: "@service_container"
 
+    checkerWorker:
+        class: Lider\Bundle\LiderBundle\Worker\CheckerWorker
+        arguments:
+          co: "@service_container"
+
     login.security.authentication.provider:
         class: Lider\Bundle\LiderBundle\Security\Authentication\Provider\Provider
 
@@ -45,9 +50,8 @@ services:
 
     question_manager:
         class: Lider\Bundle\LiderBundle\Lib\QuestionManager
-        arguments:
-              em: "@doctrine.orm.entity_manager"
-              dm: "@doctrine.odm.mongodb.document_manager"
+        arguments:            
+              co: "@service_container"
 
     parameters_manager:
         class: Lider\Bundle\LiderBundle\Lib\ParametersManager
@@ -57,3 +61,6 @@ services:
         arguments:
               em: "@doctrine.orm.entity_manager"
               dm: "@doctrine.odm.mongodb.document_manager"
+              pm: "@parameters_manager"
+              qm: "@question_manager"
+              co: "@service_container"

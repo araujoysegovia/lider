@@ -19,28 +19,28 @@ class Team extends Entity
     private $id;
 
     /**
-	 * @ORM\Column(type="string", length=100)
-	 * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
      * @Assert\Length(max=100)
-	 */
-	private $name;
-	
-	
-	/**
-	 * @ORM\Column(type="string", nullable = true)	 
-	 */
-	private $image;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"}, inversedBy="teams")
-	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
-	 */
-	private $group;
+     */
+    private $name;
+    
+    
+    /**
+     * @ORM\Column(type="string", nullable = true)   
+     */
+    private $image;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"}, inversedBy="teams")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     */
+    private $group;
 
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
-	private $active = true;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active = true;
 
     /**
      * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="teams")
@@ -53,6 +53,11 @@ class Team extends Entity
      * @ORM\OneToMany(targetEntity="Player", mappedBy="team")
      */
     private $players;
+
+    /**
+     * @ORM\Column(type="integer", nullable = true)
+     */
+    private $points = 0;
 
     /**
      * Get id
@@ -218,5 +223,28 @@ class Team extends Entity
     public function getPlayers()
     {
         return $this->players;
+    }
+
+    /**
+     * Set points
+     *
+     * @param integer $points
+     * @return Team
+     */
+    public function setPoints($points)
+    {
+        $this->points = $points;
+
+        return $this;
+    }
+
+    /**
+     * Get points
+     *
+     * @return integer 
+     */
+    public function getPoints()
+    {
+        return $this->points;
     }
 }

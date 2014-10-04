@@ -32,7 +32,7 @@ class Group extends GroupEntity
 
 	
 
-    public function getDataFromTournamentEntity(GroupEntity $group)
+    public function getDataFromGroupEntity(GroupEntity $group)
     {
         $this->setGroupId($group->getId());
         $this->setName($group->getName());

@@ -118,9 +118,10 @@ class Normalizer extends GetSetMethodNormalizer
 		if(is_numeric($data)){
 			return $em->getRepository($class)->find($data);
 		}
-
+		$isNew = false;
 		if(is_array($data) && array_key_exists($metadata->identifier[0], $data) &&
 				!is_null($data[$metadata->identifier[0]]) && !empty($data[$metadata->identifier[0]])){
+			$isNew=true;
 			$newClass = $em->getRepository($class)->find($data[$metadata->identifier[0]]);
 		}
 
@@ -145,36 +146,39 @@ class Normalizer extends GetSetMethodNormalizer
 						else
 							$mbSetter = 'add' . ucwords ( $mappedBy );
 
-						//echo "\n\n\n --------------------------------- Voy a entrear a obtener $entity --------------------------------\n\n";
-						if (is_array($value)){
-							$keys = array_keys ($value);
-							if(is_numeric ( $keys [0] )) {
-								$obj = array ();
-								foreach ( $value as $v ) {
+					//echo "\n\n\n --------------------------------- Voy a entrear a obtener $entity --------------------------------\n\n";
+					if (is_array($value)){
+						$keys = array_keys ($value);
+						if(is_numeric ( $keys [0] )) {
+							$obj = array ();
+							foreach ( $value as $v ) {
 
-									$newObj = $this->denormalize ( $v, $entity, $format );
-									if(!is_null($mbSetter)) $newObj->$mbSetter($newClass);
-									$obj [] = $newObj;
-								}
-							}else{
-								$obj = $this->denormalize ( $value, $entity, $format);
-								if(!is_null($mbSetter)) $obj->$mbSetter($newClass);
+								$newObj = $this->denormalize ( $v, $entity, $format );
+								if(!is_null($mbSetter)) $newObj->$mbSetter($newClass);
+								$obj [] = $newObj;
 							}
 						}else{
-							$obj = $this->denormalize ( $value, $entity, $format );
+							$obj = $this->denormalize ( $value, $entity, $format);
 							if(!is_null($mbSetter)) $obj->$mbSetter($newClass);
 						}
-							
-						//echo "\n\n\n --------------------------------- FIN --------------------------------\n\n";
-							
-						if ($asso ["type"] == 4 || $asso ["type"] == 8) {
-							if (substr ( $asso ["fieldName"], - 1 ) == "s")
-								$setter = 'add' . ucwords ( substr ( $key, 0, - 1 ) );
-							else
-								$setter = 'add' . ucwords ( $key );
+					}else{
+						$obj = $this->denormalize ( $value, $entity, $format );
+						if(!is_null($mbSetter)) $obj->$mbSetter($newClass);
+					}
+						
+					//echo "\n\n\n --------------------------------- FIN --------------------------------\n\n";
+						
+					if ($asso ["type"] == 4 || $asso ["type"] == 8) {
+						if (substr ( $asso ["fieldName"], - 1 ) == "s")
+							$setter = 'add' . ucwords ( substr ( $key, 0, - 1 ) );
+						else
+							$setter = 'add' . ucwords ( $key );
 
-							$getter = 'get' . ucwords ( $key );
-							$collection = $newClass->$getter();
+						$getter = 'get' . ucwords ( $key );
+						$collection = $newClass->$getter();
+
+						if($collection and $collection->count() > 0){
+
 							$foundInCollection = $this->lookInCollection ( $obj, $collection);
 							$toDelete = $this->removeNotBe($obj, $collection);
 
@@ -208,12 +212,13 @@ class Normalizer extends GetSetMethodNormalizer
 									}
 								}
 							}
-
-						}else{
-							if (method_exists ( $newClass, $setter )) {
-								$newClass->$setter($obj);
-							}
 						}
+
+					}else{
+						if (method_exists ( $newClass, $setter )) {
+							$newClass->$setter($obj);
+						}
+					}
 							
 				} elseif (array_key_exists ( $key, $fieldMapping )) {
 					if ($fieldMapping [$key] ["type"] == "datetime" ||
@@ -242,7 +247,6 @@ class Normalizer extends GetSetMethodNormalizer
 				}
 			}
 		}
-		$em->persist($newClass);
 		return $newClass;
 	}
 

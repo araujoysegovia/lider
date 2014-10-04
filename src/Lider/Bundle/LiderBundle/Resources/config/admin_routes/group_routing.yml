@@ -32,3 +32,8 @@ admin_group_save:
     pattern:  /save
     defaults: { _controller: LiderBundle:Group:saveGroup }
     methods:  [POST]
+
+admin_group_notification:
+    pattern:  /notification
+    defaults: { _controller: LiderBundle:Group:notificationGroup }
+    methods:  [GET]

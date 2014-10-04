@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Game class
  * @ORM\Table(name="game")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\GameRepository")
  */
 class Game extends Entity
 {
@@ -17,13 +17,6 @@ class Game extends Entity
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-	
-	/**
-	 * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"})
-	 * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
-	 * @Assert\NotBlank()
-	 */
-	private $group;
 	
 	/**
 	 * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"})
@@ -73,10 +66,45 @@ class Game extends Entity
     private $finished = false;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $indicator;
+
+    /**
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\Range(min=1, max=5)
      */
     private $level;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Range(min=1, max=3)
+     */
+    private $round;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="games")
+     * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
+     * @Assert\NotBlank()
+     */
+    private $tournament;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"}, inversedBy="games")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=true)
+     */
+    private $group;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Duel", mappedBy="game")
+     */
+    private $duels;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"})
+     * @ORM\JoinColumn(name="teamwiner_id", referencedColumnName="id")
+     */
+    private $team_winner;
 
     /**
      * Get id
@@ -204,29 +232,6 @@ class Game extends Entity
     }
 
     /**
-     * Set group
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Group $group
-     * @return Game
-     */
-    public function setGroup(\Lider\Bundle\LiderBundle\Entity\Group $group = null)
-    {
-        $this->group = $group;
-
-        return $this;
-    }
-
-    /**
-     * Get group
-     *
-     * @return \Lider\Bundle\LiderBundle\Entity\Group 
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-
-    /**
      * Set team_one
      *
      * @param \Lider\Bundle\LiderBundle\Entity\Team $teamOne
@@ -316,5 +321,160 @@ class Game extends Entity
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * Set round
+     *
+     * @param integer $round
+     * @return Game
+     */
+    public function setRound($round)
+    {
+        $this->round = $round;
+
+        return $this;
+    }
+
+    /**
+     * Get round
+     *
+     * @return integer 
+     */
+    public function getRound()
+    {
+        return $this->round;
+    }
+
+    /**
+     * Set tournament
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Tournament $tournament
+     * @return Game
+     */
+    public function setTournament(\Lider\Bundle\LiderBundle\Entity\Tournament $tournament = null)
+    {
+        $this->tournament = $tournament;
+
+        return $this;
+    }
+
+    /**
+     * Get tournament
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Tournament 
+     */
+    public function getTournament()
+    {
+        return $this->tournament;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->duels = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add duels
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Duel $duels
+     * @return Game
+     */
+    public function addDuel(\Lider\Bundle\LiderBundle\Entity\Duel $duels)
+    {
+        $this->duels[] = $duels;
+
+        return $this;
+    }
+
+    /**
+     * Remove duels
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Duel $duels
+     */
+    public function removeDuel(\Lider\Bundle\LiderBundle\Entity\Duel $duels)
+    {
+        $this->duels->removeElement($duels);
+    }
+
+    /**
+     * Get duels
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDuels()
+    {
+        return $this->duels;
+    }
+
+    /**
+     * Set group
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Group $group
+     * @return Game
+     */
+    public function setGroup(\Lider\Bundle\LiderBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Group 
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    /**
+     * Set indicator
+     *
+     * @param string $indicator
+     * @return Game
+     */
+    public function setIndicator($indicator)
+    {
+        $this->indicator = $indicator;
+
+        return $this;
+    }
+
+    /**
+     * Get indicator
+     *
+     * @return string 
+     */
+    public function getIndicator()
+    {
+        return $this->indicator;
+    }
+
+    /**
+     * Set team_winner
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Team $teamWinner
+     * @return Game
+     */
+    public function setTeamWinner(\Lider\Bundle\LiderBundle\Entity\Team $teamWinner = null)
+    {
+        $this->team_winner = $teamWinner;
+
+        return $this;
+    }
+
+    /**
+     * Get team_winner
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Team 
+     */
+    public function getTeamWinner()
+    {
+        return $this->team_winner;
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php 
 namespace Lider\Bundle\LiderBundle\Controller;
 
 use Lider\Bundle\LiderBundle\Controller\Controller;
@@ -191,8 +191,10 @@ class TeamController extends Controller
         $tournamentId = $data['tournament'];
 
         $tournament = $em->getRepository("LiderBundle:Tournament")->findOneBy(array("id" => $tournamentId, "deleted" => false));
-
-        foreach ($tournament->getTeams()->toArray() as $value) {
+		
+        $tournamentTeams = $em->getRepository("LiderBundle:Team")->findBy(array("tournament" => $tournamentId, "deleted" => false));
+        
+        foreach ($tournamentTeams as $value) {
             $value->setDeleted(true);
         }
         $em->flush();
@@ -220,17 +222,15 @@ class TeamController extends Controller
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
-    public function notificationPlayersFromTeamAction($tournament){
-        $em = $this->getDoctrine()->getEntityManager();
-        $gearman = $this->get("gearman"); 
-        $repo = $em->getRepository("LiderBundle:Team");
-        $list = $repo->findBy(array("tournamentId" => $tournament));
-        $list = $list->toArray();
-        foreach($list as $value){
-            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationEmailCreate', json_encode(array(
-                "team" => $value
+    public function notificationTeamAction(){
+        $gearman = $this->get('gearman');
+        $request = $this->get("request");
+        $tournament = $request->get('tournamentId');
+        echo $tournament;
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationTeam', json_encode(array(
+                'tournament' => $tournament,
             )));
-        }
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
     /**
