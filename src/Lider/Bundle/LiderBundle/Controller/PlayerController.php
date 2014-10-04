@@ -67,101 +67,9 @@ class PlayerController extends Controller
     	if(!$user)
     		throw new \Exception("User Not Registered", 403);
     	
-    	$session = new \Lider\Bundle\LiderBundle\Document\Session();
-    	$session->setStart(new \MongoDate());
-    	$session->setUserId($user->getId());
-    	$session->setIp($request->getClientIp());
-    	$session->setLast(new \MongoDate());
-    	$session->setEnabled(true);
-    	$session->setEmail($user->getUsername());
-    	$session->setUserAgent($request->headers->get("User-Agent"));
-    	$session->setCookie($request->headers->get("Cookie"));
-    	
-    	$dm->persist($session);
-    	$dm->flush();
-    	
-    	$generateToken = $this->generatePass($session->getId());
-    	
-    	$token = "";
-    	if(strstr($generateToken, '/'))
-    	{
-    		$explode = explode("/", $generateToken);
-    		foreach($explode as $value)
-    		{
-    			$token .= $value;
-    		}
-    	}
-    	else{
-    		$token = $generateToken;
-    	}
-    	
-    	$session->setToken($token);
-    	
-    	$dm->persist($session);
-    	$dm->flush();
-    	
-    	//echo $user->getTeam()->getId();
-    	$arr = array();
-    	$roles = array();
-    	//print_r($user->getRoles()->getId());
-    	foreach($user->getRoles() as $key => $value){
-    		$roles[$key] = array(
-    			"id" => $value->getId(),
-    			"name" => $value->getName(),
-    		);
-    	}
-    	$office = array(
-    		"id" => $user->getOffice()->getId(),
-    		"name" => $user->getOffice()->getName(),
-    	);
-    	
-    	$arr['token'] = $session->getToken();
-    	
-      $arr['user'] = array(
-            'id' => $user->getId(),
-            "email" => $user->getEmail(),
-            "name" => $user->getName(),
-            "latname" => $user->getLastname(),
-            "image" => $user->getImage(),
-            "office" => $office,
-            "roles" => $roles,
-            "team" => array(),
-            "changePassword" => $user->getChangePassword(),
-            "gameInfo" => array(
-                'win' => $user->getWonGames(),
-                'lost' => $user->getLostGames(),
-                'points' => 0
-            )        
-        );
-        
+    	$arr = $this->login($user);
 
-        if($team){
-            $arr['user']['team'] = array(
-                "id" => $user->getTeam()->getId(),
-                "name" => $user->getTeam()->getName()               
-            ) ;
-        }
-
-        $points = $user->getPlayerPoints()->toArray();
-
-        foreach ($points as $value) {
-            if($value->getTournament()->getActive()){               
-                $arr['user']['gameInfo']['points'] += $value->getPoints();
-            }
-        }
-
-        // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
-        // $arr['user']['gameInfo'] = $playerGameInfo;
-        $parameters = $this->get('parameters_manager')->getParameters();
-
-        $arr['config'] = array(
-            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'] ,
-            "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
-            "timeGame" => $parameters['gamesParameters']['timeGame'],
-            "timeDuel" => $parameters['gamesParameters']['timeDuel']
-        ); 
-
-    	return $this->get("talker")->response($arr);
+        return $this->get("talker")->response($arr);
     }
 
     public function loginAction(){
@@ -203,12 +111,22 @@ class PlayerController extends Controller
             "email" => $userName, 
             "enabled" => true, 
             "cookie" => $request->headers->get("Cookie")));
-
+        $session = null;
         if($sess)
         {
             $session = $sess;
         }
-        else
+        $arr = $this->login($user, $session);
+
+        return $this->get("talker")->response($arr);
+    }
+
+    private function login($user, $session = null)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $request = $this->get("request");
+        if(is_null($session))
         {
             $session = new \Lider\Bundle\LiderBundle\Document\Session();
             $session->setStart(new \MongoDate());
@@ -219,9 +137,12 @@ class PlayerController extends Controller
             $session->setEmail($user->getUsername());
             $session->setUserAgent($request->headers->get("User-Agent"));
             $session->setCookie($request->headers->get("Cookie"));
+            
             $dm->persist($session);
             $dm->flush();
+            
             $generateToken = $this->generatePass($session->getId());
+            
             $token = "";
             if(strstr($generateToken, '/'))
             {
@@ -234,13 +155,16 @@ class PlayerController extends Controller
             else{
                 $token = $generateToken;
             }
+            
             $session->setToken($token);
+            
             $dm->persist($session);
             $dm->flush();
         }
-        
+        //echo $user->getTeam()->getId();
         $arr = array();
-        $roles = array();        
+        $roles = array();
+        //print_r($user->getRoles()->getId());
         foreach($user->getRoles() as $key => $value){
             $roles[$key] = array(
                 "id" => $value->getId(),
@@ -248,24 +172,12 @@ class PlayerController extends Controller
             );
         }
         $office = array(
-           "id" => $user->getOffice()->getId(),
-           "name" => $user->getOffice()->getName(),
+            "id" => $user->getOffice()->getId(),
+            "name" => $user->getOffice()->getName(),
         );
-
+        
         $arr['token'] = $session->getToken();
         
-        $team = $user->getTeam();
-     
-        $wonGames = 0;
-        if($user->getWonGames()){
-            $wonGames = $user->getWonGames();
-        }
-
-        $lostGames = 0;
-        if($user->getLostGames()){
-            $lostGames = $user->getLostGames();
-        }        
-
         $arr['user'] = array(
             'id' => $user->getId(),
             "email" => $user->getEmail(),
@@ -276,26 +188,14 @@ class PlayerController extends Controller
             "roles" => $roles,
             "team" => array(),
             "changePassword" => $user->getChangePassword(),
-            "gameInfo" => array(
-                'win' => $wonGames,
-                'lost' => $lostGames,
-                'points' => 0
-            )        
         );
         
-
+        $team = $user->getTeam();
         if($team){
-        	$arr['user']['team'] = array(
-        		"id" => $user->getTeam()->getId(),
-        		"name" => $user->getTeam()->getName()        		
-        	) ;
-        }
-    
-        $points = $user->getPlayerPoints()->toArray();
-        foreach ($points as $value) {
-            if($value->getTournament()->getActive()){                
-                $arr['user']['gameInfo']['points'] += $value->getPoints();
-            }
+            $arr['user']['team'] = array(
+                "id" => $user->getTeam()->getId(),
+                "name" => $user->getTeam()->getName()               
+            ) ;
         }
 
         // $playerGameInfo = $repo->getPlayerGamesInfo($user->getId());
@@ -308,8 +208,38 @@ class PlayerController extends Controller
             "timeGame" => $parameters['gamesParameters']['timeGame'],
             "timeDuel" => $parameters['gamesParameters']['timeDuel']
         ); 
-               
-        return $this->get("talker")->response($arr);
+
+        return $arr;
+    }
+
+    public function getGameInfoAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        
+        $wonGames = 0;
+        if($user->getWonGames()){
+            $wonGames = $user->getWonGames();
+        }
+
+        $lostGames = 0;
+        if($user->getLostGames()){
+            $lostGames = $user->getLostGames();
+        }
+
+        $return = array(
+            'win' => $wonGames,
+            'lost' => $lostGames,
+            'points' => 0,
+        );
+    
+        $points = $user->getPlayerPoints()->toArray();
+        foreach ($points as $value) {
+            if($value->getTournament()->getActive()){                
+                $return['points'] += $value->getPoints();
+            }
+        }
+        return $this->get("talker")->response($return);
     }
     
     /**
@@ -336,8 +266,21 @@ class PlayerController extends Controller
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository("LiderBundle:QuestionHistory");
-        $list = $repo->findRangePosition();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $tournamentId = $user->getTeam()->getTournament()->getId();
+
+        $list = $repo->findRangePosition($tournamentId);
         $list = $list->toArray();
+        $orderBy = function($data, $field){
+            $code = "return strnatcmp(\$a['$field'], \$b['$field']);";
+            usort($data, create_function('$a, $b', $code));
+            return $data;
+        };
+        $slist = $orderBy($list, "totalPoint");
+        $list=array();
+        foreach ($slist as $value) {
+            array_unshift($list, $value);
+        }
         return $this->get("talker")->response(array("total" => count($list), "data" => $list));
     }
 

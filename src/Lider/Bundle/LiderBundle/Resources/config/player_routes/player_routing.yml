@@ -86,3 +86,9 @@ player_suggestion:
     pattern:  /suggestion
     defaults: { _controller: LiderBundle:Player:saveSuggestion }
     methods:  [POST]
+
+#Estadisticas del usuario en session
+player_gameinfo:
+    pattern:  /gameinfo
+    defaults: { _controller: LiderBundle:Player:getGameInfo }
+    methods:  [GET]

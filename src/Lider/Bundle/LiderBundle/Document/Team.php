@@ -32,9 +32,9 @@ class Team extends TeamEntity
 
 	
 
-    public function getDataFromTournamentEntity(TeamEntity $team)
+    public function getDataFromTeamEntity(TeamEntity $team)
     {
-        $this->setTournamentId($team->getId());
+        $this->setTeamId($team->getId());
         $this->setName($team->getName());
         $this->setActive($team->getActive());           
     }

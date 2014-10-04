@@ -102,7 +102,7 @@ class Game extends Entity
 
     /**
      * @ORM\ManyToOne(targetEntity="Team",cascade={"persist"})
-     * @ORM\JoinColumn(name="teamwiner_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="teamtwo_id", referencedColumnName="id")
      */
     private $team_winner;
 
@@ -453,28 +453,5 @@ class Game extends Entity
     public function getIndicator()
     {
         return $this->indicator;
-    }
-
-    /**
-     * Set team_winner
-     *
-     * @param \Lider\Bundle\LiderBundle\Entity\Team $teamWinner
-     * @return Game
-     */
-    public function setTeamWinner(\Lider\Bundle\LiderBundle\Entity\Team $teamWinner = null)
-    {
-        $this->team_winner = $teamWinner;
-
-        return $this;
-    }
-
-    /**
-     * Get team_winner
-     *
-     * @return \Lider\Bundle\LiderBundle\Entity\Team 
-     */
-    public function getTeamWinner()
-    {
-        return $this->team_winner;
     }
 }
