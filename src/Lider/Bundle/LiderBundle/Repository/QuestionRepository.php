@@ -23,29 +23,29 @@ class QuestionRepository extends MainRepository
 	/**
 	 * 
 	 */
-	// public function getQuestionListNotIn(array $listId = array(), $asArray = true) {
+	public function getQuestionListNotIn(array $listId = array(), $asArray = true) {
 		
-	// 	$query =  $this->createQueryBuilder('q')
-	// 					->select('q, r, c')
-	// 					->join('q.answers', 'r', 'WITH','r.deleted = false')
-	// 					->join('q.category', 'c', 'WITH','c.deleted = false')
-	// 					->where('q.deleted = false AND q.checked = true');
+		$query =  $this->createQueryBuilder('q')
+						->select('q, r, c')
+						->join('q.answers', 'r', 'WITH','r.deleted = false')
+						->join('q.category', 'c', 'WITH','c.deleted = false')
+						->where('q.deleted = false AND q.checked = true');
 							
-	// 	if(!count($listId)==0) {		
-	// 		$query->andWhere('q.id NOT IN (:ids)')
-	// 			  ->setParameter('ids',$listId);
-	// 	}
+		if(!count($listId)==0) {		
+			$query->andWhere('q.id NOT IN (:ids)')
+				  ->setParameter('ids',$listId);
+		}
 		
-	// 	$query = $query->getQuery();
-	// 	//echo $query->getSQL()."<br/><br/>";
+		$query = $query->getQuery();
+		//echo $query->getSQL()."<br/><br/>";
 
-	// 	if($asArray){
-	// 		return $query->getArrayResult();	
-	// 	}else{
-	// 		return $query->getResult();
-	// 	}
+		if($asArray){
+			return $query->getArrayResult();	
+		}else{
+			return $query->getResult();
+		}
 		
-	// }
+	}
 
 
 	public function getQuestionList($asArray = true) {

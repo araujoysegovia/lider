@@ -22,8 +22,18 @@ class DuelController extends Controller
     	else 
     		return $this->get("talker")->response(array('total'=>count($duel), 'data'=>$duel));
     }
-    
-    
+
+    public function getDuelsByGameAction($gameId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $duels = $em->getRepository('LiderBundle:Duel')->getArrayEntityWithOneLevel(array("game" => $gameId, 'deleted' => false));
+        if(!$duels)
+            return $this->get("talker")->response(array());
+        else 
+            return $this->get("talker")->response($duels);
+    }
+
+
     /**
      *  Obtener Historial de duelos actual del usuario en session
      */

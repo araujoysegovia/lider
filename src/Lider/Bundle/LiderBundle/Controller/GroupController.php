@@ -196,8 +196,13 @@ class GroupController extends Controller
 
     public function notificationGroupAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        
+        $gearman = $this->get('gearman');
+        $request = $this->get("request");
+        $tournament = $request->get('tournamentId');
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationGroup', json_encode(array(
+                'tournament' => $tournament,
+            )));
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
 }

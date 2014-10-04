@@ -66,6 +66,11 @@ class Game extends Entity
     private $finished = false;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $indicator;
+
+    /**
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\Range(min=1, max=5)
      */
@@ -83,6 +88,12 @@ class Game extends Entity
      * @Assert\NotBlank()
      */
     private $tournament;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Group",cascade={"persist"}, inversedBy="games")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=true)
+     */
+    private $group;
 
     /**
      * @ORM\OneToMany(targetEntity="Duel", mappedBy="game")
@@ -390,5 +401,51 @@ class Game extends Entity
     public function getDuels()
     {
         return $this->duels;
+    }
+
+    /**
+     * Set group
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Group $group
+     * @return Game
+     */
+    public function setGroup(\Lider\Bundle\LiderBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Group 
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    /**
+     * Set indicator
+     *
+     * @param string $indicator
+     * @return Game
+     */
+    public function setIndicator($indicator)
+    {
+        $this->indicator = $indicator;
+
+        return $this;
+    }
+
+    /**
+     * Get indicator
+     *
+     * @return string 
+     */
+    public function getIndicator()
+    {
+        return $this->indicator;
     }
 }

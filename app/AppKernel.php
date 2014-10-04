@@ -6,6 +6,10 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 error_reporting(E_ALL ^ E_DEPRECATED ^ E_USER_DEPRECATED);
 date_default_timezone_set('America/Bogota');
 
+ini_set("session.use_cookies", false);
+ini_set("session.use_only_cookies", false);
+ini_set("session.use_trans_sid", false);
+
 class AppKernel extends Kernel
 {
     public function registerBundles()

@@ -43,7 +43,7 @@ class Talker{
 		$response = new Response();
 		foreach ($encoder['content'] as $item)
 			$response->headers->set("Content-Type", $item);
-		
+		$response->headers->clearCookie('PHPSESSID');
 		return $response;
 	}
 	

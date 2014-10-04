@@ -26,7 +26,7 @@ class Group extends Entity
     private $name;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"}, inversedBy="groups")
+     * @ORM\ManyToOne(targetEntity="Tournament",cascade={"persist"})
      * @ORM\JoinColumn(name="tournament_id", referencedColumnName="id")
      * @Assert\NotBlank()
      */

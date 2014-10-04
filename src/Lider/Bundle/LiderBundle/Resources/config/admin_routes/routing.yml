@@ -31,6 +31,10 @@ admin_category:
     resource: "@LiderBundle/Resources/config/admin_routes/category_routing.yml"
     prefix:   /home/category
 
+admin_duel:
+    resource: "@LiderBundle/Resources/config/admin_routes/duel_routing.yml"
+    prefix:   /home/duel
+
 admin_game:
     resource: "@LiderBundle/Resources/config/admin_routes/game_routing.yml"
     prefix:   /home/game
@@ -98,24 +102,9 @@ general_get_image:
     defaults: { _controller: LiderBundle:Image:getAllImage }
     methods:  [GET]
 
-generate_game:
-    pattern:  /game/generate
-    defaults: { _controller: LiderBundle:Game:generateGame }
-    methods:  [GET]
-
 generate_duel:
     pattern:  /duel/generate
     defaults: { _controller: LiderBundle:Game:generateDuel }
-    methods:  [GET]
-
-stop_game:
-    pattern:  /game/stop
-    defaults: { _controller: LiderBundle:Game:stopGames }
-    methods:  [GET]
-
-start_game:
-    pattern:  /game/start
-    defaults: { _controller: LiderBundle:Game:startGames }
     methods:  [GET]
 
 stop_duels:

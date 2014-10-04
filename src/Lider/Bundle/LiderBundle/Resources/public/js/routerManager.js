@@ -66,7 +66,8 @@ var routerManager = Backbone.Router.extend({
 				    name: { type: "string" },
 				    startdate: { type: "date", parse: parseDate},
 				    enddate: { type: "date", parse: parseDate},
-				    active: { type: "boolean" }
+				    active: { type: "boolean" },
+				    enabledLevel: { type: "boolean"}
 				}
 			},
 			columns: [
@@ -97,8 +98,152 @@ var routerManager = Backbone.Router.extend({
 							return imgChecked;
 						}						
 					}
+				},
+				{ 
+					field: "enabledLabel",
+					title: "Activar Nivel",
+					width: 140,
+			    	template: function(e){ 			    		
+			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
+												
+						if(e.enabledLevel == false){
+							return '<button type="button" class="btn btn-success btn-sm btn-enabled-level">Activar</button>';
+						}else{
+							return '<button type="button" class="btn btn-success btn-sm" disabled="disabled">Activar</button>';
+						}						
+					}
 				}
-			]     
+			],
+			dataBound: function(){
+				$('.btn-enabled-level', tournament.grid).on("click", function() {
+                    var row = $(this).closest("tr");
+                    var grid = tournament.grid.data("kendoGrid");
+                    var item = grid.dataItem(row);
+                    if(item.level == 1)
+                    {
+                    	var data = {
+							"tournamentId": item.id
+						}
+						var loader = $(document.body).loaderPanel();
+						loader.show();
+						var config = {
+							type: 'POST',
+							url: "home/tournament/enablelevel",
+				            contentType: "application/json",
+				            dataType: "json",
+				            data: JSON.stringify(data),
+				            success: function(response){
+				            	var n = noty({
+						    		text: "Juegos Generados",
+						    		timeout: 1000,
+						    		type: "success"
+						    	});
+						    	grid.dataSource.read();
+						    	grid.refresh();
+				            },
+				            error: function(xhr, status, error){
+				            	try{
+							    	var obj = jQuery.parseJSON(xhr.responseText);
+							    	var n = noty({
+							    		text: obj.message,
+							    		timeout: 1000,
+							    		type: "error"
+							    	});
+						    	}catch(ex){
+						    		var n = noty({
+							    		text: "Error",
+							    		timeout: 1000,
+							    		type: "error"
+							    	});
+						    	}
+				            },
+				            complete: function(){
+				            	loader.hide();
+				            }
+						}
+						$.ajax(config);
+                    }
+                    else{
+                    	var modal = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
+									  '<div class="modal-dialog">'+
+									    '<div class="modal-content">'+
+									      '<div class="modal-header">'+
+									        '<button type="button" class="close" data-dismiss="modal">'+
+									        '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
+									        '<h4 class="modal-title" id="myModalLabel">Activar Nivel '+item.level+'</h4>'+
+									      '</div>'+
+									      '<div class="modal-body">'+	
+									      	'<form>'+
+									      		'<div class="form-group">'+
+									      			'<label>Fecha de inicio del nivel</label>'+
+									      			'<input type="date" class="form-control date-level"></input>'+
+									      		'</div>'+
+									      	'</form>'+
+									      '</div>'+
+									      '<div class="modal-footer">'+
+									        '<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>'+
+									        '<button type="button" class="btn btn-primary save-teams">Guardar</button>'+
+									      '</div>'+
+									    '</div>'+
+									  '</div>'+
+									'</div>';
+						var modalObj = $(modal);
+						modalObj.modal("show");
+						modalObj.find(".save-teams").click(function () {})
+						var date = new Date();
+						var dateString = date.format('Y-m-d');
+						modalObj.find('.date-level').attr('min', dateString).attr('value', dateString);
+						modalObj.find('.save-teams').click(function(){
+							var d = modalObj.find('.date-level').val();
+							var data = {
+								"date": d,
+								"tournamentId": item.id
+							}
+							var loader = $(document.body).loaderPanel();
+							loader.show();
+							var config = {
+								type: 'POST',
+								url: "home/tournament/enablelevel",
+					            contentType: "application/json",
+					            dataType: "json",
+					            data: JSON.stringify(data),
+					            success: function(response){
+					            	var n = noty({
+							    		text: "Juegos Generados",
+							    		timeout: 1000,
+							    		type: "success"
+							    	});
+							    	grid.dataSource.read();
+							    	grid.refresh();
+					            },
+					            error: function(xhr, status, error){
+					            	try{
+								    	var obj = jQuery.parseJSON(xhr.responseText);
+								    	var n = noty({
+								    		text: obj.message,
+								    		timeout: 1000,
+								    		type: "error"
+								    	});
+							    	}catch(ex){
+							    		var n = noty({
+								    		text: "Error",
+								    		timeout: 1000,
+								    		type: "error"
+								    	});
+							    	}
+					            },
+					            complete: function(){
+					            	loader.hide();
+					            }
+							}
+							$.ajax(config);
+						})
+                    }
+     //                
+                   // action.action.call(me,item);
+                })
+			}     
 		});
 	},
 
@@ -1601,7 +1746,7 @@ var routerManager = Backbone.Router.extend({
 			$.ajax(parameters);	
 
 			//Guardar equipos generados en BD
-			modalObj.find(".save-teams").click(function () {	
+			modalObj.find(".save-teams").click(function () {
 
 				var dataTeam = modalObj.find("select.select-tournaments option:selected").attr("data-team");
 				
@@ -1845,7 +1990,18 @@ var routerManager = Backbone.Router.extend({
 						  '<div class="form-group col-sm-4">'+
 						    '<label>Puntos por juego</label>'+						    
 					    	'<input type="number" class="form-control" id="gamePoints">'+
-						  '</div>'+								  						  
+						  '</div>'+
+						  '<div class="form-group col-sm-4">'+
+						    '<label>Numero de preguntas para Extra Duelo</label>'+						    
+					    	'<input type="number" class="form-control" id="countQuesttionExtraDuel">'+
+						  '</div>'+
+						  '<div class="form-group col-sm-4">'+
+						    '<label>Sumar Puntos en Duelo Extra</label>'+						    
+					    	'<select id="pointExtraDuel" class="form-control">'+
+					    		'<option value=true>Si</option>'+
+					    		'<option value=false>No</option>'+
+					    	'</select>'+
+						  '</div>'+
 						  '<div class="form-group col-sm-12">'+
 						  	'<button type="submit" class="btn btn-primary btn-save-parameters">Guardar</button>'+
 						  '</div>'+
@@ -1874,7 +2030,9 @@ var routerManager = Backbone.Router.extend({
 		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])	
 		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])	
 		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])	
-		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])	
+		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])
+		        	$("#countQuesttionExtraDuel").val(data['gamesParameters']['countQuesttionExtraDuel'])
+		        	$("#pointExtraDuel").val(data['gamesParameters']['pointExtraDuel'])
 	        	}	        	
 	        },
 	        error: function(){},
@@ -1905,6 +2063,8 @@ var routerManager = Backbone.Router.extend({
 						"questionPoints": $("#questionPoints").val(),
 						"questionPointsHelp": $("#questionPointsHelp").val(),
 						"gamePoints": $("#gamePoints").val(),
+						"countQuesttionExtraDuel": $("#countQuesttionExtraDuel").val(),
+						"pointExtraDuel": $("#pointExtraDuel").val(),
 					};	
 
 		            parameters = {
@@ -2144,6 +2304,7 @@ var routerManager = Backbone.Router.extend({
 		var panelHeading = $('<div></div>').addClass('panel-heading');
 		var panelBody = $('<div></div>').addClass('panel-body').attr('data-id', 'general');
 		var form = $('<form></form>').addClass('form-inline').attr('role', 'form');
+		
 		var div = $('<div></div>').addClass('form-group');
 		var title = $('<h3></h3>').html('Juegos').css({
 			float: 'left',
@@ -2169,7 +2330,7 @@ var routerManager = Backbone.Router.extend({
 					var option = $('<option></option>').attr('value', tournament.id).html(tournament.name);
 					select.append(option)
 				})
-				div.append(select);
+				div.prepend(select);
 			},
 			error: function(){},
 	    	complete: function(){
@@ -2184,13 +2345,12 @@ var routerManager = Backbone.Router.extend({
 			loader1.show();
         	var config = {
 				type: "GET",
-	            url: "home/game/group/"+select.val(),					            
+	            url: "home/game/group/"+select.val(),
 	            contentType: "application/json",
 	            dataType: "json",
 	            //data: JSON.stringify(param),
 				success: function(response){
 					var data = response.data;
-					// console.log(data);
 					me.data = data;
 					me.viewOne();
 				},
@@ -2206,7 +2366,6 @@ var routerManager = Backbone.Router.extend({
 	viewOne: function(){
 		var me = this;
 		var groups = me.orderV1();
-		console.log(groups);
 		_.each(groups, function(group){
 			var container = $('<div></div>');
 			_.each(group.rounds, function(round, key){
@@ -2239,6 +2398,16 @@ var routerManager = Backbone.Router.extend({
 					divGame.click(function(){
 						me.showDuelFromGame(game.id);
 					})
+					if(game.active){
+						divGame.css('border-top', 'solid 5px #8BFFA7');
+					}
+					else if(!game.active && !game.finished){
+						divGame.css('border-top', 'solid 5px #E2E2E2');
+						divGame.unbind("click");
+					}
+					else if(game.finished){
+						divGame.css('border-top', 'solid 5px #A0394A');
+					}
 
 					fieldset.append(divGame);
 				})
@@ -2248,27 +2417,70 @@ var routerManager = Backbone.Router.extend({
 		})
 	},
 
-	showDuelFromGame: function(){
+	showDuelFromGame: function(gameId){
 		var me = this;
-		var modal = $("<div></div>").addClass("modal fade");
-		var modalDialog = $("<div></div>").addClass("modal-dialog");
-		var modalHeader = $("<div></div>").addClass("modal-header");
-		var btnClose = $("<button></button>").attr("type", "button").attr("data-dismiss", "modal").addClass("close");
-		var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
-		var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
-		btnClose.append(spanClose).append(spanClose2);
-		var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos de de juego");
-		modalHeader.append(btnClose).append(titleHeading);
+		var loader = $(document.body).loaderPanel();
+		loader.show();
+		var configTorunament = {
+			type: "GET",
+            url: "home/duel/game/"+gameId,
+            contentType: "application/json",
+            dataType: "json",
+            //data: JSON.stringify(param),
+			success: function(response){
+				var data = response.data;
+				console.log(response)
+				var modal = $("<div></div>").addClass("modal fade");
+				var modalDialog = $("<div></div>").addClass("modal-dialog");
+				var modalHeader = $("<div></div>").addClass("modal-header");
+				var btnClose = $("<button></button>").attr("type", "button").attr("data-dismiss", "modal").addClass("close");
+				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
+				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
+				btnClose.append(spanClose).append(spanClose2);
+				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos de de juego");
+				modalHeader.append(btnClose).append(titleHeading);
 
-		var modalBody = $("<div></div>").addClass("modal-body");
+				var modalBody = $("<div></div>").addClass("modal-body");
 
-		var modalContent = $("<div></div>").addClass("modal-content");
-		modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
-		$(document.body).append(modal);
-		modal.modal("show");
-		modal.on("hidden.bs.modal", function(){
-    		modal.remove();
-    	})
+				var modalContent = $("<div></div>").addClass("modal-content").css('width', '700px');
+				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
+				$(document.body).append(modal);
+				modal.modal("show");
+				_.each(data, function(duel){
+					var divDuel = $('<div></div>').css('display', 'table').addClass('div-game');
+					var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
+					var img1 = $('<img/>').attr('src', 'image/'+duel.player_one.image).addClass('img-circle').css({
+						width: 50,
+						height: 50
+					});
+					var name1 = $('<span></span>').html(duel.player_one.name.toLowerCase()+' '+duel.player_one.lastname.toLowerCase()).css('margin-left', '5px');
+					div1.append(img1).append(name1);
+
+					var divVS = $('<div></div>').css('display', 'table-cell').html("VS").css('width', '30px').css("text-align", 'center');
+
+					var div2 = $('<div></div>').css('display', 'table-cell').css("text-align", 'right');
+					var img2 = $('<img/>').attr('src', 'image/'+duel.player_two.image).addClass('img-circle').css({
+						width: 50,
+						height: 50
+					});
+					var name2 = $('<span></span>').html(duel.player_two.name.toLowerCase()+' '+duel.player_two.lastname.toLowerCase()).css('margin-right', '5px');
+					div2.append(name2).append(img2);
+
+
+					divDuel.append(div1).append(divVS).append(div2);
+					modalBody.append(divDuel);
+				})
+				modal.on("hidden.bs.modal", function(){
+		    		modal.remove();
+		    	})
+			},
+			error: function(){},
+	    	complete: function(){
+	    		loader.hide();
+	    	}
+        }
+        $.ajax(configTorunament);
+		
 	},
 
 	createPanel: function(title, content){
@@ -2312,34 +2524,65 @@ var routerManager = Backbone.Router.extend({
 		var container = $('<div class="panel panel-default panel-notifications"><h4>Notificaciones</h4><hr/></div>');
 		var form = $('<form id="form-notification" role="form">'+
 						  '<div class="form-group">'+
+						    '<label  class="col-sm-2 control-label">Torneo</label>'+
+						    '<div class="col-sm-10">'+
+						    	'<select class="form-control select-tournament">'+
+						    		'<option value=0>Seleccione Un torneo></option>'+
+						    	'</select>'+
+						    '</div>'+
+						  '</div>'+
+						  '<div class="form-group">'+
 						    '<label  class="col-sm-2 control-label">Notificación de grupos</label>'+
 						    '<div class="col-sm-10">'+
 						    	'<button type="button" class="btn btn-primary send-not-groups">Enviar</button>'+
 						    '</div>'+
-						  '</div>'+							  	
+						  '</div>'+
 						  '<div class="form-group">'+
 						    '<label  class="col-sm-2 control-label">Notificación de equipos</label>'+
 						    '<div class="col-sm-10">'+
 						    	'<button type="button" class="btn btn-primary send-not-teams">Enviar</button>'+
 						    '</div>'+
-						  '</div>'+							  					  
-						  
+						  '</div>'+
 					 '</form>');
 
-		container.append(form);	
+		container.append(form);
 		$("#entity-content").append(container);
-
+		var loader = $(document.body).loaderPanel();
+		loader.show();
+		var configTorunament = {
+			type: "GET",
+            url: "home/tournament/active",
+            contentType: "application/json",
+            dataType: "json",
+            //data: JSON.stringify(param),
+			success: function(response){
+				var data = response;
+				_.each(data, function(tournament){
+					var option = $('<option></option>').attr('value', tournament.id).html(tournament.name);
+					form.find('.select-tournament').append(option)
+				})
+			},
+			error: function(){},
+	    	complete: function(){
+	    		loader.hide();
+	    	}
+        }
+        $.ajax(configTorunament);
 		//Enviar notificaciones del grupo
 		form.find(".send-not-groups").click(function () {
 			$.confirm({
 			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles del grupo al que pertenece su equipo ?",
 			    confirm: function(button) {
+			    	var data = {
+			    		"tournamentId": form.find('.select-tournament').val()
+			    	}
 			        parameters = {
-						type: "POST", 					
-					    url: "group/notification",
+						type: "GET",
+					    url: "home/group/notification",
 				        contentType: 'application/json',
-		            	dataType: "json",    
-				        success: function(data){	 			        	
+		            	dataType: "json",
+		            	data: data,
+				        success: function(data){
 				        	alert("Notificaciones enviadas");
 				        },
 				        error: function(){}
@@ -2358,12 +2601,16 @@ var routerManager = Backbone.Router.extend({
 			$.confirm({
 			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles el equipo al que pertenecen ?",
 			    confirm: function(button) {
+			    	var data = {
+			    		"tournamentId": form.find('.select-tournament').val()
+			    	}
         			parameters = {
-						type: "POST", 					
-					    url: "team/notification",
+						type: "GET",
+					    url: "home/team/notification",
 				        contentType: 'application/json',
-		            	dataType: "json",    
-				        success: function(data){	 			        	
+		            	dataType: "json",
+		            	data: data,
+				        success: function(data){
 				        	alert("Notificaciones enviadas");
 				        },
 				        error: function(){}
@@ -2377,11 +2624,11 @@ var routerManager = Backbone.Router.extend({
 			});
 		});
 
-		form.submit(function (e) {		
-			e.preventDefault();	
+		form.submit(function (e) {
+			e.preventDefault();
 		
 		})
-	},	
+	},
 
 	validationOperator: function (operator) {
         
@@ -2413,13 +2660,13 @@ $(document).ready(function () {
  */
 function generateTeam(){
 	
-	var router = new routerManager();		
+	var router = new routerManager();
 	Backbone.history.navigate("generateTeams", true);
 }
 
 function generateGroup(){
 	
-	var router = new routerManager();		
+	var router = new routerManager();
 	Backbone.history.navigate("generateGroups", true);
 }
 

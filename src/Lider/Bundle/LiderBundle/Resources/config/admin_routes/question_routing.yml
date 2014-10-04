@@ -53,4 +53,3 @@ admin_question_report_solve:
     pattern:  /report/solve/{id}
     defaults: { _controller: LiderBundle:ReportQuestion:reportSolve }
     methods:  [PUT]
-

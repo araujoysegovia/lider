@@ -34,3 +34,13 @@ admin_game_getbygroup:
     methods:  [GET]
     requirements:
       id: \d+
+
+stop_game:
+    pattern:  /stop
+    defaults: { _controller: LiderBundle:Game:stopGames }
+    methods:  [GET]
+
+start_game:
+    pattern:  /start
+    defaults: { _controller: LiderBundle:Game:startGames }
+    methods:  [GET]

@@ -36,6 +36,11 @@ class Tournament extends Entity
      * @Assert\NotBlank()
      */
     private $enddate;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $enabledLevel = false;
     
     /**
      * @ORM\Column(type="boolean")
@@ -200,5 +205,28 @@ class Tournament extends Entity
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * Set enabledLevel
+     *
+     * @param boolean $enabledLevel
+     * @return Tournament
+     */
+    public function setEnabledLevel($enabledLevel)
+    {
+        $this->enabledLevel = $enabledLevel;
+
+        return $this;
+    }
+
+    /**
+     * Get enabledLevel
+     *
+     * @return boolean 
+     */
+    public function getEnabledLevel()
+    {
+        return $this->enabledLevel;
     }
 }

@@ -54,24 +54,25 @@ class GameController extends Controller
         return $this->get("talker")->response($duels);   
     }
 
-    public function generateGameAction()
-    {
-        $request = $this->get("request");
-        // $data = $request->getContent();
+    // public function generateGameAction()
+    // {
+    //     $request = $this->get("request");
+    //     $data = $request->getContent();
         
-        // if(empty($data))
-        //     throw new \Exception("No data");        
+    //     if(empty($data))
+    //         throw new \Exception("No data");        
 
-        // $data = json_decode($data, true);        
-        // $tournamentId = $data['tournamentId'];
-        // $interval = $data['interval'];
+    //     $data = json_decode($data, true);        
+    //     $tournamentId = $data['tournamentId'];
+    //     $pm = $this->get('parameters_manager');
+    //     $params = $pm->getParameters();
+    //     $interval = $params['gamesParameters']['countQuestionDuel'];
     
-        // $this->get('game_manager')->generateGame($tournamentId, $interval);
+    //     $this->get('game_manager')->generateGame($tournamentId, $interval);
 
-        $this->get('game_manager')->generateGame(3, 7);
-
-        return $this->get("talker")->response(array());
-    }
+    //     // $this->get('game_manager')->generateGame(3, 7);
+    //     return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+    // }
 
     public function getGamesByGroupAction($tournament = null){
         $em = $this->getDoctrine()->getEntityManager();

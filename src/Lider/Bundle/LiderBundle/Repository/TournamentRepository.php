@@ -26,11 +26,11 @@ class TournamentRepository extends MainRepository
     public function getTournament($id)
     {
     	$query =  $this->createQueryBuilder('to')
-						->select('to, te, g, d, ga')
-						->leftJoin('to.groups', 'g', 'WITH', 'g.deleted = false')						
-						->leftJoin('g.teams', 'te', 'WITH', 'te.deleted = false')
-                        ->leftJoin('to.games', 'ga', 'WITH', 'ga.deleted = false')
-                        ->leftJoin('ga.duels', 'd', 'WITH', 'd.deleted = false')
+						->select('to')
+						// ->leftJoin('to.groups', 'g', 'WITH', 'g.deleted = false')						
+						// ->leftJoin('g.teams', 'te', 'WITH', 'te.deleted = false')
+      //                   ->leftJoin('to.games', 'ga', 'WITH', 'ga.deleted = false')
+      //                   ->leftJoin('ga.duels', 'd', 'WITH', 'd.deleted = false')
 						->where('to.deleted = false AND to.id = :id')
 						->setParameter('id', $id);
 

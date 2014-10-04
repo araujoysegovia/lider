@@ -34,7 +34,7 @@ class QuestionHistoryRepository extends MainMongoRepository
 	public function findTeamPointsByGame($gameId)
 	{
 		$query = $this->createQueryBuilder('LiderBundle:Team')
-			->group(array('team.teamId' => 1)
+			->group(array('team.teamId' => 1),
 				array('points' => 0))
 			->reduce('function (obj, prev){
 					prev.points += obj.points
@@ -159,6 +159,38 @@ class QuestionHistoryRepository extends MainMongoRepository
 			->field('tournament.tournamentId')->equals($tournamentId)
 			->getQuery()
 			->execute();
+
+		return $query;
+	}
+
+	public function findperPointsInGame($teamId1, $teamId2, $tournamentId)
+	{
+		$query = $this->createQuertyBuilder('LiderBundle:QuestionHistory')
+			->group(array("team.teamId" => 1),
+					array('points' => 0))
+			->reduce('function (obj, prev){
+					prev.points = obj.points
+			}')
+			->field('team.teamId')->in(array($teamId1, $teamId2))
+			->field('tournament.tournamentId')->equals($tournamentId)
+			->getQuery()
+			->execute();
+
+		return $query;
+	}
+
+	public function findPlayersDontPlay($teamId, $gameId)
+	{
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
+		->group(array('player.playerId' => 1),
+				array('duels' => 0))
+		->reduce('function(obj, prev){
+				prev.duels ++;
+		}')
+		->field('gameId')->equals($gameId)
+		->field('team.teamId')->equals($teamId1)
+		->getQuery()
+		->execute();
 
 		return $query;
 	}

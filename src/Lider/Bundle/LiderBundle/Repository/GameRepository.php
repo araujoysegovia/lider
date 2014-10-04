@@ -18,7 +18,7 @@ class GameRepository extends MainRepository
 						->orderBy('g.name', 'ASC');
 		
 		$query = $query->getQuery();
-		//echo $query->getSQL()."<br/><br/>";		
+		// echo $query->getSQL()."<br/><br/>";		
 		return $query->getArrayResult();
 	}
 	public function getExpiredGame($date)
@@ -54,5 +54,21 @@ class GameRepository extends MainRepository
     public function getDuelsForGame($game)
     {
     	
+    }
+
+    public function findGameFromTwoTeams($team1, $team2, $tournamentId)
+    {
+    	$query = $this->createQueryBuilder('g')
+    	->select('g, to')
+    	->leftJoin('g.tournament', 'to', 'WITH', 'to.deleted = FALSE')
+    	->where('g.deleted = FALSE AND ((g.team_one = :o AND g.team_two = :t) OR (g.team_one = :t AND g.team_two = :o)) AND to.id = :f')
+    	->setParameter('o', $team1)
+    	->setParameter('t', $team2)
+    	->setParameter('f', $tournamentId);
+
+    	$query = $query->getQuery();
+    	$r = $query->getResult();
+
+    	return $r;
     }
 }

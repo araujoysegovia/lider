@@ -103,7 +103,7 @@ class QuestionHistory
     /** 
      * @MongoDB\Boolean
      */
-    private $extraWuestion = false;
+    private $extraQuestion = false;
 
 
     public function __construct()
@@ -507,24 +507,24 @@ class QuestionHistory
     }
 
     /**
-     * Set extraWuestion
+     * Set extraQuestion
      *
-     * @param boolean $extraWuestion
+     * @param boolean $extraQuestion
      * @return self
      */
-    public function setExtraWuestion($extraWuestion)
+    public function setExtraQuestion($extraQuestion)
     {
-        $this->extraWuestion = $extraWuestion;
+        $this->extraQuestion = $extraQuestion;
         return $this;
     }
 
     /**
-     * Get extraWuestion
+     * Get extraQuestion
      *
-     * @return boolean $extraWuestion
+     * @return boolean $extraQuestion
      */
-    public function getExtraWuestion()
+    public function getExtraQuestion()
     {
-        return $this->extraWuestion;
+        return $this->extraQuestion;
     }
 }
