@@ -67,15 +67,15 @@ class QuestionHistoryRepository extends MainMongoRepository
 		return $query;
 	}
 
-	public function findRangePosition(){
+	public function findRangePosition($tournamentId){
 		$query = $this->createQueryBuilder("LiderBundle:QuestionHistory")
 			->group(array("player.playerId" => 1, "player.name" => 2, 'player.lastname' => 2),
 					array('win' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0, 'fullname' => ''))
 			->reduce('function (obj, prev){
 					prev.fullname = obj.player.name + " " + obj.player.lastname;
 					if(obj.duel){
-						prev.count++;
-						prev.totalPoint += obj.points;
+						prev.total++;
+						prev.totalPoint += obj.points || 0;
 			    		if(obj.find){
 			    			prev.win++;
 						}else{
@@ -84,25 +84,23 @@ class QuestionHistoryRepository extends MainMongoRepository
 					}
 			}')
 			->field('finished')->equals(true)
+			->field('tournament.tournamentId')->exists(true)
+			->field('tournament.tournamentId')->equals($tournamentId)
 			// ->field('duel')->equals(true)
-			->sort('points', 'desc')
 			->getQuery()
 			->execute();
 	
 		return $query;
 	}
 
-	public function findGroupPosition(){
+	public function findGroupPosition($tournamentId){
 		$query = $this->createQueryBuilder("LiderBundle:QuestionHistory")
-			->group(array("groups.id" => 1, 'team.id' => 1, "groups.name" => 2, 'team.name' => 2),
-					array('win' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0, 'name' => ''))
+			->group(array("group.groupId" => 1, "tournament.tournamentId" => 1, "group.name" => 2),
+					array('win' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0))
 			->reduce('function (obj, prev){
-					if(obj.groups){
-						prev.fullname = obj.group.name;
-					}
 					if(obj.duel){
-						prev.count++;
-						prev.totalPoint += obj.points;
+						prev.total++;
+						prev.totalPoint += obj.points || 0;
 			    		if(obj.find){
 			    			prev.win++;
 						}else{
@@ -111,8 +109,11 @@ class QuestionHistoryRepository extends MainMongoRepository
 					}
 			}')
 			->field('finished')->equals(true)
+			->field('group.groupId')->exists(true)
+			->field('tournament.tournamentId')->exists(true)
+			->field('tournament.tournamentId')->equals($tournamentId)
 			// ->field('duel')->equals(true)
-			->sort('points', 'asc')
+			//->sort('points', 'asc')
 			->getQuery()
 			->execute();
 	

@@ -47,13 +47,17 @@ class QuestionController extends Controller
     	$dm = $this->get('doctrine_mongodb')->getManager();
     	    	
     	$question = $this->get("question_manager")->getQuestions(1);
-        //echo $question;
+        if(!$question)
+            throw new \Exception("Pregunta no encontrada", 500);
+
+        $question = $question[0];
+            
     	$user = $this->container->get('security.context')->getToken()->getUser();
     	
         $playerD = new \Lider\Bundle\LiderBundle\Document\Player();
         $playerD->getDataFromPlayerEntity($user);
 
-        $q = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" => $question[0]['id'], "deleted" => false));
+        $q = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" => $question['id'], "deleted" => false));
         if(!$q)
             throw new \Exception("Entity no found");
 
@@ -239,7 +243,10 @@ class QuestionController extends Controller
             $tourmanetD->getDataFromTournamentEntity($duel->getTournament());
 
             $groupD = new \Lider\Bundle\LiderBundle\Document\Group();
-            $groupD->getDataFromTournamentEntity($user->getTeam()->getGroup());
+            $groupD->getDataFromGroupEntity($user->getTeam()->getGroup());
+
+            $teamD = new \Lider\Bundle\LiderBundle\Document\Team();
+            $teamD->getDataFromTeamEntity($user->getTeam());
 
             $questionHistory = new QuestionHistory();
             $questionHistory->setPlayer($playerD);    
@@ -249,6 +256,7 @@ class QuestionController extends Controller
             $questionHistory->setDuelId($duel->getId());
             $questionHistory->setFinished(false);
             $questionHistory->setTournament($tourmanetD);  
+            $questionHistory->setTeam($teamD);  
             $questionHistory->setGroup($groupD);
             $questionHistory->setGameId($duel->getGame()->getId());
 
@@ -415,12 +423,12 @@ class QuestionController extends Controller
         
     }
 
-    private function applyPoints($questionHistory, $parameters, $team, $user)
+    private function applyPoints(&$questionHistory, $parameters, $team, $user)
     {
         $em = $this->getDoctrine()->getManager();
         if($questionHistory->getUseHelp()){
             $pointsHelp = $parameters['gamesParameters']['questionPointsHelp'];
-         
+            $questionHistory->setPoints($pointsHelp);
             $playerPoint = new PlayerPoint();                   
             $playerPoint->setPoints($pointsHelp);
             $playerPoint->setTournament($team->getTournament());
@@ -428,7 +436,7 @@ class QuestionController extends Controller
             $playerPoint->setPlayer($user);
         }else{
             $points = $parameters['gamesParameters']['questionPoints'];
-
+            $questionHistory->setPoints($points);
             $playerPoint = new PlayerPoint();                   
             $playerPoint->setPoints($points);
             $playerPoint->setTournament($team->getTournament());

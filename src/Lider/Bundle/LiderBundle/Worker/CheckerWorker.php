@@ -79,7 +79,7 @@ class CheckerWorker
     	return null;
     }
 
-	private function checkGame($game)
+	private function checkGame(&$game)
     {				
 		//$duels = $game->getDuels()->findBy(array("active" => false, "finished" => true));
 		$em = $this->co->get('doctrine')->getManager();
@@ -91,6 +91,7 @@ class CheckerWorker
 			if(!is_null($win))
 			{
 				$team = $em->getRepository('LiderBundle:Team')->find($win);
+                $game->setTeamWinner($team);
 				$team->setPoints($team->getPoints() + $parameters['gamesParameters']['gamePoints']);
 				$qm = $this->co->get('game_manager')->stopGame($game);
                 $this->notificationPlayersDuelFinish($game->getTeamOne(), $game->getTeamTwo(), $win);

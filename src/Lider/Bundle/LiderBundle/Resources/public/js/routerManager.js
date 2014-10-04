@@ -1885,12 +1885,9 @@ var routerManager = Backbone.Router.extend({
 			      }		   
 			    },	            
 	            success: function(data){
-            		console.log("entre");
-            		$(modal).find(".select-tournaments")
-            		var select = $(modal).find(".select-tournaments");
+            		var select = modalObj.find(".select-tournaments");
             		_.each(data, function (value, key) {
             			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
-            			
             			$(".select-tournaments").append(option);
             		});
 	            },
@@ -2465,39 +2462,26 @@ var routerManager = Backbone.Router.extend({
 		//Buscar torneos activos
 		navBar.find(".save-popup").click(function () {
 			var modalObj = $(modal);
+			modalObj.on('shown.bs.modal', function(){
+				parameters = {
+					type: "GET",
+		            url: "home/tournament/active",
+		            contentType: 'application/json',
+		            dataType: "json",
+		            success: function(data){
+	            		var select = modalObj.find(".select-tournaments");
+	            		select.get(0).add(new Option('Seleccione un Torneo', '0'));
+	            		_.each(data, function (value, key) {
+	            			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
+	            			select.append(option);
+	            		});
+		            },
+		            error: function(){},
+				};
+				
+				$.ajax(parameters);
+			})
 			modalObj.modal("show");
-
-			parameters = {
-				type: "GET",     
-	            url: "home/tournament/active",		            
-	            contentType: 'application/json',
-	            dataType: "json",
-    	     	statusCode: {
-			      401:function() { 
-			      	window.location = '';
-			      }		   
-			    },	            
-	            success: function(data){
-            		$(modal).find(".select-tournaments")
-            		var select = $(modal).find(".select-tournaments");
-            		console.log(select);
-            		select.html('<option value=0>Seleccione un torneo</option>');
-            		_.each(data, function (value, key) {
-            			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
-            			var opt = new Option(value.name, value.id);
-            			console.log(opt);
-            			var s = select.get(0);
-            			select.append($('<option>', {
-            				value: value.id,
-            				text: value.name
-            			}));
-            			// select.append(new Option(value.name, value.id));
-            		});
-	            },
-	            error: function(){},            
-			};
-			
-			$.ajax(parameters);	
 
 			//Guardar equipos generados en BD
 			modalObj.find(".save-groups").click(function () {	

@@ -78,7 +78,7 @@ class QuestionHistory
     /** 
      * @MongoDB\int
      */
-    private $points;
+    private $points = 0;
 
     /** 
      * @MongoDB\Boolean

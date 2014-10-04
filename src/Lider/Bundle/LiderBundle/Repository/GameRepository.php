@@ -71,4 +71,20 @@ class GameRepository extends MainRepository
 
     	return $r;
     }
+
+    public function getTeamPositions(array $teams){
+    	$query = $this->createQueryBuilder('g')
+    		->select('g, po, two, win')
+	    	->join('g.team_one', 'po', 'WITH', 'po.id in (:teams)')
+	    	->join('g.team_two', 'two', 'WITH', 'two.id in (:teams)')
+	    	->leftJoin('g.team_winner', 'win', 'WITH', 'win.id in (:teams)')
+	    	->where('g.finished = true and g.deleted=true')
+	    	->setParameter('teams', $teams);
+
+
+		$query = $query->getQuery();
+    	$r = $query->getResult();
+
+		return $r;
+	}
 }
