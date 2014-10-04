@@ -1,0 +1,11 @@
+admin_duel:
+    pattern:  /
+    defaults: { _controller: LiderBundle:Duel:checkRoute }
+    methods: [GET]
+
+admin_duels_getbygameid:
+    pattern:  /game/{gameId}
+    defaults: { _controller: LiderBundle:Duel:getDuelsByGame }
+    methods:  [GET]
+    requirements:
+      id: \d+

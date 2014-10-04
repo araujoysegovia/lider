@@ -91,7 +91,10 @@ class Duel extends Entity
      */
     private $finished = false;
 
- 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $extraDuel = false; 
 
     /**
      * Get id
@@ -377,5 +380,28 @@ class Duel extends Entity
     public function getTournament()
     {
         return $this->tournament;
+    }
+
+    /**
+     * Set extraDuel
+     *
+     * @param boolean $extraDuel
+     * @return Duel
+     */
+    public function setExtraDuel($extraDuel)
+    {
+        $this->extraDuel = $extraDuel;
+
+        return $this;
+    }
+
+    /**
+     * Get extraDuel
+     *
+     * @return boolean 
+     */
+    public function getExtraDuel()
+    {
+        return $this->extraDuel;
     }
 }

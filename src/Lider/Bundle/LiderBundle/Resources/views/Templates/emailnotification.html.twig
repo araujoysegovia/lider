@@ -2,14 +2,23 @@
 	<head>
 	</head>
 	<body>
-		<div style="width:500px; min-height:500px; overflow:hidden;">
-			<div style="background-image: url('http://lider.sifinca.net/lider/src/Lider/Bundle/LiderBundle/Resources/public/images/email-header.png'); text-align:center; height: 40px;">
-				<h2 style="margin-left:30px; color:white;">{{ title }}</h2>
+		<div style="width:100%; min-height:500px; overflow:hidden;">
+			<div style="background-image: url('http://soylider.sifinca.net/image/541af09e6803fa2b158b45c1'); background-repeat: repeat-x; height: 40px;">
+				<img style="width: 25px; float: left; margin-top: 2px; margin-left:10px;" src="http://soylider.sifinca.net/image/541af07b6803fa6f158b456b?width=30&height=30"/>
+				<h2 style="margin-left:55px; line-height: 30px; color:white;">{{ title }}</h2>
 			</div>
-			<div>
-				<p>{{ body }}</p>
+			<div style='padding: 0px 15px;'>
+				<div>
+					<h2>{{ subjectMessage }}</h2>
+				</div>
+				<div style="margin-top: 10px;">
+					{{ body|raw }}
+				</div>
+				<div style="margin-top: 10px;">
+					<a href='http://10.101.1.55/liderplayer'>JUGAR</a>
+				</div>
 			</div>
-			<div style="margin-bottom:5px; background-image: url('http://lider.sifinca.net/lider/src/Lider/Bundle/LiderBundle/Resources/public/images/email-footer.png'); height: 25px;">
+			<div style="margin-top: 40px; background-image: url('http://soylider.sifinca.net/image/541af0c16803fa6c158b4589'); height: 25px; position:absolute; left: 0px; right: 0px; bottom: 35px;">
 			</div>
 		</div>
 	</body>

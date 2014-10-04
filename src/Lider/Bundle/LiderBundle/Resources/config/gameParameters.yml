@@ -10,3 +10,7 @@ gamesParameters:
     countQuestionDuelExtra: '1'
     gamePoints: '5'
     gamePointsHelp: '3'
+    questionPoints: '3'
+    questionPointsHelp: '1'
+    countQuesttionExtraDuel: '3'
+    pointExtraDuel: 'false'

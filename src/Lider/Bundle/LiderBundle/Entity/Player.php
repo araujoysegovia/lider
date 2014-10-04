@@ -284,6 +284,111 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
     }
 
     /**
+     * Set password
+     *
+     * @param string $password
+     * @return Player
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Set wonGames
+     *
+     * @param integer $wonGames
+     * @return Player
+     */
+    public function setWonGames($wonGames)
+    {
+        $this->wonGames = $wonGames;
+
+        return $this;
+    }
+
+    /**
+     * Get wonGames
+     *
+     * @return integer 
+     */
+    public function getWonGames()
+    {
+        return $this->wonGames;
+    }
+
+    /**
+     * Set lostGames
+     *
+     * @param integer $lostGames
+     * @return Player
+     */
+    public function setLostGames($lostGames)
+    {
+        $this->lostGames = $lostGames;
+
+        return $this;
+    }
+
+    /**
+     * Get lostGames
+     *
+     * @return integer 
+     */
+    public function getLostGames()
+    {
+        return $this->lostGames;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     * @return Player
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean 
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set changePassword
+     *
+     * @param boolean $changePassword
+     * @return Player
+     */
+    public function setChangePassword($changePassword)
+    {
+        $this->changePassword = $changePassword;
+
+        return $this;
+    }
+
+    /**
+     * Get changePassword
+     *
+     * @return boolean 
+     */
+    public function getChangePassword()
+    {
+        return $this->changePassword;
+    }
+
+    /**
      * Set office
      *
      * @param \Lider\Bundle\LiderBundle\Entity\Office $office
@@ -353,111 +458,6 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
     }
 
     /**
-     * Set password
-     *
-     * @param string $password
-     * @return Player
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * Set wonGames
-     *
-     * @param integer $wonGames
-     * @return Player
-     */
-    public function setWonGames($wonGames)
-    {
-        $this->wonGames = $wonGames;
-
-        return $this;
-    }
-
-    /**
-     * Get wonGames
-     *
-     * @return integer 
-     */
-    public function getWonGames()
-    {
-        return $this->wonGames;
-    }
-
-    /**
-     * Set lostGames
-     *
-     * @param integer $lostGames
-     * @return Player
-     */
-    public function setLostGames($lostGames)
-    {
-        $this->lostGames = $lostGames;
-
-        return $this;
-    }
-
-    /**
-     * Get lostGames
-     *
-     * @return integer 
-     */
-    public function getlostGames()
-    {
-        return $this->lostGames;
-    }
-
-    /**
-     * Set active
-     *
-     * @param boolean $active
-     * @return Player
-     */
-    public function setActive($active)
-    {
-        $this->active = $active;
-
-        return $this;
-    }
-
-    /**
-     * Get active
-     *
-     * @return boolean 
-     */
-    public function getActive()
-    {
-        return $this->active;
-    }
-
-    /**
-     * Set changePassword
-     *
-     * @param boolean $changePassword
-     * @return Player
-     */
-    public function setChangePassword($changePassword)
-    {
-        $this->changePassword = $changePassword;
-
-        return $this;
-    }
-
-    /**
-     * Get changePassword
-     *
-     * @return boolean 
-     */
-    public function getChangePassword()
-    {
-        return $this->changePassword;
-    }
-
-    /**
      * Add playerPoints
      *
      * @param \Lider\Bundle\LiderBundle\Entity\PlayerPoint $playerPoints
@@ -489,6 +489,4 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
     {
         return $this->playerPoints;
     }
-
-
 }

@@ -38,3 +38,8 @@ admin_tournament_alone:
     pattern:  /tournament
     defaults: { _controller: LiderBundle:Tournament:getOnlyTournaments }
     methods:  [GET]
+
+enable_level:
+    pattern:  /enablelevel
+    defaults: { _controller: LiderBundle:Tournament:activeLevel }
+    methods:  [POST]

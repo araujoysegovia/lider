@@ -14,12 +14,22 @@ Entity.prototype = {
 	    	url: function(e){
 	    		return me.url;
 	    	},
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },		    
 	    	dataType: "json"
 	    },
 	    me.create = {
             url: function(e){
             	return me.url
             },
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },            
             type: "POST",
             contentType: "application/json",
             dataType: "json"
@@ -29,6 +39,11 @@ Entity.prototype = {
             	//console.log("url: "+me.url + e.id)
                 return me.url + e.id;
             },
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },            
             type: "PUT",
             contentType: "application/json",
             dataType: "json"
@@ -37,6 +52,11 @@ Entity.prototype = {
 	    	url: function (e) {
                 return me.url + e.id;
             },
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },            
             dataType: "json",
             contentType: "application/json",
             type: 'DELETE',  

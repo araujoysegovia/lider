@@ -32,9 +32,7 @@ class DuelRepository extends MainRepository
 	}
 
 	public function findDuelExpired($datetime){
-		echo $datetime."\n";
 		$datetime = $datetime." 00:00:00";
-		echo $datetime."\n";
 		$query = $this->createQueryBuilder('d')
 		->select('d')
 		->where('d,enddate >= :da AND d.active = FALSE')

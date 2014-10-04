@@ -63,3 +63,4 @@ services:
               dm: "@doctrine.odm.mongodb.document_manager"
               pm: "@parameters_manager"
               qm: "@question_manager"
+              co: "@service_container"

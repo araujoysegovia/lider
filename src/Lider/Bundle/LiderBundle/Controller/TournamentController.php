@@ -11,6 +11,13 @@ class TournamentController extends Controller
     }
 
     /**
+     * Funcin que realiza alguna accion antes de guardar una entidad.
+     */
+    protected function beforeSave(&$Entity) {
+        $Entity->setLevel(1);
+    }
+
+    /**
      * Buscar torneos activos
      */
     public function activeTournamentAction()
@@ -38,6 +45,36 @@ class TournamentController extends Controller
        
     	return $this->get("talker")->response($array);
         //return $this->get("talker")->response($tournaments);
+    }
+
+    public function activeLevelAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $request = $this->get("request");
+        $data = $request->getContent();
+        
+        if(empty($data))
+            throw new \Exception("No data");        
+
+        $data = json_decode($data, true);        
+        $tournamentId = $data['tournamentId'];
+        $date = null;
+        if(array_key_exists('date', $data))
+        {
+            $date = $data['date'];
+        }
+        
+        $tournament = $em->getRepository('LiderBundle:Tournament')->find($tournamentId);
+        $tournament->setEnabledLevel(true);
+        $em->flush();
+        $pm = $this->get('parameters_manager');
+        $params = $pm->getParameters();
+        $interval = $params['gamesParameters']['countQuestionDuel'];
+    
+        $this->get('game_manager')->generateGame($tournamentId, $interval, $date);
+
+        // $this->get('game_manager')->generateGame(3, 7);
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
 
     public function tournamentTemsAction($tournamentId)
