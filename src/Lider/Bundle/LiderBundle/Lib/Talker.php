@@ -43,7 +43,12 @@ class Talker{
 		$response = new Response();
 		foreach ($encoder['content'] as $item)
 			$response->headers->set("Content-Type", $item);
-		$response->headers->clearCookie('PHPSESSID');
+		$request = $this->container->get("request");
+		$regexByUserAndToken = '/Username Username="([^"]+)", Token="([^"]+)"/';
+		if($request->headers->has('x-login') && 1 === preg_match($regexByUserAndToken, $request->headers->get('x-login'), $matches)){
+			$response->headers->clearCookie('PHPSESSID');
+		}
+		
 		return $response;
 	}
 	

@@ -7,6 +7,8 @@ var Entity = function(){
 
 Entity.prototype = {
 
+	associationNames : {},
+
 	constructor: function(config){
 		var me = this;
 				
@@ -73,6 +75,52 @@ Entity.prototype = {
 	        	
 	            return kendo.stringify(data);
 	        }
+
+	        if(type == 'read'){
+                if(data.filter){
+
+                    dataFilter = data.filter["filters"];
+
+                    _.each(dataFilter, function (value, key) {                            
+                    	if(me.associationNames[value['field']]){
+                    		value["property"] = value["field"]+'.'+me.associationNames[value['field']];	
+                    	}else{
+                    		value["property"] = value["field"];
+                    	}
+                        
+                        value["operator"] = me.validationOperator(value["operator"]);
+
+                        delete dataFilter[key].field;
+                                            
+                    });
+                    
+                    data.filter = JSON.stringify(dataFilter);
+
+                }    
+                return data;	        	
+	        }
+
+            if(type == "destroy"){                    
+                if(data.filter){
+
+                    dataFilter = data.filter["filters"];
+                    //console.log(dataFilter)
+                    _.each(dataFilter, function (value, key) {                            
+
+                        value["property"] = value["field"];
+                        
+                        value["operator"] = me.validationOperator(value["operator"]);
+
+                        delete dataFilter[key].field;
+                                            
+                    });
+                    
+                    data.filter = JSON.stringify(dataFilter);
+
+                }   
+
+                return data;
+            }
 		}        
 	    
 		me.editable = {
@@ -112,6 +160,21 @@ Entity.prototype = {
                      	{ name: "create", text: "Agregar registro" },				    
 				    ];
 	    
+	    me.pageable = {
+			    refresh: true,
+			    pageSizes: false,               
+			    buttonCount: 5,
+			    info: true,
+			    messages: {
+			      display: "Mostrando {0}-{1} de {2} datos"
+			    }
+	 	};
+
+	 	// me.pageableGrid = true;
+	 	me.serverSorting = true;
+	 	me.serverFiltering = true;
+
+
 		_.extend(me, config);
 		
 		me.container.addClass("panel panel-default");
@@ -153,16 +216,12 @@ Entity.prototype = {
 			  groupable: false,			  
 			  sortable: true, 
 			  selectable: "row",
-			  filterable: false,          
-			  pageable: {
-			    refresh: true,
-			    pageSizes: false,               
-			    buttonCount: 5,
-			    info: true,
-			    messages: {
-			      display: "Mostrando {0}-{1} de {2} datos"
-			    }
-	 		  },
+			  filterable: false, 
+
+			  serverPaging:  me.pageable ? true : false,
+			  serverFiltering: me.serverFiltering,
+			  serverSorting: me.serverSorting,			          
+			  pageable: me.pageable,
 	 		  requestEnd: function (e){
 	 			  if(e.type && e.response){
 	 				if(e.type !="read"){
@@ -210,7 +269,7 @@ Entity.prototype = {
                         }
                     }
                 },
-		        pageable: true,
+		        pageable: me.pageable ? true : false,
 		        height: 500,	        
 		        columns: me.columns,
 		        editable: me.editable,

@@ -194,4 +194,26 @@ class QuestionHistoryRepository extends MainMongoRepository
 
 		return $query;
 	}
+
+	public function getQuestionForPlayer($tournamentId)
+	{
+
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
+			->group(array("player.playerId" => 1, 'player.name' =>2),
+					array('total' => 0, 'win' =>0, 'playername' => '', 'tournamentname' => ''))
+			->reduce('function (obj, prev){
+					prev.total++;
+					prev.playername = obj.player.name;
+					if(obj.duel && obj.find){
+						prev.win++;
+					}
+			}')
+			->field('finished')->equals(true)
+			->field('tournament.tournamentId')->equals($tournamentId)
+			->getQuery()
+			->execute();
+
+		return $query;
+	}
+
 }

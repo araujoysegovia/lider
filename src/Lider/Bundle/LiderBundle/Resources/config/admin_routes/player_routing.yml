@@ -29,3 +29,10 @@ admin_player_image:
     methods:  [POST]
     requirements:
       id: \d+
+
+admin_player_analysis:
+    pattern:  /questions/{tournamentId}
+    defaults: { _controller: LiderBundle:Player:getPlayerAnalysis, tournamentId: null }
+    methods:  [GET]
+    requirements:
+      tournamentId: \d+    
