@@ -1727,18 +1727,19 @@ var routerManager = Backbone.Router.extend({
 			modalObj.modal("show");
 
 			parameters = {
-				type: "GET",     
-	            url: "home/tournament/active",		            
+				type: "GET",
+	            url: "home/tournament/active",
 	            contentType: 'application/json',
 	            dataType: "json",
-	            success: function(data){	            		
-	            		$(modal).find(".select-tournaments")
-	            		var select = $(modal).find(".select-tournaments");	            		
-	            		_.each(data, function (value, key) {
-	            			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
-	            			
-	            			$(".select-tournaments").append(option);
-	            		});            		
+	            success: function(data){
+            		console.log("entre");
+            		$(modal).find(".select-tournaments")
+            		var select = $(modal).find(".select-tournaments");
+            		_.each(data, function (value, key) {
+            			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
+            			
+            			$(".select-tournaments").append(option);
+            		});
 	            },
 	            error: function(){},            
 			};
@@ -2160,14 +2161,22 @@ var routerManager = Backbone.Router.extend({
 	            url: "home/tournament/active",		            
 	            contentType: 'application/json',
 	            dataType: "json",
-	            success: function(data){	            		
-	            		$(modal).find(".select-tournaments")
-	            		var select = $(modal).find(".select-tournaments");	            		
-	            		_.each(data, function (value, key) {
-	            			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
-	            			
-	            			$(".select-tournaments").append(option);
-	            		});            		
+	            success: function(data){
+            		$(modal).find(".select-tournaments")
+            		var select = $(modal).find(".select-tournaments");
+            		console.log(select);
+            		select.html('<option value=0>Seleccione un torneo</option>');
+            		_.each(data, function (value, key) {
+            			var option = $('<option data-team='+value.teams.length+' value='+value.id+'>'+value.name+'</option>');
+            			var opt = new Option(value.name, value.id);
+            			console.log(opt);
+            			var s = select.get(0);
+            			select.append($('<option>', {
+            				value: value.id,
+            				text: value.name
+            			}));
+            			// select.append(new Option(value.name, value.id));
+            		});
 	            },
 	            error: function(){},            
 			};
