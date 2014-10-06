@@ -12,5 +12,5 @@ gamesParameters:
     gamePointsHelp: '3'
     questionPoints: '3'
     questionPointsHelp: '1'
-    countQuesttionExtraDuel: '3'
+    countQuesttionExtraDuel: '1'
     pointExtraDuel: 'false'

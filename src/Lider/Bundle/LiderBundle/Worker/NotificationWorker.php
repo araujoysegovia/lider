@@ -51,7 +51,7 @@ class NotificationWorker
         $team = $player->getTeam();
         $to = $this->getEmailFromTeamId($team->getId());
         try{
-            $send = $notificationService->sendEmail($data['subject'], $this->from, $data['to'], null, $data['viewName'], $data['content']);
+            $send = $notificationService->sendEmail($data['subject'], $this->from, $to, null, $data['viewName'], $data['content']);
             echo "Mensaje Enviado";
         }catch(\Exception $e){
             echo $e->getMessage();
@@ -100,13 +100,13 @@ class NotificationWorker
                 $players = $team->getPlayers();
                 foreach($players as $player)
                 {
-                     $to[] = $player->getEmail();
+                     //$to[] = $player->getEmail();
 
                     $members[$player->getId()]['image'] = $player->getImage();
                     $members[$player->getId()]['name'] = $player->getName().' '.$player->getLastname();
                 }
                 $content['members'] = $members;
-                //$to = $this->getEmailFromTeamId($team->getId());
+                $to = $this->getEmailFromTeamId($team->getId());
                 try{
                     $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
                     echo "Mensaje Enviado";
@@ -153,11 +153,11 @@ class NotificationWorker
                     $players = $team->getPlayers();
                     foreach($players as $player)
                     {
-                        $to[] = $player->getEmail();
+                        //$to[] = $player->getEmail();
                     }
                     $members[$team->getId()]['name'] = $team->getName();
                     $members[$team->getId()]['image'] = $team->getImage();
-                    //$to[] = $this->getEmailFromTeamId($team->getId());
+                    $to[] = $this->getEmailFromTeamId($team->getId());
                 }
                 $content['members'] = $members;
                 try{

@@ -2880,8 +2880,8 @@ var routerManager = Backbone.Router.extend({
 
 		container.append(form);
 		$("#entity-content").append(container);
-		var loader = $(document.body).loaderPanel();
-		loader.show();
+//		var loader = $(document.body).loaderPanel();
+//		loader.show();
 		var configTorunament = {
 			type: "GET",
             url: "home/tournament/active",
@@ -2901,9 +2901,9 @@ var routerManager = Backbone.Router.extend({
 				})
 			},
 			error: function(){},
-	    	complete: function(){
-	    		loader.hide();
-	    	}
+//	    	complete: function(){
+//	    		loader.hide();
+//	    	}
         }
         $.ajax(configTorunament);
 		//Enviar notificaciones del grupo
