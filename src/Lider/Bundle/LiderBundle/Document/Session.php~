@@ -1,0 +1,333 @@
+<?php
+namespace Lider\Bundle\LiderBundle\Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * @MongoDB\Document(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainMongoRepository")
+ */
+class Session
+{
+	/**
+	 * @MongoDB\Id
+	 */
+	private $id;
+
+	/**
+	 * @MongoDB\Date
+     * @Assert\DateTime()
+	 */
+	private $start;
+
+	/**
+	 * @MongoDB\Int
+	 */
+	private $userId;
+	
+	/**
+	 * @MongoDB\String
+     * @Assert\Email()
+	 */
+	private $email;
+
+	/**
+	 * @MongoDB\String
+     * @Assert\Ip()
+	 */
+	private $ip;
+	
+	/**
+	 * @MongoDB\Date
+     * @MongoDB\Index
+     * @Assert\DateTime()
+	 */
+	private $last;
+
+    /**
+     * @MongoDB\Date
+     * @Assert\DateTime()
+     */
+    private $endDate;
+	
+	/**
+	 * @MongoDB\Date
+     * @Assert\DateTime()
+	 */
+	private $finish;
+	
+	/**
+	 * @MongoDB\Boolean
+     * @MongoDB\Index
+     * @Assert\NotBlank()
+	 */
+	private $enabled = true;
+
+    /**
+     * @MongoDB\String
+     */
+    private $token;
+
+    /**
+     * @MongoDB\String
+     */
+    private $userAgent;
+
+    /**
+     * @MongoDB\String
+     */
+    private $cookie;
+        
+    /**
+     * Get id
+     *
+     * @return id $id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set start
+     *
+     * @param date $start
+     * @return self
+     */
+    public function setStart($start)
+    {
+        $this->start = $start;
+        return $this;
+    }
+
+    /**
+     * Get start
+     *
+     * @return date $start
+     */
+    public function getStart()
+    {
+        return $this->start;
+    }
+
+    /**
+     * Set userId
+     *
+     * @param int $userId
+     * @return self
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+        return $this;
+    }
+
+    /**
+     * Get userId
+     *
+     * @return int $userId
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return self
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string $email
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set ip
+     *
+     * @param string $ip
+     * @return self
+     */
+    public function setIp($ip)
+    {
+        $this->ip = $ip;
+        return $this;
+    }
+
+    /**
+     * Get ip
+     *
+     * @return string $ip
+     */
+    public function getIp()
+    {
+        return $this->ip;
+    }
+
+    /**
+     * Set last
+     *
+     * @param date $last
+     * @return self
+     */
+    public function setLast($last)
+    {
+        $this->last = $last;
+        return $this;
+    }
+
+    /**
+     * Get last
+     *
+     * @return date $last
+     */
+    public function getLast()
+    {
+        return $this->last;
+    }
+
+    /**
+     * Set endDate
+     *
+     * @param date $endDate
+     * @return self
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
+        return $this;
+    }
+
+    /**
+     * Get endDate
+     *
+     * @return date $endDate
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * Set finish
+     *
+     * @param date $finish
+     * @return self
+     */
+    public function setFinish($finish)
+    {
+        $this->finish = $finish;
+        return $this;
+    }
+
+    /**
+     * Get finish
+     *
+     * @return date $finish
+     */
+    public function getFinish()
+    {
+        return $this->finish;
+    }
+
+    /**
+     * Set enabled
+     *
+     * @param boolean $enabled
+     * @return self
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+        return $this;
+    }
+
+    /**
+     * Get enabled
+     *
+     * @return boolean $enabled
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     * @return self
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string $token
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set userAgent
+     *
+     * @param string $userAgent
+     * @return self
+     */
+    public function setUserAgent($userAgent)
+    {
+        $this->userAgent = $userAgent;
+        return $this;
+    }
+
+    /**
+     * Get userAgent
+     *
+     * @return string $userAgent
+     */
+    public function getUserAgent()
+    {
+        return $this->userAgent;
+    }
+
+    /**
+     * Set cookie
+     *
+     * @param string $cookie
+     * @return self
+     */
+    public function setCookie($cookie)
+    {
+        $this->cookie = $cookie;
+        return $this;
+    }
+
+    /**
+     * Get cookie
+     *
+     * @return string $cookie
+     */
+    public function getCookie()
+    {
+        return $this->cookie;
+    }
+
+}

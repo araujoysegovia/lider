@@ -43,7 +43,8 @@ class GameManager
 	 */
 	public function generateGame($tournamentId, $interval, $date = null){
 		$teams = $this->em->getRepository("LiderBundle:Team")
-									 ->findBy(array("tournament" => $tournamentId, "deleted" => false));
+						  ->findBy(array("tournament" => $tournamentId, "deleted" => false));
+
 		if(count($teams) > 0)
 		{
 			$this->base2 = array();
@@ -91,7 +92,12 @@ class GameManager
 	private function generateGameForFirtsLevel($tournament, $interval)
 	{
 		$groups = $this->em->getRepository("LiderBundle:Group")
+<<<<<<< HEAD
+						   ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
+	
+=======
 									 ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
+>>>>>>> a403c0eb7fee49910f03e912d323f1321511de15
 		foreach ($groups as $key => $value) {
 			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
 			//echo "\n\n";

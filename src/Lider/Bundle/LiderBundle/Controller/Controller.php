@@ -179,12 +179,15 @@ abstract class Controller extends SymfonyController {
 			}
 			
 			$page = $request->get("page");
-			$start = $request->get("start");
-			$limit = $request->get("limit");			
-	
+			$skip = $request->get("skip");
+			$pageSize = $request->get('pageSize');
+			//$limit = $request->get("limit");			
+			$limit = $skip + $pageSize;	
+			$sort = $request->get('sort');			
+
 			$bundleName = $this->getBundleName();
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$list = $repo->getArrayEntityWithOneLevel($criteria, "id", $start, $limit, $filter);
+			$list = $repo->getArrayEntityWithOneLevel($criteria, $sort, $skip, $pageSize, $filter);
 			$this->afterList($list);
 			
 			return $this->get("talker")->response($list);
@@ -438,7 +441,9 @@ abstract class Controller extends SymfonyController {
     		if(array_key_exists("targetDocument", $value)){
     			$arr[$key] = $this->normalizer($entity->{'get'.ucfirst($key)}(), $value['targetDocument']);
     		}else{
-    			$arr[$key] = $entity->{'get'.ucfirst($key)}();	
+    			if(method_exists ( $entity, 'get'.ucfirst($key) )){
+    				$arr[$key] = $entity->{'get'.ucfirst($key)}();	
+    			}    			
     		}
     		
     	}

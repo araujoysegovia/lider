@@ -549,7 +549,7 @@ class PlayerController extends Controller
     }
 
     /**
-     * Actualizar juegador
+     * Actualizar jugador
      */
     public function updateAction($id = null) {
         
@@ -598,5 +598,23 @@ class PlayerController extends Controller
         $em->flush();
 
         return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+    }
+
+
+    public function getPlayerAnalysisAction($tournamentId)
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+
+        if(!$tournamentId){
+            return $this->get("talker")->response(array('total' => 0, 'data' => array())); 
+        }
+
+        $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')
+                              ->getQuestionForPlayer(intval($tournamentId));
+
+        $rq = $reportQuestions->toArray();
+
+        return $this->get("talker")->response(array('total' => count($rq), 'data' => $rq)); 
+
     }
 }

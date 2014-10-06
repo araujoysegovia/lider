@@ -141,7 +141,13 @@ class MainRepository extends EntityRepository
             }
         }
         if (!is_null($orderBy)) {
-            $query->orderBy("z.".$orderBy);
+            if(is_array($orderBy)){
+                foreach ($orderBy as $key => $value) {
+                    $query->orderBy('z.'.$value['field']);
+                }
+            }else{
+                $query->orderBy("z.".$orderBy);    
+            }
         }
         if($filter)
         {

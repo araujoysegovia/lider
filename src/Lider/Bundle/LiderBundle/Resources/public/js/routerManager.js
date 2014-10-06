@@ -17,7 +17,9 @@ var routerManager = Backbone.Router.extend({
 		"parametersConfig": "parametersConfig",
 		"images": "images",
 		"sendNotifications": "sendNotifications",
-		"games": "games"
+		"games": "games",
+		"reportPlayerAnalysis": "reportPlayerAnalysis",
+		"selectTournament": "selectTournament",
 	},
 
 	home: function() {
@@ -67,7 +69,7 @@ var routerManager = Backbone.Router.extend({
 				    startdate: { type: "date", parse: parseDate},
 				    enddate: { type: "date", parse: parseDate},
 				    active: { type: "boolean" },
-				    enabledLevel: { type: "boolean"}
+				    enabledLevel: { editable: false, type: "boolean"}
 				}
 			},
 			columns: [
@@ -100,7 +102,7 @@ var routerManager = Backbone.Router.extend({
 					}
 				},
 				{ 
-					field: "enabledLabel",
+					field: "enabledLevel",
 					title: "Activar Nivel",
 					width: 140,
 			    	template: function(e){ 			    		
@@ -129,10 +131,15 @@ var routerManager = Backbone.Router.extend({
 						loader.show();
 						var config = {
 							type: 'POST',
-							url: "home/tournament/enablelevel",
+							url: "home/tournament/enablelevel",							
 				            contentType: "application/json",
 				            dataType: "json",
 				            data: JSON.stringify(data),
+	            	     	statusCode: {
+						      401:function() { 
+						      	window.location = '';
+						      }		   
+						    },
 				            success: function(response){
 				            	var n = noty({
 						    		text: "Juegos Generados",
@@ -208,6 +215,11 @@ var routerManager = Backbone.Router.extend({
 					            contentType: "application/json",
 					            dataType: "json",
 					            data: JSON.stringify(data),
+		            	     	statusCode: {
+							      401:function() { 
+							      	window.location = '';
+							      }		   
+							    },
 					            success: function(response){
 					            	var n = noty({
 							    		text: "Juegos Generados",
@@ -248,6 +260,7 @@ var routerManager = Backbone.Router.extend({
 	},
 
 	questions: function(){
+		var me = this;
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
@@ -257,6 +270,9 @@ var routerManager = Backbone.Router.extend({
 		  	container:  $("#entity-content"),
 		 	url: "home/question/",
 		 	title: "Preguntas",
+		 	associationNames: {
+		 		category: 'name'
+		 	},
 		  	model: {
 			    id: "id",			   
 			    fields: {
@@ -349,11 +365,8 @@ var routerManager = Backbone.Router.extend({
 					
 				})
 			},
-			parameterMap: function (data, type) {
-								
+			parameterMap: function (data, type) {							
 		        if(type != "read") {	      
-		        	
-		        	//console.log(data)
 		        	
 		        		if(!(_.isEmpty(data.answers))){
 		        			data.answers[0].answer = data.answerOne;
@@ -394,9 +407,28 @@ var routerManager = Backbone.Router.extend({
 			        	}
 
 			            return kendo.stringify(data);		        
+		        }else{
+	                if(data.filter){	                	
+	                    dataFilter = data.filter["filters"];
+
+	                    _.each(dataFilter, function (value, key) {                            
+
+	                    	if(question.associationNames[value['field']]){
+                    		value["property"] = value["field"]+'.'+question.associationNames[value['field']];	
+	                    	}else{
+	                    		value["property"] = value["field"];
+	                    	}	                                            
+	                        value["operator"] = me.validationOperator(value["operator"]);
+
+	                        delete dataFilter[key].field;
+	                                            
+	                    });
+	                    
+	                    data.filter = JSON.stringify(dataFilter);
+
+	                }    
+	                return data;			        	
 		        }
-
-
 			},
 			width: "450px",
 			command: [
@@ -427,6 +459,11 @@ var routerManager = Backbone.Router.extend({
 				            contentType: "application/json",
 				            dataType: "json",
 				            //data: JSON.stringify(param),
+	            	     	statusCode: {
+						      401:function() { 
+						      	window.location = '';
+						      }		   
+						    },				            
 							success: function(){
 							   question.grid.data('kendoGrid').dataSource.read();
 							   question.grid.data('kendoGrid').refresh();
@@ -453,6 +490,11 @@ var routerManager = Backbone.Router.extend({
 				            contentType: "application/json",
 				            dataType: "json",
 				            //data: JSON.stringify(param),
+	            	     	statusCode: {
+						      401:function() { 
+						      	window.location = '';
+						      }		   
+						    },				            
 							success: function(){
 							   question.grid.data('kendoGrid').dataSource.read();
 							   question.grid.data('kendoGrid').refresh();
@@ -482,7 +524,12 @@ var routerManager = Backbone.Router.extend({
 	                                },
 	                                type: "PUT",
 	                                contentType: "application/json",
-	                                dataType: "json"
+	                                dataType: "json",
+			            	     	statusCode: {
+								      401:function() { 
+								      	window.location = '';
+								      }		   
+								    }
 	                            },
 	                        parameterMap: function (data, type) {
 	                 			//console.log(data)
@@ -853,6 +900,7 @@ var routerManager = Backbone.Router.extend({
 	},
   
 	players: function() {
+		var me = this;
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
@@ -862,6 +910,11 @@ var routerManager = Backbone.Router.extend({
 			container:  $("#entity-content"),
 			url: "home/player/",
 			title: "Jugadores",
+			associationNames: {
+		 		roles: 'name',
+		 		team: 'name',
+		 		office: 'name'
+		 	},
 			model: {
 				id: "id",
 				fields: {
@@ -1072,8 +1125,31 @@ var routerManager = Backbone.Router.extend({
 			        	}		        		
 		        	}		        		        		        
 
-		            return kendo.stringify(data);
+
+		            return kendo.stringify(data);		            
+		        }else{
+	                if(data.filter){	                	
+	                    dataFilter = data.filter["filters"];
+
+	                    _.each(dataFilter, function (value, key) {                            
+
+	                    	if(player.associationNames[value['field']]){
+                    		value["property"] = value["field"]+'.'+player.associationNames[value['field']];	
+	                    	}else{
+	                    		value["property"] = value["field"];
+	                    	}	                                            
+	                        value["operator"] = me.validationOperator(value["operator"]);
+
+	                        delete dataFilter[key].field;
+	                                            
+	                    });
+	                    
+	                    data.filter = JSON.stringify(dataFilter);
+
+	                }    
+	                return data;			        	
 		        }
+
 			},		
 			dataBound: function(e) {
 			    //console.log("dataBound");
@@ -1104,6 +1180,11 @@ var routerManager = Backbone.Router.extend({
 					            data: formData,
 					            contentType: false,
 					            processData: false,
+		            	     	statusCode: {
+							      401:function() { 
+							      	window.location = '';
+							      }		   
+							    },
 								success: function(){
 								   player.grid.data('kendoGrid').dataSource.read();
 								   player.grid.data('kendoGrid').refresh();
@@ -1121,6 +1202,7 @@ var routerManager = Backbone.Router.extend({
 	},
 
 	groups: function() {
+		var me = this;
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
@@ -1129,7 +1211,10 @@ var routerManager = Backbone.Router.extend({
 		var group = new Entity({
 			container:  $("#entity-content"),
 			url: "home/group/",
-			title: "Grupos",			
+			title: "Grupos",	
+			associationNames: {
+		 		tournament: 'name'		 		
+		 	},		
 			model: {
 				id: "id",
 				fields: {
@@ -1151,6 +1236,11 @@ var routerManager = Backbone.Router.extend({
                                 url: function (e) {            	                                
                                     return "home/team/" + e.id;
                                 },
+		            	     	statusCode: {
+							      401:function() { 
+							      	window.location = '';
+							      }		   
+							    },
                                 type: "PUT",
                                 contentType: "application/json",
                                 dataType: "json"
@@ -1266,7 +1356,29 @@ var routerManager = Backbone.Router.extend({
 		        	
 		        				        	
 		            return kendo.stringify(data);
+		        }else{
+	                if(data.filter){	                	
+	                    dataFilter = data.filter["filters"];
+
+	                    _.each(dataFilter, function (value, key) {                            
+
+	                    	if(group.associationNames[value['field']]){
+                    		value["property"] = value["field"]+'.'+group.associationNames[value['field']];	
+	                    	}else{
+	                    		value["property"] = value["field"];
+	                    	}	                                            
+	                        value["operator"] = me.validationOperator(value["operator"]);
+
+	                        delete dataFilter[key].field;
+	                                            
+	                    });
+	                    
+	                    data.filter = JSON.stringify(dataFilter);
+
+	                }    
+	                return data;			        	
 		        }
+
 			},
 			toolbar: [
   			    { name: "create", text: "Agregar registro" },
@@ -1343,6 +1455,7 @@ var routerManager = Backbone.Router.extend({
 	},
 	
 	teams: function() {
+		var me = this;
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
@@ -1353,6 +1466,10 @@ var routerManager = Backbone.Router.extend({
 			container:  $("#entity-content"),
 			url: "home/team/",
 			title: "Equipos",
+			associationNames: {
+		 		tournament: 'name',
+		 		group: 'name'	 		
+		 	},	
 			model: {
 				id: "id",
 				fields: {
@@ -1387,6 +1504,11 @@ var routerManager = Backbone.Router.extend({
                                 url: function (e) {            	                                
                                     return "home/player/" + e.id;
                                 },
+                               	statusCode: {
+							      401:function() { 
+							      	window.location = '';
+							      }		   
+							    },
                                 type: "PUT",
                                 contentType: "application/json",
                                 dataType: "json"
@@ -1581,10 +1703,31 @@ var routerManager = Backbone.Router.extend({
 	        			data.tournament = {
 			        			id: data.tournament
 			        	}		        		
-		        	}		        
-		        	
+		        	}		        		        	
 		        				        	
 		            return kendo.stringify(data);
+
+		        }else{
+	                if(data.filter){	                	
+	                    dataFilter = data.filter["filters"];
+
+	                    _.each(dataFilter, function (value, key) {                            
+
+	                    	if(team.associationNames[value['field']]){
+                    		value["property"] = value["field"]+'.'+team.associationNames[value['field']];	
+	                    	}else{
+	                    		value["property"] = value["field"];
+	                    	}	                                            
+	                        value["operator"] = me.validationOperator(value["operator"]);
+
+	                        delete dataFilter[key].field;
+	                                            
+	                    });
+	                    
+	                    data.filter = JSON.stringify(dataFilter);
+
+	                }    
+	                return data;			        	
 		        }
 			},
 			dataBound: function(e) {
@@ -1616,6 +1759,11 @@ var routerManager = Backbone.Router.extend({
 					            data: formData,
 					            contentType: false,
 					            processData: false,
+		            	     	statusCode: {
+							      401:function() { 
+							      	window.location = '';
+							      }		   
+							    },					            
 								success: function(){
 								   team.grid.data('kendoGrid').dataSource.read();
 								   team.grid.data('kendoGrid').refresh();
@@ -1731,6 +1879,11 @@ var routerManager = Backbone.Router.extend({
 	            url: "home/tournament/active",
 	            contentType: 'application/json',
 	            dataType: "json",
+    	     	statusCode: {
+			      401:function() { 
+			      	window.location = '';
+			      }		   
+			    },	            
 	            success: function(data){
             		var select = modalObj.find(".select-tournaments");
             		_.each(data, function (value, key) {
@@ -1825,8 +1978,12 @@ var routerManager = Backbone.Router.extend({
 			            url: "home/team/save",
 			            contentType: 'application/json',
 			            dataType: "json",
-			            success: function(data){
-			            	
+            	     	statusCode: {
+					      401:function() { 
+					      	window.location = '';
+					      }		   
+					    },			            
+			            success: function(data){			            	
 			            },
 			            error: function(){},
 					};
@@ -1857,6 +2014,10 @@ var routerManager = Backbone.Router.extend({
 			container:  $("#entity-content"),
 			url: "home/question/report",
 			title: "Preguntas Reportadas",
+			associationNames: {
+		 		player: 'name',
+		 		question: 'question'	 		
+		 	},	
 			model: {
 				id: "id",
 				fields: {
@@ -1897,27 +2058,70 @@ var routerManager = Backbone.Router.extend({
 			command: [
 			    {
 			    	 text: "Solucionar",
-			    	 click: function (e) {
-			    		 console.log("verificar")
+			    	 click: function (e) {			    		
 			    		 e.preventDefault();
 
-		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-		                 var id = dataItem.id;		                
-		                 console.log(id)		
-		                 config = {
-				            type: "PUT",           
-				            url: "home/question/report/solve/" + id,					            
-				            contentType: "application/json",
-				            dataType: "json",
-				            //data: JSON.stringify(param),
-							success: function(){
-							   questionReport.grid.data('kendoGrid').dataSource.read();
-							   questionReport.grid.data('kendoGrid').refresh();
-							},
-							error: function(){}
-		                 }
+		                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+		                var id = dataItem.id;		                
+		                
+						var modal = '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'+
+						  '<div class="modal-dialog">'+
+						    '<div class="modal-content">'+
+						      '<div class="modal-header">'+
+						        '<button type="button" class="close" data-dismiss="modal">'+
+						        '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
+						        '<h4 class="modal-title" id="myModalLabel">Solucionar reporte</h4>'+
+						      '</div>'+
+						      '<div class="modal-body">'+	
+						      	'<form>'+
+						      		'<div class="form-group">'+
+						      			'<label>Descripción</label>'+
+						      			'<textarea id="descriptionSolve" class="form-control"></textarea>'+
+						      		'</div>'+						      		
+						      	'</form>'+
+						      '</div>'+
+						      '<div class="modal-footer">'+
+						        '<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>'+
+						        '<button type="button" class="btn btn-primary btn-solve-report">Enviar</button>'+
+						      '</div>'+
+						    '</div>'+
+						  '</div>'+
+						'</div>';
 
-		                 $.ajax(config);
+						var modalObj = $(modal);
+						modalObj.modal("show");
+
+
+
+						modalObj.find(".btn-solve-report").click(function (e) {
+							
+							var data = {
+								'descriptionSolve' : $('#descriptionSolve').val()
+							};
+
+			                config = {
+					            type: "PUT",           
+					            url: "home/question/report/solve/" + id,					            
+					            contentType: "application/json",
+					            data: JSON.stringify(data),
+					            dataType: "json",				            
+		            	     	statusCode: {
+									401:function() { 
+										window.location = '';
+									}		   
+							    },
+								success: function(){
+								   questionReport.grid.data('kendoGrid').dataSource.read();
+								   questionReport.grid.data('kendoGrid').refresh();
+								   modalObj.modal("hide");
+								},
+								error: function(){}
+			                }
+
+			                $.ajax(config);
+		            	});
+
+		               
 							
 		             } 
 			    },			
@@ -1925,6 +2129,108 @@ var routerManager = Backbone.Router.extend({
 
 		});
 	},
+
+
+	reportPlayerAnalysis: function () {
+		
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Inicio: "",
+		  	Reporte: "reportPlayerAnalysis"
+		});
+
+		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
+		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+
+		var reportPlayerAnalysis = new Entity({
+			container:  $("#entity-content"),
+			url: "home/player/questions",
+			title: "Analisis por jugador",
+			model: {
+				id: "id",
+				fields: {
+					id: { editable: false, nullable: true },				   
+				    playername: {
+				    	type: 'string'
+				    },
+				    total: {
+				    	type: 'string'
+				    },
+				    win: {
+				    	type: 'string' 
+				    }					  
+				}
+			},
+			columns: [				
+				{ 
+					field: "playername",
+					title:"Jugador"										
+				},		
+				{ 
+					field: "total",
+					title:"Total de preguntas realizadas"
+				},
+				{
+					field: "win",
+					title:"Total de preguntas ganadas"
+				}
+			],
+			toolbar: [
+				 { 
+  			    	name: "selectTournament",
+  			    	template: function(){  			    		
+  			    		var btn = '<select class="form-control select-tournaments-p" style="width: 200px; height: 20px;"></select>';
+  			    		return btn;
+  			    	}
+  			    }
+			],
+			command: null,
+			pageable: false,
+			serverFiltering: false,
+			serverSorting: false
+		});
+
+		var select = $(".select-tournaments-p");
+		var getParameters = function () {
+			select.empty();
+			parameters = {
+				type: "GET",     
+	            url: "home/tournament/active",		            
+	            contentType: 'application/json',
+	            dataType: "json",
+    	     	statusCode: {
+			      401:function() { 
+			      	window.location = '';
+			      }		   
+			    },	            
+	            success: function(data){
+
+            		select.html('<option value=0>Seleccione un torneo</option>');
+            		_.each(data, function (value, key) {            			
+            			var s = select.get(0);
+            			select.append($('<option>', {
+            			 	value: value.id,
+            			 	text: value.name
+            			}));            		            			
+            		});
+
+            		
+	            },
+	            error: function(){},            
+			};
+			
+			$.ajax(parameters);	
+		};
+
+		select.change(function () {
+			reportPlayerAnalysis.url = "home/player/questions/"+select.val();
+            reportPlayerAnalysis.grid.data('kendoGrid').dataSource.read();		            
+			reportPlayerAnalysis.grid.data('kendoGrid').refresh();
+        });
+		getParameters();
+	},
+
+
 
 	/**
 	 * Obtener y guardar parametros de configuración
@@ -2015,6 +2321,11 @@ var routerManager = Backbone.Router.extend({
 		    url: "params",
 	        contentType: 'application/json',
 	        dataType: "json",
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },	        
 	        success: function(data){
 	        	if(!(_.isNull(data))){
 	        		$("#timeQuestionPractice").val(data['gamesParameters']['timeQuestionPractice']);
@@ -2171,6 +2482,7 @@ var routerManager = Backbone.Router.extend({
 				$.ajax(parameters);
 			})
 			modalObj.modal("show");
+
 			//Guardar equipos generados en BD
 			modalObj.find(".save-groups").click(function () {	
 
@@ -2220,6 +2532,11 @@ var routerManager = Backbone.Router.extend({
 			            url: "home/group/save",
 			            contentType: 'application/json',
 			            dataType: "json",
+            	     	statusCode: {
+					      401:function() { 
+					      	window.location = '';
+					      }		   
+					    },			            
 			            success: function(data){			            	
 			            },
 			            error: function(){},
@@ -2273,6 +2590,11 @@ var routerManager = Backbone.Router.extend({
 			    url: "image",
 		        contentType: false,	  
 		        processData: false,      
+    	     	statusCode: {
+			      401:function() { 
+			      	window.location = '';
+			      }		   
+			    },		        
 		        success: function(data){	 		        	
 		        	//alert("Imagen gurdada exitosamente: "+data.id);
 		        	// var well = container.find(".well");
@@ -2320,6 +2642,11 @@ var routerManager = Backbone.Router.extend({
             contentType: "application/json",
             dataType: "json",
             //data: JSON.stringify(param),
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },            
 			success: function(response){
 				var data = response;
 				select.append(option);
@@ -2346,6 +2673,11 @@ var routerManager = Backbone.Router.extend({
 	            contentType: "application/json",
 	            dataType: "json",
 	            //data: JSON.stringify(param),
+    	     	statusCode: {
+			      401:function() { 
+			      	window.location = '';
+			      }		   
+			    },	            
 				success: function(response){
 					var data = response.data;
 					me.data = data;
@@ -2424,6 +2756,11 @@ var routerManager = Backbone.Router.extend({
             contentType: "application/json",
             dataType: "json",
             //data: JSON.stringify(param),
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },            
 			success: function(response){
 				var data = response.data;
 				console.log(response)
@@ -2552,6 +2889,11 @@ var routerManager = Backbone.Router.extend({
             contentType: "application/json",
             dataType: "json",
             //data: JSON.stringify(param),
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },            
 			success: function(response){
 				var data = response;
 				_.each(data, function(tournament){
@@ -2607,6 +2949,11 @@ var routerManager = Backbone.Router.extend({
 				        contentType: 'application/json',
 		            	dataType: "json",
 		            	data: data,
+            	     	statusCode: {
+					      401:function() { 
+					      	window.location = '';
+					      }		   
+					    },		            	
 				        success: function(data){
 				        	alert("Notificaciones enviadas");
 				        },
@@ -2666,4 +3013,11 @@ function generateGroup(){
 	var router = new routerManager();
 	Backbone.history.navigate("generateGroups", true);
 }
+
+function selectTournament(){
+	
+	var router = new routerManager();
+	Backbone.history.navigate("selectTournament", true);
+}
+
 
