@@ -1,0 +1,315 @@
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+[2014-09-18 17:31:04] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:31:04] loaded. Ctrl+C to break
+[2014-09-18 17:31:04] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:31:04] loaded. Ctrl+C to break
+[2014-09-18 17:31:04] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:31:04] loaded. Ctrl+C to break
+[2014-09-18 17:31:04] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:31:04] loaded. Ctrl+C to break
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+[2014-09-18 17:31:11] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:31:11] loaded. Ctrl+C to break
+[2014-09-18 17:31:11] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:31:11] loaded. Ctrl+C to break
+[2014-09-18 17:31:11] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:31:11] loaded. Ctrl+C to break
+[2014-09-18 17:31:11] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:31:11] loaded. Ctrl+C to break
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+[2014-09-18 17:32:43] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:32:43] loaded. Ctrl+C to break
+[2014-09-18 17:32:43] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:32:43] loaded. Ctrl+C to break
+[2014-09-18 17:32:43] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:32:43] loaded. Ctrl+C to break
+[2014-09-18 17:32:43] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 3
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~notificationTeam 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-09-18 17:32:43] loaded. Ctrl+C to break
+Mensaje EnviadoMensaje EnviadoMensaje EnviadoMensaje EnviadoExpected response code 250 but got code "", with message ""Notice: fwrite(): send of 39 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 78 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Expected response code 250 but got code "421", with message "421 ismtpd-003.iad1.sendgrid.net Timeout. Try talking faster next time!
+"Notice: fwrite(): send of 117 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Mensaje EnviadoNotice: fwrite(): send of 156 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 195 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Expected response code 250 but got code "421", with message "421 ismtpd-022.iad1.sendgrid.net Timeout. Try talking faster next time!
+"Notice: fwrite(): send of 39 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 39 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 234 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 78 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 78 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 273 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 312 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 351 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 390 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 429 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236Notice: fwrite(): send of 468 bytes failed with errno=32 Broken pipe in /var/www/html/lider/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php line 236

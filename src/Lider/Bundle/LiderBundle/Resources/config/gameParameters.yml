@@ -1,17 +1,9 @@
 gamesParameters:
-<<<<<<< HEAD
-    timeQuestionPractice: '35'
-    timeQuestionDuel: '60'
-    timeGame: '5'
-    timeDuel: '3'
-    answerShowPractice: 'true'
-    answerShowGame: 'true'
-=======
     timeQuestionPractice: '30'
     timeQuestionDuel: '30'
     timeGame: '7'
     timeDuel: '2'
-    answerShowPractice: 'true'
+    answerShowPractice: 'false'
     answerShowGame: 'false'
     timeDuelExtra: '1'
     countQuestionDuel: '5'
@@ -22,4 +14,3 @@ gamesParameters:
     questionPointsHelp: '1'
     countQuesttionExtraDuel: '3'
     pointExtraDuel: 'false'
->>>>>>> 829d70ee1ee1e43dece0aec4494e8eab02256432

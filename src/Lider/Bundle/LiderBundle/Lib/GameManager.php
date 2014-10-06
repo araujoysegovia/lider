@@ -92,12 +92,7 @@ class GameManager
 	private function generateGameForFirtsLevel($tournament, $interval)
 	{
 		$groups = $this->em->getRepository("LiderBundle:Group")
-<<<<<<< HEAD
-						   ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
-	
-=======
 									 ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
->>>>>>> a403c0eb7fee49910f03e912d323f1321511de15
 		foreach ($groups as $key => $value) {
 			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
 			//echo "\n\n";
@@ -434,7 +429,7 @@ class GameManager
 	private function notificationDuel($player, $teamvs, $playervs)
     {
         $gearman = $this->co->get('gearman');
-        $body = 'Hola <b>'.$player->getName().' '.$player->getLastname().': '.$player->getEmail().'</b><br><br> Se ha generado un duelo entre tu equipo y el equipo '.$teamvs->getName().', y tu has sido el seleccionado para jugarlo contra <b>'.$playervs->getName().' '.$playervs->getLastname().'</b>';
+        $body = 'Hola <b>'.$player->getName().' '.$player->getLastname().'</b><br><br> Se ha generado un duelo entre tu equipo y el equipo '.$teamvs->getName().', y tu has sido el seleccionado para jugarlo contra <b>'.$playervs->getName().' '.$playervs->getLastname().'</b>';
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
             'subject' => 'Duelo generado',
             'to' => $player->getEmail(),
