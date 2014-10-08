@@ -27,10 +27,24 @@ class DuelController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $duels = $em->getRepository('LiderBundle:Duel')->getArrayEntityWithOneLevel(array("game" => $gameId, 'deleted' => false));
-        if(!$duels)
+        if(!$duels){
             return $this->get("talker")->response(array());
-        else 
+        }
+        else{
+            $questionManager = $this->get('question_manager');
+            foreach($duels['data'] as $key =>  $duel)
+            {
+                $playerOne = $em->getRepository("LiderBundle:Player")->find($duel['player_one']['id']);
+                $playerTwo = $em->getRepository("LiderBundle:Player")->find($duel['player_two']['id']);
+                $d = $em->getRepository("LiderBundle:Duel")->find($duel['id']);
+                $questionPlayerOne = $questionManager->getMissingQuestionFromDuel($d, $playerOne);
+                $questionPlayerTwo = $questionManager->getMissingQuestionFromDuel($d, $playerTwo);
+                $duel['player_one']['questionMissing'] = count($questionPlayerOne);
+                $duel['player_two']['questionMissing'] = count($questionPlayerTwo);
+                $duels['data'][$key] = $duel;
+            }
             return $this->get("talker")->response($duels);
+        }
     }
 
 

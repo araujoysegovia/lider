@@ -53,3 +53,8 @@ admin_question_report_solve:
     pattern:  /report/solve/{id}
     defaults: { _controller: LiderBundle:ReportQuestion:reportSolve }
     methods:  [PUT]
+
+admin_question_count_bygame:
+    pattern:  /game/{gameId}/count
+    defaults: { _controller: LiderBundle:Question:countQuestionForGame }
+    methods:  [GET]

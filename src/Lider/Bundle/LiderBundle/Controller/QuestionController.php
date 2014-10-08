@@ -190,6 +190,28 @@ class QuestionController extends Controller
     	
     }
 
+    public function countQuestionForGameAction($gameId)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repository = $em->getRepository('LiderBundle:Game');
+        $game = $repository->findOneBy(array('id' => $gameId));
+        if(!$game)
+            throw new \Exception("Game Not Found");
+        $duels = $game->getDuels();
+        $return = array();
+        foreach($duels as $duel)
+        {
+            $playerOne = $duel->getPlayerOne();
+            $playerTwo = $duel->getPlayerTwo();
+            $questionPlayerOne = $this->get('question_manager')->getMissingQuestionFromDuel($duel, $playerOne);
+            $questionPlayerTwo = $this->get('question_manager')->getMissingQuestionFromDuel($duel, $playerTwo);
+            $return[$duel->getId()]['playerOne'] = count($questionPlayerOne);
+            $return[$duel->getId()]['playerTwo'] = count($questionPlayerTwo);
+        }
+        
+        return $this->get("talker")->response(array("total" => count($return), "data" => $return));
+    }
+
     public function countQuestionFromDuelAction($duelId)
     {
         $em = $this->getDoctrine()->getEntityManager();
