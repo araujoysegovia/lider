@@ -3,7 +3,7 @@ gamesParameters:
     timeQuestionDuel: '30'
     timeGame: '7'
     timeDuel: '2'
-    answerShowPractice: 'true'
+    answerShowPractice: 'false'
     answerShowGame: 'false'
     timeDuelExtra: '1'
     countQuestionDuel: '5'

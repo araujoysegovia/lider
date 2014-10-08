@@ -56,7 +56,9 @@ class CheckerWorker
 
 		if(count($qhf) == 0 && count($qhs) == 0){
 			$this->co->get('game_manager')->stopDuel($duel);
-			$this->checkGame($duel->getGame());
+            $gameId = $duel->getGame()->getId();
+			$this->checkGame($gameId);
+            echo "Juego Checkeado";
 		}
 
     }
@@ -70,32 +72,38 @@ class CheckerWorker
     	$team2 = $list[1];
     	if($team1['points'] < $team2['points'])
     	{
+            echo "gano el equipo 2\n";
     		return $team2['team.teamId'];
     	}
     	else if($team1['points'] > $team2['points'])
     	{
+            echo "gano el equipo 1\n";
     		return $team1['team.teamId'];
     	}
     	return null;
     }
 
-	private function checkGame(&$game)
+	private function checkGame(&$gameId)
     {				
 		//$duels = $game->getDuels()->findBy(array("active" => false, "finished" => true));
 		$em = $this->co->get('doctrine')->getManager();
-        
+        $game = $em->getRepository("LiderBundle:Game")->find($gameId);
 		$parameters = $this->co->get('parameters_manager')->getParameters();
-		$duels = $em->getRepository('LiderBundle:Duel')->findBy(array("active" => false, "finished" => true, "game" =>$game));
+		$duels = $em->getRepository('LiderBundle:Duel')->findBy(array("active" => true, "finished" => false, "game" =>$game));
+        echo "estoy en el check game\n";
+        echo count($duels);
 		if(count($duels) == 0){
 			$win = $this->checkWinTeam($game);
+            echo "entre al count de duelos\n";
 			if(!is_null($win))
 			{
+                echo "entre al equipo ganador";
 				$team = $em->getRepository('LiderBundle:Team')->find($win);
                 $game->setTeamWinner($team);
 				$team->setPoints($team->getPoints() + $parameters['gamesParameters']['gamePoints']);
 				$qm = $this->co->get('game_manager')->stopGame($game);
-                $this->notificationPlayersDuelFinish($game->getTeamOne(), $game->getTeamTwo(), $win);
-                $this->notificationPlayersDuelFinish($game->getTeamTwo(), $game->getTeamOne(), $win);
+                $this->notificationPlayersDuelFinish($game->getTeamOne(), $game->getTeamTwo(), $team);
+                $this->notificationPlayersDuelFinish($game->getTeamTwo(), $game->getTeamOne(), $team);
                 $list = $em->getRepository("LiderBundle:Game")->findBy(array('active' => true, 'finished' => false));
                 if(count($list) == 0)
                 {
@@ -126,12 +134,12 @@ class CheckerWorker
 		
     }
 
-    private function notificationPlayersDuelFinish($team, $vs, $Win)
+    private function notificationPlayersDuelFinish($team, $vs, $win)
     {
         $gearman = $this->co->get('gearman');
         $to = array();
         $result = '';
-        foreach($team->getPlayers() as $palyer)
+        foreach($team->getPlayers() as $player)
         {
             $to[] = $player->getEmail();
         }
@@ -146,7 +154,7 @@ class CheckerWorker
             'subject' => 'Juego Finalizado',
             'to' => $to,
             'viewName' => 'LiderBundle:Templates:emailnotification.html.twig',
-            'body' => array(
+            'content' => array(
                 'title' => 'Juego Finalizado',
                 'subjectMessage' => 'Juego finalizado contra '.$vs->getName(),
                 'body' => $result.$vs->getName()
@@ -208,7 +216,7 @@ class CheckerWorker
         $duel->setPlayerTwo($player2);
         $duel->tournament($game->getTournament());
         $duel->setExtraDuel(true);
-        $countQuestion = $params['gamesParameters']['countQuestionExtraDuel'];
+        $countQuestion = $params['gamesParameters']['countQuestionDuelExtra'];
         $gameManager->generateQuestions($countQuestion, $duel);
         $em->persist($duel);
         $em->flush();

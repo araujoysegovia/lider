@@ -189,7 +189,7 @@ class QuestionHistoryRepository extends MainMongoRepository
 				prev.duels ++;
 		}')
 		->field('gameId')->equals($gameId)
-		->field('team.teamId')->equals($teamId1)
+		->field('team.teamId')->equals($teamId)
 		->getQuery()
 		->execute();
 
@@ -214,6 +214,24 @@ class QuestionHistoryRepository extends MainMongoRepository
 			->getQuery()
 			->execute();
 
+		return $query;
+	}
+
+	public function getQuestionForPlayerByDuel($duelId)
+	{
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
+			->group(array("player.playerId" => 1),
+					array('total' => 0, 'win' =>0))
+			->reduce('function (obj, prev){
+					prev.total++;
+					if(obj.duel && obj.find){
+						prev.win++;
+					}
+			}')
+			->field('finished')->equals(true)
+			->field('duelId')->equals($duelId)
+			->getQuery()
+			->execute();
 		return $query;
 	}
 

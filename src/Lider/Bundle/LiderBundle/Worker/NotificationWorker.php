@@ -18,10 +18,10 @@ class NotificationWorker
     private $from = 'lider@araujoysegovia.com';
 
     private $to = array(
-        "eescallon@araujoysegovia.com" => array("999", "1002", "996", "1009"),
-        "dmejia@araujoysegovia.com" => array("1004", "1011", "1005", "998"),
-        "lrodriguez@araujoysegovia.com" => array("1001", "1008", "1006", "997"),
-        "eduard.escallon@gmail.com" => array("1003", "1007", "1000", "1010")
+        "eescallon@araujoysegovia.com" => array("1018", "1024", "1014", "1019"),
+        "lrodriguez@araujoysegovia.com" => array("1012", "1021", "1017", "1015"),
+        "gpallares@araujoysegovia.com" => array("1022", "1016", "1013", "1025"),
+        "evargas@araujoysegovia.com" => array("1026", "1023", "1027", "1020"),
     );
     // private $em
 
@@ -52,7 +52,7 @@ class NotificationWorker
         $to = $this->getEmailFromTeamId($team->getId());
         try{
             $send = $notificationService->sendEmail($data['subject'], $this->from, $to, null, $data['viewName'], $data['content']);
-            echo "Mensaje Enviado";
+            echo "Mensaje Enviado general";
         }catch(\Exception $e){
             echo $e->getMessage();
         }
@@ -109,7 +109,7 @@ class NotificationWorker
                 $to = $this->getEmailFromTeamId($team->getId());
                 try{
                     $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
-                    echo "Mensaje Enviado";
+                    echo "Mensaje Enviado de equipo";
                 }catch(\Exception $e){
                     echo $e->getMessage();
                 }
@@ -186,6 +186,7 @@ class NotificationWorker
      * )
      */
     public function adminNotification(\GearmanJob $job){
+        $notificationService = $this->co->get("notificationService");
         $data = json_decode($job->workload(),true);
         $admins = $this->getAdmins();
         if($admins)
@@ -199,7 +200,7 @@ class NotificationWorker
             }
             try{
                 $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:adminnotification.html.twig", $body);
-                echo "Mensaje Enviado";
+                echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
                 echo $e->getMessage();
             }
@@ -209,7 +210,6 @@ class NotificationWorker
     private function getAdmins()
     {
         $em = $this->co->get('doctrine')->getManager();
-        $notificationService = $this->co->get("notificationService");
         $repo = $em->getRepository("LiderBundle:Player");
         $admins = $repo->findAdmin();
         return $admins;
