@@ -19,7 +19,7 @@ var routerManager = Backbone.Router.extend({
 		"sendNotifications": "sendNotifications",
 		"games": "games",
 		"reportPlayerAnalysis": "reportPlayerAnalysis",
-		"selectTournament": "selectTournament",
+		// "selectTournament": "selectTournament",
 	},
 
 	home: function() {
@@ -2153,6 +2153,9 @@ var routerManager = Backbone.Router.extend({
 				    playername: {
 				    	type: 'string'
 				    },
+				    teamname: {
+				    	type: 'string'
+				    },				    
 				    total: {
 				    	type: 'string'
 				    },
@@ -2165,7 +2168,11 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field: "playername",
 					title:"Jugador"										
-				},		
+				},
+				{
+					field: "teamname",
+					title:"Equipo"
+				},						
 				{ 
 					field: "total",
 					title:"Total de preguntas realizadas"
@@ -2185,7 +2192,7 @@ var routerManager = Backbone.Router.extend({
   			    }
 			],
 			command: null,
-			pageable: false,
+			pageable: true,
 			serverFiltering: false,
 			serverSorting: false
 		});
@@ -2296,10 +2303,6 @@ var routerManager = Backbone.Router.extend({
 					    	'<input type="number" class="form-control" id="gamePoints">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Numero de preguntas para Extra Duelo</label>'+						    
-					    	'<input type="number" class="form-control" id="countQuesttionExtraDuel">'+
-						  '</div>'+
-						  '<div class="form-group col-sm-4">'+
 						    '<label>Sumar Puntos en Duelo Extra</label>'+						    
 					    	'<select id="pointExtraDuel" class="form-control">'+
 					    		'<option value=true>Si</option>'+
@@ -2339,8 +2342,7 @@ var routerManager = Backbone.Router.extend({
 		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])	
 		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])	
 		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])	
-		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])
-		        	$("#countQuesttionExtraDuel").val(data['gamesParameters']['countQuesttionExtraDuel'])
+		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])		        	
 		        	$("#pointExtraDuel").val(data['gamesParameters']['pointExtraDuel'])
 	        	}	        	
 	        },
@@ -2371,8 +2373,7 @@ var routerManager = Backbone.Router.extend({
 						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
 						"questionPoints": $("#questionPoints").val(),
 						"questionPointsHelp": $("#questionPointsHelp").val(),
-						"gamePoints": $("#gamePoints").val(),
-						"countQuesttionExtraDuel": $("#countQuesttionExtraDuel").val(),
+						"gamePoints": $("#gamePoints").val(),						
 						"pointExtraDuel": $("#pointExtraDuel").val(),
 					};	
 
@@ -3014,10 +3015,10 @@ function generateGroup(){
 	Backbone.history.navigate("generateGroups", true);
 }
 
-function selectTournament(){
+// function selectTournament(){
 	
-	var router = new routerManager();
-	Backbone.history.navigate("selectTournament", true);
-}
+// 	var router = new routerManager();
+// 	Backbone.history.navigate("selectTournament", true);
+// }
 
 

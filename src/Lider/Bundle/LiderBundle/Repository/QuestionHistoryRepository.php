@@ -201,10 +201,11 @@ class QuestionHistoryRepository extends MainMongoRepository
 
 		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
 			->group(array("player.playerId" => 1, 'player.name' =>2),
-					array('total' => 0, 'win' =>0, 'playername' => '', 'tournamentname' => ''))
+					array('total' => 0, 'win' =>0, 'playername' => '', 'teamname' => ''))
 			->reduce('function (obj, prev){
 					prev.total++;
 					prev.playername = obj.player.name;
+					prev.teamname = obj.team.name;
 					if(obj.duel && obj.find){
 						prev.win++;
 					}

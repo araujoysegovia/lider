@@ -72,7 +72,7 @@ class PlayerController extends Controller
         return $this->get("talker")->response($arr);
     }
 
-    public function loginAction(){
+    public function loginAction(){        
         $em = $this->getDoctrine()->getEntityManager();
 
         $dm = $this->get('doctrine_mongodb')->getManager();
