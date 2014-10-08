@@ -185,13 +185,16 @@ class GroupController extends Controller
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
-    public function getGroupPositionAction()
+    public function getGroupPositionAction($tournamentId = null)
     {
         $em = $this->getDoctrine()->getEntityManager();
         //$dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $em->getRepository("LiderBundle:Group");
         $user = $this->container->get('security.context')->getToken()->getUser();
-        $tournamentId = $user->getTeam()->getTournament()->getId();
+        if($user->getTeam()){
+             $tournamentId = $user->getTeam()->getTournament()->getId();
+         }
+       
 
         $gameRepo = $em->getRepository("LiderBundle:Game");
 

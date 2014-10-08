@@ -92,7 +92,8 @@ class GameManager
 	private function generateGameForFirtsLevel($tournament, $interval)
 	{
 		$groups = $this->em->getRepository("LiderBundle:Group")
-						   ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
+					   ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
+					   
 		foreach ($groups as $key => $value) {
 			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
 			//echo "\n\n";

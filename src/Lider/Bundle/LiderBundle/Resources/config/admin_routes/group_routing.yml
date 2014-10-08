@@ -37,3 +37,8 @@ admin_group_notification:
     pattern:  /notification
     defaults: { _controller: LiderBundle:Group:notificationGroup }
     methods:  [GET]
+
+admin_group_position:
+    pattern:  /positions/{tournamentId}
+    defaults: { _controller: LiderBundle:Group:getGroupPosition }
+    methods:  [GET]
