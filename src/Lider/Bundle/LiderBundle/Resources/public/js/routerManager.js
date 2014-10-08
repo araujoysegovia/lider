@@ -19,7 +19,7 @@ var routerManager = Backbone.Router.extend({
 		"sendNotifications": "sendNotifications",
 		"games": "games",
 		"reportPlayerAnalysis": "reportPlayerAnalysis",
-		// "selectTournament": "selectTournament",
+		"reportTeamByGroup": "reportTeamByGroup",
 	},
 
 	home: function() {
@@ -2126,7 +2126,7 @@ var routerManager = Backbone.Router.extend({
 		             } 
 			    },			
 			],
-
+			toolbar: null
 		});
 	},
 
@@ -2238,7 +2238,111 @@ var routerManager = Backbone.Router.extend({
 	},
 
 
+	reportTeamByGroup: function () {
+		var me = this;
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Inicio: "",
+		  	Reporte: "reportTeamByGroup"
+		});
 
+		var container = $('<div></div>').addClass('panel panel-default');
+		var panelHeading = $('<div></div>').addClass('panel-heading');
+		var panelBody = $('<div></div>').addClass('panel-body').attr('data-id', 'general');
+		var form = $('<form></form>').addClass('form-inline').attr('role', 'form');
+		
+		var div = $('<div></div>').addClass('form-group');
+		var title = $('<h3></h3>').html('Grupos').css({
+			float: 'left',
+			lineHeight: '0px'
+		});
+		panelHeading.append(title).append(form.append(form.append(div)));
+		container.append(panelHeading).append(panelBody);		
+		$("#entity-content").append(container);
+
+		var select = $('<select></select>').addClass('form-control select-tournament');
+		var option = $('<option></option>').attr('value', '0').html('Seleccione un torneo');
+		var loader = $(document.body).loaderPanel();
+		loader.show();
+		var configTorunament = {
+			type: "GET",
+            url: "home/tournament/active",
+            contentType: "application/json",
+            dataType: "json",
+            //data: JSON.stringify(param),
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },            
+			success: function(response){
+				var data = response;
+				select.append(option);
+				_.each(data, function(tournament){
+					var option = $('<option></option>').attr('value', tournament.id).html(tournament.name);
+					select.append(option)
+				})
+				div.prepend(select);
+			},
+			error: function(){},
+	    	complete: function(){
+	    		loader.hide();
+	    	}
+        }
+        $.ajax(configTorunament);
+
+
+        select.change(function(op){
+        	panelBody.empty();
+        	var loader1 = $(document.body).loaderPanel();
+			loader1.show();
+        	var config = {
+				type: 'GET',
+	            url: 'home/group/positions/'+select.val(),
+	            contentType: 'application/json',
+	            dataType: 'json',            
+		     	statusCode: {
+			      401:function() { 
+			      	window.location = '';			      	
+			      }		   
+			    },            
+				success: function(response){				
+					data = response['data'];
+					_.each(data, function (value, key) {
+						container = $('<div></div>');
+						table = $('<table class="table"></table');
+						table.append('<thead>'+
+										'<th>Equipo</th>'+
+										'<th>PJ</th>'+
+										'<th>PG</th>'+
+										'<th>PP</th>'+
+										'<th>P</th>'+
+									 '</thead>');
+						
+						_.each(value.teams, function (team) {
+							table.append('<tr>'+
+										 '<td>'+team.name+'</td>'+
+										 '<td>'+team.total+'</td>'+
+										 '<td>'+team.win+'</td>'+
+										 '<td>'+team.loose+'</td>'+
+										 '<td>'+team.points+'</td>'+										 										 
+								         '</tr>');							
+						});
+
+						container.append(table);
+						
+						me.createPanel(value.name, container);
+					})
+				},
+				error: function(){},
+				complete: function (argument) {
+					loader1.hide();
+				} 
+	        }
+	        $.ajax(config);
+		});
+
+	},
 	/**
 	 * Obtener y guardar parametros de configuración
 	 */
