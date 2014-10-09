@@ -18,10 +18,8 @@ class NotificationWorker
     private $from = 'lider@araujoysegovia.com';
 
     private $to = array(
-        "eescallon@araujoysegovia.com" => array("1018", "1024", "1014", "1019"),
-        "lrodriguez@araujoysegovia.com" => array("1012", "1021", "1017", "1015"),
-        "gpallares@araujoysegovia.com" => array("1022", "1016", "1013", "1025"),
-        "evargas@araujoysegovia.com" => array("1026", "1023", "1027", "1020"),
+        "eescallon@araujoysegovia.com" => array("1018", "1024", "1014", "1019", "1022", "1016", "1013", "1025"),
+        "lrodriguez@araujoysegovia.com" => array("1012", "1021", "1017", "1015", "1026", "1023", "1027", "1020"),
     );
     // private $em
 
