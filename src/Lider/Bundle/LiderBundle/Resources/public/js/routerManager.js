@@ -2895,7 +2895,7 @@ var routerManager = Backbone.Router.extend({
 					var tr = $('<tr></tr>').css({						
 						height: '40px'						
 					});					
-					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 30px;" class="div-game"></div></td>').css('width', '15px');
+					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status);
 
 					var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+duel.player_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
