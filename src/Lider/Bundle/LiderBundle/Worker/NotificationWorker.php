@@ -17,12 +17,13 @@ class NotificationWorker
 
     private $from = 'lider@araujoysegovia.com';
 
-    private $to = array(
-        "eescallon@araujoysegovia.com" => array("999", "1002", "996", "1009"),
-        "dmejia@araujoysegovia.com" => array("1004", "1011", "1005", "998"),
-        "lrodriguez@araujoysegovia.com" => array("1001", "1008", "1006", "997"),
-        "eduard.escallon@gmail.com" => array("1003", "1007", "1000", "1010")
-    );
+//     private $to = array(
+//         "eescallon@araujoysegovia.com" => array("999", "1002", "996", "1009"),
+//         "dmejia@araujoysegovia.com" => array("1004", "1011", "1005", "998"),
+//         "lrodriguez@araujoysegovia.com" => array("1001", "1008", "1006", "997"),
+//         "eduard.escallon@gmail.com" => array("1003", "1007", "1000", "1010")
+//     );
+	private $to = 'eescallon@araujoysegovia.com';
     // private $em
 
     public function __construct($co){
@@ -49,9 +50,9 @@ class NotificationWorker
         $notificationService = $this->co->get("notificationService");
         $player = $this->co->get('doctrine')->getManager()->getRepository("LiderBundle:Player")->findOneByEmail($data['to']);
         $team = $player->getTeam();
-        $to = $this->getEmailFromTeamId($team->getId());
+//         $to = $this->getEmailFromTeamId($team->getId());
         try{
-            $send = $notificationService->sendEmail($data['subject'], $this->from, $to, null, $data['viewName'], $data['content']);
+            $send = $notificationService->sendEmail($data['subject'], $this->from, $this->to, null, $data['viewName'], $data['content']);
             echo "Mensaje Enviado";
         }catch(\Exception $e){
             echo $e->getMessage();
@@ -106,9 +107,9 @@ class NotificationWorker
                     $members[$player->getId()]['name'] = $player->getName().' '.$player->getLastname();
                 }
                 $content['members'] = $members;
-                $to = $this->getEmailFromTeamId($team->getId());
+//                 $to = $this->getEmailFromTeamId($team->getId());
                 try{
-                    $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                    $send = $notificationService->sendEmail($subject, $this->from, $this->to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
                     echo "Mensaje Enviado";
                 }catch(\Exception $e){
                     echo $e->getMessage();
@@ -145,24 +146,25 @@ class NotificationWorker
                 $content = array(
                     'title' => $group->getName()
                 );
-                $to = array();
+//                 $to = array();
                 $members = array();
                 $teams = $group->getTeams();
                 foreach($teams as $team)
                 {
-                    $players = $team->getPlayers();
-                    foreach($players as $player)
-                    {
-                        //$to[] = $player->getEmail();
-                    }
+//                     $players = $team->getPlayers();
+//                     foreach($players as $player)
+//                     {
+//                         $to[] = $player->getEmail();
+//                     }
                     $members[$team->getId()]['name'] = $team->getName();
                     $members[$team->getId()]['image'] = $team->getImage();
-                    $to[] = $this->getEmailFromTeamId($team->getId());
+//                     $to[] = $this->getEmailFromTeamId($team->getId());
                 }
                 $content['members'] = $members;
                 try{
-                    $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                    $send = $notificationService->sendEmail($subject, $this->from, $this->to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
                     echo "Mensaje Enviado";
+                    echo "\n $this->to";
                 }catch(\Exception $e){
                     echo $e->getMessage();
                 }
@@ -186,10 +188,13 @@ class NotificationWorker
      * )
      */
     public function adminNotification(\GearmanJob $job){
+    	echo "entro";
         $data = json_decode($job->workload(),true);
         $admins = $this->getAdmins();
+        echo "# admins: ".count($admins);
         if($admins)
         {
+        	echo "entroooo";
             $to = array();
             $subject = $data['subject'];
             $body = $data['templateData'];
