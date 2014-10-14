@@ -251,13 +251,14 @@ class GroupController extends Controller
             usort($data, create_function('$a, $b', $code));
             return $data;
         };
-        foreach ($l as $value) {
-           $teams = $orderBy($value["teams"], "points");
-           $list=array();
+        foreach ($l as $key => $value) {
+            $teams = $orderBy($value["teams"], "points");
+            $list=array();
             foreach ($teams as $value) {
                 array_unshift($list, $value);
             }
-            $value["teams"] = $teams;
+            $l[$key]["teams"] = $list;
+            
         }
 
         return $this->get("talker")->response(array("total" => count($l), "data" => $l));
