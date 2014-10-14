@@ -2804,46 +2804,49 @@ var routerManager = Backbone.Router.extend({
 			_.each(group.rounds, function(round, key){
 				var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html('Ronda '+key+" : "+round.date)).css("padding", "0 20px 40px 0");
 
+
+				var table = $('<table></table>');
 				_.each(round.games, function(game){
-					var divGame = $('<div></div>').css('display', 'table').addClass('div-game');
-					var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
-					var img1 = $('<img/>').attr('src', 'image/'+game.team_one.image+'?width=50&height=50').addClass('img-circle').css({
-						width: 50,
-						height: 50
-					});
-					var name1 = $('<span></span>').html(game.team_one.name).css('margin-left', '5px');
-					div1.append(img1).append(name1);
 
-					var divVS = $('<div></div>').css('display', 'table-cell').html("VS").css('width', '30px').css("text-align", 'center');
+					var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
+					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 30px;" class="div-game"></div></td>').css('width', '15px');
+					tr.append(status);					
 
-					var div2 = $('<div></div>').css('display', 'table-cell').css("text-align", 'right');
-					var img2 = $('<img/>').attr('src', 'image/'+game.team_two.image+'?width=50&height=50').addClass('img-circle').css({
-						width: 50,
-						height: 50
-					});
-					var name2 = $('<span></span>').html(game.team_two.name).css('margin-right', '5px');
-					div2.append(name2).append(img2);
+					var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+					tr.append(img1);
 
+					var name1 = $('<td style="vertical-align: middle;"><span>'+game.team_one.name+'</span></td>');
+					tr.append(name1);
 
-					divGame.append(div1).append(divVS).append(div2);
+					var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
+					tr.append(vs);
 
+					var name2 = $('<td style="vertical-align: middle;"><span>'+game.team_two.name+'</span></td>');
+					tr.append(name2);
 
-					divGame.click(function(){
+					var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+					tr.append(img2);
+
+					tr.click(function(){
 						me.showDuelFromGame(game.id);
-					})
+					});
+
 					if(game.active){
-						divGame.css('border-top', 'solid 5px #8BFFA7');
+						status.children('div').css('background', '#8BFFA7');
 					}
 					else if(!game.active && !game.finished){
-						divGame.css('border-top', 'solid 5px #E2E2E2');
-						divGame.unbind("click");
+						status.children('div').css('background', '#E2E2E2');
+						status.unbind("click");
 					}
 					else if(game.finished){
-						divGame.css('border-top', 'solid 5px #A0394A');
+						status.children('div').css('background', '#A0394A');
 					}
 
-					fieldset.append(divGame);
-				})
+
+					table.append(tr);
+
+				});
+				fieldset.append(table);
 				container.append(fieldset);
 			})
 			me.createPanel(group.name, container);
@@ -2880,46 +2883,80 @@ var routerManager = Backbone.Router.extend({
 
 				var modalBody = $("<div></div>").addClass("modal-body");
 
+				var table = $('<table></table>');
+
+
 				var modalContent = $("<div></div>").addClass("modal-content").css('width', '700px');
 				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
 				$(document.body).append(modal);
 				modal.modal("show");
 				_.each(data, function(duel){
-					var divDuel = $('<div></div>').css('display', 'table').addClass('div-game');
-					var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
-					var img1 = $('<img/>').attr('src', 'image/'+duel.player_one.image+'?width=50&height=50').addClass('img-circle').css({
-						width: 50,
-						height: 50
-					});
-					var name1 = $('<span></span>').html(duel.player_one.name.toLowerCase()+' '+duel.player_one.lastname.toLowerCase()).css('margin-left', '5px');
-					div1.append(img1).append(name1);
+
+					var tr = $('<tr></tr>').css({						
+						height: '40px'						
+					});					
+					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 30px;" class="div-game"></div></td>').css('width', '15px');
+					tr.append(status);
+
+					var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+duel.player_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+					tr.append(img1);
+
+					var name1 = $('<td style="vertical-align: middle;"><span>'+duel.player_one.name.toLowerCase()+' '+duel.player_one.lastname.toLowerCase()+'</span></td>');
+					tr.append(name1);
+
+					var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
+					tr.append(vs);
+
+					var name2 = $('<td style="vertical-align: middle;"><span>'+duel.player_two.name.toLowerCase()+' '+duel.player_two.lastname.toLowerCase()+'</span></td>');
+					tr.append(name2);
+
+					var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+duel.player_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+					tr.append(img2);
+
+
+					// var divDuel = $('<div></div>').css('display', 'table').addClass('div-game');
+					// var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
+					// var img1 = $('<img/>').attr('src', 'image/'+duel.player_one.image+'?width=50&height=50').addClass('img-circle').css({
+					// 	width: 50,
+					// 	height: 50
+					// });
+					// var name1 = $('<span></span>').html(duel.player_one.name.toLowerCase()+' '+duel.player_one.lastname.toLowerCase()).css('margin-left', '5px');
+					// div1.append(img1).append(name1);
+
 					if(duel['player_one']['questionMissing'] > 0)
 					{
-						div1.css('border-top', 'solid 5px #8BFFA7');
+						status.children('div').css('background', '#8BFFA7');
 						
 					}else{
-						div1.css('border-top', 'solid 5px #A0394A');
+						status.children('div').css('background', '#A0394A');
 					}
-					var divVS = $('<div></div>').css('display', 'table-cell').html("VS").css('width', '30px').css("text-align", 'center');
 
-					var div2 = $('<div></div>').css('display', 'table-cell').css("text-align", 'right');
-					var img2 = $('<img/>').attr('src', 'image/'+duel.player_two.image+'?width=50&height=50').addClass('img-circle').css({
-						width: 50,
-						height: 50
-					});
-					var name2 = $('<span></span>').html(duel.player_two.name.toLowerCase()+' '+duel.player_two.lastname.toLowerCase()).css('margin-right', '5px');
-					div2.append(name2).append(img2);
+					
+
+					// var divVS = $('<div></div>').css('display', 'table-cell').html("VS").css('width', '30px').css("text-align", 'center');
+
+					// var div2 = $('<div></div>').css('display', 'table-cell').css("text-align", 'right');
+					// var img2 = $('<img/>').attr('src', 'image/'+duel.player_two.image+'?width=50&height=50').addClass('img-circle').css({
+					// 	width: 50,
+					// 	height: 50
+					// });
+					// var name2 = $('<span></span>').html(duel.player_two.name.toLowerCase()+' '+duel.player_two.lastname.toLowerCase()).css('margin-right', '5px');
+					// div2.append(name2).append(img2);
 					if(duel['player_two']['questionMissing'] > 0)
 					{
-						div2.css('border-top', 'solid 5px #8BFFA7');
+						status.children('div').css('background', '#8BFFA7');
 						
 					}else{
-						div2.css('border-top', 'solid 5px #A0394A');
+						status.children('div').css('background', '#A0394A');
 					}
 
-					divDuel.append(div1).append(divVS).append(div2);
-					modalBody.append(divDuel);
-				})
+					//divDuel.append(div1).append(divVS).append(div2);
+
+					table.append(tr);
+					
+				});
+				modalBody.append(table);
+
 				modal.on("hidden.bs.modal", function(){
 		    		modal.remove();
 		    	})
