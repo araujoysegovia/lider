@@ -269,7 +269,7 @@ Entity.prototype = {
                         }
                     }
                 },
-		        pageable: me.pageable ? true : false,
+		        pageable: me.pageable ? me.pageable : false,
 		        height: 500,	        
 		        columns: me.columns,
 		        editable: me.editable,

@@ -2190,8 +2190,7 @@ var routerManager = Backbone.Router.extend({
   			    	}
   			    }
 			],
-			command: null,
-			pageable: true,
+			command: null,			
 			serverFiltering: false,
 			serverSorting: false
 		});
@@ -2913,6 +2912,8 @@ var routerManager = Backbone.Router.extend({
 					var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+duel.player_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
 					tr.append(img2);
 
+					var status2 = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
+					tr.append(status2);
 
 					// var divDuel = $('<div></div>').css('display', 'table').addClass('div-game');
 					// var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
@@ -2944,10 +2945,10 @@ var routerManager = Backbone.Router.extend({
 					// div2.append(name2).append(img2);
 					if(duel['player_two']['questionMissing'] > 0)
 					{
-						status.children('div').css('background', '#8BFFA7');
+						status2.children('div').css('background', '#8BFFA7');
 						
 					}else{
-						status.children('div').css('background', '#A0394A');
+						status2.children('div').css('background', '#A0394A');
 					}
 
 					//divDuel.append(div1).append(divVS).append(div2);

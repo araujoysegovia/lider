@@ -169,7 +169,7 @@ class NotificationWorker
             'duelId' => base64_encode($duel->getId())
         );
         try{
-            $send = $notificationService->sendEmail($subject, $this->from, "eescallon@araujoysegovia.com", null, "LiderBundle:Templates:duelnotification.html.twig", $content);
+            $send = $notificationService->sendEmail($subject, $this->from, $player->getEmail(), null, "LiderBundle:Templates:duelnotification.html.twig", $content);
             echo "Mensaje Enviado de duelo a ".$player->getEmail();
         }catch(\Exception $e){
             echo $e->getMessage();
