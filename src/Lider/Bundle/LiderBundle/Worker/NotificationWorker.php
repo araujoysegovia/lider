@@ -52,7 +52,7 @@ class NotificationWorker
 //         $to = $this->getEmailFromTeamId($team->getId());
        
 
-            //$send = $notificationService->sendEmail($data['subject'], $this->from, $data['to'], null, $data['viewName'], $data['content']);
+            $send = $notificationService->sendEmail($data['subject'], $this->from, $data['to'], null, $data['viewName'], $data['content']);
             echo "\n\nMensaje Enviado a ".$data['to'].":";
             //print_r($data['content']);
 

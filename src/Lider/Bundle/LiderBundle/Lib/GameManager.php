@@ -98,7 +98,12 @@ class GameManager
 			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
 			//echo "\n\n";
 			//echo "\n ----------------------------- ".$value->getName()." ---------------------------------------";
-			$teams = $value->getTeams()->toArray();
+			$teams = array();
+			foreach ($value->getTeams()->toArray() as $t){
+				if(!$t->getDeleted()){
+					$teams[] = $t;
+				}
+			}
 			// foreach ($teams as $key => $val) {
 			// 	echo "\n········".$val->getName()."········";
 			// }
@@ -372,9 +377,25 @@ class GameManager
 		$teamOne = $game->getTeamOne();
 		$teamTwo = $game->getTeamTwo();
 
-		$playersTeamOne = $teamOne->getPlayers();
-		$playersTeamTwo= $teamTwo->getPlayers();
-
+		$playersTeamOne = array();
+		
+		foreach ($teamOne->getPlayers() as $p){
+			if(!$p->getDeleted()){
+				if($p->getActive()){
+					$playersTeamOne[] = $p;
+				}
+			}
+		}
+		
+		$playersTeamTwo= array();
+		foreach ($teamTwo->getPlayers() as $p){
+			if(!$p->getDeleted()){
+				if($p->getActive()){
+					$playersTeamTwo[] = $p;
+				}
+			}
+		}		
+		
 		$countPlayersTeamOne = count($playersTeamOne);
 		$countPlayersTeamTwo = count($playersTeamTwo);
 
@@ -393,7 +414,8 @@ class GameManager
 
 		$params = $this->pm->getParameters();
 		$countQuestion = $params['gamesParameters']['countQuestionDuel'];
-		$arraySecondPlayer = $secondPlayers->toArray();
+		$arraySecondPlayer = $secondPlayers;
+		
 		for ($i=0; $i < $x ; $i++) { 
 			$startDate = new \DateTime($game->getStartdate()->format('Y-m-d H:i:s'));
 			$endDate = new \DateTime($game->getStartdate()->format('Y-m-d H:i:s'));
