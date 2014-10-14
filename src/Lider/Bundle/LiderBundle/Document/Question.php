@@ -36,9 +36,9 @@ class Question extends QuestionEntity
     private $image;    
    
     /**
-     * @MongoDB\EmbedOne(targetDocument="Category") 
-     */ 
-    private $categoryDocuent; 
+     * @MongoDB\String
+     */
+    private $categoryName; 
 
 
     public function getDataFromQuestionEntity(QuestionEntity $question)
@@ -46,11 +46,8 @@ class Question extends QuestionEntity
         $this->setQuestionId($question->getId());
         $this->setQuestion($question->getQuestion());
         $this->setHasImage($question->getHasImage());
-        $this->setImage($question->getImage());
-
-        $categoryD = new \Lider\Bundle\LiderBundle\Document\Category();
-        $categoryD->getDataFromCategoryEntity($question->getCategory());
-        $this->setCategory($categoryD);
+        $this->setImage($question->getImage());       
+        $this->setCategoryName($question->getCategory()->getName());
     }
 
 
@@ -151,26 +148,28 @@ class Question extends QuestionEntity
     {
         return $this->image;
     }
-
+    
     /**
-     * Set categoryDocuent
+     * Set categoryName
      *
-     * @param Lider\Bundle\LiderBundle\Document\Category $categoryDocuent
+     * @param string $categoryName
      * @return self
      */
-    public function setCategoryDocuent(\Lider\Bundle\LiderBundle\Document\Category $categoryDocuent)
+    public function setCategoryName($categoryName)
     {
-        $this->categoryDocuent = $categoryDocuent;
-        return $this;
+    	$this->categoryName = $categoryName;
+    	return $this;
     }
-
+    
     /**
-     * Get categoryDocuent
+     * Get categoryName
      *
-     * @return Lider\Bundle\LiderBundle\Document\Category $categoryDocuent
+     * @return string $categoryName
      */
-    public function getCategoryDocuent()
+    public function getCategoryName()
     {
-        return $this->categoryDocuent;
-    }
+    	return $this->categoryName;
+    }    
+
+  
 }

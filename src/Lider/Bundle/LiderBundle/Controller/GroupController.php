@@ -192,6 +192,9 @@ class GroupController extends Controller
         $repo = $em->getRepository("LiderBundle:Group");
         $user = $this->container->get('security.context')->getToken()->getUser();
         if($user->getTeam()){
+        	if(!$user->getTeam()->getTournament()){
+        		throw new \Exception('Torneo no asignado');
+        	}
              $tournamentId = $user->getTeam()->getTournament()->getId();
          }
        

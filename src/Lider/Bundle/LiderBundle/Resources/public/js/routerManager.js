@@ -987,7 +987,6 @@ var routerManager = Backbone.Router.extend({
 					title:"Oficina",					
 					//template:  "#: office.name #",
 					template:  function(e){						
-						
 						if(e.office){
 							return e.office.name;
 						}
@@ -2808,7 +2807,7 @@ var routerManager = Backbone.Router.extend({
 				_.each(round.games, function(game){
 					var divGame = $('<div></div>').css('display', 'table').addClass('div-game');
 					var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
-					var img1 = $('<img/>').attr('src', 'image/'+game.team_one.image).addClass('img-circle').css({
+					var img1 = $('<img/>').attr('src', 'image/'+game.team_one.image+'?width=50&height=50').addClass('img-circle').css({
 						width: 50,
 						height: 50
 					});
@@ -2818,7 +2817,7 @@ var routerManager = Backbone.Router.extend({
 					var divVS = $('<div></div>').css('display', 'table-cell').html("VS").css('width', '30px').css("text-align", 'center');
 
 					var div2 = $('<div></div>').css('display', 'table-cell').css("text-align", 'right');
-					var img2 = $('<img/>').attr('src', 'image/'+game.team_two.image).addClass('img-circle').css({
+					var img2 = $('<img/>').attr('src', 'image/'+game.team_two.image+'?width=50&height=50').addClass('img-circle').css({
 						width: 50,
 						height: 50
 					});
@@ -2888,7 +2887,7 @@ var routerManager = Backbone.Router.extend({
 				_.each(data, function(duel){
 					var divDuel = $('<div></div>').css('display', 'table').addClass('div-game');
 					var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
-					var img1 = $('<img/>').attr('src', 'image/'+duel.player_one.image).addClass('img-circle').css({
+					var img1 = $('<img/>').attr('src', 'image/'+duel.player_one.image+'?width=50&height=50').addClass('img-circle').css({
 						width: 50,
 						height: 50
 					});
@@ -2904,7 +2903,7 @@ var routerManager = Backbone.Router.extend({
 					var divVS = $('<div></div>').css('display', 'table-cell').html("VS").css('width', '30px').css("text-align", 'center');
 
 					var div2 = $('<div></div>').css('display', 'table-cell').css("text-align", 'right');
-					var img2 = $('<img/>').attr('src', 'image/'+duel.player_two.image).addClass('img-circle').css({
+					var img2 = $('<img/>').attr('src', 'image/'+duel.player_two.image+'?width=50&height=50').addClass('img-circle').css({
 						width: 50,
 						height: 50
 					});

@@ -12,8 +12,7 @@ class ParametersManager {
     /**
      * Setear los parametros de configuración para el juego
      */
-    public function setParameters(array $params){
-    	   
+    public function setParameters(array $params){    	
     	$yaml = new Parser();
 
     	try{
@@ -40,6 +39,7 @@ class ParametersManager {
      * Obtener parametros del yml
      */
     public function getParameters(){
+
 		$yaml = new Parser();
 
 

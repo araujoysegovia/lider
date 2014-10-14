@@ -11,7 +11,7 @@ use Lider\Bundle\LiderBundle\Entity\PlayerPoint;
 
 class QuestionController extends Controller
 {
-    private $maxSec = 30;
+    private $maxSec = 45;
 
     public function getName(){
     	return "Question";
@@ -597,10 +597,8 @@ class QuestionController extends Controller
         foreach($q->getAnswers()->toArray() as $value){
             $body .= '<li>'.$value->getAnswer().'</li>';
         }
-        $body .= '</ul><br><br><h3>CAUSAL:</h3><p>'.$causal.'</p>';
-
-        try{
-        
+        $body .= '</ul><br><br><h3>CAUSAL:</h3><p>'.$causal.'</p>';	        	
+        try{         	   
             $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
                 'subject' => 'Nuevo reporte de pregunta',
                 'templateData' => array(
@@ -616,7 +614,9 @@ class QuestionController extends Controller
                 
             )));
 
-        }catch(\Exception $e){}
+        }catch(\Exception $e){
+        	echo "error";
+        }
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }

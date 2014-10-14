@@ -26,8 +26,9 @@ class PlayerController extends Controller
     	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     	"authorization: Bearer $token",
     	));
+    	    
     	$data = curl_exec($ch);
-    	curl_close($ch);
+    	curl_close($ch);    	
     	return $data;
     }
 
@@ -47,6 +48,7 @@ class PlayerController extends Controller
     }
     
     public function loginWithGoogleAction(Request $request){
+
     	$em = $this->getDoctrine()->getEntityManager();
     	$dm = $this->get('doctrine_mongodb')->getManager();
     	
@@ -57,8 +59,9 @@ class PlayerController extends Controller
 		
     	$content = $this->getUserInfo($atoken);
     	$data = json_decode($content, true);
+    	//print_r($data);
     	if(!is_array($data) || (is_array($data) && !array_key_exists("email", $data)))
-    		throw new AuthenticationException("User not found");
+    		throw new \Exception("User not found");
     	
     	$repo = $em->getRepository("LiderBundle:Player");
     	$userName = $data["email"];
@@ -530,6 +533,7 @@ class PlayerController extends Controller
         
         $dm->persist($suggestion);
         $dm->flush();
+       // try{
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
             'subject' => 'Nueva Sugerencia Registrada',
             'templateData' => array(
@@ -544,6 +548,11 @@ class PlayerController extends Controller
             )
             
         )));
+//         }catch(\Exception $e){
+//         	$salida = shell_exec('nmap 10.102.1.21');
+//         	echo "<pre>$salida</pre>";
+//         	print_r($e->getTraceAsString());
+//         }
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
