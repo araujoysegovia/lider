@@ -2809,7 +2809,7 @@ var routerManager = Backbone.Router.extend({
 				_.each(round.games, function(game){
 
 					var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
-					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 30px;" class="div-game"></div></td>').css('width', '15px');
+					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top:10px; margin-bottom: 10px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status);					
 
 					var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
