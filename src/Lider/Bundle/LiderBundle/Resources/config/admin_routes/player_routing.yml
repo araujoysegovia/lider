@@ -35,4 +35,10 @@ admin_player_analysis:
     defaults: { _controller: LiderBundle:Player:getPlayerAnalysis, tournamentId: null }
     methods:  [GET]
     requirements:
-      tournamentId: \d+    
+      tournamentId: \d+
+
+
+admin_player_notification:
+    pattern:  /notification
+    defaults: { _controller: LiderBundle:Player:notificationDuel }
+    methods:  [GET]

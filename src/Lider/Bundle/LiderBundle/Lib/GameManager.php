@@ -98,12 +98,7 @@ class GameManager
 			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
 			//echo "\n\n";
 			//echo "\n ----------------------------- ".$value->getName()." ---------------------------------------";
-			$teams = array();
-			foreach ($value->getTeams()->toArray() as $t){
-				if(!$t->getDeleted()){
-					$teams[] = $t;
-				}
-			}
+			$teams = $value->getTeams()->toArray();
 			// foreach ($teams as $key => $val) {
 			// 	echo "\n········".$val->getName()."········";
 			// }
@@ -377,25 +372,9 @@ class GameManager
 		$teamOne = $game->getTeamOne();
 		$teamTwo = $game->getTeamTwo();
 
-		$playersTeamOne = array();
-		foreach ($teamOne->getPlayers() as $p){
-			if(!$p->getDeleted()){
-				if($p->getActive()){
-					$playersTeamOne[] = $p;
-				} 
-			}
-		}
-		
-		$playersTeamTwo= array();
-		foreach ($teamTwo->getPlayers() as $p){
-			if(!$p->getDeleted()){
-				if($p->getActive()){
-					$playersTeamTwo[] = $p;
-				}
-			}
-		}
-		
-		
+		$playersTeamOne = $teamOne->getPlayers();
+		$playersTeamTwo= $teamTwo->getPlayers();
+
 		$countPlayersTeamOne = count($playersTeamOne);
 		$countPlayersTeamTwo = count($playersTeamTwo);
 
@@ -414,7 +393,7 @@ class GameManager
 
 		$params = $this->pm->getParameters();
 		$countQuestion = $params['gamesParameters']['countQuestionDuel'];
-		$arraySecondPlayer = $secondPlayers;
+		$arraySecondPlayer = $secondPlayers->toArray();
 		for ($i=0; $i < $x ; $i++) { 
 			$startDate = new \DateTime($game->getStartdate()->format('Y-m-d H:i:s'));
 			$endDate = new \DateTime($game->getStartdate()->format('Y-m-d H:i:s'));
@@ -438,8 +417,8 @@ class GameManager
 			$this->em->persist($duel);
 
 			$this->generateQuestions($countQuestion, $duel);
-			//$this->notificationDuel($playerOne, $playerTwo->getTeam(), $playerTwo);
-			//$this->notificationDuel($playerTwo, $playerOne->getTeam(), $playerOne);
+			$this->notificationDuel($playerOne, $playerTwo->getTeam(), $playerTwo);
+			$this->notificationDuel($playerTwo, $playerOne->getTeam(), $playerOne);
 		}			
 
 		$this->em->flush();
@@ -451,7 +430,7 @@ class GameManager
 	private function notificationDuel($player, $teamvs, $playervs)
     {
         $gearman = $this->co->get('gearman');
-        $body = 'Hola <b>'.$player->getName().' '.$player->getLastname().'</b><br><br> Se ha generado un duelo entre tu equipo y el equipo '.$teamvs->getName().', y tu has sido el seleccionado para jugarlo contra <b>'.$playervs->getName().' '.$playervs->getLastname().'</b>';
+        $body = 'Hola <b>'.$player->getName().' '.$player->getLastname().': '.$player->getEmail().'</b><br><br> Se ha generado un duelo entre tu equipo y el equipo '.$teamvs->getName().', y tu has sido el seleccionado para jugarlo contra <b>'.$playervs->getName().' '.$playervs->getLastname().'</b>';
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
             'subject' => 'Duelo generado',
             'to' => $player->getEmail(),
@@ -497,6 +476,7 @@ class GameManager
 	{
 		$date = new \DateTime();		
 		$games = $this->em->getRepository("LiderBundle:Game")->getGamesToStart($date);
+
 		$params = $this->pm->getParameters();
 		$duelInterval = $params['gamesParameters']['timeDuel'];
 				
@@ -563,7 +543,7 @@ class GameManager
 	/**
 	 * Detener un juego y finalizer sus duelos
 	 */
-	public function stopGame($game)
+	public function stopGame($games)
 	{
 		$game->setActive(false);
 		$game->setFinished(true);

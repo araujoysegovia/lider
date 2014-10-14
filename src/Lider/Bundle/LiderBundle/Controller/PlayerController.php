@@ -626,4 +626,15 @@ class PlayerController extends Controller
         return $this->get("talker")->response(array('total' => count($rq), 'data' => $rq)); 
 
     }
+
+    public function notificationDuelAction()
+    {
+        $gearman = $this->get('gearman');
+        $request = $this->get("request");
+        $tournament = $request->get('tournamentId');
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationDuel', json_encode(array(
+                'tournament' => $tournament,
+            )));
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
 }

@@ -123,6 +123,60 @@ class NotificationWorker
         }
     }
 
+
+
+    /**
+     * Send Email when a team is created
+     *
+     * @param \GearmanJob $job Object with job parameters
+     *
+     * @return boolean
+     *
+     * @Gearman\Job(
+     *     name = "sendNotificationDuel",
+     *     description = "Send an Email when need a notification for duels active"
+     * )
+     */
+    public function sendNotificationDuel(\GearmanJob $job){
+        $data = json_decode($job->workload(),true);
+        $tournamentId = $data['tournament'];
+        // print_r($team->getId());
+        $em = $this->co->get('doctrine')->getManager();
+        $notificationService = $this->co->get("notificationService");
+        $repoDuel = $em->getRepository("LiderBundle:Duel");
+        $list = $repoDuel->findBy(array("tournament" => $tournamentId, "deleted" => FALSE, "active" => true, "finished" => false));
+        $subject = "Duelo generado!!!";
+        if($list){
+            foreach($list as $team){
+                $to = array();
+                $content = array(
+                    "teamImage" => $team->getImage(),
+                    "title" => $team->getName(),
+                );
+                $members = array();
+                $players = $team->getPlayers();
+                foreach($players as $player)
+                {
+                     $to[] = $player->getEmail();
+
+                    $members[$player->getId()]['image'] = $player->getImage();
+                    $members[$player->getId()]['name'] = $player->getName().' '.$player->getLastname();
+                }
+                $content['members'] = $members;
+//                 $to = $this->getEmailFromTeamId($team->getId());
+                try{
+
+                    $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                    echo "Mensaje Enviado de equipo";
+                }catch(\Exception $e){
+                    echo $e->getMessage();
+                }
+                
+            }
+            
+        }
+    }
+
     /**
      * Send Email when a team is created
      *
