@@ -11,10 +11,6 @@ admin_login_check:
 admin_logout:
     path:   /logout
 
-admin_index_page:
-    path:     /
-    defaults: { _controller: LiderBundle:RoutingAdmin:loginPage }
-
 admin_home_page:
     path:	/home
     defaults: { _controller: LiderBundle:RoutingAdmin:homePage }
@@ -101,7 +97,7 @@ general_get_images:
     pattern:  /images
     defaults: { _controller: LiderBundle:Image:getAllImage }
     methods:  [GET]
-    
+
 general_admin_get_image:
     pattern:  /image/{id}
     defaults: { _controller: LiderBundle:Image:get }

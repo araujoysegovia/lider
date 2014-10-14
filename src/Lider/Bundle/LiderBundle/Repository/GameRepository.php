@@ -86,4 +86,18 @@ class GameRepository extends MainRepository
     	$r = $query->getArrayResult();
 		return $r;
 	}
+
+	public function getGamesFromArrayId(array $gameIds)
+	{
+		$query = $this->createQueryBuilder('g')
+    		->select('g, po, two, d')
+	    	->join('g.team_one', 'po')
+	    	->join('g.team_two', 'two')
+	    	->leftJoin('g.duels', 'd')
+	    	->where('g.finished = false and g.deleted=false and g.active = true and g.id in (:ids)')
+	    	->setParameter('ids', $gameIds);
+		$query = $query->getQuery();
+    	$r = $query->getResult();
+		return $r;
+	}
 }

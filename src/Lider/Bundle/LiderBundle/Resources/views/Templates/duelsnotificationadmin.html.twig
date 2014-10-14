@@ -1,0 +1,44 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<div style="width:100%; min-height:500px; overflow:hidden;">
+			<div style="background-image: url('http://soylider.sifinca.net/image/541af09e6803fa2b158b45c1'); background-repeat: repeat-x; height: 40px;">
+				<img style="width: 25px; float: left; margin-top: 2px; margin-left:10px;" src="http://soylider.sifinca.net/image/541af07b6803fa6f158b456b?width=30&height=30"/>
+				<h2 style="margin-left:55px; line-height: 30px; color:white;">{{ title }}</h2>
+			</div>
+			<div style='padding: 0px 15px;'>
+				{% for game in games %}
+			        <div style="width:600px; border-radius: 4px; border: solid 1px #CCC; text-align:center; margin-top: 20px;">
+			        	<div>
+			        		<table style="width:100%;">
+			        			<thead style="background-color: #d9edf7;">
+				        			<tr>
+				        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ game.teamOne.image }}?width=30&height=30"/></td>
+				        				<td style="vertical-align: middle;"><h3>{{ game.teamOne.name }}</h3></td>
+				        				<td style="width: 50px; vertical-align: middle;">vs</td>
+				        				<td style="vertical-align: middle;"><h3>{{ game.teamTwo.name }}</h3></td>
+				        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ game.teamTwo.image }}?width=30&height=30"/></td>
+				        			</tr>
+				        		</thead>
+				        		<tbody>
+				        			{% for duel in game.duels %}
+					        			<tr>
+					        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerOne.image }}?width=30&height=30"/></td>
+					        				<td style="vertical-align: middle;">{{ duel.playerOne.name }} {{ duel.playerOne.lastname }}</td>
+					        				<td style="width: 50px; vertical-align: middle;">vs</td>
+					        				<td style="vertical-align: middle;">{{ duel.playerTwo.name }} {{ duel.playerTwo.lastname }}</td>
+					        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerTwo.image }}?width=30&height=30"/></td>
+					        			</tr>
+					        		{% endfor %}
+				        		</tbody>
+			        		</table>
+			        	</div>
+			        </div>
+			    {% endfor %}
+			</div>
+			<div style="margin-top: 40px; background-image: url('http://soylider.sifinca.net/image/541af0c16803fa6c158b4589'); height: 25px; position:absolute; left: 0px; right: 0px; bottom: 35px;">
+			</div>
+		</div>
+	</body>
+</html>

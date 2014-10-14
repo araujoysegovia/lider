@@ -3100,7 +3100,7 @@ var routerManager = Backbone.Router.extend({
 			    	}
         			parameters = {
 						type: "GET",
-					    url: "home/team/notification",
+					    url: "home/player/notification",
 				        contentType: 'application/json',
 		            	dataType: "json",
 		            	data: data,
