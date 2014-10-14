@@ -2156,19 +2156,19 @@ var routerManager = Backbone.Router.extend({
 				    	type: 'string'
 				    },				    
 				    total: {
-				    	type: 'string'
+				    	type: 'int'
 				    },
 				    win: {
-				    	type: 'string' 
+				    	type: 'int' 
 				    },
 				    winHelp: {
-				    	type: 'string' 
+				    	type: 'int' 
 				    },
 				    lost: {
-				    	type: 'string' 
+				    	type: 'int' 
 				    },
 				    totalPoint: {
-				    	type: 'string'
+				    	type: 'int'
 				    }					    
 				}
 			},

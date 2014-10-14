@@ -621,6 +621,8 @@ class PlayerController extends Controller
         $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')
                               ->getQuestionForPlayer(intval($tournamentId));
 
+        //$reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')->findRangePosition($tournamentId);
+        
         $rq = $reportQuestions->toArray();
 
         return $this->get("talker")->response(array('total' => count($rq), 'data' => $rq)); 
