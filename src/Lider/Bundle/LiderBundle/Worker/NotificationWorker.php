@@ -17,6 +17,7 @@ class NotificationWorker
 
     private $from = 'lider@araujoysegovia.com';
 
+<<<<<<< HEAD
 //     private $to = array(
 //         "eescallon@araujoysegovia.com" => array("999", "1002", "996", "1009"),
 //         "dmejia@araujoysegovia.com" => array("1004", "1011", "1005", "998"),
@@ -24,6 +25,12 @@ class NotificationWorker
 //         "eduard.escallon@gmail.com" => array("1003", "1007", "1000", "1010")
 //     );
 	private $to = 'eescallon@araujoysegovia.com';
+=======
+    private $to = array(
+        "eescallon@araujoysegovia.com" => array("1018", "1024", "1014", "1019", "1022", "1016", "1013", "1025"),
+        "lrodriguez@araujoysegovia.com" => array("1012", "1021", "1017", "1015", "1026", "1023", "1027", "1020"),
+    );
+>>>>>>> fc37f72eb544e700154575f754491aa310dd3e7a
     // private $em
 
     public function __construct($co){
@@ -52,8 +59,13 @@ class NotificationWorker
         $team = $player->getTeam();
 //         $to = $this->getEmailFromTeamId($team->getId());
         try{
+<<<<<<< HEAD
             $send = $notificationService->sendEmail($data['subject'], $this->from, $this->to, null, $data['viewName'], $data['content']);
             echo "Mensaje Enviado";
+=======
+            $send = $notificationService->sendEmail($data['subject'], $this->from, $to, null, $data['viewName'], $data['content']);
+            echo "Mensaje Enviado general";
+>>>>>>> fc37f72eb544e700154575f754491aa310dd3e7a
         }catch(\Exception $e){
             echo $e->getMessage();
         }
@@ -109,8 +121,13 @@ class NotificationWorker
                 $content['members'] = $members;
 //                 $to = $this->getEmailFromTeamId($team->getId());
                 try{
+<<<<<<< HEAD
                     $send = $notificationService->sendEmail($subject, $this->from, $this->to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
                     echo "Mensaje Enviado";
+=======
+                    $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                    echo "Mensaje Enviado de equipo";
+>>>>>>> fc37f72eb544e700154575f754491aa310dd3e7a
                 }catch(\Exception $e){
                     echo $e->getMessage();
                 }
@@ -188,7 +205,11 @@ class NotificationWorker
      * )
      */
     public function adminNotification(\GearmanJob $job){
+<<<<<<< HEAD
     	echo "entro";
+=======
+        $notificationService = $this->co->get("notificationService");
+>>>>>>> fc37f72eb544e700154575f754491aa310dd3e7a
         $data = json_decode($job->workload(),true);
         $admins = $this->getAdmins();
         echo "# admins: ".count($admins);
@@ -204,7 +225,7 @@ class NotificationWorker
             }
             try{
                 $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:adminnotification.html.twig", $body);
-                echo "Mensaje Enviado";
+                echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
                 echo $e->getMessage();
             }
@@ -214,7 +235,6 @@ class NotificationWorker
     private function getAdmins()
     {
         $em = $this->co->get('doctrine')->getManager();
-        $notificationService = $this->co->get("notificationService");
         $repo = $em->getRepository("LiderBundle:Player");
         $admins = $repo->findAdmin();
         return $admins;

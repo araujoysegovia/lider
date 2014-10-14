@@ -185,29 +185,36 @@ class GroupController extends Controller
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
-    public function getGroupPositionAction()
+    public function getGroupPositionAction($tournamentId = null)
     {
         $em = $this->getDoctrine()->getEntityManager();
         //$dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $em->getRepository("LiderBundle:Group");
         $user = $this->container->get('security.context')->getToken()->getUser();
-        $tournamentId = $user->getTeam()->getTournament()->getId();
+        if($user->getTeam()){
+             $tournamentId = $user->getTeam()->getTournament()->getId();
+         }
+       
 
         $gameRepo = $em->getRepository("LiderBundle:Game");
 
         $list = $repo->findBy(array('tournament' => $tournamentId, "deleted" => false));
         $l = array();
         foreach ($list as $group) {
-            $teams = array();
+            $gamesTeam = array();
             $g = array(
                 "id" => $group->getId(),
                 "name" => $group->getName(),
                 "teams" => array()
             );
             foreach ($group->getTeams() as $team) {
-                $teams[]= $team->getId();
+                $games = $gameRepo->getGamesByTeam($team->getId());
+                foreach($games as $game)
+                {
+                    $gamesTeam[] = $game;
+                }
+                
             }
-            $games = $gameRepo->getTeamPositions($teams);
             foreach ($group->getTeams() as $team) {
                 $ls = array(
                     'id' => $team->getId(),
@@ -217,16 +224,20 @@ class GroupController extends Controller
                     'win' => 0,
                     'loose' => 0,
                 );
-                foreach ($games as $game) {
-                    if($game->getTeamOne()->getId() == $team->getId() || $game->getTeamTwo()->getId() == $team->getId()){
+                foreach ($gamesTeam as $game) {
+                    if($game['team_one']['id'] == $team->getId() || $game['team_two']['id'] == $team->getId()){
+                        
                         $ls['total']++;
-                        if($game->getTeamWinner()){
-                            if($game->getTeamWinner()->getId() == $team->getId()){
+
+                        if($game['team_winner']){
+
+                            if($game['team_winner']['id'] == $team->getId()){
                                 $ls['win']++;
                             }else{
                                 $ls['loose']++;
                             }
                         }
+                        break;
                     }
                 }
                 $g["teams"][] = $ls;
@@ -240,13 +251,14 @@ class GroupController extends Controller
             usort($data, create_function('$a, $b', $code));
             return $data;
         };
-        foreach ($l as $value) {
-           $teams = $orderBy($value["teams"], "points");
-           $list=array();
+        foreach ($l as $key => $value) {
+            $teams = $orderBy($value["teams"], "points");
+            $list=array();
             foreach ($teams as $value) {
                 array_unshift($list, $value);
             }
-            $value["teams"] = $teams;
+            $l[$key]["teams"] = $list;
+            
         }
 
         return $this->get("talker")->response(array("total" => count($l), "data" => $l));

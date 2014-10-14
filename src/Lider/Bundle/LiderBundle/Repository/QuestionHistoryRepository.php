@@ -70,14 +70,17 @@ class QuestionHistoryRepository extends MainMongoRepository
 	public function findRangePosition($tournamentId){
 		$query = $this->createQueryBuilder("LiderBundle:QuestionHistory")
 			->group(array("player.playerId" => 1, "player.name" => 2, 'player.lastname' => 2),
-					array('win' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0, 'fullname' => ''))
+					array('win' => 0, 'winHelp' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0, 'fullname' => ''))
 			->reduce('function (obj, prev){
 					prev.fullname = obj.player.name + " " + obj.player.lastname;
 					if(obj.duel){
 						prev.total++;
 						prev.totalPoint += obj.points || 0;
-			    		if(obj.find){
+			    		if(obj.find && !obj.useHelp){
 			    			prev.win++;
+						}
+						else if(obj.find && obj.useHelp){
+							prev.winHelp++;
 						}else{
 			    			prev.lost++;
 			    		}
@@ -189,7 +192,7 @@ class QuestionHistoryRepository extends MainMongoRepository
 				prev.duels ++;
 		}')
 		->field('gameId')->equals($gameId)
-		->field('team.teamId')->equals($teamId1)
+		->field('team.teamId')->equals($teamId)
 		->getQuery()
 		->execute();
 
@@ -201,10 +204,11 @@ class QuestionHistoryRepository extends MainMongoRepository
 
 		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
 			->group(array("player.playerId" => 1, 'player.name' =>2),
-					array('total' => 0, 'win' =>0, 'playername' => '', 'tournamentname' => ''))
+					array('total' => 0, 'win' =>0, 'playername' => '', 'teamname' => ''))
 			->reduce('function (obj, prev){
 					prev.total++;
 					prev.playername = obj.player.name;
+					prev.teamname = obj.team.name;
 					if(obj.duel && obj.find){
 						prev.win++;
 					}
@@ -214,6 +218,24 @@ class QuestionHistoryRepository extends MainMongoRepository
 			->getQuery()
 			->execute();
 
+		return $query;
+	}
+
+	public function getQuestionForPlayerByDuel($duelId)
+	{
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
+			->group(array("player.playerId" => 1),
+					array('total' => 0, 'win' =>0))
+			->reduce('function (obj, prev){
+					prev.total++;
+					if(obj.duel && obj.find){
+						prev.win++;
+					}
+			}')
+			->field('finished')->equals(true)
+			->field('duelId')->equals($duelId)
+			->getQuery()
+			->execute();
 		return $query;
 	}
 
