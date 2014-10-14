@@ -101,9 +101,10 @@ class CheckerWorker
 				$team = $em->getRepository('LiderBundle:Team')->find($win);
                 $game->setTeamWinner($team);
 				$team->setPoints($team->getPoints() + $parameters['gamesParameters']['gamePoints']);
-				$qm = $this->co->get('game_manager')->stopGame($game);
-                $this->notificationPlayersDuelFinish($game->getTeamOne(), $game->getTeamTwo(), $team);
-                $this->notificationPlayersDuelFinish($game->getTeamTwo(), $game->getTeamOne(), $team);
+                $gameManager = $this->co->get('game_manager');
+                $gameManager->stopGame($game);
+                $this->notificationPlayersGameFinish($game->getTeamOne(), $game->getTeamTwo(), $team);
+                $this->notificationPlayersGameFinish($game->getTeamTwo(), $game->getTeamOne(), $team);
                 $list = $em->getRepository("LiderBundle:Game")->findBy(array('active' => true, 'finished' => false));
                 if(count($list) == 0)
                 {
@@ -117,7 +118,7 @@ class CheckerWorker
                             'templateData' => array(
                                 'title' => 'Nivel finalizado',
                                 'subjectUser' => 'Nivel finalizado',
-                                'body' => '<p>El nivel '.$game->getTournament()->getLevel().' ha finalizado. Por favor inicie el siguiente nivel</p>'
+                                'body' => '<p>El nivel '.$tournament->getLevel().' del torneo '.$tournament->getName().' ha finalizado. Por favor inicie el siguiente nivel</p>'
                             )
                         )));
                     }
@@ -134,7 +135,7 @@ class CheckerWorker
 		
     }
 
-    private function notificationPlayersDuelFinish($team, $vs, $win)
+    private function notificationPlayersGameFinish($team, $vs, $win)
     {
         $gearman = $this->co->get('gearman');
         $to = array();
@@ -180,7 +181,7 @@ class CheckerWorker
     			$found = false;
     			foreach($list as $pla)
     			{
-    				if($player->getId() == $pla['player.playerId'])
+    				if($play->getId() == $pla['player.playerId'])
     				{
     					$found = true;
     					break;
@@ -214,14 +215,14 @@ class CheckerWorker
         $duel->setEndDate($endDate);
         $duel->setPlayerOne($player1);
         $duel->setPlayerTwo($player2);
-        $duel->tournament($game->getTournament());
+        $duel->setTournament($game->getTournament());
         $duel->setExtraDuel(true);
         $countQuestion = $params['gamesParameters']['countQuestionDuelExtra'];
         $gameManager->generateQuestions($countQuestion, $duel);
         $em->persist($duel);
         $em->flush();
-        $this->notificationExtraDuel($player1, $$team2, $player2);
-        $this->notificationExtraDuel($player2, $$team1, $player1);
+        $this->notificationExtraDuel($player1, $team2, $player2);
+        $this->notificationExtraDuel($player2, $team1, $player1);
     }
 
     private function notificationExtraDuel($player, $teamvs, $playervs)
@@ -232,7 +233,7 @@ class CheckerWorker
             'subject' => 'Extra Duelo',
             'to' => $player->getEmail(),
             'viewName' => 'LiderBundle:Templates:emailnotification.html.twig',
-            'body' => array(
+            'content' => array(
                 'title' => 'Tienes un Duelo Extra',
                 'subjectMessage' => 'Se ha generado el duelo de desempate',
                 'body' => $body

@@ -355,7 +355,7 @@ teamBuilder.prototype = {
 	    		obj.city.htmlObject.find(".total-team").html(obj.city.teams.length);
 	    		me.totalTeams = me.totalTeams-1;
 				$(".total-global-teams").text(me.totalTeams);
-	    		if(obj.city.outTeam){
+	    		if(obj.city.outTeam && obj.city.outTeam.players){
 	    			obj.city.htmlObject.find(".total-out").html(obj.city.outTeam.players.length);	
 	    		}	    		
 	    		return ;

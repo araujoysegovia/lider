@@ -7,13 +7,12 @@ use Symfony\Component\Yaml\Dumper;
 
 class ParametersManager {
 
-	private $pathParameters = '/var/www/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
+	private $pathParameters = '/var/www/html/lider/src/Lider/Bundle/LiderBundle/Resources/config/gameParameters.yml';
     
     /**
      * Setear los parametros de configuración para el juego
      */
-    public function setParameters(array $params){
-    	   
+    public function setParameters(array $params){    	
     	$yaml = new Parser();
 
     	try{
@@ -40,6 +39,7 @@ class ParametersManager {
      * Obtener parametros del yml
      */
     public function getParameters(){
+
 		$yaml = new Parser();
 
 

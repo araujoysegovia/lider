@@ -987,7 +987,6 @@ var routerManager = Backbone.Router.extend({
 					title:"Oficina",					
 					//template:  "#: office.name #",
 					template:  function(e){						
-						
 						if(e.office){
 							return e.office.name;
 						}
@@ -2808,7 +2807,7 @@ var routerManager = Backbone.Router.extend({
 				_.each(round.games, function(game){
 					var divGame = $('<div></div>').css('display', 'table').addClass('div-game');
 					var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
-					var img1 = $('<img/>').attr('src', 'image/'+game.team_one.image).addClass('img-circle').css({
+					var img1 = $('<img/>').attr('src', 'image/'+game.team_one.image+'?width=50&height=50').addClass('img-circle').css({
 						width: 50,
 						height: 50
 					});
@@ -2818,7 +2817,7 @@ var routerManager = Backbone.Router.extend({
 					var divVS = $('<div></div>').css('display', 'table-cell').html("VS").css('width', '30px').css("text-align", 'center');
 
 					var div2 = $('<div></div>').css('display', 'table-cell').css("text-align", 'right');
-					var img2 = $('<img/>').attr('src', 'image/'+game.team_two.image).addClass('img-circle').css({
+					var img2 = $('<img/>').attr('src', 'image/'+game.team_two.image+'?width=50&height=50').addClass('img-circle').css({
 						width: 50,
 						height: 50
 					});
@@ -2876,7 +2875,7 @@ var routerManager = Backbone.Router.extend({
 				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
-				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos de de juego");
+				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos del juego");
 				modalHeader.append(btnClose).append(titleHeading);
 
 				var modalBody = $("<div></div>").addClass("modal-body");
@@ -2888,23 +2887,35 @@ var routerManager = Backbone.Router.extend({
 				_.each(data, function(duel){
 					var divDuel = $('<div></div>').css('display', 'table').addClass('div-game');
 					var div1 = $('<div></div>').css('display', 'table-cell').css("text-align", 'left');
-					var img1 = $('<img/>').attr('src', 'image/'+duel.player_one.image).addClass('img-circle').css({
+					var img1 = $('<img/>').attr('src', 'image/'+duel.player_one.image+'?width=50&height=50').addClass('img-circle').css({
 						width: 50,
 						height: 50
 					});
 					var name1 = $('<span></span>').html(duel.player_one.name.toLowerCase()+' '+duel.player_one.lastname.toLowerCase()).css('margin-left', '5px');
 					div1.append(img1).append(name1);
-
+					if(duel['player_one']['questionMissing'] > 0)
+					{
+						div1.css('border-top', 'solid 5px #8BFFA7');
+						
+					}else{
+						div1.css('border-top', 'solid 5px #A0394A');
+					}
 					var divVS = $('<div></div>').css('display', 'table-cell').html("VS").css('width', '30px').css("text-align", 'center');
 
 					var div2 = $('<div></div>').css('display', 'table-cell').css("text-align", 'right');
-					var img2 = $('<img/>').attr('src', 'image/'+duel.player_two.image).addClass('img-circle').css({
+					var img2 = $('<img/>').attr('src', 'image/'+duel.player_two.image+'?width=50&height=50').addClass('img-circle').css({
 						width: 50,
 						height: 50
 					});
 					var name2 = $('<span></span>').html(duel.player_two.name.toLowerCase()+' '+duel.player_two.lastname.toLowerCase()).css('margin-right', '5px');
 					div2.append(name2).append(img2);
-
+					if(duel['player_two']['questionMissing'] > 0)
+					{
+						div2.css('border-top', 'solid 5px #8BFFA7');
+						
+					}else{
+						div2.css('border-top', 'solid 5px #A0394A');
+					}
 
 					divDuel.append(div1).append(divVS).append(div2);
 					modalBody.append(divDuel);

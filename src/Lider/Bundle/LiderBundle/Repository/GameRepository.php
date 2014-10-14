@@ -42,7 +42,7 @@ class GameRepository extends MainRepository
 						->select('g, d')
 						->leftJoin('g.duels', 'd', 'WITH', 'd.deleted = false')		
 						->where('g.deleted = false AND g.startdate <= :date AND g.finished = false AND g.active = false')
-						->setParameter('date', $date, \Doctrine\DBAL\Types\Type::DATETIME);
+						->setParameter('date', $date, \Doctrine\DBAL\Types\Type::DATE);
 
 		$query = $query->getQuery();
 		$r = $query->getResult();
