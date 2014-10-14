@@ -203,15 +203,21 @@ class QuestionHistoryRepository extends MainMongoRepository
 	{
 
 		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
-			->group(array("player.playerId" => 1, 'player.name' =>2),
-					array('total' => 0, 'win' =>0, 'playername' => '', 'teamname' => ''))
+			->group(array("player.playerId" => 1),
+					array('win' => 0, 'winHelp' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0, 'playername' => '', 'teamname' => ''))				
 			->reduce('function (obj, prev){
+					prev.playername = obj.player.name + " " + obj.player.lastname;
 					prev.total++;
-					prev.playername = obj.player.name;
+					prev.totalPoint += obj.points || 0;
 					prev.teamname = obj.team.name;
 					if(obj.duel && obj.find){
 						prev.win++;
 					}
+					else if(obj.find && obj.useHelp){
+	 					prev.winHelp++;
+		 			}else{
+		 	    		prev.lost++;
+		 	    	}
 			}')
 			->field('finished')->equals(true)
 			->field('tournament.tournamentId')->equals($tournamentId)
