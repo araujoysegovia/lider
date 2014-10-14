@@ -2160,13 +2160,23 @@ var routerManager = Backbone.Router.extend({
 				    },
 				    win: {
 				    	type: 'string' 
-				    }					  
+				    },
+				    winHelp: {
+				    	type: 'string' 
+				    },
+				    lost: {
+				    	type: 'string' 
+				    },
+				    totalPoint: {
+				    	type: 'string'
+				    }					    
 				}
 			},
 			columns: [				
 				{ 
 					field: "playername",
-					title:"Jugador"										
+					title:"Jugador",
+					width: "250px"									
 				},
 				{
 					field: "teamname",
@@ -2174,12 +2184,24 @@ var routerManager = Backbone.Router.extend({
 				},						
 				{ 
 					field: "total",
-					title:"Total de preguntas realizadas"
+					title:"TP"
 				},
 				{
 					field: "win",
-					title:"Total de preguntas ganadas"
-				}
+					title:"PC"
+				},
+				{
+					field: "winHelp",
+					title:"PCA"
+				},
+				{
+					field: "lost",
+					title:"PI"
+				},	
+				{
+					field: "totalPoint",
+					title:"Puntos"
+				}										
 			],
 			toolbar: [
 				 { 
