@@ -69,7 +69,7 @@ class TournamentController extends Controller
         $em->flush();
         $pm = $this->get('parameters_manager');
         $params = $pm->getParameters();
-        $interval = $params['gamesParameters']['countQuestionDuel'];
+        $interval = $params['gamesParameters']['timeGame'];
     
         $this->get('game_manager')->generateGame($tournamentId, $interval, $date);
 

@@ -1,10 +1,10 @@
 gamesParameters:
     timeQuestionPractice: '30'
     timeQuestionDuel: '30'
-    timeGame: '6'
+    timeGame: '7'
     timeDuel: '2'
     answerShowPractice: 'false'
-    answerShowGame: 'false'
+    answerShowGame: 'true'
     timeDuelExtra: '1'
     countQuestionDuel: '5'
     countQuestionDuelExtra: '1'
@@ -13,4 +13,4 @@ gamesParameters:
     questionPoints: '3'
     questionPointsHelp: '1'
     countQuesttionExtraDuel: '1'
-    pointExtraDuel: 'false'
+    pointExtraDuel: 'true'

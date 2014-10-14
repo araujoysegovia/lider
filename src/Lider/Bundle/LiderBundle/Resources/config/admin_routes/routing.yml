@@ -97,9 +97,14 @@ general_save_image:
     defaults: { _controller: LiderBundle:Image:saveImage }
     methods:  [POST]
 
-general_get_image:
-    pattern:  /image
+general_get_images:
+    pattern:  /images
     defaults: { _controller: LiderBundle:Image:getAllImage }
+    methods:  [GET]
+    
+general_admin_get_image:
+    pattern:  /image/{id}
+    defaults: { _controller: LiderBundle:Image:get }
     methods:  [GET]
 
 generate_duel:
