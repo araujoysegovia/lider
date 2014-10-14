@@ -226,7 +226,6 @@ class TeamController extends Controller
         $gearman = $this->get('gearman');
         $request = $this->get("request");
         $tournament = $request->get('tournamentId');
-        echo $tournament;
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationTeam', json_encode(array(
                 'tournament' => $tournament,
             )));

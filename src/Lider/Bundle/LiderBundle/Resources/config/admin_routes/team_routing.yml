@@ -45,7 +45,7 @@ admin_update_team_tournament:
     defaults: { _controller: LiderBundle:Team:updateTeamTournament }
     methods:  [GET]
 
-admin_taem_notification:
+admin_team_notification:
     pattern:  /notification
     defaults: { _controller: LiderBundle:Team:notificationTeam }
     methods:  [GET]

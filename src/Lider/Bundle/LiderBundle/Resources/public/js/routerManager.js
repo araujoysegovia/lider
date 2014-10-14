@@ -3052,6 +3052,12 @@ var routerManager = Backbone.Router.extend({
 						    	'<button type="button" class="btn btn-primary send-not-teams">Enviar</button>'+
 						    '</div>'+
 						  '</div>'+
+						  '<div class="form-group">'+
+						    '<label  class="col-sm-2 control-label">Notificación de duelos</label>'+
+						    '<div class="col-sm-10">'+
+						    	'<button type="button" class="btn btn-primary send-not-duels">Enviar</button>'+
+						    '</div>'+
+						  '</div>'+
 					 '</form>');
 
 		container.append(form);
@@ -3121,6 +3127,39 @@ var routerManager = Backbone.Router.extend({
         			parameters = {
 						type: "GET",
 					    url: "home/team/notification",
+				        contentType: 'application/json',
+		            	dataType: "json",
+		            	data: data,
+            	     	statusCode: {
+					      401:function() { 
+					      	window.location = '';
+					      }		   
+					    },		            	
+				        success: function(data){
+				        	alert("Notificaciones enviadas");
+				        },
+				        error: function(){}
+					};
+
+					$.ajax(parameters);
+			    },
+			    cancel: function(button) {
+			        // do something
+			    }
+			});
+		});
+
+		//Enviar notificaciones de los duelos
+		form.find(".send-not-duels").click(function () {
+			$.confirm({
+			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles el duelos que les corresponde ?",
+			    confirm: function(button) {
+			    	var data = {
+			    		"tournamentId": form.find('.select-tournament').val()
+			    	}
+        			parameters = {
+						type: "GET",
+					    url: "home/player/notification",
 				        contentType: 'application/json',
 		            	dataType: "json",
 		            	data: data,

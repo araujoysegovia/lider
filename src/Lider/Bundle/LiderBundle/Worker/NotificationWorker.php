@@ -123,6 +123,59 @@ class NotificationWorker
         }
     }
 
+
+
+    /**
+     * Send Email when a team is created
+     *
+     * @param \GearmanJob $job Object with job parameters
+     *
+     * @return boolean
+     *
+     * @Gearman\Job(
+     *     name = "sendNotificationDuel",
+     *     description = "Send an Email when need a notification for duels active"
+     * )
+     */
+    public function sendNotificationDuel(\GearmanJob $job){
+        $data = json_decode($job->workload(),true);
+        $tournamentId = $data['tournament'];
+        // print_r($team->getId());
+        $em = $this->co->get('doctrine')->getManager();
+        
+        $repoDuel = $em->getRepository("LiderBundle:Duel");
+        $list = $repoDuel->findBy(array("tournament" => $tournamentId, "deleted" => FALSE, "active" => true, "finished" => false));
+        
+        if($list){
+            foreach($list as $duel){
+                $playerOne = $duel->getPlayerOne();
+                $playerTwo = $duel->getPlayerTwo();
+                $this->sendDuelNotification($playerOne, $playerTwo->getTeam(), $playerTwo, $duel);
+                $this->sendDuelNotification($playerTwo, $playerOne->getTeam(), $playerOne, $duel);
+            }
+            
+        }
+    }
+
+    private function sendDuelNotification($player, $teamvs, $playervs, $duel)
+    {
+        $notificationService = $this->co->get("notificationService");
+        $subject = "Duelo generado!!!";
+        $body = 'Hola <b>'.$player->getName().' '.$player->getLastname().'</b><br><br> Se ha generado un duelo entre tu equipo y el equipo '.$teamvs->getName().', y tu has sido el seleccionado para jugarlo contra <b>'.$playervs->getName().' '.$playervs->getLastname().'</b>';
+        $content = array(
+            "title" => "Tienes un Duelo",
+            'subjectMessage' => 'Se ha generado tu duelo',
+            'body' => $body,
+            'duelId' => base64_encode($duel->getId())
+        );
+        try{
+            $send = $notificationService->sendEmail($subject, $this->from, "eescallon@araujoysegovia.com", null, "LiderBundle:Templates:duelnotification.html.twig", $content);
+            echo "Mensaje Enviado de duelo a ".$player->getEmail();
+        }catch(\Exception $e){
+            echo $e->getMessage();
+        }
+    }
+
     /**
      * Send Email when a team is created
      *
@@ -198,6 +251,11 @@ class NotificationWorker
         $data = json_decode($job->workload(),true);
         $admins = $this->getAdmins();
         echo "# admins: ".count($admins);
+        $template = "LiderBundle:Templates:adminnotification.html.twig";
+        if(array_key_exists("template", $data))
+        {
+            $template = $data['template'];
+        }
         if($admins)
         {
             $to = array();
@@ -208,7 +266,7 @@ class NotificationWorker
                 $to[] = $value->getEmail();
             }
             try{
-                $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:adminnotification.html.twig", $body);
+                $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $body);
                 echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
                 echo $e->getMessage();
@@ -216,7 +274,52 @@ class NotificationWorker
         }
     }
 
-    private function getAdmins()
+     /**
+     * Send Email when a team is created
+     *
+     * @param \GearmanJob $job Object with job parameters
+     *
+     * @return boolean
+     *
+     * @Gearman\Job(
+     *     name = "adminNotificationDuels",
+     *     description = "Send an Email to Admin when one player do something"
+     * )
+     */
+    public function adminNotificationDuels(\GearmanJob $job){
+
+        $notificationService = $this->co->get("notificationService");
+
+        $data = json_decode($job->workload(),true);
+        $admins = $this->getAdmins();
+        echo "# admins: ".count($admins);
+        $template = "LiderBundle:Templates:duelsnotificationadmin.html.twig";
+        if(array_key_exists("template", $data))
+        {
+            $template = $data['template'];
+        }
+        if($admins)
+        {
+            $to = array();
+            $subject = $data['subject'];
+            foreach($admins as $value)
+            {
+                $to[] = $value->getEmail();
+            }
+            $em = $this->co->get('doctrine')->getManager();
+            $repo = $em->getRepository("LiderBundle:Game");
+            $games = $repo->getGamesFromArrayId($data['content']['games']);
+            $data['content']['games'] = $games;
+            try{
+                $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
+                echo "Mensaje Enviado al administrador";
+            }catch(\Exception $e){
+                echo $e->getMessage();
+            }
+        }
+    }
+
+    public function getAdmins()
     {
         $em = $this->co->get('doctrine')->getManager();
         $repo = $em->getRepository("LiderBundle:Player");

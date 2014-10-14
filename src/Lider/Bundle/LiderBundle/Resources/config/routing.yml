@@ -7,6 +7,7 @@ admin_module:
     prefix:   /admin
     #host: soylider.sifinca.net
 
+
 player_module:
     resource: "@LiderBundle/Resources/config/player_routes/routing.yml"
     prefix:   /
