@@ -20,9 +20,27 @@ class QuestionLevelDifficultCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $em = $this->getContainer()->get('doctrine')->getManager();
-        $gameManager = $this->getContainer()->get('game_manager');
-        $gameManager->stopDuels();
-        $gameManager->stopGames();
-        $gameManager->startGames();
+        $dm = $this->getContainer()->get('doctrine_mongodb')->getManager();
+        $repoQuestionMongo = $dm->getRepository("LiderBundle:QuestionHistory");
+        $listMongo = $repoQuestionMongo->getQuestionReport();
+        $repoQuestionPostgres = $em->getRepository("LiderBundle:Question");
+        $listPostgres = $repoQuestionPostgres->findAll();
+        foreach($listMongo as $questionMongo)
+        {
+            foreach($listPostgres as $questionPostgre)
+            {
+                if($questionMongo['question.questionId'] == $questionPostgre->getId())
+                {
+                    $percent = $questionMongo['win'] * 100 / $questionMongo['total'];
+                    $value = $percent / 10;
+                    $level = intval($value);
+                    $questionPostgre->setLevel($level);
+                    break;
+                }
+                
+
+            }
+        }
+        $em->flush();
     }
 }

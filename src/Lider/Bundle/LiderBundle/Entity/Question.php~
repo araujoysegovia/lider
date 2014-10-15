@@ -60,7 +60,7 @@ class Question extends Entity
     /**
      * @ORM\Column(type="integer", nullable = true)   
      */
-    private $level = 0;
+    private $level;
 
     /**
      * Constructor
@@ -249,28 +249,5 @@ class Question extends Entity
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * Set level
-     *
-     * @param integer $level
-     * @return Question
-     */
-    public function setLevel($level)
-    {
-        $this->level = $level;
-
-        return $this;
-    }
-
-    /**
-     * Get level
-     *
-     * @return integer 
-     */
-    public function getLevel()
-    {
-        return $this->level;
     }
 }

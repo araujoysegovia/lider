@@ -261,16 +261,19 @@ class QuestionHistoryRepository extends MainMongoRepository
 		return $query;
 	}
 
-	public function getPointsByDuel()
+	public function getQuestionReport()
 	{
 		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
-			->group(array('duelId' => 1, "player.playerId" => 1),
-					array('total' => 0))
+			->group(array('question.questionId' => 1),
+					array('total' => 0, 'win' => 0))
 			->reduce('function (obj, prev){
-					prev.total+= obj.points;
+					prev.total++;
+					if(obj.find)
+					{
+						prev.win++;
+					}
 			}')
 			->field('finished')->equals(true)
-			->field('duel')->equals(true)
 			->getQuery()
 			->execute();
 		return $query;
