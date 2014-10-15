@@ -621,10 +621,12 @@ class PlayerController extends Controller
             return $this->get("talker")->response(array('total' => 0, 'data' => array())); 
         }
 
-        $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')
-                              ->getQuestionForPlayer(intval($tournamentId));
+       // $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')
+        //                      ->getQuestionForPlayer(intval($tournamentId));
 
-        //$reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')->findRangePosition($tournamentId);
+        echo "aqui";
+
+        $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')->findRangePosition($tournamentId);
         
         $rq = $reportQuestions->toArray();
 

@@ -97,4 +97,17 @@ class ReportQuestionController extends Controller
 
      	return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
      } 
+
+
+    public function getGeneralCategoryReportAction()
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+
+        $questions = $dm->getRepository('LiderBundle:QuestionHistory')->getGeneralCategoryReport();
+        //print_r($questions);
+        
+
+        return $this->get("talker")->response(array('total'=>count($questions), 'data'=>$questions->toArray()));
+
+    }
 }

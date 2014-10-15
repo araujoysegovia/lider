@@ -279,4 +279,23 @@ class QuestionHistoryRepository extends MainMongoRepository
 		return $query;
 	}
 
+	public function getGeneralCategoryReport()
+	{
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
+		  	->group(array("question.categoryName" => 1),
+					  array('win' => 0, 'lost' => 0, 'total' => 0))
+			->reduce('function (obj, prev){
+
+				prev.total++;
+				if(obj.find){
+					prev.win++;
+				}else{
+					prev.lost++;
+				}
+			}')				
+			->getQuery()
+			->execute();
+		return $query;
+	}
+
 }

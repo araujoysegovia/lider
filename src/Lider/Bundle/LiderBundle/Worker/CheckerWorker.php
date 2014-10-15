@@ -186,7 +186,7 @@ class CheckerWorker
             )
         )));
     }
-
+    
     private function notificationPlayersGameFinish($team, $vs, $win)
     {
         $gearman = $this->co->get('gearman');
