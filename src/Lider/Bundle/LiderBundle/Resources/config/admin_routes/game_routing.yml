@@ -44,3 +44,13 @@ start_game:
     pattern:  /start
     defaults: { _controller: LiderBundle:Game:startGames }
     methods:  [GET]
+    
+stop_game_manual:
+    pattern:  /stop/{gameId}
+    defaults: { _controller: LiderBundle:Game:stopGameManual }
+    methods:  [GET]    
+    
+send_game_notification:
+    pattern:  /notification/{gameId}
+    defaults: { _controller: LiderBundle:Game:sendNotificationByGame }
+    methods:  [GET]   

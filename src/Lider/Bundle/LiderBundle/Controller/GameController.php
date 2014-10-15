@@ -111,4 +111,25 @@ class GameController extends Controller
         return $this->get("talker")->response(array());
     }    
 
+    public function stopGameManualAction($gameId) {
+    	
+    	$gearman = $this->get('gearman');
+		$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~stopGameManual', json_encode(array(
+            'gameId' => $gameId            
+        )));
+
+		return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+    
+    
+    public function sendNotificationByGameAction($gameId) {
+    	
+    	$gearman = $this->get('gearman');
+    	$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~sendNotificationPlayersGameFinish', json_encode(array(
+    			'gameId' => $gameId
+    	)));
+    	
+    	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));    	
+    }
+    
 }
