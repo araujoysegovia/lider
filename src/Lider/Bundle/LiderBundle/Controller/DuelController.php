@@ -40,7 +40,9 @@ class DuelController extends Controller
                 $questionPlayerOne = $questionManager->getMissingQuestionFromDuel($d, $playerOne);
                 $questionPlayerTwo = $questionManager->getMissingQuestionFromDuel($d, $playerTwo);
                 $duel['player_one']['questionMissing'] = count($questionPlayerOne);
+                $duel['player_one']['teamId'] = $playerOne->getTeam()->getId();
                 $duel['player_two']['questionMissing'] = count($questionPlayerTwo);
+                $duel['player_two']['teamId'] = $playerTwo->getTeam()->getId();
                 $duels['data'][$key] = $duel;
             }
             return $this->get("talker")->response($duels);

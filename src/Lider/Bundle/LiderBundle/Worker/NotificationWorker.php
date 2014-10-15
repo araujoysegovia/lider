@@ -42,7 +42,7 @@ class NotificationWorker
         //print_r($data);
         try{
 	        $notificationService = $this->co->get("notificationService");
-	        echo "\n\n\n\nVoy a consultar ".$data['to'];
+	        //echo "\n\n\n\nVoy a consultar ".$data['to'];
 	        $player = $this->co->get('doctrine')->getManager()->getRepository("LiderBundle:Player")->findOneByEmail($data['to']);
 	        if(!$player)
 	        	return;
@@ -53,8 +53,8 @@ class NotificationWorker
        
 
             $send = $notificationService->sendEmail($data['subject'], $this->from, $data['to'], null, $data['viewName'], $data['content']);
-            echo "\n\nMensaje Enviado a ".$data['to'].":";
-            //print_r($data['content']);
+            echo "\n\nMensaje Enviado a: ";
+            print_r($data['to']);
 
         }catch(\Exception $e){
             echo $e->getMessage();

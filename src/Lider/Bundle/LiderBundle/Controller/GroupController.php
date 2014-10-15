@@ -222,11 +222,17 @@ class GroupController extends Controller
                 $ls = array(
                     'id' => $team->getId(),
                     'name' => $team->getName(),
-                    'points' => $team->getPoints(),
                     'total' => 0,
                     'win' => 0,
                     'loose' => 0,
                 );
+                if($team->getPoints())
+                {
+                	$ls['points'] = $team->getPoints();
+                }
+                else{
+                	$ls['points'] = 0;
+                }
                 foreach ($gamesTeam as $game) {
                     if($game['team_one']['id'] == $team->getId() || $game['team_two']['id'] == $team->getId()){
                         

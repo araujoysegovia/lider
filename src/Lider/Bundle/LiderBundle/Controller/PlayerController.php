@@ -265,7 +265,7 @@ class PlayerController extends Controller
     	
     }
 
-    public function getRangePositionAction($tournamentId)
+    public function getRangePositionAction($tournamentId = null)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository("LiderBundle:QuestionHistory");
