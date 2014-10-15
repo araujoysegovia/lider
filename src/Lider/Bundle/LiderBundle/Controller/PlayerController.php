@@ -265,14 +265,17 @@ class PlayerController extends Controller
     	
     }
 
-    public function getRangePositionAction()
+    public function getRangePositionAction($tournamentId)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository("LiderBundle:QuestionHistory");
         $user = $this->container->get('security.context')->getToken()->getUser();
-        $tournamentId = $user->getTeam()->getTournament()->getId();
+        
+        if($user->getTeam()){
+        	$tournamentId = $user->getTeam()->getTournament()->getId();
+        }        
 
-        $list = $repo->findRangePosition($tournamentId);
+        $list = $repo->findRangePosition(intval($tournamentId));
         $list = $list->toArray();
         $orderBy = function($data, $field){
             $code = "return strnatcmp(\$a['$field'], \$b['$field']);";
