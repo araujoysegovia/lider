@@ -270,10 +270,10 @@ class PlayerController extends Controller
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository("LiderBundle:QuestionHistory");
         $user = $this->container->get('security.context')->getToken()->getUser();
-
+        
         if($user->getTeam()){
-            $tournamentId = $user->getTeam()->getTournament()->getId();    
-        }
+        	$tournamentId = $user->getTeam()->getTournament()->getId();
+        }        
 
         $list = $repo->findRangePosition(intval($tournamentId));
         $list = $list->toArray();

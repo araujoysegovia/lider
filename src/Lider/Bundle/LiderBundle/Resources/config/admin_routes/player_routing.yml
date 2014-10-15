@@ -47,3 +47,8 @@ admin_player_notification:
     pattern:  /notification
     defaults: { _controller: LiderBundle:Player:notificationDuel }
     methods:  [GET]
+    
+admin_player_range_position:
+    pattern:  /positions/{tournamentId}
+    defaults: { _controller: LiderBundle:Player:getRangePosition, tournamentId: null }
+    methods:  [GET]

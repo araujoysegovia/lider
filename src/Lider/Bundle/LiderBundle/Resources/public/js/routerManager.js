@@ -2149,7 +2149,7 @@ var routerManager = Backbone.Router.extend({
 				id: "id",
 				fields: {
 					id: { editable: false, nullable: true },				   
-				    playername: {
+					fullname: {
 				    	type: 'string'
 				    },
 				    teamname: {
@@ -2174,7 +2174,7 @@ var routerManager = Backbone.Router.extend({
 			},
 			columns: [				
 				{ 
-					field: "playername",
+					field: "fullname",
 					title:"Jugador",
 					width: "250px"									
 				},
@@ -2214,7 +2214,18 @@ var routerManager = Backbone.Router.extend({
 			],
 			command: null,			
 			serverFiltering: false,
-			serverSorting: false
+			serverSorting: false,
+		    pageable: {
+				    refresh: true,
+				    pageSizes: false,               
+				    buttonCount: 0,
+				    info: true,
+				    numeric: false,
+				    previousNext: false,
+				    messages: {
+					      display: "Mostrando {2} datos"
+					    }
+		 	}		
 		});
 
 		var select = $(".select-tournaments-p");
