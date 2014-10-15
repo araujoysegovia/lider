@@ -298,4 +298,13 @@ class QuestionHistoryRepository extends MainMongoRepository
 		return $query;
 	}
 
+	public function getQuestionWithoutCategory()
+	{
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
+			->field('question.categoryName')->exists(false)
+			->getQuery()
+			->execute();
+		return $query;
+	}
+
 }

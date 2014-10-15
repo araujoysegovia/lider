@@ -80,4 +80,22 @@ class DuelRepository extends MainRepository
     	);
     	return $result;
     }
+
+    public function getDuelsByGame($gameId)
+    {
+    	$query =  $this->createQueryBuilder('d')
+						->select('d, po, pt, to, tt, g')
+						->join('d.player_one', 'po', 'WITH', 'po.deleted = FALSE')
+						->join('d.player_two', 'pt', 'WITH', 'pt.deleted = FALSE')
+						->join('po.team', 'to', 'WITH', 'to.deleted = FALSE')
+						->join('pt.team', 'tt', 'WITH', 'tt.deleted = FALSE')
+						->join('d.game', 'g', 'WITH', 'g.deleted = FALSE AND g.id = :ga')
+						->where('d.deleted = false')
+						->setParameter('ga', $gameId);
+
+		$query = $query->getQuery();
+		$r = $query->getResult();
+		
+		return $r;
+    }
 }

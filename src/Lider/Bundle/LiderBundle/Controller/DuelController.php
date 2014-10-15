@@ -26,26 +26,32 @@ class DuelController extends Controller
     public function getDuelsByGameAction($gameId)
     {
         $em = $this->getDoctrine()->getManager();
-        $duels = $em->getRepository('LiderBundle:Duel')->getArrayEntityWithOneLevel(array("game" => $gameId, 'deleted' => false));
+        $duels = $em->getRepository('LiderBundle:Duel')->getDuelsByGame($gameId);
+        $data = array("total" => 0, "data" => array());
         if(!$duels){
-            return $this->get("talker")->response(array());
+            return $this->get("talker")->response($data);
         }
         else{
+            $data['total'] = count($duels);
             $questionManager = $this->get('question_manager');
-            foreach($duels['data'] as $key =>  $duel)
+            foreach($duels as $key =>  $duelEntity)
             {
-                $playerOne = $em->getRepository("LiderBundle:Player")->find($duel['player_one']['id']);
-                $playerTwo = $em->getRepository("LiderBundle:Player")->find($duel['player_two']['id']);
-                $d = $em->getRepository("LiderBundle:Duel")->find($duel['id']);
-                $questionPlayerOne = $questionManager->getMissingQuestionFromDuel($d, $playerOne);
-                $questionPlayerTwo = $questionManager->getMissingQuestionFromDuel($d, $playerTwo);
+                $duel = $this->get("talker")->normalizeEntity($duelEntity);
+
+                $playerOne = $duelEntity->getPlayerOne();
+                $playerTwo = $duelEntity->getPlayerTwo();
+                // $d = $em->getRepository("LiderBundle:Duel")->find($duelEntity->getId());
+                $questionPlayerOne = $questionManager->getMissingQuestionFromDuel($duelEntity, $playerOne);
+                $questionPlayerTwo = $questionManager->getMissingQuestionFromDuel($duelEntity, $playerTwo);
+
                 $duel['player_one']['questionMissing'] = count($questionPlayerOne);
                 $duel['player_one']['teamId'] = $playerOne->getTeam()->getId();
                 $duel['player_two']['questionMissing'] = count($questionPlayerTwo);
                 $duel['player_two']['teamId'] = $playerTwo->getTeam()->getId();
-                $duels['data'][$key] = $duel;
+                $data['data'][$key] = $duel;
             }
-            return $this->get("talker")->response($duels);
+            // return $this->get("talker")->response(array());
+            return $this->get("talker")->response($data);
         }
     }
 
