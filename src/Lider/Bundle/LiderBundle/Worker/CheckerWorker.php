@@ -118,6 +118,7 @@ class CheckerWorker
                 $gameManager->stopGame($game);
                 $this->notificationPlayersGameFinish($game->getTeamOne(), $game->getTeamTwo(), $team);
                 $this->notificationPlayersGameFinish($game->getTeamTwo(), $game->getTeamOne(), $team);
+                $this->notificationToAdminGameFinish($game);
                 $list = $em->getRepository("LiderBundle:Game")->findBy(array('active' => true, 'finished' => false));
                 if(count($list) == 0)
                 {
@@ -167,10 +168,26 @@ class CheckerWorker
     		{
     			$this->notificationPlayersGameFinish($game->getTeamOne(), $game->getTeamTwo(), $win);
     			$this->notificationPlayersGameFinish($game->getTeamTwo(), $game->getTeamOne(), $win);
+    			$this->notificationToAdminGameFinish($game);
     		}
     	}
     }
-
+	
+    private function notificationToAdminGameFinish($game)
+    {
+    	$gearman = $this->co->get('gearman');
+    	$to = array();
+    	$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+    			'subject' => 'Juego Finalizado',
+    			'templateData' => array(
+    					'title' => 'Juego Finalizado',
+    					'subjectUser' => 'Juego finalizado entre '. $game->getTeamOne()->getName().' y '.$game->getTeamTwo()->getName(),
+    					'body' => 'El juego entre '. $game->getTeamOne()->getName().' y '.$game->getTeamTwo()->getName().' ha finalizado, y el ganador es '.$game->getTeamWinner()->getName()
+    			),
+    			
+    	)));
+    }
+    
     private function notificationPlayersGameFinish($team, $vs, $win)
     {
         $gearman = $this->co->get('gearman');
