@@ -58,3 +58,8 @@ admin_question_count_bygame:
     pattern:  /game/{gameId}/count
     defaults: { _controller: LiderBundle:Question:countQuestionForGame }
     methods:  [GET]
+   
+admin_question_update_pointsinduel:
+    pattern:  /updatepoints
+    defaults: { _controller: LiderBundle:Question:updatePointsToDuel }
+    methods:  [GET]

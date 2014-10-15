@@ -364,6 +364,7 @@ class QuestionController extends Controller
         $playerPoints = $user->getPlayerPoints();
         
         $team = $user->getTeam();
+        $duel = $em->getRepository('LiderBundle:Duel')->find($questionHistory->getDuelId());
 
         if($diffTime >= $maxSec || $questionId=="no-answer"){
             $res = array();
@@ -385,7 +386,7 @@ class QuestionController extends Controller
 
                 if(($questionHistory->getExtraQuestion() && $parameters['gameParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
                 {
-                    $this->applyPoints($questionHistory, $parameters, $team, $user);
+                    $this->applyPoints($questionHistory, $parameters, $team, $user, $duel);
                 }
 
             }else{
@@ -413,7 +414,7 @@ class QuestionController extends Controller
         }
                 
         $user = $this->get('security.context')->getToken()->getUser();
-        $duel = $em->getRepository('LiderBundle:Duel') ->find($questionHistory->getDuelId());        
+        
 
         $questionHistory->setFinished(true);
         $dm->flush();
@@ -445,7 +446,7 @@ class QuestionController extends Controller
         
     }
 
-    private function applyPoints(&$questionHistory, $parameters, $team, $user)
+    private function applyPoints(&$questionHistory, $parameters, $team, $user, &$duel)
     {
         $em = $this->getDoctrine()->getManager();
         if($questionHistory->getUseHelp()){
@@ -456,6 +457,7 @@ class QuestionController extends Controller
             $playerPoint->setTournament($team->getTournament());
             $playerPoint->setTeam($team);
             $playerPoint->setPlayer($user);
+            $this->applyPointsToDuel($duel, $user, $pointsHelp);
         }else{
             $points = $parameters['gamesParameters']['questionPoints'];
             $questionHistory->setPoints($points);
@@ -464,13 +466,23 @@ class QuestionController extends Controller
             $playerPoint->setTournament($team->getTournament());
             $playerPoint->setTeam($team);
             $playerPoint->setPlayer($user);
-
-            
-            
+            $this->applyPointsToDuel($duel, $user, $points);
         }
         $em->persist($playerPoint);
         $user->addPlayerPoint($playerPoint);
     }
+    
+	private function applyPointsToDuel(&$duel, $user, $points)
+    {
+        if($user->getId() == $duel->getPlayerOne()->getId())
+        {
+            $duel->setPointOne($duel->getPointOne()+$points);
+        }
+        else{
+            $duel->setPointTwo($duel->getPointTwo()+$points);
+        }
+    }
+    
 
     public function setHelpAction($token)
     {        
@@ -620,6 +632,37 @@ class QuestionController extends Controller
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
-   
+    
+    public function updatePointsToDuelAction()
+    {
+    	$em = $this->getDoctrine()->getManager();
+    	$dm = $this->get('doctrine_mongodb')->getManager();
+    	$list = $dm->getRepository("LiderBundle:QuestionHistory")->getPointsByDuel();
+    	$duels = $em->getRepository("LiderBundle:Duel")->findAll();
+    	$c = 0;
+    	foreach($duels as $duel)
+    	{
+    		foreach($list as $d)
+    		{
+    
+    			if($d['duelId'] == $duel->getId())
+    			{
+    				$c++;
+    				 
+    				echo $c . " - ".$d['duelId'] . " == ". $duel->getId(). "\n";
+    				
+    				if($d['player.playerId'] == $duel->getPlayerOne()->getId())
+    				{
+    					$duel->setPointOne($d['total']);
+    				}
+    				else{
+    					$duel->setPointTwo($d['total']);
+    				}
+    			}
+    		}
+    	}
+    	$em->flush();
+    	return $this->get("talker")->response($list->toArray());
+    }
 
 }

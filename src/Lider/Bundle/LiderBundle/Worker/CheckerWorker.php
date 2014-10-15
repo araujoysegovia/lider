@@ -83,6 +83,19 @@ class CheckerWorker
     	return null;
     }
 
+    /**
+     * @Gearman\Job(
+     *     name = "stopGameManual",
+     *     description = "Detener el juego manualmente"
+     * )
+     */
+    public  function stopGameManual(\GearmanJob $job){
+    	$data = json_decode($job->workload(),true);
+    	$gameId = $data['gameId'];
+    	
+    	$this->checkGame($gameId);
+    }
+    
 	private function checkGame(&$gameId)
     {				
 		//$duels = $game->getDuels()->findBy(array("active" => false, "finished" => true));
@@ -133,6 +146,29 @@ class CheckerWorker
 			}
 		}
 		
+    }
+    
+    /**
+     * @Gearman\Job(
+     *     name = "sendNotificationPlayersGameFinish",
+     *     description = "Envia notificaciones a los jugadores de los equipos cuando se finaliza el juego de manera manual"
+     * )
+     */
+    public function sendNotificationPlayersGameFinish(\GearmanJob $job)
+    {
+    	$data = json_decode($job->workload(),true);
+    	$gameId = $data['gameId'];
+    	$em = $this->co->get('doctrine')->getManager();
+    	$game = $em->getRepository("LiderBundle:Game")->findOneBy(array("id" => $gameId, "finished" => true, "deleted" => false, "active" => false));
+    	if($game)
+    	{
+    		$win = $game->getTeamWinner();
+    		if($win)
+    		{
+    			$this->notificationPlayersGameFinish($game->getTeamOne(), $game->getTeamTwo(), $win);
+    			$this->notificationPlayersGameFinish($game->getTeamTwo(), $game->getTeamOne(), $win);
+    		}
+    	}
     }
 
     private function notificationPlayersGameFinish($team, $vs, $win)
