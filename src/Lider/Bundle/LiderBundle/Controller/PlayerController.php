@@ -265,14 +265,17 @@ class PlayerController extends Controller
     	
     }
 
-    public function getRangePositionAction()
+    public function getRangePositionAction($tournamentId)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository("LiderBundle:QuestionHistory");
         $user = $this->container->get('security.context')->getToken()->getUser();
-        $tournamentId = $user->getTeam()->getTournament()->getId();
 
-        $list = $repo->findRangePosition($tournamentId);
+        if($user->getTeam()){
+            $tournamentId = $user->getTeam()->getTournament()->getId();    
+        }
+
+        $list = $repo->findRangePosition(intval($tournamentId));
         $list = $list->toArray();
         $orderBy = function($data, $field){
             $code = "return strnatcmp(\$a['$field'], \$b['$field']);";
@@ -618,10 +621,12 @@ class PlayerController extends Controller
             return $this->get("talker")->response(array('total' => 0, 'data' => array())); 
         }
 
-        $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')
-                              ->getQuestionForPlayer(intval($tournamentId));
+       // $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')
+        //                      ->getQuestionForPlayer(intval($tournamentId));
 
-        //$reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')->findRangePosition($tournamentId);
+        echo "aqui";
+
+        $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')->findRangePosition($tournamentId);
         
         $rq = $reportQuestions->toArray();
 

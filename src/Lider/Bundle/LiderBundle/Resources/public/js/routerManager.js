@@ -2143,7 +2143,7 @@ var routerManager = Backbone.Router.extend({
 
 		var reportPlayerAnalysis = new Entity({
 			container:  $("#entity-content"),
-			url: "home/player/questions",
+			url: "home/player/positions",
 			title: "Analisis por jugador",
 			model: {
 				id: "id",
@@ -2250,7 +2250,7 @@ var routerManager = Backbone.Router.extend({
 		};
 
 		select.change(function () {
-			reportPlayerAnalysis.url = "home/player/questions/"+select.val();
+			reportPlayerAnalysis.url = "home/player/positions/"+select.val();
             reportPlayerAnalysis.grid.data('kendoGrid').dataSource.read();		            
 			reportPlayerAnalysis.grid.data('kendoGrid').refresh();
         });

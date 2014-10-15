@@ -37,6 +37,11 @@ admin_player_analysis:
     requirements:
       tournamentId: \d+
 
+admin_player_range_position:
+    pattern:  /positions/{tournamentId}
+    defaults: { _controller: LiderBundle:Player:getRangePosition, tournamentId: null }
+    methods:  [GET]
+
 
 admin_player_notification:
     pattern:  /notification
