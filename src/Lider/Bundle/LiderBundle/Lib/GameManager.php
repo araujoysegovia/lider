@@ -572,7 +572,7 @@ class GameManager
 	/**
 	 * Detener un juego y finalizer sus duelos
 	 */
-	public function stopGame($games)
+	public function stopGame($game)
 	{
 		$game->setActive(false);
 		$game->setFinished(true);
