@@ -20,6 +20,7 @@ var routerManager = Backbone.Router.extend({
 		"games": "games",
 		"reportPlayerAnalysis": "reportPlayerAnalysis",
 		"reportTeamByGroup": "reportTeamByGroup",
+		"reportByCategory": "reportByCategory",
 	},
 
 	home: function() {
@@ -2372,6 +2373,84 @@ var routerManager = Backbone.Router.extend({
 	        }
 	        $.ajax(config);
 		});
+
+	},
+
+	reportByCategory: function () {
+		
+		console.log("Entroooo")
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Inicio: "",
+		  	Categorias: "reportByCategory"
+		});		
+
+		var chart = $('<div id="chart"></div>');
+		$('#entity-content').append(chart);
+
+
+        config = {
+            type: 'GET',           
+            url: 'home/question/category/report',
+            contentType: "application/json",            
+            dataType: "json",				            
+	     	statusCode: {
+				401:function() { 
+					window.location = '';
+				}		   
+		    },
+			success: function(response){
+			   data = response['data'];
+			   console.log(data)
+			   var series = [{
+			   		name: 'Ganados',
+			   		colorField: "#ffd600",
+			   		data: []
+			   },{
+			   		name: 'Perdidos',
+			   		data: []
+			   }];
+			   var categoriesAxis= [];
+			   _.each(data, function (value, key) {
+			   		
+			   		categoriesAxis.push(value['question.categoryName']);
+			   		series[0]['data'].push(value['win']);
+			   		series[1]['data'].push(value['lost']);
+			   })
+
+		        $("#chart").kendoChart({
+		            title: {
+		                text: "Reporte por Categorias"
+		            },
+		            legend: {
+		                position: "bottom"
+		            },
+		            seriesDefaults: {
+		                type: "column"
+		            },
+		            series: series,
+		            valueAxis: {
+		                line: {
+		                    visible: false
+		                }
+		            },
+		            categoryAxis: {
+		                categories: categoriesAxis,
+		                majorGridLines: {
+		                    visible: false
+		                }
+		            },
+		            tooltip: {
+		                visible: true,
+		                format: "{0}"
+		            }
+		        });		
+
+			},
+			error: function(){}
+        }
+
+        $.ajax(config);
 
 	},
 	/**
