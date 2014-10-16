@@ -2404,10 +2404,11 @@ var routerManager = Backbone.Router.extend({
 			   console.log(data)
 			   var series = [{
 			   		name: 'Ganados',
-			   		colorField: "#ffd600",
+			   		color: '#0a76b9',
 			   		data: []
 			   },{
 			   		name: 'Perdidos',
+			   		color: '#e54444',
 			   		data: []
 			   }];
 			   var categoriesAxis= [];
