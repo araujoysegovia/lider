@@ -40,40 +40,111 @@ class Normalizer extends GetSetMethodNormalizer
 		if(substr($objectName, 0,1)!="\\") $objectName = "\\".$objectName;
 		$md = $this->em->getClassMetadata($objectName);
 		$associations = $md->associationMappings;
-		foreach ($reflectionMethods as $method) {
-			if ($this->isGetMethod($method)) {
-				$attributeName = lcfirst(substr($method->name, 3));
-				if (in_array($attributeName, $this->ignoredAttributes)) continue;
-				$attributeValue = $method->invoke($object);
-				if (array_key_exists($attributeName, $this->callbacks))
-					$attributeValue = call_user_func($this->callbacks[$attributeName], $attributeValue);
-				if (null !== $attributeValue && !is_scalar($attributeValue)) {
-					if(array_key_exists($attributeName, $associations)){
-						$me = $associations[$attributeName];
-						if($me["type"] == 4 || $me["type"] == 8){
-							$entities = array();
-							if($recursive){
-								foreach($attributeValue as $entity)
-								{
-									if($me["type"] == 8)
-										$entities[] = $this->normalize($entity, $format, $context, false, $rn++);
-									else
-										$entities[] = $this->normalize($entity, $format, $context, true, $rn++);
-								}
-								$attributeValue = $entities;
-							}
-						}
-						else
-						{
-							if($recursive)
-								$attributeValue = $this->normalize($attributeValue, $format, $context, false, $rn++);
-						}
-
-					}
-				}
-				$attributes[$attributeName] = $attributeValue;
+		$fm = $md->fieldMappings;
+		foreach($fm as $key => $value)
+		{
+			$getter = "get" . ucwords ( $key );
+			$pos = strrpos($getter, "_");
+			if($pos !== false)
+			{
+				$getter = substr($getter, 0, $pos) . ucwords(substr($getter, $pos+1));
+				
+			}
+			if(method_exists($object, $getter))
+			{
+				$attributes[$key] = $object->{$getter}();
 			}
 		}
+		foreach($associations as $key => $value)
+		{
+			$getter = "get" . ucwords ( $key );
+			$pos = strrpos($getter, "_");
+			if($pos !== false)
+			{
+				$getter = substr($getter, 0, $pos) . ucwords(substr($getter, $pos+1));
+				
+			}
+			if(!method_exists($object, $getter))
+			{
+				continue;
+			}
+			$var = $object->{$getter}();
+			if(is_null($var))
+			{
+				continue;
+			}
+			if ($value ["type"] == 4 || $value ["type"] == 8) {
+				$entities = array();
+				if($recursive){
+					foreach($var as $entity)
+					{
+						if($value["type"] == 8)
+							$entities[] = $this->normalize($entity, $format, $context, false, $rn++);
+						else
+							$entities[] = $this->normalize($entity, $format, $context, true, $rn++);
+					}
+					$var = $entities;
+				}
+			}
+			else{
+				if($recursive)
+				{
+					$var = $this->normalize($var, $format, $context, false, $rn++);
+				}
+			}
+			$attributes[$key] = $var;
+		}
+		// print_r(json_encode($reflectionMethods));
+		// foreach ($reflectionMethods as $method) {
+		// 	if ($this->isGetMethod($method)) {
+		// 		$attributeName = lcfirst(substr($method->name, 3));
+
+		// 		// echo $attributeName;
+		// 		// echo "\n";
+		// 		if (in_array($attributeName, $this->ignoredAttributes)) continue;
+
+		// 		$attributeValue = $method->invoke($object);
+		// 		// if(is_object($attributeValue)){
+		// 		// 	echo get_class($attributeValue);
+		// 		// 	echo "\n";
+		// 		// }
+				
+		// 		if (array_key_exists($attributeName, $this->callbacks))
+		// 			$attributeValue = call_user_func($this->callbacks[$attributeName], $attributeValue);
+		// 		if (null !== $attributeValue && !is_scalar($attributeValue)) {
+
+		// 			if(array_key_exists($attributeName, $associations)){
+		// 				$me = $associations[$attributeName];
+		// 				if($me["type"] == 4 || $me["type"] == 8){
+		// 					$entities = array();
+		// 					if($recursive){
+		// 						foreach($attributeValue as $entity)
+		// 						{
+		// 							if($me["type"] == 8)
+		// 								$entities[] = $this->normalize($entity, $format, $context, false, $rn++);
+		// 							else
+		// 								$entities[] = $this->normalize($entity, $format, $context, true, $rn++);
+		// 						}
+		// 						$attributeValue = $entities;
+		// 					}
+		// 				}
+		// 				else
+		// 				{
+		// 					if($recursive)
+		// 					{
+		// 						$attributeValue = $this->normalize($attributeValue, $format, $context, false, $rn++);
+		// 					}
+								
+		// 				}
+
+		// 			}
+		// 		}
+		// 		// echo $attributeName . " = " ;
+		// 		// print_r($attributeValue);
+		// 		// echo "<br><br><br>";
+		// 		$attributes[$attributeName] = $attributeValue;
+		// 	}
+		// }
 
 		return $attributes;
 	}

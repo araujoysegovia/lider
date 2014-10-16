@@ -53,8 +53,9 @@ class Talker{
 	}
 	
 	public function normalizeEntity($entity){
+
 		$encoder = $this->getType();
-		if(!is_array($entity)){
+		if(is_array($entity)){
 			$obj = array();
 			foreach ($entity as $item) {
 				$obj[] = $this->normalizer->normalize($item, $encoder['type']);
