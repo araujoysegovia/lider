@@ -2382,7 +2382,7 @@ var routerManager = Backbone.Router.extend({
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
-		  	Categorias: "reportByCategory"
+		  	Reporte: "reportByCategory"
 		});		
 
 		var chart = $('<div id="chart"></div>');
@@ -2408,7 +2408,7 @@ var routerManager = Backbone.Router.extend({
 			   		data: []
 			   },{
 			   		name: 'Perdidos',
-			   		color: '#e54444',
+			   		
 			   		data: []
 			   }];
 			   var categoriesAxis= [];
