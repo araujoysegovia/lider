@@ -2382,7 +2382,7 @@ var routerManager = Backbone.Router.extend({
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
-		  	Categorias: "reportByCategory"
+		  	Reporte: "reportByCategory"
 		});		
 
 		var chart = $('<div id="chart"></div>');
@@ -2404,10 +2404,11 @@ var routerManager = Backbone.Router.extend({
 			   console.log(data)
 			   var series = [{
 			   		name: 'Ganados',
-			   		colorField: "#ffd600",
+			   		color: '#0a76b9',
 			   		data: []
 			   },{
 			   		name: 'Perdidos',
+			   		
 			   		data: []
 			   }];
 			   var categoriesAxis= [];
@@ -3155,7 +3156,7 @@ var routerManager = Backbone.Router.extend({
 					tr.append(status2);
 
 					if(duel.player_one.teamId == game.team_one.id){
-						if(duel['player_one']['questionMissing'] > 0)
+						if(duel['player_one']['questionMissing'] > 0 && !duel['finished'] && duel['active'])
 						{
 							status.children('div').css('background', '#8BFFA7');
 							
@@ -3163,7 +3164,7 @@ var routerManager = Backbone.Router.extend({
 							status.children('div').css('background', '#A0394A');
 						}
 
-						if(duel['player_two']['questionMissing'] > 0)
+						if(duel['player_two']['questionMissing'] > 0 && !duel['finished'] && duel['active'])
 						{
 							status2.children('div').css('background', '#8BFFA7');
 							
@@ -3172,7 +3173,7 @@ var routerManager = Backbone.Router.extend({
 						}
 
 					}else{
-						if(duel['player_one']['questionMissing'] > 0)
+						if(duel['player_one']['questionMissing'] > 0 && !duel['finished'] && duel['active'])
 						{
 							status2.children('div').css('background', '#8BFFA7');
 							
@@ -3180,7 +3181,7 @@ var routerManager = Backbone.Router.extend({
 							status2.children('div').css('background', '#A0394A');
 						}
 
-						if(duel['player_two']['questionMissing'] > 0)
+						if(duel['player_two']['questionMissing'] > 0 && !duel['finished'] && duel['active'])
 						{
 							status.children('div').css('background', '#8BFFA7');
 							

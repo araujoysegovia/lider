@@ -667,21 +667,4 @@ class QuestionController extends Controller
     	$em->flush();
     	return $this->get("talker")->response($list->toArray());
     }
-
-    public function updateCategoryToQuestionHistoryAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $dm = $this->get('doctrine_mongodb')->getManager();
-        $repoMongo = $dm->getRepository("LiderBundle:QuestionHistory");
-        $repoPostgre = $em->getRepository("LiderBundle:Question");
-        $list = $repoMongo->getQuestionWithoutCategory();
-        foreach($list->toArray() as $question)
-        {
-            $que = $question->getQuestion();
-            $q = $repoPostgre->find($que->getQuestionId());
-            $que->getDataFromQuestionEntity($q);
-        }
-        $dm->flush();
-        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
-    }
 }

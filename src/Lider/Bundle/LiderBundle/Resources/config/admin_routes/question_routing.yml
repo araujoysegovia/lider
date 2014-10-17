@@ -68,8 +68,3 @@ admin_question_by_category_report:
     pattern:  /category/report
     defaults: { _controller: LiderBundle:ReportQuestion:getGeneralCategoryReport }
     methods:  [GET]
-
-admin_update_category_question:
-    pattern:  /updatecategory
-    defaults: { _controller: LiderBundle:Question:updateCategoryToQuestionHistory }
-    methods:  [GET]
