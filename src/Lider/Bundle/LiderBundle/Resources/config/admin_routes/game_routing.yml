@@ -54,3 +54,8 @@ send_game_notification:
     pattern:  /notification/{gameId}
     defaults: { _controller: LiderBundle:Game:sendNotificationByGame }
     methods:  [GET]
+
+prueba_game_2:
+    pattern:  /prueba/{gameId}
+    defaults: { _controller: LiderBundle:Game:getPointsGame }
+    methods:  [GET]

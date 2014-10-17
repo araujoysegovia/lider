@@ -2977,10 +2977,10 @@ var routerManager = Backbone.Router.extend({
 	     	statusCode: {
 		      401:function() { 
 		      	window.location = '';
-		      }		   
-		    },            
+		      }
+		    },
 			success: function(response){
-				var data = response.data;				
+				var data = response.data;
 				var modal = $("<div></div>").addClass("modal fade");
 				var modalDialog = $("<div></div>").addClass("modal-dialog").css('width', '900px');
 				var modalHeader = $("<div></div>").addClass("modal-header");
@@ -2989,7 +2989,7 @@ var routerManager = Backbone.Router.extend({
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
 				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos del juego").css('display', 'inline');
-				var buttonStop = $('<button class="btn btn-danger"">Cerrar Manualmente</button>').css('margin-left', '40px');				
+				var buttonStop = $('<button class="btn btn-danger"">Cerrar Manualmente</button>').css('margin-left', '40px');
 				var buttonSendNotification = $('<button class="btn btn-info"">Notificar a los ganadores</button>').css('margin-left', '40px');
 				
 				modalHeader.append(btnClose).append(titleHeading);
@@ -3006,8 +3006,8 @@ var routerManager = Backbone.Router.extend({
 						     	statusCode: {
 							      401:function() { 
 							      	window.location = '';
-							      }		   
-							    },            
+							      }
+							    },
 								success: function(response){
 									var n = noty({
 							    		text: response.message,
@@ -3046,10 +3046,10 @@ var routerManager = Backbone.Router.extend({
 					            dataType: "json",
 					            //data: JSON.stringify(param),
 						     	statusCode: {
-							      401:function() { 
+							      401:function() {
 							      	window.location = '';
-							      }		   
-							    },            
+							      }
+							    },
 								success: function(response){
 									var n = noty({
 							    		text: response.message,
@@ -3075,14 +3075,14 @@ var routerManager = Backbone.Router.extend({
 					            },
 					        };
 					       $.ajax(config);
-					});					
+					});
 				}
-								
 				
 				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
 
-				var table = $('<table></table>').css('width', '100%');				
-				var trTeam = $('<thead>'+
+				var tableDuels = $('<table></table>').css('width', '100%');
+				
+				var trTeamDuels = $('<thead>'+
 									 '<tr>'+
 									 	'<td style="vertical-align: middle; text-align: center;"></td>'+
 								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
@@ -3091,19 +3091,26 @@ var routerManager = Backbone.Router.extend({
 								    	'<td style="vertical-align: middle; width: 50px; text-align: center;"><h4>VS</h4></td>'+
 								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
 								    	'<td style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_two.name+'</h4></td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"></td>'+								    	
 								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    '</tr>'+								
+								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
+								    '</tr>'+
 							   '</thead>');
-				table.append(trTeam);
-				
+				tableDuels.append(trTeamDuels);
+				var tableExtraDuels = $('<table></table>').css('width', '100%');
+
+				var duels = $("<div></div>").addClass("table-duels").append(tableDuels);
+				var extraDuels = $("<div></div>").addClass("table-extra-duels").css({
+					"border-top": "solid 1px #CCC",
+					"margin-top": "25px"
+				}).append(tableExtraDuels);
+				var title = $("<h4></h4>").html("Extra Duelos");
+				extraDuels.prepend(title);
 				var modalContent = $("<div></div>").addClass("modal-content").css('width', '900px');
 				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
 				$(document.body).append(modal);
 				modal.modal("show");
 				
 				_.each(data, function(duel){
-
 					var p1, p2, pp1, pp2;
 					if(duel.player_one.teamId == game.team_one.id){
 						p1 = duel.player_one;
@@ -3117,9 +3124,9 @@ var routerManager = Backbone.Router.extend({
 						pp2 = duel.point_one;
 					}
 					
-					var tr = $('<tr></tr>').css({						
-						height: '40px'						
-					});					
+					var tr = $('<tr></tr>').css({
+						height: '40px'
+					});
 					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status);
 
@@ -3130,7 +3137,7 @@ var routerManager = Backbone.Router.extend({
 					tr.append(name1);
 
 					var point1 = $('<td style="vertical-align: middle; width:30px; text-align:center;"><span>'+pp1+'</span></td>');
-					tr.append(point1);					
+					tr.append(point1);
 					
 					var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
 					tr.append(vs);
@@ -3163,7 +3170,7 @@ var routerManager = Backbone.Router.extend({
 						}else{
 							status2.children('div').css('background', '#A0394A');
 						}
-	
+
 					}else{
 						if(duel['player_one']['questionMissing'] > 0)
 						{
@@ -3181,12 +3188,18 @@ var routerManager = Backbone.Router.extend({
 							status.children('div').css('background', '#A0394A');
 						}
 	
-					}				
-
-					table.append(tr);
+					}
+					if(!duel.extraDuel)
+					{
+						tableDuels.append(tr);
+					}
+					else{
+						tableExtraDuels.append(tr);
+					}
+					
 					
 				});
-				modalBody.append(table);
+				modalBody.append(duels).append(extraDuels);
 
 				modal.on("hidden.bs.modal", function(){
 		    		modal.remove();

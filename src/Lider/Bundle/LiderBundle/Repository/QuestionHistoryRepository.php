@@ -33,8 +33,8 @@ class QuestionHistoryRepository extends MainMongoRepository
 
 	public function findTeamPointsByGame($gameId)
 	{
-		$query = $this->createQueryBuilder('LiderBundle:Team')
-			->group(array('team.teamId' => 1),
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
+			->group(array('duelId' => 1),
 				array('points' => 0))
 			->reduce('function (obj, prev){
 					prev.points += obj.points
@@ -45,6 +45,21 @@ class QuestionHistoryRepository extends MainMongoRepository
 
 		return $query;
 	}
+
+	// public function findTeamPointsByGame($gameId)
+	// {
+	// 	$query = $this->createQueryBuilder('LiderBundle:Team')
+	// 		->group(array('team.teamId' => 1),
+	// 			array('points' => 0))
+	// 		->reduce('function (obj, prev){
+	// 				prev.points += obj.points
+	// 		}')
+	// 		->field('gameId')->equals($gameId)
+	// 		->getQuery()
+	// 		->execute();
+
+	// 	return $query;
+	// }
 
 	public function getPlayerTotalReports($player){
 		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
@@ -184,7 +199,7 @@ class QuestionHistoryRepository extends MainMongoRepository
 		return $query;
 	}
 
-	public function findPlayersDontPlay($teamId, $gameId)
+	public function findPlayersPlay($teamId, $gameId)
 	{
 		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
 		->group(array('player.playerId' => 1),
@@ -194,6 +209,23 @@ class QuestionHistoryRepository extends MainMongoRepository
 		}')
 		->field('gameId')->equals($gameId)
 		->field('team.teamId')->equals($teamId)
+		->getQuery()
+		->execute();
+
+		return $query;
+	}
+
+	public function findPlayersPlayInExtraDuel($teamId, $gameId)
+	{
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
+		->group(array('player.playerId' => 1),
+				array('duels' => 0))
+		->reduce('function(obj, prev){
+				prev.duels ++;
+		}')
+		->field('gameId')->equals($gameId)
+		->field('team.teamId')->equals($teamId)
+		->field('extraQuestion')->equals(true)
 		->getQuery()
 		->execute();
 

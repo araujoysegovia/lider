@@ -210,15 +210,16 @@ class GroupController extends Controller
                 "name" => $group->getName(),
                 "teams" => array()
             );
+            // foreach ($group->getTeams() as $team) {
+                
+            //     foreach($games as $game)
+            //     {
+            //         $gamesTeam[] = $game;
+            //     }
+                
+            // }
             foreach ($group->getTeams() as $team) {
                 $games = $gameRepo->getGamesByTeam($team->getId());
-                foreach($games as $game)
-                {
-                    $gamesTeam[] = $game;
-                }
-                
-            }
-            foreach ($group->getTeams() as $team) {
                 $ls = array(
                     'id' => $team->getId(),
                     'name' => $team->getName(),
@@ -233,7 +234,7 @@ class GroupController extends Controller
                 else{
                 	$ls['points'] = 0;
                 }
-                foreach ($gamesTeam as $game) {
+                foreach ($games as $game) {
                     if($game['team_one']['id'] == $team->getId() || $game['team_two']['id'] == $team->getId()){
                         
                         $ls['total']++;
@@ -246,7 +247,6 @@ class GroupController extends Controller
                                 $ls['loose']++;
                             }
                         }
-                        break;
                     }
                 }
                 $g["teams"][] = $ls;

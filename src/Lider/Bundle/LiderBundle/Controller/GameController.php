@@ -129,7 +129,35 @@ class GameController extends Controller
     			'gameId' => $gameId
     	)));
     	
-    	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));    	
+    	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));  	
+    }
+
+    public function getPointsGameAction($gameId)
+    {
+        $em = $this->get('doctrine')->getManager();
+        // $list = $dm->getRepository("LiderBundle:QuestionHistory")->findTeamPointsByGame($gameId);
+        $list = $em->getRepository("LiderBundle:Duel")->getDuelsByGame($gameId);
+        $countT1 = 0;
+        $countT2 = 0;
+        $team1 = $list[0]->getPlayerOne()->getTeam();
+        $team2 = $list[0]->getPlayerTwo()->getTeam();
+        foreach($list as $duel)
+        {
+            echo "puntos del equipo ".$duel->getPlayerOne()->getName()." ".$duel->getPointOne()."\n";
+            echo "puntos del equipo ".$duel->getPlayerTwo()->getName()." ".$duel->getPointTwo()."\n";
+            if($duel->getPointOne() > $duel->getPointTwo())
+            {
+                $countT1++;
+            }
+            elseif($duel->getPointOne() < $duel->getPointTwo()){
+                $countT2++;
+            }
+        }
+        $return = array(
+            "teamOne" => array("points" => $countT1, "team" => $team1->getId()),
+            "teamTwo" => array("points" => $countT2, "team" => $team2->getId()),
+        );
+        return $this->get("talker")->response($return);
     }
     
 }
