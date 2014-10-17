@@ -181,8 +181,8 @@ class CheckerWorker
             'subject' => 'Juego Finalizado',
             'templateData' => array(
                 'title' => 'Juego Finalizado',
-                'subjectUser' => 'Juego finalizado entre '. $game->getTeamOne()->getName().' y '.$game->getTeamTwo()->getName()),
-                'body' => 'El juego entre '. $game->getTeamOne()->getName().' y '.$game->getTeamTwo()->getName().' ha finalizado, y el ganador es '.$game->getTeamWinner()->getName();
+                'subjectUser' => 'Juego finalizado entre '. $game->getTeamOne()->getName().' y '.$game->getTeamTwo()->getName(),
+                'body' => 'El juego entre '. $game->getTeamOne()->getName().' y '.$game->getTeamTwo()->getName().' ha finalizado, y el ganador es '.$game->getTeamWinner()->getName()
             )
         )));
     }

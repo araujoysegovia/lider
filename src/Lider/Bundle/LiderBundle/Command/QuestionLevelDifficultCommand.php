@@ -34,7 +34,7 @@ class QuestionLevelDifficultCommand extends ContainerAwareCommand
                     $percent = $questionMongo['win'] * 100 / $questionMongo['total'];
                     $value = $percent / 10;
                     $level = intval($value);
-                    $questionPostgre->setLevel($level);
+                    $questionPostgre->setLevel(10-$level);
                     break;
                 }
                 
