@@ -644,9 +644,6 @@ var routerManager = Backbone.Router.extend({
 	                });
 				}
 			},
-//			dataBound: function() {
-//                this.expandRow(this.tbody.find("tr.k-master-row").first());
-//            },
 			columns: [
 			    {
 			    	field: "id",
@@ -1110,9 +1107,8 @@ var routerManager = Backbone.Router.extend({
 					}
 				}
 			],
+		
 	        parameterMap : function (data, type) {
-//	        	console.log(type)
-//	        	console.log(data)
 		        if (type == "create" || type == "update") {	        	
 		        	if(data.roles){
 		        		data.roles = [{
@@ -1197,7 +1193,79 @@ var routerManager = Backbone.Router.extend({
 					});
 					
 				});
-			},					
+			},
+			width: "350px",
+			command: [
+           		{
+			        name: "edit",
+			        text: { 
+			            edit: "Editar",  // This is the localization for Edit button
+			            update: "Actualizar",  // This is the localization for Update button
+			            cancel: "Cancelar"  // This is the localization for Cancel button
+			        },				        
+			    },
+			    { 
+			        name: "destroy", 
+			        text: "Eliminar",				      
+			    },
+			    {
+			    	 text: "Resetear contraseña",
+			    	 click: function (e) {			    		
+						e.preventDefault();
+						mec = this;
+						var dataItem = mec.dataItem($(e.currentTarget).closest("tr"));
+						var id = dataItem.id;
+						$.confirm({
+						    text: 'Desea resetear la contraseña de  '+dataItem.name+'?',
+						    confirm: function() {
+						    			                
+													
+								config = {
+									type: "GET",           
+									url: "home/player/password/reset/"+id,					            
+									contentType: "application/json",
+									dataType: "json",
+									//data: JSON.stringify(param),
+									statusCode: {
+								  		401:function() { 
+									  		window.location = '';
+									  	}		   
+									},				            
+									success: function(){
+									   player.grid.data('kendoGrid').dataSource.read();
+									   player.grid.data('kendoGrid').refresh();
+									},
+									error: function(xhr, status, error){
+						            	try{
+									    	var obj = jQuery.parseJSON(xhr.responseText);
+									    	var n = noty({
+									    		text: obj.message,
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}catch(ex){
+								    		var n = noty({
+									    		text: "Error",
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}
+					            	},
+								}
+
+								$.ajax(config);
+						    },
+						    cancel: function(button) {
+						        // do something
+						    }
+						});
+
+						
+		    		 
+							
+		             } 
+			    }
+			],								
 		})
 	},
 
