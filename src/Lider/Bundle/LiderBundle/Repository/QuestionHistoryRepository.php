@@ -179,8 +179,8 @@ class QuestionHistoryRepository extends MainMongoRepository
 			->field('tournament.tournamentId')->equals($tournamentId)
 			->getQuery()
 			->execute();
-		echo $teamId;
-		print_r($query->toArray());
+		// echo $teamId;
+		// print_r($query->toArray());
 		return $query;
 	}
 

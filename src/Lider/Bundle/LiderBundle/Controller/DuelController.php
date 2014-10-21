@@ -123,5 +123,5 @@ class DuelController extends Controller
 
        return $this->get("talker")->response($d);
         
-    }   
+    }
 }
