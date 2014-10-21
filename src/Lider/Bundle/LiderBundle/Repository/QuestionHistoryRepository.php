@@ -166,7 +166,7 @@ class QuestionHistoryRepository extends MainMongoRepository
 
 	public function findpercentOfQuestionWinByTeam($teamId, $tournamentId)
 	{
-		$query = $this->createQuertyBuilder('LiderBundle:QuestionHistory')
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
 			->group(array("team.teamId" => 1),
 					array('total' => 0, 'win' => 0))
 			->reduce('function (obj, prev){
@@ -179,7 +179,8 @@ class QuestionHistoryRepository extends MainMongoRepository
 			->field('tournament.tournamentId')->equals($tournamentId)
 			->getQuery()
 			->execute();
-
+		echo $teamId;
+		print_r($query->toArray());
 		return $query;
 	}
 

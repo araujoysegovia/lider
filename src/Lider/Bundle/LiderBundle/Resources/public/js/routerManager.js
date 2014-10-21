@@ -2348,6 +2348,8 @@ var routerManager = Backbone.Router.extend({
 										'<th>PJ</th>'+
 										'<th>PG</th>'+
 										'<th>PP</th>'+
+										'<th>%DG</th>'+
+										'<th>%PC</th>'+
 										'<th>P</th>'+
 									 '</thead>');
 						
@@ -2357,6 +2359,8 @@ var routerManager = Backbone.Router.extend({
 										 '<td>'+team.total+'</td>'+
 										 '<td>'+team.win+'</td>'+
 										 '<td>'+team.loose+'</td>'+
+										 '<td>%'+team.duelWin+'</td>'+
+										 '<td>%'+team.questionWin+'</td>'+
 										 '<td>'+team.points+'</td>'+										 										 
 								         '</tr>');							
 						});

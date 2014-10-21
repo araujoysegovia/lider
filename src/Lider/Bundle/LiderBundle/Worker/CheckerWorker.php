@@ -56,8 +56,20 @@ class CheckerWorker
 
 		if(count($qhf) == 0 && count($qhs) == 0){
 			$this->co->get('game_manager')->stopDuel($duel);
-            $gameId = $duel->getGame()->getId();
-			$this->checkGame($gameId);
+            $point1 = $duel->getPointOne();
+            $point2 = $duel->getPointTwo();
+            if($point1 < $point2)
+            {
+                $duel->setPlayerWin($duel->getPlayerTwo());
+            }
+            elseif($point1 > $point2)
+            {
+                $duel->setPlayerWin($duel->getPlayerOne());
+            }
+            $em->flush();
+            // $gameId = $duel->getGame()->getId();
+            $game = $duel->getGame();
+			$this->checkGame($game);
 		}
 
     }
@@ -107,17 +119,18 @@ class CheckerWorker
      * )
      */
     public  function stopGameManual(\GearmanJob $job){
+        $em = $this->co->get('doctrine')->getManager();
     	$data = json_decode($job->workload(),true);
     	$gameId = $data['gameId'];
-    	
-    	$this->checkGame($gameId);
+    	$game = $em->getRepository("LiderBundle:Game")->find($gameId);
+    	$this->checkGame($game);
     }
     
-	private function checkGame(&$gameId)
+	private function checkGame(&$game)
     {				
 		//$duels = $game->getDuels()->findBy(array("active" => false, "finished" => true));
 		$em = $this->co->get('doctrine')->getManager();
-        $game = $em->getRepository("LiderBundle:Game")->find($gameId);
+        // $game = $em->getRepository("LiderBundle:Game")->find($gameId);
 		$parameters = $this->co->get('parameters_manager')->getParameters();
 		$duels = $em->getRepository('LiderBundle:Duel')->findBy(array("active" => true, "finished" => false, "game" =>$game));
 		if(count($duels) == 0){
@@ -126,32 +139,26 @@ class CheckerWorker
 			{
 				$team = $em->getRepository('LiderBundle:Team')->find($win);
                 $game->setTeamWinner($team);
+                echo "SUme los puntos del equipo ".$team->getName()." tenia ".$team->getPoints()." y ahora tendra ".($team->getPoints()+$parameters['gamesParameters']['gamePoints'])."\n";
 				$team->setPoints($team->getPoints() + $parameters['gamesParameters']['gamePoints']);
                 $gameManager = $this->co->get('game_manager');
-                $gameManager->stopGame($game);
+                // echo "el juego ".$game->getId(). " se detendra\n";
+                $gameManager->stopGame($game->getId());
+                if($game->getTeamOne()->getId() == $win->getId())
+                {
+                    $game->setPointOne($parameters['gamesParameters']['gamePoints']);
+                }
+                else{
+                    $game->setPointTwo($parameters['gamesParameters']['gamePoints']);
+                }
+                // $game->setActive(false);
+                // $game->setFinished(true);
+                // $em->persist($game);
+                $em->flush();
                 $this->notificationPlayersGameFinish($game->getTeamOne(), $game->getTeamTwo(), $team);
                 $this->notificationPlayersGameFinish($game->getTeamTwo(), $game->getTeamOne(), $team);
                 $this->notificationToAdminGameFinish($game);
-                $list = $em->getRepository("LiderBundle:Game")->findBy(array('active' => false, 'finished' => false,"tournament" => $game->getTournament()));
-                if(count($list) == 0)
-                {
-                    echo "no existen juegos activos\n";
-                    if($game->getTournament()->getLevel() < 5)
-                    {
-                        $tournament = $game->getTournament();
-                        $tournament->setEnabledLevel(false);
-                        $gearman = $this->co->get('gearman');
-                        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
-                            'subject' => 'Finalizacion de Nivel',
-                            'templateData' => array(
-                                'title' => 'Nivel finalizado',
-                                'subjectUser' => 'Nivel finalizado',
-                                'body' => '<p>El nivel '.$tournament->getLevel().' del torneo '.$tournament->getName().' ha finalizado. Por favor inicie el siguiente nivel</p>'
-                            )
-                        )));
-                    }
-                }
-                $em->flush();
+                $this->finishTournamentLevel($game->getId());
 			}
 			else
 			{
@@ -160,7 +167,34 @@ class CheckerWorker
 				$this->generateExtraDuel($team1, $team2, $game);
 			}
 		}
-		
+    }
+
+    private function finishTournamentLevel($gameId)
+    {
+        $em = $this->co->get('doctrine')->getManager();
+        $game = $em->getRepository("LiderBundle:Game")->find($gameId);
+        $tournament = $game->getTournament();
+        $list = $em->getRepository("LiderBundle:Game")->getArrayEntityWithOneLevel(array('finished' => false,"tournament" => $tournament->getId()));
+        echo "cantidad de juegos no finalizados ".$list['total']."\n";
+        if($list['total'] == 0)
+        {
+            echo "no existen juegos activos\n";
+            if($tournament->getLevel() < 5)
+            {
+                $tournament->setEnabledLevel(false);
+                $tournament->setLevel($tournament->getLevel()+1);
+                $em->flush();
+                $gearman = $this->co->get('gearman');
+                $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+                    'subject' => 'Finalizacion de Nivel',
+                    'templateData' => array(
+                        'title' => 'Nivel finalizado',
+                        'subjectUser' => 'Nivel finalizado',
+                        'body' => '<p>El nivel '.$tournament->getLevel().' del torneo '.$tournament->getName().' ha finalizado. Por favor inicie el siguiente nivel</p>'
+                    )
+                )));
+            }
+        }
     }
     
     /**
@@ -261,27 +295,30 @@ class CheckerWorker
                 }
             }
             else{
-                $totalPlayer = array();
-                foreach($listExtra as $l)
+                if(count($listExtra) > 0)
                 {
-                    $totalPlayer[$l['player.playerId']] = $l['duels']; 
-                }
-                arsort($totalPlayers);
-                $playerId = $totalPlayers[0];
-                foreach($team->getPlayers() as $play)
-                {
-                    if($play->getId() == $pla['player.playerId'])
+                    $totalPlayers = array();
+                    foreach($listExtra as $l)
                     {
-                           $player=$play;
-                           break;
+                        $totalPlayers[$l['player.playerId']] = $l['duels']; 
+                    }
+                    arsort($totalPlayers);
+                    $keys = array_keys($totalPlayers);
+                    $playerId = $keys[0];
+                    foreach($team->getPlayers() as $play)
+                    {
+                        if($play->getId() == $playerId)
+                        {
+                               $player=$play;
+                               break;
+                        }
                     }
                 }
-
-
-                // $random = rand(0, count($list)-1);
-                // echo "Cantidad de lista ".count($list)." numero aleatorio $random\n";
-                // $players = $team->getPlayers();
-                // $player = $players[$random];
+                else{
+                    $random = rand(0, count($team->getPlayers())-1);
+                    $players = $team->getPlayers();
+                    $player = $players[$random];
+                }
             }
     		
     	}

@@ -188,7 +188,7 @@ class GroupController extends Controller
     public function getGroupPositionAction($tournamentId = null)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        //$dm = $this->get('doctrine_mongodb')->getManager();
+        $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $em->getRepository("LiderBundle:Group");
         $user = $this->container->get('security.context')->getToken()->getUser();
         if($user->getTeam()){
@@ -200,6 +200,9 @@ class GroupController extends Controller
        
 
         $gameRepo = $em->getRepository("LiderBundle:Game");
+        $duelRepo = $em->getRepository("LiderBundle:Duel");
+        $questionRepo = $dm->getRepository('LiderBundle:QuestionHistory');
+        $gameManager = $this->container->get('game_manager');
 
         $list = $repo->findBy(array('tournament' => $tournamentId, "deleted" => false));
         $l = array();
@@ -218,14 +221,37 @@ class GroupController extends Controller
             //     }
                 
             // }
-            foreach ($group->getTeams() as $team) {
+
+            $keys = $gameManager->getOrderGroup($group);
+            $teams = array();
+            foreach($keys as $key)
+            {
+                foreach ($group->getTeams() as $team) {
+                    if($key == $team->getId())
+                    {
+                        $teams[] = $team;
+                        break;
+                    }
+                }
+            }
+            foreach ($teams as $team) {
                 $games = $gameRepo->getGamesByTeam($team->getId());
+                $duelWin = $duelRepo->getTotalDuelWinnerByTeam($team->getId(), $tournamentId);
+                // $questionWin = $questionRepo->findpercentOfQuestionWinByTeam($team->getId(), $tournamentId);
+                // echo $team->getId();
+                // print_r($questionWin);
+                $percentDuel = $duelWin['total'] * $duelWin['win'] / 100;
+                // $questionWin = $questionWin->toArray();
+                // print_r($questionWin);
+                // $questionWin = $questionWin[0];
+                // $percentQuestion = $questionWin['total'] * $questionWin['win'] / 100;
                 $ls = array(
                     'id' => $team->getId(),
                     'name' => $team->getName(),
                     'total' => 0,
                     'win' => 0,
                     'loose' => 0,
+                    'duelWin' => $percentDuel,
                 );
                 if($team->getPoints())
                 {

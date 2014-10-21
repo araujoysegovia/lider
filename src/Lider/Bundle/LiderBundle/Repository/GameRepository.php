@@ -59,15 +59,17 @@ class GameRepository extends MainRepository
     public function findGameFromTwoTeams($team1, $team2, $tournamentId)
     {
     	$query = $this->createQueryBuilder('g')
-    	->select('g, to')
-    	->leftJoin('g.tournament', 'to', 'WITH', 'to.deleted = FALSE')
+    	->select('g, to, ton, ttw')
+    	->join('g.tournament', 'to', 'WITH', 'to.deleted = FALSE')
+    	->join('g.team_one', 'ton', 'WITH', 'ton.deleted = FALSE')
+    	->join('g.team_two', 'ttw', 'WITH', 'ttw.deleted = FALSE')
     	->where('g.deleted = FALSE AND ((g.team_one = :o AND g.team_two = :t) OR (g.team_one = :t AND g.team_two = :o)) AND to.id = :f')
     	->setParameter('o', $team1)
     	->setParameter('t', $team2)
     	->setParameter('f', $tournamentId);
 
     	$query = $query->getQuery();
-    	$r = $query->getResult();
+    	$r = $query->getArrayResult();
 
     	return $r;
     }

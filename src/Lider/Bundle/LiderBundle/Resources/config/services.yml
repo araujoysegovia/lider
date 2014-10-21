@@ -21,6 +21,11 @@ services:
         arguments:
           co: "@service_container"
 
+    simulatorWorker:
+        class: Lider\Bundle\LiderBundle\Worker\SimulatorWorker
+        arguments:
+          co: "@service_container"
+
     checkerWorker:
         class: Lider\Bundle\LiderBundle\Worker\CheckerWorker
         arguments:
