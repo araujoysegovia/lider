@@ -26,11 +26,14 @@ class QuestionManager {
 	 * @param string $duelId, 
 	 * @return $questions
 	 */
-	function getQuestions($count, $duel = null) {
+	function getQuestions($count, $duel = null, $user = null) {
 		
 		$arr = array();
 		if(!(is_null($duel))){
-			$user = $this->co->get('security.context')->getToken()->getUser();
+			if(!$user)
+			{
+				$user = $this->co->get('security.context')->getToken()->getUser();
+			}
 			$questionList = $this->getMissingQuestionFromDuel($duel, $user);
 		}else{
 			//$arr[] = 100; 

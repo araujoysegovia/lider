@@ -26,3 +26,7 @@ player_duel:
    resource: "@LiderBundle/Resources/config/player_routes/duel_routing.yml"
    prefix:   /home/duel
 
+player_error:
+    pattern:  /home/error
+    defaults: { _controller: LiderBundle:Player:reportError }
+    methods: [POST]

@@ -62,6 +62,7 @@ class TournamentController extends Controller
         if(array_key_exists('date', $data))
         {
             $date = $data['date'];
+            $date = new \DateTime($date);
         }
         
         $tournament = $em->getRepository('LiderBundle:Tournament')->find($tournamentId);
@@ -70,7 +71,6 @@ class TournamentController extends Controller
         $pm = $this->get('parameters_manager');
         $params = $pm->getParameters();
         $interval = $params['gamesParameters']['timeGame'];
-    
         $this->get('game_manager')->generateGame($tournamentId, $interval, $date);
 
         // $this->get('game_manager')->generateGame(3, 7);

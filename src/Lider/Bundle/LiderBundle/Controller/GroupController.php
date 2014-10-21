@@ -188,7 +188,7 @@ class GroupController extends Controller
     public function getGroupPositionAction($tournamentId = null)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        //$dm = $this->get('doctrine_mongodb')->getManager();
+        $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $em->getRepository("LiderBundle:Group");
         $user = $this->container->get('security.context')->getToken()->getUser();
         if($user->getTeam()){
@@ -200,6 +200,9 @@ class GroupController extends Controller
        
 
         $gameRepo = $em->getRepository("LiderBundle:Game");
+        $duelRepo = $em->getRepository("LiderBundle:Duel");
+        $questionRepo = $dm->getRepository('LiderBundle:QuestionHistory');
+        $gameManager = $this->container->get('game_manager');
 
         $list = $repo->findBy(array('tournament' => $tournamentId, "deleted" => false));
         $l = array();
@@ -210,21 +213,48 @@ class GroupController extends Controller
                 "name" => $group->getName(),
                 "teams" => array()
             );
-            foreach ($group->getTeams() as $team) {
-                $games = $gameRepo->getGamesByTeam($team->getId());
-                foreach($games as $game)
-                {
-                    $gamesTeam[] = $game;
-                }
+            // foreach ($group->getTeams() as $team) {
                 
+            //     foreach($games as $game)
+            //     {
+            //         $gamesTeam[] = $game;
+            //     }
+                
+            // }
+
+            $keys = $gameManager->getOrderGroup($group);
+            $teams = array();
+            foreach($keys as $key)
+            {
+                foreach ($group->getTeams() as $team) {
+                    if($key == $team->getId())
+                    {
+                        $teams[] = $team;
+                        break;
+                    }
+                }
             }
-            foreach ($group->getTeams() as $team) {
+            foreach ($teams as $team) {
+                $games = $gameRepo->getGamesByTeam($team->getId());
+                $duelWin = $duelRepo->getTotalDuelWinnerByTeam($team->getId(), $tournamentId);
+                // $questionWin = $questionRepo->findpercentOfQuestionWinByTeam($team->getId(), $tournamentId);
+                // echo $team->getId();
+                // print_r($questionWin);
+                $percentDuel = ($duelWin['win'] / $duelWin['total']) * 100;
+                
+                
+                $percentDuel = intval($percentDuel);
+                // $questionWin = $questionWin->toArray();
+                // print_r($questionWin);
+                // $questionWin = $questionWin[0];
+                // $percentQuestion = $questionWin['total'] * $questionWin['win'] / 100;
                 $ls = array(
                     'id' => $team->getId(),
                     'name' => $team->getName(),
                     'total' => 0,
                     'win' => 0,
                     'loose' => 0,
+                    'duelWin' => $percentDuel,
                 );
                 if($team->getPoints())
                 {
@@ -233,7 +263,7 @@ class GroupController extends Controller
                 else{
                 	$ls['points'] = 0;
                 }
-                foreach ($gamesTeam as $game) {
+                foreach ($games as $game) {
                     if($game['team_one']['id'] == $team->getId() || $game['team_two']['id'] == $team->getId()){
                         
                         $ls['total']++;
@@ -246,7 +276,6 @@ class GroupController extends Controller
                                 $ls['loose']++;
                             }
                         }
-                        break;
                     }
                 }
                 $g["teams"][] = $ls;

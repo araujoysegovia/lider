@@ -621,11 +621,6 @@ class PlayerController extends Controller
             return $this->get("talker")->response(array('total' => 0, 'data' => array())); 
         }
 
-       // $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')
-        //                      ->getQuestionForPlayer(intval($tournamentId));
-
-        echo "aqui";
-
         $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')->findRangePosition($tournamentId);
         
         $rq = $reportQuestions->toArray();
@@ -636,17 +631,61 @@ class PlayerController extends Controller
 
     public function notificationDuelAction()
     {
-        echo "entre";
+       
         $gearman = $this->get('gearman');
-        echo "entre";
+      
         $request = $this->get("request");
-        echo "entre";
+     
         $tournament = $request->get('tournamentId');
-        echo "entre";
+    
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationDuel', json_encode(array(
                 'tournament' => $tournament,
             )));
-        echo "entre";
+   
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+
+    /**
+     * Resetear password del jugador desde el administrador
+     */
+    public function passwordResetAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();         
+        $player = $em->getRepository("LiderBundle:Player")->find($id);
+
+        if(!$player)
+           throw new \Exception("Player no found");
+
+        $password = $this->generatePass('araujo123');
+
+        $player->setPassword($password);
+        $player->setChangePassword(true);
+
+        $em->flush();
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+    }
+    
+    public function reportErrorAction()
+    {
+    	$gearman = $this->get('gearman');
+    	
+    	$request = $this->get("request");
+    	 
+    	$data = $request->getContent();
+    	if(empty($data) || !$data)
+            throw new \Exception("No data");
+         
+        $data = json_decode($data, true);
+    	
+    	$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+    			'subject' => "Error de aplicacion",
+    			'templateData' => array(
+	    			'title' => 'Error en la aplicacion',
+    				'subjectUser' => $data['title'],
+    				'body' => $data['content']
+    			)
+    	)));
+    	 
+    	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 }

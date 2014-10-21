@@ -94,7 +94,7 @@ class QuestionController extends Controller
      * Verificar la respuesta enviada
      */
     public function checkAnswerAction() {
-        
+    	//throw new \Exception("No data");
         
         $em = $this->getDoctrine()->getEntityManager();
         $request = $this->get("request");
@@ -281,6 +281,10 @@ class QuestionController extends Controller
             $questionHistory->setTeam($teamD);  
             $questionHistory->setGroup($groupD);
             $questionHistory->setGameId($duel->getGame()->getId());
+            if($duel->getExtraDuel())
+            {
+                $questionHistory->setExtraQuestion(true);
+            }
 
             foreach ($q->getAnswers()->toArray() as $key => $value) {
           
@@ -384,7 +388,7 @@ class QuestionController extends Controller
                 $questionHistory->setFind(true);                
                 $user->setWonGames($wonGames + 1);
 
-                if(($questionHistory->getExtraQuestion() && $parameters['gameParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
+                if(($questionHistory->getExtraQuestion() && $parameters['gamesParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
                 {
                     $this->applyPoints($questionHistory, $parameters, $team, $user, $duel);
                 }

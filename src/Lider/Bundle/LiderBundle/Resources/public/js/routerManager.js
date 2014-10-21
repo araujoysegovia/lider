@@ -322,6 +322,10 @@ var routerManager = Backbone.Router.extend({
 				    	//type: "string"
 				    	editable: false
 				    },
+				    level: {
+				    	type: 'string',
+				    	editable: false
+				    }
 			    }
 			},
 			onReadData: function (e){
@@ -644,9 +648,6 @@ var routerManager = Backbone.Router.extend({
 	                });
 				}
 			},
-//			dataBound: function() {
-//                this.expandRow(this.tbody.find("tr.k-master-row").first());
-//            },
 			columns: [
 			    {
 			    	field: "id",
@@ -851,7 +852,12 @@ var routerManager = Backbone.Router.extend({
 
 						return img;
 					}
-				},	    			    
+				},
+				{
+					field: 'level',
+					title: 'Nivel',
+					width: '100px'
+				}
 			],	
 			dataBound: function(e) {
 			    //console.log("dataBound");
@@ -1110,9 +1116,8 @@ var routerManager = Backbone.Router.extend({
 					}
 				}
 			],
+		
 	        parameterMap : function (data, type) {
-//	        	console.log(type)
-//	        	console.log(data)
 		        if (type == "create" || type == "update") {	        	
 		        	if(data.roles){
 		        		data.roles = [{
@@ -1197,7 +1202,79 @@ var routerManager = Backbone.Router.extend({
 					});
 					
 				});
-			},					
+			},
+			width: "350px",
+			command: [
+           		{
+			        name: "edit",
+			        text: { 
+			            edit: "Editar",  // This is the localization for Edit button
+			            update: "Actualizar",  // This is the localization for Update button
+			            cancel: "Cancelar"  // This is the localization for Cancel button
+			        },				        
+			    },
+			    { 
+			        name: "destroy", 
+			        text: "Eliminar",				      
+			    },
+			    {
+			    	 text: "Resetear contraseña",
+			    	 click: function (e) {			    		
+						e.preventDefault();
+						mec = this;
+						var dataItem = mec.dataItem($(e.currentTarget).closest("tr"));
+						var id = dataItem.id;
+						$.confirm({
+						    text: 'Desea resetear la contraseña de  '+dataItem.name+'?',
+						    confirm: function() {
+						    			                
+													
+								config = {
+									type: "GET",           
+									url: "home/player/password/reset/"+id,					            
+									contentType: "application/json",
+									dataType: "json",
+									//data: JSON.stringify(param),
+									statusCode: {
+								  		401:function() { 
+									  		window.location = '';
+									  	}		   
+									},				            
+									success: function(){
+									   player.grid.data('kendoGrid').dataSource.read();
+									   player.grid.data('kendoGrid').refresh();
+									},
+									error: function(xhr, status, error){
+						            	try{
+									    	var obj = jQuery.parseJSON(xhr.responseText);
+									    	var n = noty({
+									    		text: obj.message,
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}catch(ex){
+								    		var n = noty({
+									    		text: "Error",
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}
+					            	},
+								}
+
+								$.ajax(config);
+						    },
+						    cancel: function(button) {
+						        // do something
+						    }
+						});
+
+						
+		    		 
+							
+		             } 
+			    }
+			],								
 		})
 	},
 
@@ -2348,6 +2425,8 @@ var routerManager = Backbone.Router.extend({
 										'<th>PJ</th>'+
 										'<th>PG</th>'+
 										'<th>PP</th>'+
+										'<th>%DG</th>'+
+										'<th>%PC</th>'+
 										'<th>P</th>'+
 									 '</thead>');
 						
@@ -2357,6 +2436,8 @@ var routerManager = Backbone.Router.extend({
 										 '<td>'+team.total+'</td>'+
 										 '<td>'+team.win+'</td>'+
 										 '<td>'+team.loose+'</td>'+
+										 '<td>'+team.duelWin+'%</td>'+
+										 '<td>'+team.questionWin+'%</td>'+
 										 '<td>'+team.points+'</td>'+										 										 
 								         '</tr>');							
 						});
@@ -2978,10 +3059,10 @@ var routerManager = Backbone.Router.extend({
 	     	statusCode: {
 		      401:function() { 
 		      	window.location = '';
-		      }		   
-		    },            
+		      }
+		    },
 			success: function(response){
-				var data = response.data;				
+				var data = response.data;
 				var modal = $("<div></div>").addClass("modal fade");
 				var modalDialog = $("<div></div>").addClass("modal-dialog").css('width', '900px');
 				var modalHeader = $("<div></div>").addClass("modal-header");
@@ -2990,7 +3071,7 @@ var routerManager = Backbone.Router.extend({
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
 				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos del juego").css('display', 'inline');
-				var buttonStop = $('<button class="btn btn-danger"">Cerrar Manualmente</button>').css('margin-left', '40px');				
+				var buttonStop = $('<button class="btn btn-danger"">Cerrar Manualmente</button>').css('margin-left', '40px');
 				var buttonSendNotification = $('<button class="btn btn-info"">Notificar a los ganadores</button>').css('margin-left', '40px');
 				
 				modalHeader.append(btnClose).append(titleHeading);
@@ -3007,8 +3088,8 @@ var routerManager = Backbone.Router.extend({
 						     	statusCode: {
 							      401:function() { 
 							      	window.location = '';
-							      }		   
-							    },            
+							      }
+							    },
 								success: function(response){
 									var n = noty({
 							    		text: response.message,
@@ -3047,10 +3128,10 @@ var routerManager = Backbone.Router.extend({
 					            dataType: "json",
 					            //data: JSON.stringify(param),
 						     	statusCode: {
-							      401:function() { 
+							      401:function() {
 							      	window.location = '';
-							      }		   
-							    },            
+							      }
+							    },
 								success: function(response){
 									var n = noty({
 							    		text: response.message,
@@ -3076,14 +3157,14 @@ var routerManager = Backbone.Router.extend({
 					            },
 					        };
 					       $.ajax(config);
-					});					
+					});
 				}
-								
 				
 				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
 
-				var table = $('<table></table>').css('width', '100%');				
-				var trTeam = $('<thead>'+
+				var tableDuels = $('<table></table>').css('width', '100%');
+				
+				var trTeamDuels = $('<thead>'+
 									 '<tr>'+
 									 	'<td style="vertical-align: middle; text-align: center;"></td>'+
 								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
@@ -3092,19 +3173,26 @@ var routerManager = Backbone.Router.extend({
 								    	'<td style="vertical-align: middle; width: 50px; text-align: center;"><h4>VS</h4></td>'+
 								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
 								    	'<td style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_two.name+'</h4></td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"></td>'+								    	
 								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    '</tr>'+								
+								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
+								    '</tr>'+
 							   '</thead>');
-				table.append(trTeam);
-				
+				tableDuels.append(trTeamDuels);
+				var tableExtraDuels = $('<table></table>').css('width', '100%');
+
+				var duels = $("<div></div>").addClass("table-duels").append(tableDuels);
+				var extraDuels = $("<div></div>").addClass("table-extra-duels").css({
+					"border-top": "solid 1px #CCC",
+					"margin-top": "25px"
+				}).append(tableExtraDuels);
+				var title = $("<h4></h4>").html("Extra Duelos");
+				extraDuels.prepend(title);
 				var modalContent = $("<div></div>").addClass("modal-content").css('width', '900px');
 				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
 				$(document.body).append(modal);
 				modal.modal("show");
 				
 				_.each(data, function(duel){
-
 					var p1, p2, pp1, pp2;
 					if(duel.player_one.teamId == game.team_one.id){
 						p1 = duel.player_one;
@@ -3118,9 +3206,14 @@ var routerManager = Backbone.Router.extend({
 						pp2 = duel.point_one;
 					}
 					
-					var tr = $('<tr></tr>').css({						
-						height: '40px'						
-					});					
+					var tr = $('<tr></tr>').css({
+						height: '40px',
+						'cursor': 'pointer'
+					}).addClass('tr-game');
+					tr.click(function()
+					{
+						me.showModalByDuel(duel);
+					})
 					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status);
 
@@ -3131,7 +3224,7 @@ var routerManager = Backbone.Router.extend({
 					tr.append(name1);
 
 					var point1 = $('<td style="vertical-align: middle; width:30px; text-align:center;"><span>'+pp1+'</span></td>');
-					tr.append(point1);					
+					tr.append(point1);
 					
 					var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
 					tr.append(vs);
@@ -3164,7 +3257,7 @@ var routerManager = Backbone.Router.extend({
 						}else{
 							status2.children('div').css('background', '#A0394A');
 						}
-	
+
 					}else{
 						if(duel['player_one']['questionMissing'] > 0 && !duel['finished'] && duel['active'])
 						{
@@ -3182,12 +3275,18 @@ var routerManager = Backbone.Router.extend({
 							status.children('div').css('background', '#A0394A');
 						}
 	
-					}				
-
-					table.append(tr);
+					}
+					if(!duel.extraDuel)
+					{
+						tableDuels.append(tr);
+					}
+					else{
+						tableExtraDuels.append(tr);
+					}
+					
 					
 				});
-				modalBody.append(table);
+				modalBody.append(duels).append(extraDuels);
 
 				modal.on("hidden.bs.modal", function(){
 		    		modal.remove();
@@ -3200,6 +3299,107 @@ var routerManager = Backbone.Router.extend({
         }
         $.ajax(configTorunament);
 		
+	},
+	
+	showModalByDuel: function(duel)
+	{
+		var me = this;
+		var loader = $(document.body).loaderPanel();
+		loader.show();
+		var configTorunament = {
+			type: "GET",
+	        url: "home/duel/questions/"+duel.id,
+	        contentType: "application/json",
+	        dataType: "json",
+	        //data: JSON.stringify(param),
+		    statusCode: {
+			   401:function() { 
+				   window.location = '';
+			   }
+			},
+			success: function(data){
+				loader.hide();
+				var modal = $("<div></div>").addClass("modal fade");
+				var modalDialog = $("<div></div>").addClass("modal-dialog").css('width', '1200px');
+				var modalHeader = $("<div></div>").addClass("modal-header");
+				var btnClose = $("<button></button>").attr("type", "button").attr("data-dismiss", "modal").addClass("close");
+				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
+				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
+				btnClose.append(spanClose).append(spanClose2);
+				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos del juego").css('display', 'inline');
+				
+				modalHeader.append(btnClose).append(titleHeading);
+				
+				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
+
+				var tableDuels = $('<table></table>').css('width', '100%');
+				
+				var trTeamDuels = $('<thead>'+
+									 '<tr>'+
+								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerOne.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+data.playerOne.name+'</h4></td>'+
+								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
+								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerTwo.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+data.playerTwo.name+'</h4></td>'+
+								    '</tr>'+
+							   '</thead>');
+				tableDuels.append(trTeamDuels);
+				
+				var duels = $("<div></div>").addClass("table-duels").append(tableDuels);
+				var modalContent = $("<div></div>").addClass("modal-content").css('width', '1200px');
+				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
+				$(document.body).append(modal);
+				modal.modal("show");
+				
+				_.each(data.questions, function(question){
+					var tr = $('<tr></tr>').css({
+						height: '40px',
+					}).addClass('tr-game');
+					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
+					var buttonOne = $('<button>Resetear</button>').addClass('btn btn-success');
+					resetOne.append(buttonOne);
+					tr.append(resetOne);
+					console.log(question);
+					if(question.answers && question.answers.playerOne)
+					{
+						var answerOne = $('<td style="vertical-align: middle;"><p>'+question.answers.playerOne.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
+						tr.append(answerOne);
+					}
+					else{
+						var answerOne = $('<td style="vertical-align: middle;"><p></p></td>').css('width', '200px').css('text-align', 'center');
+						tr.append(answerOne);
+					}
+					
+					
+					var question = $('<td style="vertical-align: middle;"><p>'+question.question+'</p></td>').css('width', '400px').css('text-align', 'center');
+					tr.append(question);
+					
+					if(question.answers && question.answers.playerTwo)
+					{
+						var answerTwo = $('<td style="vertical-align: middle;"><p>'+question.answers.playerTwo.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
+						tr.append(answerTwo);
+					}
+					else{
+						var answerTwo = $('<td style="vertical-align: middle;"><p></p></td>').css('width', '200px').css('text-align', 'center');
+						tr.append(answerTwo);
+					}
+					
+					var resetTwo = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
+					var buttonTwo = $('<button>Resetear</button>').addClass('btn btn-success');
+					resetTwo.append(buttonTwo);
+					tr.append(resetTwo);
+					tableDuels.append(tr);
+				});
+				modalBody.append(duels);
+
+				modal.on("hidden.bs.modal", function(){
+		    		modal.remove();
+		    	})
+			},
+			error: function(){},
+	    	complete: function(){
+	    		loader.hide();
+	    	}
+        }
+        $.ajax(configTorunament);
 	},
 
 	createPanel: function(title, content){

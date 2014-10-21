@@ -58,25 +58,54 @@ class DuelRepository extends MainRepository
     public function getTotalDuelWinnerByTeam($teamId, $tournamentId)
     {
     	$em = $this->getEntityManager();
-    	$queryTotal= $em->createQuery('SELECT COUNT(d) as w FROM LiderBundle:Duel d 
-    									INNER JOIN LiderBundle:Player p ON (d.player_one = p.id OR d.player_two = p.id) AND p.deleted = FALSE
-    									INNER JOIN LiderBundle:Team t ON p.team = t.id AND t.id = :teamid AND t.deleted = FALSE
-    									INNER JOIN LiderBundle:Tournament to ON d.tournament = to.id AND to.id = :tournamentid')
-			           ->setParameter('teamid', $teamId)
-			           ->setParameter('tournamentid', $tournamentId)
-					   ->getArrayResult();
+    	$queryTotal =  $this->createQueryBuilder('d')
+						->select('d')
+						->join('d.player_one', 'po', 'WITH', 'po.deleted = false')
+						->join('d.player_two', 'pt', 'WITH', 'pt.deleted = false')
+						->leftJoin('po.team', 'to', 'WITH', 'to.deleted = false')
+						->leftJoin('pt.team', 'tt', 'WITH', 'tt.deleted = false')
+						->join('d.tournament', 't', 'WITH', 't.deleted = false AND t.id = :ti')
+						->where('d.deleted = false AND d.finished = TRUE AND (to.id = :tei or tt.id = :tei)')
+						->setParameter('ti', $tournamentId)
+						->setParameter('tei', $teamId)
+						->getQuery()
+						->getArrayResult();
 
-		$queryWin= $em->createQuery('SELECT COUNT(d) as w FROM LiderBundle:Duel d 
-    									INNER JOIN LiderBundle:Player p ON d.player_win = p.id AND p.deleted = FALSE
-    									INNER JOIN LiderBundle:Team t ON p.team = t.id AND t.id = :teamid AND t.deleted = FALSE
-    									INNER JOIN LiderBundle:Tournament to ON d.tournament = to.id AND to.id = :tournamentid AND to.deleted = FALSE')
-			           ->setParameter('teamid', $teamId)
-			           ->setParameter('tournamentid', $tournamentId)
-					   ->getArrayResult();
+		$queryWin =  $this->createQueryBuilder('d')
+						->select('d')
+						->join('d.player_win', 'pw', 'WITH', 'pw.deleted = false')
+						->leftJoin('pw.team', 'to', 'WITH', 'to.deleted = false')
+						->join('d.tournament', 't', 'WITH', 't.deleted = false AND t.id = :ti')
+						->where('d.deleted = false AND d.finished = TRUE AND to.id = :tei')
+						->setParameter('ti', $tournamentId)
+						->setParameter('tei', $teamId)
+						->getQuery()
+						->getArrayResult();
+
+						// ->getArrayResult();
+
+		// print_r($queryTotal);
+		// print_r($queryWin);
+
+    	// $queryTotal= $em->createQuery('SELECT d FROM LiderBundle:Duel d 
+    	// 								INNER JOIN LiderBundle:Player p ON (d.player_one = p.id OR d.player_two = p.id) AND p.deleted = FALSE AND p.team = :teamid
+    	// 								WHERE d.tournament = :tournamentid ')
+			  //          ->setParameter('teamid', $teamId)
+			  //          ->setParameter('tournamentid', $tournamentId);
+			  //          echo $queryTotal->getSQL();
+					//    // ->getArrayResult();
+
+		// $queryWin= $em->createQuery('SELECT COUNT(d) as w FROM LiderBundle:Duel d 
+  //   									INNER JOIN LiderBundle:Player p ON d.player_win = p.id AND p.deleted = FALSE
+  //   									INNER JOIN LiderBundle:Team t ON p.team = t.id AND t.id = :teamid AND t.deleted = FALSE
+  //   									INNER JOIN LiderBundle:Tournament to ON d.tournament = to.id AND to.id = :tournamentid AND to.deleted = FALSE')
+		// 	           ->setParameter('teamid', $teamId)
+		// 	           ->setParameter('tournamentid', $tournamentId)
+		// 			   ->getArrayResult();
 
     	$result = array(
-    		"win" => $queryWin[0]['w'],
-    		"total" => $queryTotal[0]['w'],
+    		"win" => count($queryWin),
+    		"total" => count($queryTotal),
     	);
     	return $result;
     }
@@ -95,6 +124,24 @@ class DuelRepository extends MainRepository
 
 		$query = $query->getQuery();
 		$r = $query->getResult();
+		
+		return $r;
+    }
+
+    public function getDuelsByGameArray($gameId)
+    {
+    	$query =  $this->createQueryBuilder('d')
+						->select('d, po, pt, to, tt, g')
+						->join('d.player_one', 'po', 'WITH', 'po.deleted = FALSE')
+						->join('d.player_two', 'pt', 'WITH', 'pt.deleted = FALSE')
+						->join('po.team', 'to', 'WITH', 'to.deleted = FALSE')
+						->join('pt.team', 'tt', 'WITH', 'tt.deleted = FALSE')
+						->join('d.game', 'g', 'WITH', 'g.deleted = FALSE AND g.id = :ga')
+						->where('d.deleted = false')
+						->setParameter('ga', $gameId);
+
+		$query = $query->getQuery();
+		$r = $query->getArrayResult();
 		
 		return $r;
     }
