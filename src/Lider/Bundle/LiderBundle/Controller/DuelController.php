@@ -101,6 +101,83 @@ class DuelController extends Controller
     		return $this->get("talker")->response(array("count" => count($duel), "data" => $return));
         }
     }
+    
+    public function getQuestionsFromDuelAction($duelId)
+    {
+    	$em = $this->getDoctrine()->getManager();
+    	$dm = $this->get('doctrine_mongodb')->getManager();
+    	$duelQuestionRepo = $em->getRepository("LiderBundle:DuelQuestion");
+    	$listQuestion = $duelQuestionRepo->findBy(array("duel" => $duelId));
+    	$questionHistoryRepo = $dm->getRepository("LiderBundle:QuestionHistory");
+    	$listMongoQuestion = $questionHistoryRepo->findBy(array("duelId" => $duelId));
+    	if(!$listQuestion)
+    	{
+    		throw new \Exception("No hay preguntas generadas");
+    	}
+    	$sw = false;
+    	$questionArray = array();
+    	foreach($listQuestion as $question)
+    	{
+    		if(!$sw)
+    		{
+    			$duel = $question->getDuel();
+    			$questionArray['duelId'] = $duelId;
+    			$questionArray['playerOne'] = array(
+    				'id' => $duel->getPlayerOne()->getId(),
+    				'name' => $duel->getPlayerOne()->getName()." ".$duel->getPlayerOne()->getLastname(),
+    				'image' => $duel->getPlayerOne()->getImage()
+    			);
+    			$questionArray['playerTwo'] = array(
+    					'id' => $duel->getPlayerTwo()->getId(),
+    					'name' => $duel->getPlayerTwo()->getName()." ".$duel->getPlayerTwo()->getLastname(),
+    					'image' => $duel->getPlayerTwo()->getImage()
+    			);
+    			$questionArray['questions'] = array();
+    			$sw = true;
+    		}
+    		$questionArray['questions'][] = array(
+    			'question' => $question->getQuestion()->getQuestion(),
+    			'questionId' => $question->getQuestion()->getId(),
+    			'answers' => array()	
+    		);
+    		foreach($listMongoQuestion as $mongoQuestion)
+    		{
+    			if($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerOne']['id'])
+    			{
+    				$questionArray['questions']['answers']['playerOne'] = array(
+    					'token' => $mongoQuestion->getId(),
+    					'answerId' => $mongoQuestion->getAnswerOk()->getAnswerId(),
+    					'answer' => $mongoQuestion->getAnswerOk()->getAnswer(),
+    				);
+    			}
+    			else
+    			{
+    				$questionArray['questions']['answers']['playerOne'] = array(
+    						'token' => $mongoQuestion->getId(),
+    						'answerId' => '',
+    						'answer' => '',
+    				);
+    			}
+    			if($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerTwo']['id'])
+    			{
+    				$questionArray['questions']['answers']['playerTwo'] = array(
+    					'token' => $mongoQuestion->getId(),
+    					'answerId' => $mongoQuestion->getAnswerOk()->getAnswerId(),
+    					'answer' => $mongoQuestion->getAnswerOk()->getAnswer(),
+    				);
+    			}
+    			else
+    			{
+    				$questionArray['questions']['answers']['playerTwo'] = array(
+    					'token' => $mongoQuestion->getId(),
+    					'answerId' => '',
+    					'answer' => '',
+    				);
+    			}
+    		}
+    	}
+    	return $this->get("talker")->response($questionArray);
+    }
  
 
     public function getDuelAction($duelId)

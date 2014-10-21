@@ -9,3 +9,8 @@ admin_duels_getbygameid:
     methods:  [GET]
     requirements:
       id: \d+
+
+get_duels_getquestionsbyduel:
+    pattern:  /questions/{duelId}
+    defaults: { _controller: LiderBundle:Duel:getQuestionsFromDuel }
+    methods: [GET]

@@ -94,7 +94,7 @@ class QuestionController extends Controller
      * Verificar la respuesta enviada
      */
     public function checkAnswerAction() {
-        
+    	//throw new \Exception("No data");
         
         $em = $this->getDoctrine()->getEntityManager();
         $request = $this->get("request");

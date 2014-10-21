@@ -322,6 +322,10 @@ var routerManager = Backbone.Router.extend({
 				    	//type: "string"
 				    	editable: false
 				    },
+				    level: {
+				    	type: 'string',
+				    	editable: false
+				    }
 			    }
 			},
 			onReadData: function (e){
@@ -848,7 +852,12 @@ var routerManager = Backbone.Router.extend({
 
 						return img;
 					}
-				},	    			    
+				},
+				{
+					field: 'level',
+					title: 'Nivel',
+					width: '100px'
+				}
 			],	
 			dataBound: function(e) {
 			    //console.log("dataBound");
@@ -2427,8 +2436,8 @@ var routerManager = Backbone.Router.extend({
 										 '<td>'+team.total+'</td>'+
 										 '<td>'+team.win+'</td>'+
 										 '<td>'+team.loose+'</td>'+
-										 '<td>%'+team.duelWin+'</td>'+
-										 '<td>%'+team.questionWin+'</td>'+
+										 '<td>'+team.duelWin+'%</td>'+
+										 '<td>'+team.questionWin+'%</td>'+
 										 '<td>'+team.points+'</td>'+										 										 
 								         '</tr>');							
 						});
@@ -3198,8 +3207,13 @@ var routerManager = Backbone.Router.extend({
 					}
 					
 					var tr = $('<tr></tr>').css({
-						height: '40px'
-					});
+						height: '40px',
+						'cursor': 'pointer'
+					}).addClass('tr-game');
+					tr.click(function()
+					{
+						me.showModalByDuel(duel);
+					})
 					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status);
 
@@ -3285,6 +3299,107 @@ var routerManager = Backbone.Router.extend({
         }
         $.ajax(configTorunament);
 		
+	},
+	
+	showModalByDuel: function(duel)
+	{
+		var me = this;
+		var loader = $(document.body).loaderPanel();
+		loader.show();
+		var configTorunament = {
+			type: "GET",
+	        url: "home/duel/questions/"+duel.id,
+	        contentType: "application/json",
+	        dataType: "json",
+	        //data: JSON.stringify(param),
+		    statusCode: {
+			   401:function() { 
+				   window.location = '';
+			   }
+			},
+			success: function(data){
+				loader.hide();
+				var modal = $("<div></div>").addClass("modal fade");
+				var modalDialog = $("<div></div>").addClass("modal-dialog").css('width', '1200px');
+				var modalHeader = $("<div></div>").addClass("modal-header");
+				var btnClose = $("<button></button>").attr("type", "button").attr("data-dismiss", "modal").addClass("close");
+				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
+				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
+				btnClose.append(spanClose).append(spanClose2);
+				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos del juego").css('display', 'inline');
+				
+				modalHeader.append(btnClose).append(titleHeading);
+				
+				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
+
+				var tableDuels = $('<table></table>').css('width', '100%');
+				
+				var trTeamDuels = $('<thead>'+
+									 '<tr>'+
+								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerOne.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+data.playerOne.name+'</h4></td>'+
+								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
+								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerTwo.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+data.playerTwo.name+'</h4></td>'+
+								    '</tr>'+
+							   '</thead>');
+				tableDuels.append(trTeamDuels);
+				
+				var duels = $("<div></div>").addClass("table-duels").append(tableDuels);
+				var modalContent = $("<div></div>").addClass("modal-content").css('width', '1200px');
+				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
+				$(document.body).append(modal);
+				modal.modal("show");
+				
+				_.each(data.questions, function(question){
+					var tr = $('<tr></tr>').css({
+						height: '40px',
+					}).addClass('tr-game');
+					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
+					var buttonOne = $('<button>Resetear</button>').addClass('btn btn-success');
+					resetOne.append(buttonOne);
+					tr.append(resetOne);
+					console.log(question);
+					if(question.answers && question.answers.playerOne)
+					{
+						var answerOne = $('<td style="vertical-align: middle;"><p>'+question.answers.playerOne.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
+						tr.append(answerOne);
+					}
+					else{
+						var answerOne = $('<td style="vertical-align: middle;"><p></p></td>').css('width', '200px').css('text-align', 'center');
+						tr.append(answerOne);
+					}
+					
+					
+					var question = $('<td style="vertical-align: middle;"><p>'+question.question+'</p></td>').css('width', '400px').css('text-align', 'center');
+					tr.append(question);
+					
+					if(question.answers && question.answers.playerTwo)
+					{
+						var answerTwo = $('<td style="vertical-align: middle;"><p>'+question.answers.playerTwo.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
+						tr.append(answerTwo);
+					}
+					else{
+						var answerTwo = $('<td style="vertical-align: middle;"><p></p></td>').css('width', '200px').css('text-align', 'center');
+						tr.append(answerTwo);
+					}
+					
+					var resetTwo = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
+					var buttonTwo = $('<button>Resetear</button>').addClass('btn btn-success');
+					resetTwo.append(buttonTwo);
+					tr.append(resetTwo);
+					tableDuels.append(tr);
+				});
+				modalBody.append(duels);
+
+				modal.on("hidden.bs.modal", function(){
+		    		modal.remove();
+		    	})
+			},
+			error: function(){},
+	    	complete: function(){
+	    		loader.hide();
+	    	}
+        }
+        $.ajax(configTorunament);
 	},
 
 	createPanel: function(title, content){

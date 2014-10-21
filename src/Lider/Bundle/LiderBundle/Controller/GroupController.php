@@ -240,7 +240,10 @@ class GroupController extends Controller
                 // $questionWin = $questionRepo->findpercentOfQuestionWinByTeam($team->getId(), $tournamentId);
                 // echo $team->getId();
                 // print_r($questionWin);
-                $percentDuel = $duelWin['total'] * $duelWin['win'] / 100;
+                $percentDuel = ($duelWin['win'] / $duelWin['total']) * 100;
+                
+                
+                $percentDuel = intval($percentDuel);
                 // $questionWin = $questionWin->toArray();
                 // print_r($questionWin);
                 // $questionWin = $questionWin[0];

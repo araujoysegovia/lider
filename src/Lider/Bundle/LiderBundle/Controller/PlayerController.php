@@ -631,17 +631,17 @@ class PlayerController extends Controller
 
     public function notificationDuelAction()
     {
-        echo "entre";
+       
         $gearman = $this->get('gearman');
-        echo "entre";
+      
         $request = $this->get("request");
-        echo "entre";
+     
         $tournament = $request->get('tournamentId');
-        echo "entre";
+    
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendNotificationDuel', json_encode(array(
                 'tournament' => $tournament,
             )));
-        echo "entre";
+   
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
@@ -663,5 +663,29 @@ class PlayerController extends Controller
 
         $em->flush();
         return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+    }
+    
+    public function reportErrorAction()
+    {
+    	$gearman = $this->get('gearman');
+    	
+    	$request = $this->get("request");
+    	 
+    	$data = $request->getContent();
+    	if(empty($data) || !$data)
+            throw new \Exception("No data");
+         
+        $data = json_decode($data, true);
+    	
+    	$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+    			'subject' => "Error de aplicacion",
+    			'templateData' => array(
+	    			'title' => 'Error en la aplicacion',
+    				'subjectUser' => $data['title'],
+    				'body' => $data['content']
+    			)
+    	)));
+    	 
+    	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 }
