@@ -621,11 +621,6 @@ class PlayerController extends Controller
             return $this->get("talker")->response(array('total' => 0, 'data' => array())); 
         }
 
-       // $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')
-        //                      ->getQuestionForPlayer(intval($tournamentId));
-
-        echo "aqui";
-
         $reportQuestions = $dm->getRepository('LiderBundle:QuestionHistory')->findRangePosition($tournamentId);
         
         $rq = $reportQuestions->toArray();
@@ -648,5 +643,25 @@ class PlayerController extends Controller
             )));
         echo "entre";
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+
+    /**
+     * Resetear password del jugador desde el administrador
+     */
+    public function passwordResetAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();         
+        $player = $em->getRepository("LiderBundle:Player")->find($id);
+
+        if(!$player)
+           throw new \Exception("Player no found");
+
+        $password = $this->generatePass('araujo123');
+
+        $player->setPassword($password);
+        $player->setChangePassword(true);
+
+        $em->flush();
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
 }
