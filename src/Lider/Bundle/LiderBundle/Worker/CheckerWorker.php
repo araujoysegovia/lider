@@ -53,8 +53,10 @@ class CheckerWorker
 		
 		$qhs = $this->co->get('question_manager')
 						->getMissingQuestionFromDuel($duel, $duel->getPlayerTwo());
-
+		
+		echo "Voy a comparar la cantidad de preugntas del jugador ".$duel->getPlayerOne()->getname()." ".$duel->getPlayerOne()->getLastname(). " y ".$duel->getPlayerTwo()->getname()." ".$duel->getPlayerTwo()->getLastname()."\n";
 		if(count($qhf) == 0 && count($qhs) == 0){
+			
 			$this->co->get('game_manager')->stopDuel($duel);
             $point1 = $duel->getPointOne();
             $point2 = $duel->getPointTwo();
