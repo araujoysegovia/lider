@@ -390,7 +390,7 @@ class QuestionController extends Controller
 
                 if(($questionHistory->getExtraQuestion() && $parameters['gamesParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
                 {
-                    $this->applyPoints($questionHistory, $parameters, $team, $user, $duel);
+                    $this->applyPoints($questionHistory, $parameters, $team, $user, $duel, $question);
                 }
 
             }else{
@@ -435,22 +435,17 @@ class QuestionController extends Controller
         $res['lastOne'] = $lastOne;
 
         $gearman = $this->get('gearman');
-        try{
-            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~checkDuel', json_encode(array(
-                        'duelId' => $duel->getId(),
-                        'userId' => $user->getId()
-                      )));
-        }catch(\Exception $e){
-            return $e;
-        }
-
         
-
-        return $this->get("talker")->response($res);
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~checkDuel', json_encode(array(
+                     'duelId' => $duel->getId(),
+                     'userId' => $user->getId()
+                  )));
+                        
+       	return $this->get("talker")->response($res);
         
     }
 
-    private function applyPoints(&$questionHistory, $parameters, $team, $user, &$duel)
+    private function applyPoints(&$questionHistory, $parameters, $team, $user, &$duel, $question)
     {
         $em = $this->getDoctrine()->getManager();
         if($questionHistory->getUseHelp()){
@@ -461,6 +456,8 @@ class QuestionController extends Controller
             $playerPoint->setTournament($team->getTournament());
             $playerPoint->setTeam($team);
             $playerPoint->setPlayer($user);
+            $playerPoint->setDuel($duel);
+            $playerPoint->setQuestion($question);
             $this->applyPointsToDuel($duel, $user, $pointsHelp);
         }else{
             $points = $parameters['gamesParameters']['questionPoints'];
@@ -470,6 +467,8 @@ class QuestionController extends Controller
             $playerPoint->setTournament($team->getTournament());
             $playerPoint->setTeam($team);
             $playerPoint->setPlayer($user);
+            $playerPoint->setDuel($duel);
+            $playerPoint->setQuestion($question);
             $this->applyPointsToDuel($duel, $user, $points);
         }
         $em->persist($playerPoint);
