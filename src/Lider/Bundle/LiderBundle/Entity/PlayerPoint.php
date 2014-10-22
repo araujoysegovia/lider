@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * PlayerPoint class
  * @ORM\Table(name="player_point")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\PlayerRepository")
  */
 class PlayerPoint extends Entity
 {
@@ -42,6 +42,18 @@ class PlayerPoint extends Entity
 	 * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
 	 */
 	private $player;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Duel",cascade={"persist"})
+     * @ORM\JoinColumn(name="duel_id", referencedColumnName="id")
+     */
+    private $duel;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"})
+     * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
+     */
+    private $question;
    
 
     /**
@@ -144,5 +156,51 @@ class PlayerPoint extends Entity
     public function getPlayer()
     {
         return $this->player;
+    }
+
+    /**
+     * Set duel
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Duel $duel
+     * @return PlayerPoint
+     */
+    public function setDuel(\Lider\Bundle\LiderBundle\Entity\Duel $duel = null)
+    {
+        $this->duel = $duel;
+
+        return $this;
+    }
+
+    /**
+     * Get duel
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Duel 
+     */
+    public function getDuel()
+    {
+        return $this->duel;
+    }
+
+    /**
+     * Set question
+     *
+     * @param \Lider\Bundle\LiderBundle\Entity\Question $question
+     * @return PlayerPoint
+     */
+    public function setQuestion(\Lider\Bundle\LiderBundle\Entity\Question $question = null)
+    {
+        $this->question = $question;
+
+        return $this;
+    }
+
+    /**
+     * Get question
+     *
+     * @return \Lider\Bundle\LiderBundle\Entity\Question 
+     */
+    public function getQuestion()
+    {
+        return $this->question;
     }
 }

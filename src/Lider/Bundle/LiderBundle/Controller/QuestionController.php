@@ -667,4 +667,64 @@ class QuestionController extends Controller
     	$em->flush();
     	return $this->get("talker")->response($list->toArray());
     }
+
+    public function reverseQuestionAction($token)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $questionHistoryRepo = $dm->getRepository("LiderBundle:QuestionHistory");
+        $playerRepository = $em->getRepository("LiderBundle:Player");
+        $duelRepository = $em->getRepository("LiderBundle:Duel");
+        $playerPointRepository = $em->getRepository("LiderBundle:PlayerPoint");
+        $gameRepository = $em->getRepository("LiderBundle:Game");
+        $question = $questionHistoryRepo->find($token);
+        if($question)
+        {
+            $player = $playerRepository->find($question->getPlayer()->getPlayerId());
+            $duel = $duelRepository->find($question->getDuelId());
+            if($question->getFind())
+            {
+                $player->setWonGames($player->getWonGames() - 1);
+                if($duel->getPlayerOne()->getId() == $player->getId())
+                {
+                    $duel->setPointOne($duel->getPointOne() - $question->getPoints());
+                }
+                elseif($duel->getPlayerTwo()->getId() == $player->getId())
+                {
+                    $duel->setPointTwo($duel->getPointTwo() - $question->getPoints());
+                } 
+                $playerPoint = $playerPointRepository->findOneBy(array("player" => $player->getId(), "points" => $question->getPoints(), "duel" => $duel->getId(), "question" => $question->getQuestion()->getQuestionId()));
+                $em->remove($playerPoint);
+            }
+            else{
+                $player->setLostGames($player->getLostGames() - 1);
+            }
+            if(!$duel->getActive() && $duel->getFinished())
+            {
+                $game = $duel->getGame();
+                $duel->setActive(true);
+                $duel->setFinished(false);
+                $duel->setPlayerWin(null);
+                if(!$game->getActive() && $game->getFinished())
+                {
+                    $game->setActive(true);
+                    $game->setFinished(false);
+                    
+                    if($game->getTeamOne()->getId() == $game->getTeamWinner()->getId())
+                    {
+                        $game->setPointOne(0);
+                    }
+                    elseif($game->getTeamTwo()->getId() == $game->getTeamWinner()->getId())
+                    {
+                        $game->setPointTwo(0);
+                    }
+                    $game->setTeamWinner(null);
+                }
+            }
+            $em->flush();
+            $dm->remove($question);
+            $dm->flush();
+        }
+        return $this->get("talker")->response($this->getAnswer(true, $this->delete_successful));
+    }
 }

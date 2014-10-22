@@ -109,7 +109,7 @@ class DuelController extends Controller
     	$duelQuestionRepo = $em->getRepository("LiderBundle:DuelQuestion");
     	$listQuestion = $duelQuestionRepo->findBy(array("duel" => $duelId));
     	$questionHistoryRepo = $dm->getRepository("LiderBundle:QuestionHistory");
-    	$listMongoQuestion = $questionHistoryRepo->findBy(array("duelId" => $duelId));
+    	$listMongoQuestion = $questionHistoryRepo->findBy(array("duelId" => intval($duelId)));
     	if(!$listQuestion)
     	{
     		throw new \Exception("No hay preguntas generadas");
@@ -135,46 +135,59 @@ class DuelController extends Controller
     			$questionArray['questions'] = array();
     			$sw = true;
     		}
-    		$questionArray['questions'][] = array(
+            $q = array(
     			'question' => $question->getQuestion()->getQuestion(),
     			'questionId' => $question->getQuestion()->getId(),
-    			'answers' => array()	
-    		);
+    			'answers' => array(
+                    'playerOne' => array(),
+                    'playerTwo' => array(),
+                )
+            );
     		foreach($listMongoQuestion as $mongoQuestion)
     		{
-    			if($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerOne']['id'])
-    			{
-    				$questionArray['questions']['answers']['playerOne'] = array(
-    					'token' => $mongoQuestion->getId(),
-    					'answerId' => $mongoQuestion->getAnswerOk()->getAnswerId(),
-    					'answer' => $mongoQuestion->getAnswerOk()->getAnswer(),
-    				);
-    			}
-    			else
-    			{
-    				$questionArray['questions']['answers']['playerOne'] = array(
-    						'token' => $mongoQuestion->getId(),
-    						'answerId' => '',
-    						'answer' => '',
-    				);
-    			}
-    			if($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerTwo']['id'])
-    			{
-    				$questionArray['questions']['answers']['playerTwo'] = array(
-    					'token' => $mongoQuestion->getId(),
-    					'answerId' => $mongoQuestion->getAnswerOk()->getAnswerId(),
-    					'answer' => $mongoQuestion->getAnswerOk()->getAnswer(),
-    				);
-    			}
-    			else
-    			{
-    				$questionArray['questions']['answers']['playerTwo'] = array(
-    					'token' => $mongoQuestion->getId(),
-    					'answerId' => '',
-    					'answer' => '',
-    				);
-    			}
+                if($mongoQuestion->getQuestion()->getQuestionId() == $question->getQuestion()->getId())
+                {
+                    // echo $mongoQuestion->getPlayer()->getPlayerId(). " = " . $questionArray['playerOne']['id'];
+                    if($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerOne']['id'] && $mongoQuestion->getSelectedAnswer())
+                    {
+                        $q['answers']['playerOne'] = array(
+                            'token' => $mongoQuestion->getId(),
+                            'answerId' => $mongoQuestion->getSelectedAnswer()->getAnswerId(),
+                            'answer' => $mongoQuestion->getSelectedAnswer()->getAnswer(),
+                            'find' => $mongoQuestion->getFind()
+                        );
+                    }
+                    elseif($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerOne']['id'])
+                    {
+                        $q['answers']['playerOne'] = array(
+                            'token' => $mongoQuestion->getId(),
+                            'answerId' => '',
+                            'answer' => '',
+                            'find' => false
+                        );
+                    }
+                    if($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerTwo']['id'] && $mongoQuestion->getSelectedAnswer())
+                    {
+                        $q['answers']['playerTwo'] = array(
+                            'token' => $mongoQuestion->getId(),
+                            'answerId' => $mongoQuestion->getSelectedAnswer()->getAnswerId(),
+                            'answer' => $mongoQuestion->getSelectedAnswer()->getAnswer(),
+                            'find' => $mongoQuestion->getFind()
+                        );
+                    }
+                    elseif($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerTwo']['id'])
+                    {
+                        $q['answers']['playerTwo'] = array(
+                            'token' => $mongoQuestion->getId(),
+                            'answerId' => '',
+                            'answer' => '',
+                            'find' => false
+                        );
+                    }
+                }
     		}
+            $questionArray['questions'][] = $q;
+            // break;
     	}
     	return $this->get("talker")->response($questionArray);
     }

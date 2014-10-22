@@ -3326,7 +3326,7 @@ var routerManager = Backbone.Router.extend({
 				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
-				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Duelos del juego").css('display', 'inline');
+				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Preguntas del duelo").css('display', 'inline');
 				
 				modalHeader.append(btnClose).append(titleHeading);
 				
@@ -3354,11 +3354,23 @@ var routerManager = Backbone.Router.extend({
 						height: '40px',
 					}).addClass('tr-game');
 					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
-					var buttonOne = $('<button>Resetear</button>').addClass('btn btn-success');
-					resetOne.append(buttonOne);
+					console.log(question.answers);
+					if(question.answers && question.answers.playerOne  && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
+					{
+						var buttonOne = $('<button>Resetear</button>').addClass('btn');
+						if(question.answers.playerOne.find) buttonOne.addClass('btn-success');
+						else buttonOne.addClass('btn-danger');
+						buttonOne.click(function(){
+							me.resetQuestion(question.answers.playerOne.token, duel, modal);
+						})
+						resetOne.append(buttonOne);
+					}
+					else{
+						var buttonOne = $('<button>Resetear</button>').addClass('btn btn-default').attr("disabled", "disabled");
+						resetOne.append(buttonOne);
+					}
 					tr.append(resetOne);
-					console.log(question);
-					if(question.answers && question.answers.playerOne)
+					if(question.answers && question.answers.playerOne && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
 					{
 						var answerOne = $('<td style="vertical-align: middle;"><p>'+question.answers.playerOne.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
 						tr.append(answerOne);
@@ -3369,10 +3381,9 @@ var routerManager = Backbone.Router.extend({
 					}
 					
 					
-					var question = $('<td style="vertical-align: middle;"><p>'+question.question+'</p></td>').css('width', '400px').css('text-align', 'center');
-					tr.append(question);
-					
-					if(question.answers && question.answers.playerTwo)
+					var q = $('<td style="vertical-align: middle;"><p>'+question.question+'</p></td>').css('width', '400px').css('text-align', 'center');
+					tr.append(q);
+					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
 						var answerTwo = $('<td style="vertical-align: middle;"><p>'+question.answers.playerTwo.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
 						tr.append(answerTwo);
@@ -3383,8 +3394,22 @@ var routerManager = Backbone.Router.extend({
 					}
 					
 					var resetTwo = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
-					var buttonTwo = $('<button>Resetear</button>').addClass('btn btn-success');
-					resetTwo.append(buttonTwo);
+					
+					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
+					{
+						var buttonTwo = $('<button>Resetear</button>').addClass('btn');
+						if(question.answers.playerTwo.find) buttonTwo.addClass('btn-success');
+						else buttonTwo.addClass('btn-danger');
+						buttonTwo.click(function(){
+							me.resetQuestion(question.answers.playerTwo.token, duel, modal);
+						})
+						resetTwo.append(buttonTwo);
+					}
+					else{
+						var buttonTwo = $('<button>Resetear</button>').addClass('btn btn-default').attr("disabled", "disabled");
+						resetTwo.append(buttonTwo);
+					}
+
 					tr.append(resetTwo);
 					tableDuels.append(tr);
 				});
@@ -3400,6 +3425,29 @@ var routerManager = Backbone.Router.extend({
 	    	}
         }
         $.ajax(configTorunament);
+	},
+
+	resetQuestion: function(token, duel, modal)
+	{
+		var me = this;
+		var configReverse = {
+			type: "GET",
+	        url: "home/question/reverse/"+token,
+	        contentType: "application/json",
+	        dataType: "json",
+	        //data: JSON.stringify(param),
+		    statusCode: {
+			   401:function() { 
+				   window.location = '';
+			   }
+			},
+			success: function(repsonse)
+			{
+				modal.modal("hide");
+				me.showModalByDuel(duel);
+			}
+		}
+		$.ajax(configReverse);
 	},
 
 	createPanel: function(title, content){
