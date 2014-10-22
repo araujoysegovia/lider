@@ -125,11 +125,13 @@ class DuelController extends Controller
     			$questionArray['playerOne'] = array(
     				'id' => $duel->getPlayerOne()->getId(),
     				'name' => $duel->getPlayerOne()->getName()." ".$duel->getPlayerOne()->getLastname(),
+                    'duel' => false,
     				'image' => $duel->getPlayerOne()->getImage()
     			);
     			$questionArray['playerTwo'] = array(
     					'id' => $duel->getPlayerTwo()->getId(),
     					'name' => $duel->getPlayerTwo()->getName()." ".$duel->getPlayerTwo()->getLastname(),
+                        'duel' => false,
     					'image' => $duel->getPlayerTwo()->getImage()
     			);
     			$questionArray['questions'] = array();
@@ -150,6 +152,7 @@ class DuelController extends Controller
                     // echo $mongoQuestion->getPlayer()->getPlayerId(). " = " . $questionArray['playerOne']['id'];
                     if($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerOne']['id'] && $mongoQuestion->getSelectedAnswer())
                     {
+                        $questionArray['playerOne']['duel'] = true;
                         $q['answers']['playerOne'] = array(
                             'token' => $mongoQuestion->getId(),
                             'answerId' => $mongoQuestion->getSelectedAnswer()->getAnswerId(),
@@ -159,6 +162,7 @@ class DuelController extends Controller
                     }
                     elseif($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerOne']['id'])
                     {
+                        $questionArray['playerOne']['duel'] = true;
                         $q['answers']['playerOne'] = array(
                             'token' => $mongoQuestion->getId(),
                             'answerId' => '',
@@ -168,6 +172,7 @@ class DuelController extends Controller
                     }
                     if($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerTwo']['id'] && $mongoQuestion->getSelectedAnswer())
                     {
+                        $questionArray['playerTwo']['duel'] = true;
                         $q['answers']['playerTwo'] = array(
                             'token' => $mongoQuestion->getId(),
                             'answerId' => $mongoQuestion->getSelectedAnswer()->getAnswerId(),
@@ -177,6 +182,7 @@ class DuelController extends Controller
                     }
                     elseif($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerTwo']['id'])
                     {
+                        $questionArray['playerTwo']['duel'] = true;
                         $q['answers']['playerTwo'] = array(
                             'token' => $mongoQuestion->getId(),
                             'answerId' => '',

@@ -3166,15 +3166,13 @@ var routerManager = Backbone.Router.extend({
 				
 				var trTeamDuels = $('<thead>'+
 									 '<tr>'+
-									 	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_one.name+'</h4></td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
+									 
+								    	'<td colspan="5" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_one.name+'</h4></td>'+
+								    	
 								    	'<td style="vertical-align: middle; width: 50px; text-align: center;"><h4>VS</h4></td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_two.name+'</h4></td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
+								    	
+								    	'<td colspan="5" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_two.name+'</h4></td>'+
+
 								    '</tr>'+
 							   '</thead>');
 				tableDuels.append(trTeamDuels);
@@ -3210,36 +3208,130 @@ var routerManager = Backbone.Router.extend({
 						height: '40px',
 						'cursor': 'pointer'
 					}).addClass('tr-game');
-					tr.click(function()
-					{
-						me.showModalByDuel(duel);
-					})
-					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
+
+					var status = $('<td class="click-duel" style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status);
 
-					var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+p1.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+					var img1 = $('<td class="click-duel" style="vertical-align: middle;"><img class="img-circle" src="image/'+p1.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
 					tr.append(img1);
 
-					var name1 = $('<td style="vertical-align: middle;"><span>'+p1.name.toLowerCase()+' '+p1.lastname.toLowerCase()+'</span></td>');
+					var name1 = $('<td class="click-duel" style="vertical-align: middle;"><span>'+p1.name.toLowerCase()+' '+p1.lastname.toLowerCase()+'</span></td>');
 					tr.append(name1);
 
-					var point1 = $('<td style="vertical-align: middle; width:30px; text-align:center;"><span>'+pp1+'</span></td>');
+					var updatePoint1 = $('<td style="vertical-align: middle;"></td>');		
+					var buttonUpdatePoint1 = $('<span class="glyphicon glyphicon-repeat"></span>');
+
+					updatePoint1.append(buttonUpdatePoint1);
+					tr.append(updatePoint1);
+
+					buttonUpdatePoint1.click(function () {
+						var config = {
+									type: "GET",
+						            url: "home/player/update/points/"+p1.id+"/"+duel.id,
+						            contentType: "application/json",
+						            dataType: "json",						            
+							     	statusCode: {
+								      401:function() { 
+								      	window.location = '';
+								      }		   
+								    },            
+									success: function(response){
+										modal.modal("hide");
+										me.showDuelFromGame(game);
+								    	// modal.modal("show");
+									},
+									error: function(xhr, status, error){
+						            	try{
+									    	var obj = jQuery.parseJSON(xhr.responseText);
+									    	var n = noty({
+									    		text: obj.message,
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}catch(ex){
+								    		var n = noty({
+									    		text: "Error",
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}
+						            },
+							    	complete: function(){
+							    		loader.hide();
+							    	}
+						        }
+						        $.ajax(config);						
+					});
+
+					var point1 = $('<td class="click-duel" style="vertical-align: middle; width:30px; text-align:center;"><span>'+pp1+'</span></td>');
 					tr.append(point1);
 					
-					var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
+					var vs = $('<td class="click-duel" style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
 					tr.append(vs);
 
-					var point2 = $('<td style="vertical-align: middle; width:30px; text-align:center;"><span>'+pp2+'</span></td>');
+					var point2 = $('<td class="click-duel" style="vertical-align: middle; width:30px; text-align:center;"><span>'+pp2+'</span></td>');
 					tr.append(point2);
 					
-					var name2 = $('<td style="vertical-align: middle;"><span>'+p2.name.toLowerCase()+' '+p2.lastname.toLowerCase()+'</span></td>');
+
+					var updatePoint2 = $('<td style="vertical-align: middle;"></td>');		
+					var buttonUpdatePoint2 = $('<span class="glyphicon glyphicon-repeat"></span>');
+
+					updatePoint2.append(buttonUpdatePoint2);
+					tr.append(updatePoint2);
+
+					buttonUpdatePoint2.click(function () {
+						var config = {
+									type: "GET",
+						            url: "home/player/update/points/"+p2.id+"/"+duel.id,
+						            contentType: "application/json",
+						            dataType: "json",						            
+							     	statusCode: {
+								      401:function() { 
+								      	window.location = '';
+								      }		   
+								    },            
+									success: function(response){		
+										modal.modal("hide");
+										me.showDuelFromGame(game);
+								    	// modal.modal("show");
+									},
+									error: function(xhr, status, error){
+						            	try{
+									    	var obj = jQuery.parseJSON(xhr.responseText);
+									    	var n = noty({
+									    		text: obj.message,
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}catch(ex){
+								    		var n = noty({
+									    		text: "Error",
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}
+						            },
+							    	complete: function(){
+							    		loader.hide();
+							    	}
+						        }
+						        $.ajax(config);						
+					});
+
+					var name2 = $('<td class="click-duel" style="vertical-align: middle;"><span>'+p2.name.toLowerCase()+' '+p2.lastname.toLowerCase()+'</span></td>');
 					tr.append(name2);
 
-					var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+p2.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+					var img2 = $('<td class="click-duel" style="vertical-align: middle;"><img class="img-circle" src="image/'+p2.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
 					tr.append(img2);
 
-					var status2 = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
+					var status2 = $('<td class="click-duel" style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status2);
+
+					tr.find(".click-duel").click(function()
+					{
+						me.showModalByDuel(duel);
+					});
+					
 
 					if(duel.player_one.teamId == game.team_one.id){
 						if(duel['player_one']['questionMissing'] > 0 && !duel['finished'] && duel['active'])
@@ -3336,11 +3428,19 @@ var routerManager = Backbone.Router.extend({
 				
 				var trTeamDuels = $('<thead>'+
 									 '<tr>'+
-								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerOne.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+data.playerOne.name+'</h4></td>'+
+								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerOne.image+'?width=50&height=50"/><br/><h4>'+data.playerOne.name+'</h4><button class="btn" style="margin-bottom:40px;" data-id="p1" disabled="disabled">Resetear Duelo</button</td>'+
 								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerTwo.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+data.playerTwo.name+'</h4></td>'+
+								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerTwo.image+'?width=50&height=50"/><br/><h4>'+data.playerTwo.name+'</h4><button class="btn" style="margin-bottom:40px;" data-id="p2" disabled="disabled">Resetear Duelo</button</td>'+
 								    '</tr>'+
 							   '</thead>');
+				if(data.playerOne.duel)
+				{
+					trTeamDuels.find('button[data-id=p1]').addClass('btn-success').attr("disabled", false);
+				}
+				if(data.playerTwo.duel)
+				{
+					trTeamDuels.find('button[data-id=p2]').addClass('btn-success').attr("disabled", false);
+				}
 				tableDuels.append(trTeamDuels);
 				
 				var duels = $("<div></div>").addClass("table-duels").append(tableDuels);

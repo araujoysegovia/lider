@@ -27,12 +27,15 @@ class Entity{
      */
     private $lastupdate;
 
+    public function __construct()
+    {
+        $this->entrydate = new \DateTime();
+    }
 
     /**
      * @ORM\PrePersist()
      */
     public function prePersist(){
-        $this->entrydate = new \DateTime();
         $this->deleted = false;
         $this->lastupdate = new \DateTime();
     }

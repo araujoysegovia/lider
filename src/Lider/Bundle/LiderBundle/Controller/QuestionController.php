@@ -668,10 +668,36 @@ class QuestionController extends Controller
     	return $this->get("talker")->response($list->toArray());
     }
 
-    public function reverseQuestionAction($token)
+    public function resetDuelAction($duelId, $playerId)
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $questionHistoryRepo = $dm->getRepository("LiderBundle:QuestionHistory");
+        $listQuestion = $questionHistoryRepo->findBy(array("duelId" => $duelId, "player.playerId" => $playerId));
+        foreach($listQuestion as $question)
+        {
+            $this->reverseQuestionAction($question->getId(), false);
+        }
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
+                    'subject' => 'Nuevo reporte de pregunta',
+                    'templateData' => array(
+                        'title' => 'Nuevo Reporte',
+                        'user' => array(
+                            'image' => $user->getImage(),
+                            'name' => $user->getName(),
+                            'lastname' => $user->getLastname()
+                        ),
+                        'subjectUser' => $reportText,
+                        'body' => $body
+                    )
+                    
+                )));
+    }
+
+    public function reverseQuestionAction($token, $notify = true)
     {
         $em = $this->getDoctrine()->getManager();
         $dm = $this->get('doctrine_mongodb')->getManager();
+        $gearman = $this->get('gearman');
         $questionHistoryRepo = $dm->getRepository("LiderBundle:QuestionHistory");
         $playerRepository = $em->getRepository("LiderBundle:Player");
         $duelRepository = $em->getRepository("LiderBundle:Duel");
@@ -724,6 +750,30 @@ class QuestionController extends Controller
             $em->flush();
             $dm->remove($question);
             $dm->flush();
+            if($notify)
+            {
+                $body = 'Se te ha reseteado una pregunta en el duelo contra ';
+                if($duel->getPlayerOne()->getId() == $player->getId())
+                {
+                    $body .= $duel->getPlayerTwo()->getName(). " ".$duel->getPlayerTwo()->getLastname();
+                }
+                elseif($duel->getPlayerTwo()->getId() == $player->getId())
+                {
+                    $body .= $duel->getPlayerOne()->getName(). " ".$duel->getPlayerOne()->getLastname();
+                } 
+                $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
+                    'subject' => 'Pregunta Reseteada',
+                    'to' => $player->getEmail(),
+                    'viewName' => 'LiderBundle:Templates:emailnotification.html.twig',
+                    'content' => array(
+                        'title' => 'Pregunta Reseteada',
+                        'subjectMessage' => 'Una pregunta ha sido reseteada',
+                        'body' => $body
+                    )
+                    
+                )));
+            }
+            
         }
         return $this->get("talker")->response($this->getAnswer(true, $this->delete_successful));
     }
