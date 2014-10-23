@@ -278,7 +278,7 @@ class QuestionController extends Controller
             $questionHistory->setDuelId($duel->getId());
             $questionHistory->setFinished(false);
             $questionHistory->setTournament($tourmanetD);  
-            $questionHistory->setTeam($teamD);  
+            $questionHistory->setTeam($teamD);
             $questionHistory->setGroup($groupD);
             $questionHistory->setGameId($duel->getGame()->getId());
             if($duel->getExtraDuel())

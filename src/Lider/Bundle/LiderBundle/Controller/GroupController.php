@@ -237,23 +237,31 @@ class GroupController extends Controller
             foreach ($teams as $team) {
                 $games = $gameRepo->getGamesByTeam($team->getId());
                 $duelWin = $duelRepo->getTotalDuelWinnerByTeam($team->getId(), $tournamentId);
-                // $questionWin = $questionRepo->findpercentOfQuestionWinByTeam($team->getId(), $tournamentId);
+                $questionWin = $questionRepo->findpercentOfQuestionWinByTeam(intval($team->getId()), intval($tournamentId));
                 // echo $team->getId();
                 // print_r($questionWin);
+                // echo "Equipo = ".$team->getName()." win = ".$duelWin['win']." total =".$duelWin['total']."\n";
                 $percentDuel = ($duelWin['win'] / $duelWin['total']) * 100;
                 
                 
                 $percentDuel = intval($percentDuel);
-                // $questionWin = $questionWin->toArray();
-                // print_r($questionWin);
-                // $questionWin = $questionWin[0];
-                // $percentQuestion = $questionWin['total'] * $questionWin['win'] / 100;
+                $percentQuestion = 0;
+                if(count($questionWin) > 0)
+                {
+                    $questionWin = $questionWin->toArray();
+                    $questionWin = $questionWin[0];
+                    $percentQuestion = ($questionWin['win'] / $questionWin['total']) * 100;
+                    $percentQuestion = intval($percentQuestion);
+                }
+
+                
                 $ls = array(
                     'id' => $team->getId(),
                     'name' => $team->getName(),
                     'total' => 0,
                     'win' => 0,
                     'loose' => 0,
+                    'questionWin' => $percentQuestion,
                     'duelWin' => $percentDuel,
                 );
                 if($team->getPoints())
