@@ -170,7 +170,7 @@ class NotificationWorker
         );
         try{
             $send = $notificationService->sendEmail($subject, $this->from, $player->getEmail(), null, "LiderBundle:Templates:duelnotification.html.twig", $content);
-            echo "Mensaje Enviado de duelo a ".$player->getEmail();
+            echo "Mensaje Enviado de duelo a ".$player->getEmail()."\n";
         }catch(\Exception $e){
             echo $e->getMessage();
         }
