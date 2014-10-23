@@ -81,17 +81,18 @@ class ReportQuestionController extends Controller
 
         $viewName = "LiderBundle:Templates:emailnotification.html.twig";
 
+
+        $q = $reportQuestion->getQuestion();
+        // echo $q->getQuestion();
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', 
             json_encode(array(
             "subject" => 'Reporte solucionado',
-            "from" => $user->getEmail(),
             "to" => $player->getEmail(),
             "viewName" => $viewName,
             "content" => array(
                 "title" => 'Reporte solucionado',
-                "subjectMessage" => "Reporte de la pregunta",
-                "body"=> "Reporte de la pregunta: "+$reportQuestion->getQuestion()->getQuestion()+"<br/>"
-                        $reportQuestion->getDescription()
+                "subjectMessage" => "Reporte de pregunta solucionado",
+                "body"=> "Reporte de la pregunta: ".$q->getQuestion()."<br> <hr> <br>".$reportQuestion->getDescription()
             )
         )));
 
