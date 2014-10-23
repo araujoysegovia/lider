@@ -65,5 +65,24 @@ class PlayerRepository extends MainRepository
 
 		return $query->getResult();
 	}
+
+	public function findPlayerPoint($playerId, $points, $date)
+	{
+		$first = new \DateTime($date->format('Y-m-d H:i:s'));
+		$second = new \DateTime($date->format('Y-m-d H:i:s'));
+		$first->modify("-1 minute");
+		$second->modify("+1 minute");
+		$query = $this->createQueryBuilder('pp')
+		->select('pp, p')
+		->join('pp.player', 'p', 'WITH', 'p.id = :pi')
+		->where('pp.points = :po AND pp.entrydate > :d and pp.entrydate < :dd')
+		->setParameter('pi', $playerId)
+		->setParameter('po', $points)
+		->setParameter('d', $first, \Doctrine\DBAL\Types\Type::DATETIME)
+		->setParameter('dd', $second, \Doctrine\DBAL\Types\Type::DATETIME)
+		->getQuery();
+
+		return $query->getResult();
+	}
 		
 }

@@ -390,7 +390,7 @@ class QuestionController extends Controller
 
                 if(($questionHistory->getExtraQuestion() && $parameters['gamesParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
                 {
-                    $this->applyPoints($questionHistory, $parameters, $team, $user, $duel);
+                    $this->applyPoints($questionHistory, $parameters, $team, $user, $duel, $question);
                 }
 
             }else{
@@ -435,22 +435,17 @@ class QuestionController extends Controller
         $res['lastOne'] = $lastOne;
 
         $gearman = $this->get('gearman');
-        try{
-            $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~checkDuel', json_encode(array(
-                        'duelId' => $duel->getId(),
-                        'userId' => $user->getId()
-                      )));
-        }catch(\Exception $e){
-            return $e;
-        }
-
         
-
-        return $this->get("talker")->response($res);
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~checkDuel', json_encode(array(
+                     'duelId' => $duel->getId(),
+                     'userId' => $user->getId()
+                  )));
+                        
+       	return $this->get("talker")->response($res);
         
     }
 
-    private function applyPoints(&$questionHistory, $parameters, $team, $user, &$duel)
+    private function applyPoints(&$questionHistory, $parameters, $team, $user, &$duel, $question)
     {
         $em = $this->getDoctrine()->getManager();
         if($questionHistory->getUseHelp()){
@@ -461,6 +456,8 @@ class QuestionController extends Controller
             $playerPoint->setTournament($team->getTournament());
             $playerPoint->setTeam($team);
             $playerPoint->setPlayer($user);
+            $playerPoint->setDuel($duel);
+            $playerPoint->setQuestion($question);
             $this->applyPointsToDuel($duel, $user, $pointsHelp);
         }else{
             $points = $parameters['gamesParameters']['questionPoints'];
@@ -470,6 +467,8 @@ class QuestionController extends Controller
             $playerPoint->setTournament($team->getTournament());
             $playerPoint->setTeam($team);
             $playerPoint->setPlayer($user);
+            $playerPoint->setDuel($duel);
+            $playerPoint->setQuestion($question);
             $this->applyPointsToDuel($duel, $user, $points);
         }
         $em->persist($playerPoint);
@@ -666,5 +665,115 @@ class QuestionController extends Controller
     	}
     	$em->flush();
     	return $this->get("talker")->response($list->toArray());
+    }
+
+    public function resetDuelAction($duelId, $playerId)
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $questionHistoryRepo = $dm->getRepository("LiderBundle:QuestionHistory");
+        $listQuestion = $questionHistoryRepo->findBy(array("duelId" => $duelId, "player.playerId" => $playerId));
+        foreach($listQuestion as $question)
+        {
+            $this->reverseQuestionAction($question->getId(), false);
+        }
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
+                    'subject' => 'Nuevo reporte de pregunta',
+                    'templateData' => array(
+                        'title' => 'Nuevo Reporte',
+                        'user' => array(
+                            'image' => $user->getImage(),
+                            'name' => $user->getName(),
+                            'lastname' => $user->getLastname()
+                        ),
+                        'subjectUser' => $reportText,
+                        'body' => $body
+                    )
+                    
+                )));
+    }
+
+    public function reverseQuestionAction($token, $notify = true)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $gearman = $this->get('gearman');
+        $questionHistoryRepo = $dm->getRepository("LiderBundle:QuestionHistory");
+        $playerRepository = $em->getRepository("LiderBundle:Player");
+        $duelRepository = $em->getRepository("LiderBundle:Duel");
+        $playerPointRepository = $em->getRepository("LiderBundle:PlayerPoint");
+        $gameRepository = $em->getRepository("LiderBundle:Game");
+        $question = $questionHistoryRepo->find($token);
+        if($question)
+        {
+            $player = $playerRepository->find($question->getPlayer()->getPlayerId());
+            $duel = $duelRepository->find($question->getDuelId());
+            if($question->getFind())
+            {
+                $player->setWonGames($player->getWonGames() - 1);
+                if($duel->getPlayerOne()->getId() == $player->getId())
+                {
+                    $duel->setPointOne($duel->getPointOne() - $question->getPoints());
+                }
+                elseif($duel->getPlayerTwo()->getId() == $player->getId())
+                {
+                    $duel->setPointTwo($duel->getPointTwo() - $question->getPoints());
+                } 
+                $playerPoint = $playerPointRepository->findOneBy(array("player" => $player->getId(), "points" => $question->getPoints(), "duel" => $duel->getId(), "question" => $question->getQuestion()->getQuestionId()));
+                $em->remove($playerPoint);
+            }
+            else{
+                $player->setLostGames($player->getLostGames() - 1);
+            }
+            if(!$duel->getActive() && $duel->getFinished())
+            {
+                $game = $duel->getGame();
+                $duel->setActive(true);
+                $duel->setFinished(false);
+                $duel->setPlayerWin(null);
+                if(!$game->getActive() && $game->getFinished())
+                {
+                    $game->setActive(true);
+                    $game->setFinished(false);
+                    
+                    if($game->getTeamOne()->getId() == $game->getTeamWinner()->getId())
+                    {
+                        $game->setPointOne(0);
+                    }
+                    elseif($game->getTeamTwo()->getId() == $game->getTeamWinner()->getId())
+                    {
+                        $game->setPointTwo(0);
+                    }
+                    $game->setTeamWinner(null);
+                }
+            }
+            $em->flush();
+            $dm->remove($question);
+            $dm->flush();
+            if($notify)
+            {
+                $body = 'Se te ha reseteado una pregunta en el duelo contra ';
+                if($duel->getPlayerOne()->getId() == $player->getId())
+                {
+                    $body .= $duel->getPlayerTwo()->getName(). " ".$duel->getPlayerTwo()->getLastname();
+                }
+                elseif($duel->getPlayerTwo()->getId() == $player->getId())
+                {
+                    $body .= $duel->getPlayerOne()->getName(). " ".$duel->getPlayerOne()->getLastname();
+                } 
+                $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
+                    'subject' => 'Pregunta Reseteada',
+                    'to' => $player->getEmail(),
+                    'viewName' => 'LiderBundle:Templates:emailnotification.html.twig',
+                    'content' => array(
+                        'title' => 'Pregunta Reseteada',
+                        'subjectMessage' => 'Una pregunta ha sido reseteada',
+                        'body' => $body
+                    )
+                    
+                )));
+            }
+            
+        }
+        return $this->get("talker")->response($this->getAnswer(true, $this->delete_successful));
     }
 }

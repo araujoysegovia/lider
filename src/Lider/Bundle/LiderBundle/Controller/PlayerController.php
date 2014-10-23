@@ -8,6 +8,7 @@ use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Dumper;
 use Lider\Bundle\LiderBundle\Document\Suggestion;
 use Lider\Bundle\LiderBundle\Entity\Player;
+use Lider\Bundle\LiderBundle\Entity\PlayerPoint;
 
 class PlayerController extends Controller
 {
@@ -650,7 +651,7 @@ class PlayerController extends Controller
      */
     public function passwordResetAction($id)
     {
-        $em = $this->getDoctrine()->getEntityManager();         
+        $em = $this->getDoctrine()->getEntityManager();
         $player = $em->getRepository("LiderBundle:Player")->find($id);
 
         if(!$player)
@@ -687,5 +688,67 @@ class PlayerController extends Controller
     	)));
     	 
     	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+
+    public function updatePointsPlayerByDuelAction($playerId, $duelId)
+    {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $em = $this->getDoctrine()->getEntityManager();
+        $questionHistoryRepo = $dm->getRepository('LiderBundle:QuestionHistory');
+        $listQuestion = $questionHistoryRepo->findBy(array("player.playerId" => intval($playerId), "duelId" => intval($duelId)));
+        $player = $em->getRepository('LiderBundle:Player')->find($playerId);
+        if($player)
+        {
+            $duel = $em->getRepository('LiderBundle:Duel')->find($duelId);
+            if($duel)
+            {
+                if($duel->getPlayerOne()->getId() == $player->getId())
+                {
+                    $duel->setPointOne(0);
+                }
+                elseif($duel->getPlayerTwo()->getId() == $player->getId()){
+                    $duel->setPointTwo(0);
+                }
+                else{
+                    throw new \Exception("El jugador no pertenece a este duelo");
+                }
+                $em->flush();
+                foreach($listQuestion as $question)
+                {
+                    if($question->getFind())
+                    {
+                        $pp = $em->getRepository('LiderBundle:PlayerPoint')->findOneBy(array("player" => $player, "duel" => $duel, "question" => $question->getQuestion()->getQuestionId()));
+                        $player->setWonGames($player->getWonGames() + 1);
+                        if(!$pp)
+                        {
+                            $q = $em->getRepository('LiderBundle:Question')->find($question->getQuestion()->getQuestionId());
+                            $playerPoint = new PlayerPoint();
+                            $playerPoint->setPlayer($player);
+                            $playerPoint->setPoints($question->getPoints());
+                            $playerPoint->setDuel($duel);
+                            $playerPoint->setTournament($duel->getTournament());
+                            $playerPoint->setTeam($player->getTeam());
+                            $playerPoint->setQuestion($q);
+                            $date = $question->getEntryDate()->format('Y-m-d H:i:s');
+                            $playerPoint->setEntrydate(new \Datetime($date));
+                            $em->persist($playerPoint);
+                        }
+                        if($duel->getPlayerOne()->getId() == $player->getId())
+                        {
+                            $duel->setPointOne($duel->getPointOne() + $question->getPoints());
+                        }
+                        elseif($duel->getPlayerTwo()->getId() == $player->getId()){
+                            $duel->setPointTwo($duel->getPointTwo() + $question->getPoints());
+                        }
+                    }
+                    else{
+                        $player->setLostGames($player->getLostGames() + 1);
+                    }
+                }
+                $em->flush();
+            }
+        }
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+        
     }
 }

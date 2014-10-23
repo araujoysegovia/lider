@@ -42,6 +42,18 @@ class PlayerPoint extends Entity
 	 * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
 	 */
 	private $player;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Duel",cascade={"persist"})
+     * @ORM\JoinColumn(name="duel_id", referencedColumnName="id")
+     */
+    private $duel;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Question",cascade={"persist"})
+     * @ORM\JoinColumn(name="question_id", referencedColumnName="id")
+     */
+    private $question;
    
 
     /**
