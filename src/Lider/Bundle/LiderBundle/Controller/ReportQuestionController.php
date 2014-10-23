@@ -83,14 +83,15 @@ class ReportQuestionController extends Controller
 
         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', 
             json_encode(array(
-            "subject" => 'Lider - Pregunta reportada',
+            "subject" => 'Reporte solucionado',
             "from" => $user->getEmail(),
             "to" => $player->getEmail(),
             "viewName" => $viewName,
             "content" => array(
-                "title" => 'Lider - Pregunta reportada',
-                "subjectMessage" => "",
-                "body"=> $reportQuestion->getDescription()
+                "title" => 'Reporte solucionado',
+                "subjectMessage" => "Reporte de la pregunta",
+                "body"=> "Reporte de la pregunta: "+$reportQuestion->getQuestion()->getQuestion()+"<br/>"
+                        $reportQuestion->getDescription()
             )
         )));
 
