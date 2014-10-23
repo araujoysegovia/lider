@@ -2290,7 +2290,39 @@ var routerManager = Backbone.Router.extend({
   			    	}
   			    }
 			],
-			command: null,			
+			command: [
+			    {
+					text: "Verificar",
+					click: function (e) {
+					 console.log("verificar")
+					 e.preventDefault();
+
+					 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+					 var id = dataItem.id;		                
+					 					
+					 config = {
+					    type: "POST",           
+					    url: "home/question/check/"+id,					            
+					    contentType: "application/json",
+					    dataType: "json",
+					    //data: JSON.stringify(param),
+					 	statusCode: {
+					      401:function() { 
+					      	window.location = '';
+					      }		   
+					    },				            
+						success: function(){
+						   question.grid.data('kendoGrid').dataSource.read();
+						   question.grid.data('kendoGrid').refresh();
+						},
+						error: function(){}
+					 }
+
+					 $.ajax(config);
+						
+					} 
+			    },
+			],			
 			serverFiltering: false,
 			serverSorting: false,
 		    pageable: {
