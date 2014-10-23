@@ -2102,6 +2102,7 @@ var routerManager = Backbone.Router.extend({
 				    reportText: { type: "string" },	
 				    player: {},
 				    question: {},
+				    causal: { type: 'string'},
 				    checked:{
 				    	type: "checked"
 				    }
@@ -2110,7 +2111,8 @@ var routerManager = Backbone.Router.extend({
 			columns: [
 				{ 
 					field:"reportText", 
-					title: "Causa del reporte" 
+					title: "Causa del reporte",
+					width: "100px"
 				},		
 				{ 
 					field: "player",
@@ -2129,8 +2131,11 @@ var routerManager = Backbone.Router.extend({
 							return "<b># "+e.question.questionId+": </b>"+e.question.question;
 						}
 					},									
+				},
+				{
+					field:"causal", 
+					title: "Descripción" 
 				}
-
 			],
 			command: [
 			    {
