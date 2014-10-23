@@ -2102,6 +2102,7 @@ var routerManager = Backbone.Router.extend({
 				    reportText: { type: "string" },	
 				    player: {},
 				    question: {},
+				    causal: { type: 'string'},
 				    checked:{
 				    	type: "checked"
 				    }
@@ -2110,7 +2111,8 @@ var routerManager = Backbone.Router.extend({
 			columns: [
 				{ 
 					field:"reportText", 
-					title: "Causa del reporte" 
+					title: "Causa del reporte",
+					width: "100px"
 				},		
 				{ 
 					field: "player",
@@ -2129,8 +2131,11 @@ var routerManager = Backbone.Router.extend({
 							return "<b># "+e.question.questionId+": </b>"+e.question.question;
 						}
 					},									
+				},
+				{
+					field:"causal", 
+					title: "Descripción" 
 				}
-
 			],
 			command: [
 			    {
@@ -2290,7 +2295,39 @@ var routerManager = Backbone.Router.extend({
   			    	}
   			    }
 			],
-			command: null,			
+			command: [
+			    {
+					text: "Verificar",
+					click: function (e) {
+					 console.log("verificar")
+					 e.preventDefault();
+
+					 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+					 var id = dataItem.id;		                
+					 					
+					 config = {
+					    type: "POST",           
+					    url: "home/question/check/"+id,					            
+					    contentType: "application/json",
+					    dataType: "json",
+					    //data: JSON.stringify(param),
+					 	statusCode: {
+					      401:function() { 
+					      	window.location = '';
+					      }		   
+					    },				            
+						success: function(){
+						   question.grid.data('kendoGrid').dataSource.read();
+						   question.grid.data('kendoGrid').refresh();
+						},
+						error: function(){}
+					 }
+
+					 $.ajax(config);
+						
+					} 
+			    },
+			],			
 			serverFiltering: false,
 			serverSorting: false,
 		    pageable: {
