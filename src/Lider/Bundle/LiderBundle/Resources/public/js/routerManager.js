@@ -857,7 +857,7 @@ var routerManager = Backbone.Router.extend({
 				},
 				{
 					field: "level",
-			    	title: "Nivel2",
+			    	title: "Nivel",
 			    	width: "100px"				
 			    }
 			],			
@@ -3447,6 +3447,7 @@ var routerManager = Backbone.Router.extend({
 					var status2 = $('<td class="click-duel" style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status2);
 
+
 					tr.find(".click-duel").click(function()
 					{
 						me.showModalByDuel(duel);
@@ -3488,6 +3489,53 @@ var routerManager = Backbone.Router.extend({
 						}
 	
 					}
+
+
+						buttonSendEmailDuel = $('<td><button type="button" class="btn btn-info">Notificar</button></td>');
+
+						buttonSendEmailDuel.click(function () {
+							
+							var config = {
+								type: "GET",
+					            url: "home/duel/notification/"+duel.id,
+					            contentType: "application/json",
+					            dataType: "json",						            
+						     	statusCode: {
+							      401:function() { 
+							      	window.location = '';
+							      }		   
+							    },            
+								success: function(response){		
+									modal.modal("hide");
+									me.showDuelFromGame(game);
+							    	// modal.modal("show");
+								},
+								error: function(xhr, status, error){
+					            	try{
+								    	var obj = jQuery.parseJSON(xhr.responseText);
+								    	var n = noty({
+								    		text: obj.message,
+								    		timeout: 1000,
+								    		type: "error"
+								    	});
+							    	}catch(ex){
+							    		var n = noty({
+								    		text: "Error",
+								    		timeout: 1000,
+								    		type: "error"
+								    	});
+							    	}
+					            },
+						    	complete: function(){
+						    		loader.hide();
+						    	}
+					        }
+					        $.ajax(config);
+					    });
+
+						tr.append(buttonSendEmailDuel);
+
+
 					if(!duel.extraDuel)
 					{
 						tableDuels.append(tr);
