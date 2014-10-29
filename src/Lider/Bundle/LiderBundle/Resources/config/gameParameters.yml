@@ -5,7 +5,7 @@ gamesParameters:
     timeDuel: '2'
     answerShowPractice: 'false'
     answerShowGame: 'false'
-    timeDuelExtra: '1'
+    timeDuelExtra: '30'
     countQuestionDuel: '5'
     countQuestionDuelExtra: '1'
     gamePoints: '1'
