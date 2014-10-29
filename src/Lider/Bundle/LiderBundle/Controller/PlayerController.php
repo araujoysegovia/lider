@@ -267,7 +267,7 @@ class PlayerController extends Controller
     }
 
     public function getRangePositionAction($tournamentId = null)
-    {
+    {        
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository("LiderBundle:QuestionHistory");
         $user = $this->container->get('security.context')->getToken()->getUser();
@@ -290,6 +290,31 @@ class PlayerController extends Controller
         }
         return $this->get("talker")->response(array("total" => count($list), "data" => $list));
     }
+
+    public function getRangePositionByPracticeAction($tournamentId = null)
+    {        
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $repo = $dm->getRepository("LiderBundle:QuestionHistory");
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        
+        if($user->getTeam()){
+            $tournamentId = $user->getTeam()->getTournament()->getId();
+        }        
+
+        $list = $repo->findRangePositionByPractice(intval($tournamentId));
+        $list = $list->toArray();
+        $orderBy = function($data, $field){
+            $code = "return strnatcmp(\$a['$field'], \$b['$field']);";
+            usort($data, create_function('$a, $b', $code));
+            return $data;
+        };
+        $slist = $orderBy($list, "totalPoint");
+        $list=array();
+        foreach ($slist as $value) {
+            array_unshift($list, $value);
+        }
+        return $this->get("talker")->response(array("total" => count($list), "data" => $list));
+    }    
 
     public function getGeneralStatisticsAction(){
         $dm = $this->get('doctrine_mongodb')->getManager();
@@ -751,4 +776,5 @@ class PlayerController extends Controller
         return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
         
     }
+
 }
