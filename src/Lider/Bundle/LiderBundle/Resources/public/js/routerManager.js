@@ -324,8 +324,7 @@ var routerManager = Backbone.Router.extend({
 				    	editable: false
 				    },
 				    level: {
-			    		editable: false, 
-			    		nullable: true,
+			    		editable: false,			    		
 			    		type: "number"
 				    }
 			    }
@@ -2256,7 +2255,7 @@ var routerManager = Backbone.Router.extend({
 				    	type: 'int' 
 				    },
 				    totalPoint: {
-				    	type: 'int'
+				    	type: 'number'
 				    }					    
 				}
 			},
