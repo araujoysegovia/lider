@@ -183,6 +183,7 @@ class CheckerWorker
             echo "no existen juegos activos\n";
             if($tournament->getLevel() < 5)
             {
+                echo "voy a activar el siguiente nivel\n";
                 $tournament->setEnabledLevel(false);
                 $tournament->setLevel($tournament->getLevel()+1);
                 $em->flush();

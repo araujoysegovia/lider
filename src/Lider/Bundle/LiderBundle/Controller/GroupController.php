@@ -195,7 +195,7 @@ class GroupController extends Controller
         	if(!$user->getTeam()->getTournament()){
         		throw new \Exception('Torneo no asignado');
         	}
-             $tournamentId = $user->getTeam()->getTournament()->getId();
+            $tournamentId = $user->getTeam()->getTournament()->getId();
          }
        
 
@@ -203,6 +203,7 @@ class GroupController extends Controller
         $duelRepo = $em->getRepository("LiderBundle:Duel");
         $questionRepo = $dm->getRepository('LiderBundle:QuestionHistory');
         $gameManager = $this->container->get('game_manager');
+        $parametersManager = $this->container->get('parameters_manager')->getParameters();
 
         $list = $repo->findBy(array('tournament' => $tournamentId, "deleted" => false));
         $l = array();
@@ -264,21 +265,16 @@ class GroupController extends Controller
                     'questionWin' => $percentQuestion,
                     'duelWin' => $percentDuel,
                 );
-                if($team->getPoints())
-                {
-                	$ls['points'] = $team->getPoints();
-                }
-                else{
-                	$ls['points'] = 0;
-                }
+                $points = 0;
                 foreach ($games as $game) {
                     if($game['team_one']['id'] == $team->getId() || $game['team_two']['id'] == $team->getId()){
                         
                         $ls['total']++;
 
                         if($game['team_winner']){
-
+                            
                             if($game['team_winner']['id'] == $team->getId()){
+                                $points = $points + $parametersManager['gamesParameters']['gamePoints'];
                                 $ls['win']++;
                             }else{
                                 $ls['loose']++;
@@ -286,6 +282,7 @@ class GroupController extends Controller
                         }
                     }
                 }
+                $ls['points'] = $points;
                 $g["teams"][] = $ls;
                
             }
