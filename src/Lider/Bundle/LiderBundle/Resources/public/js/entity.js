@@ -215,6 +215,7 @@ Entity.prototype = {
 			  pageSize: 20,	
 			  groupable: false,			  
 			  sortable: true, 
+
 			  selectable: "row",
 			  filterable: false, 
 

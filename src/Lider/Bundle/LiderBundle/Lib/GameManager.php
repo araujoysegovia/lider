@@ -84,6 +84,10 @@ class GameManager
 		}elseif($tournament->getLevel() == 2){
 			$this->generateGameForSecondLevel($tournament, $interval, $date);
 		}
+		elseif($tournament->getLevel() > 2)
+		{
+			$this->generateGamesAfterSecondLevel($tournament, $interval, $date);
+		}
 	}
 
 	/**
@@ -283,6 +287,37 @@ class GameManager
 		// 		)
 		// 	}
 		// }
+	}
+
+	public function generateGamesAfterSecondLevel($tournament, $interval, $startDate)
+	{
+		$gameRepo = $this->em->getRepository("LiderBundle:Game");
+		$previousLevel = $tournament->getLevel() - 1;
+		$games = $gameRepo->findBy(array("tournament" => $tournament->getId(), "level" => $previousLevel, "deleted" => false), array("indicator" => "ASC"));
+		$teams = array();
+		$leters = array();
+		foreach($games as $game)
+		{
+			$teams[] = $game->getTeamWinner();
+			$leters[] = $game->getIndicator();
+		}
+		$endDate = new \DateTime($startDate->format('Y-m-d H:i:s'));
+		$endDate->modify('+'.($interval - 1).' day');
+		for($i = 0; $i < count($teams); $i = $i + 2)
+		{
+			$game = new Game();
+			$game->setTeamOne($teams[$i]);
+			$game->setTeamTwo($teams[$i+1]);
+			$game->setActive(false);
+			$game->setStartDate(new \DateTime($startDate->format('Y-m-d H:i:s')));
+			$game->setFinished(false);
+			$game->setLevel($tournament->getLevel());
+			$game->setTournament($tournament);
+			$game->setEnddate(new \DateTime($endDate->format('Y-m-d').' 23:59:00'));
+			$game->setIndicator($leters[$i].$leters[$i+1]);
+			$this->em->persist($game);
+		}
+		$this->em->flush();
 	}
 
 	public function getOrderGroup($group)

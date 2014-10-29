@@ -80,8 +80,9 @@ class GameRepository extends MainRepository
 	    	->join('g.team_one', 'po')
 	    	->join('g.team_two', 'two')
 	    	->leftJoin('g.team_winner', 'win')
-	    	->where('g.finished = true and g.deleted=false and g.active = false and (po.id = :team or two.id = :team or win.id = :team)')
-	    	->setParameter('team', $team, \Doctrine\DBAL\Types\Type::INTEGER);
+	    	->where('g.finished = true and g.deleted=false and g.active = false and (po.id = :team or two.id = :team or win.id = :team) and g.level = :l')
+	    	->setParameter('team', $team, \Doctrine\DBAL\Types\Type::INTEGER)
+	    	->setParameter('l', 1, \Doctrine\DBAL\Types\Type::INTEGER);
 
 
 		$query = $query->getQuery();

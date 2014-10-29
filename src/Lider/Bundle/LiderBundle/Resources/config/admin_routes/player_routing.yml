@@ -42,15 +42,16 @@ admin_player_range_position:
     defaults: { _controller: LiderBundle:Player:getRangePosition, tournamentId: null }
     methods:  [GET]
 
+#Estadisticas por practicas
+admin_player_range_position_by_practice:
+    pattern:  /practice
+    defaults: { _controller: LiderBundle:Player:getRangePositionByPractice}
+    methods:  [GET]
+
 
 admin_player_notification:
     pattern:  /notification
     defaults: { _controller: LiderBundle:Player:notificationDuel }
-    methods:  [GET]
-
-admin_player_range_position:
-    pattern:  /positions/{tournamentId}
-    defaults: { _controller: LiderBundle:Player:getRangePosition, tournamentId: null }
     methods:  [GET]
 
 #Resetear password del jugador

@@ -112,6 +112,33 @@ class QuestionHistoryRepository extends MainMongoRepository
 		return $query;
 	}
 
+	public function findRangePositionByPractice($tournamentId){
+		
+		$query = $this->createQueryBuilder("LiderBundle:QuestionHistory")
+			->group(array("player.playerId" => 1, "player.name" => 2, 'player.lastname' => 2),
+					array('win' => 0, 'winHelp' => 0, 'lost' => 0, 'total' => 0, "totalPoint" => 0, 'fullname' => '', 'teamname' => ''))
+			->reduce('function (obj, prev){
+					prev.fullname = obj.player.name + " " + obj.player.lastname;					
+					if(!obj.duel){
+						prev.total++;
+						prev.totalPoint += obj.points || 0;
+			    		if(obj.find && !obj.useHelp){
+			    			prev.win++;
+						}
+						else if(obj.find && obj.useHelp){
+							prev.winHelp++;
+						}else{
+			    			prev.lost++;
+			    		}
+					}					
+			}')
+			->field('finished')->equals(true)
+			->getQuery()
+			->execute();
+	
+		return $query;
+	}	
+
 	public function findGroupPosition($tournamentId){
 		$query = $this->createQueryBuilder("LiderBundle:QuestionHistory")
 			->group(array("group.groupId" => 1, "tournament.tournamentId" => 1, "group.name" => 2),

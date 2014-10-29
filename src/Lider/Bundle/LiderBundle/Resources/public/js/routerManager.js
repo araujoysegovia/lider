@@ -21,6 +21,7 @@ var routerManager = Backbone.Router.extend({
 		"reportPlayerAnalysis": "reportPlayerAnalysis",
 		"reportTeamByGroup": "reportTeamByGroup",
 		"reportByCategory": "reportByCategory",
+		"reportByPractice": "reportByPractice",
 	},
 
 	home: function() {
@@ -323,8 +324,9 @@ var routerManager = Backbone.Router.extend({
 				    	editable: false
 				    },
 				    level: {
-				    	type: "number",
-				    	editable: false
+			    		editable: false, 
+			    		nullable: true,
+			    		type: "number"
 				    }
 			    }
 			},
@@ -854,11 +856,14 @@ var routerManager = Backbone.Router.extend({
 					}
 				},
 				{
-					field: 'level',
-					title: 'Nivel',
-					width: '100px'
-				}
-			],	
+					field: "level",
+			    	title: "Nivel",
+			    	width: "100px"				
+			    }
+			],			
+			serverSorting: false,
+
+
 			dataBound: function(e) {
 			    //console.log("dataBound");
 			    //console.log(e)
@@ -2295,39 +2300,40 @@ var routerManager = Backbone.Router.extend({
   			    	}
   			    }
 			],
-			command: [
-			    {
-					text: "Verificar",
-					click: function (e) {
-					 console.log("verificar")
-					 e.preventDefault();
+			command: [],
+			// command: [
+			//     {
+			// 		text: "Verificar",
+			// 		click: function (e) {
+			// 		 console.log("verificar")
+			// 		 e.preventDefault();
 
-					 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-					 var id = dataItem.id;		                
+			// 		 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+			// 		 var id = dataItem.id;		                
 					 					
-					 config = {
-					    type: "POST",           
-					    url: "home/question/check/"+id,					            
-					    contentType: "application/json",
-					    dataType: "json",
-					    //data: JSON.stringify(param),
-					 	statusCode: {
-					      401:function() { 
-					      	window.location = '';
-					      }		   
-					    },				            
-						success: function(){
-						   question.grid.data('kendoGrid').dataSource.read();
-						   question.grid.data('kendoGrid').refresh();
-						},
-						error: function(){}
-					 }
+			// 		 config = {
+			// 		    type: "POST",           
+			// 		    url: "home/question/check/"+id,					            
+			// 		    contentType: "application/json",
+			// 		    dataType: "json",
+			// 		    //data: JSON.stringify(param),
+			// 		 	statusCode: {
+			// 		      401:function() { 
+			// 		      	window.location = '';
+			// 		      }		   
+			// 		    },				            
+			// 			success: function(){
+			// 			   question.grid.data('kendoGrid').dataSource.read();
+			// 			   question.grid.data('kendoGrid').refresh();
+			// 			},
+			// 			error: function(){}
+			// 		 }
 
-					 $.ajax(config);
+			// 		 $.ajax(config);
 						
-					} 
-			    },
-			],			
+			// 		} 
+			//     },
+			// ],			
 			serverFiltering: false,
 			serverSorting: false,
 		    pageable: {
@@ -2383,6 +2389,83 @@ var routerManager = Backbone.Router.extend({
 		getParameters();
 	},
 
+
+	reportByPractice: function () {
+		
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Inicio: "",
+		  	Reporte: "reportByPractice"
+		});
+
+		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
+		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+
+		var reportByPractice = new Entity({
+			container:  $("#entity-content"),
+			url: "home/player/practice",
+			title: "Analisis de jugadores en practica",
+			model: {
+				id: "id",
+				fields: {
+					id: { editable: false, nullable: true },
+					fullname: {
+				    	type: 'string'
+				    },			    
+				    total: {
+				    	type: 'int'
+				    },
+				    win: {
+				    	type: 'int' 
+				    },
+				    winHelp: {
+				    	type: 'int' 
+				    },
+				    lost: {
+				    	type: 'int' 
+				    }				    
+				}
+			},
+			columns: [			
+				{ 
+					field: "fullname",
+					title:"Jugador",
+					width: "250px"									
+				},									
+				{ 
+					field: "total",
+					title:"TP"
+				},
+				{
+					field: "win",
+					title:"PC"
+				},
+				{
+					field: "winHelp",
+					title:"PCA"
+				},
+				{
+					field: "lost",
+					title:"PI"
+				}									
+			],
+			toolbar: [],
+			command: [],
+			serverFiltering: false,
+			serverSorting: false,
+		    pageable: {
+				    refresh: true,
+				    pageSizes: false,               
+				    buttonCount: 0,
+				    info: true,
+				    numeric: false,
+				    previousNext: false,
+				    messages: {
+					      display: "Mostrando {2} datos"
+					    }
+		 	}		
+		});
+	},
 
 	reportTeamByGroup: function () {
 		var me = this;
@@ -3364,6 +3447,7 @@ var routerManager = Backbone.Router.extend({
 					var status2 = $('<td class="click-duel" style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top: 5px; margin-bottom: 5px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status2);
 
+
 					tr.find(".click-duel").click(function()
 					{
 						me.showModalByDuel(duel);
@@ -3405,6 +3489,53 @@ var routerManager = Backbone.Router.extend({
 						}
 	
 					}
+
+
+						buttonSendEmailDuel = $('<td><button type="button" class="btn btn-info">Notificar</button></td>');
+
+						buttonSendEmailDuel.click(function () {
+							
+							var config = {
+								type: "GET",
+					            url: "home/duel/notification/"+duel.id,
+					            contentType: "application/json",
+					            dataType: "json",						            
+						     	statusCode: {
+							      401:function() { 
+							      	window.location = '';
+							      }		   
+							    },            
+								success: function(response){		
+									modal.modal("hide");
+									me.showDuelFromGame(game);
+							    	// modal.modal("show");
+								},
+								error: function(xhr, status, error){
+					            	try{
+								    	var obj = jQuery.parseJSON(xhr.responseText);
+								    	var n = noty({
+								    		text: obj.message,
+								    		timeout: 1000,
+								    		type: "error"
+								    	});
+							    	}catch(ex){
+							    		var n = noty({
+								    		text: "Error",
+								    		timeout: 1000,
+								    		type: "error"
+								    	});
+							    	}
+					            },
+						    	complete: function(){
+						    		loader.hide();
+						    	}
+					        }
+					        $.ajax(config);
+					    });
+
+						tr.append(buttonSendEmailDuel);
+
+
 					if(!duel.extraDuel)
 					{
 						tableDuels.append(tr);
