@@ -59,3 +59,8 @@ prueba_game_2:
     pattern:  /prueba/{gameId}
     defaults: { _controller: LiderBundle:Game:getPointsGame }
     methods:  [GET]
+
+prueba_game_3:
+    pattern:  /prueba2
+    defaults: { _controller: LiderBundle:Game:prueba }
+    methods:  [GET]

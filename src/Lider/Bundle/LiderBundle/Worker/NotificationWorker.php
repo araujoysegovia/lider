@@ -170,7 +170,7 @@ class NotificationWorker
         );
         try{
             $send = $notificationService->sendEmail($subject, $this->from, $player->getEmail(), null, "LiderBundle:Templates:duelnotification.html.twig", $content);
-            echo "Mensaje Enviado de duelo a ".$player->getEmail()."\n";
+            echo "Mensaje Enviado de duelo a ".$player->getEmail();
         }catch(\Exception $e){
             echo $e->getMessage();
         }
@@ -309,6 +309,51 @@ class NotificationWorker
             $em = $this->co->get('doctrine')->getManager();
             $repo = $em->getRepository("LiderBundle:Game");
             $games = $repo->getGamesFromArrayId($data['content']['games']);
+            $data['content']['games'] = $games;
+            try{
+                $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
+                echo "Mensaje Enviado al administrador";
+            }catch(\Exception $e){
+                echo $e->getMessage();
+            }
+        }
+    }
+
+    /**
+     * Send Email games dont start
+     *
+     * @param \GearmanJob $job Object with job parameters
+     *
+     * @return boolean
+     *
+     * @Gearman\Job(
+     *     name = "adminNotificationGamesDontStart",
+     *     description = "Send an Email to Admin from games dont start"
+     * )
+     */
+    public function adminNotificationGamesDontStart(\GearmanJob $job)
+    {
+        $notificationService = $this->co->get("notificationService");
+
+        $data = json_decode($job->workload(),true);
+        $admins = $this->getAdmins();
+        echo "# admins: ".count($admins);
+        $template = "LiderBundle:Templates:duelsnotificationadmin.html.twig";
+        if(array_key_exists("template", $data))
+        {
+            $template = $data['template'];
+        }
+        if($admins)
+        {
+            $to = array();
+            $subject = $data['subject'];
+            foreach($admins as $value)
+            {
+                $to[] = $value->getEmail();
+            }
+            $em = $this->co->get('doctrine')->getManager();
+            $repo = $em->getRepository("LiderBundle:Game");
+            $games = $repo->getGamesDontStart();
             $data['content']['games'] = $games;
             try{
                 $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
