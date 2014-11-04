@@ -174,28 +174,36 @@ class CheckerWorker
     private function finishTournamentLevel($gameId)
     {
         $em = $this->co->get('doctrine')->getManager();
-        $game = $em->getRepository("LiderBundle:Game")->find($gameId);
-        $tournament = $game->getTournament();
-        $list = $em->getRepository("LiderBundle:Game")->getArrayEntityWithOneLevel(array('finished' => false,"tournament" => $tournament->getId()));
+        $game = $em->getRepository("LiderBundle:Game")->getArrayEntityWithOneLevel(array("id" => $gameId));
+        $list = $em->getRepository("LiderBundle:Game")->getArrayEntityWithOneLevel(array('finished' => false,"tournament" => $game['data'][0]['tournament']['id']));
+
         echo "cantidad de juegos no finalizados ".$list['total']."\n";
         if($list['total'] == 0)
         {
+            $tournament = $em->getRepository("LiderBundle:Tournament")->find($game['data'][0]['tournament']['id']);
             echo "no existen juegos activos\n";
             if($tournament->getLevel() < 5)
             {
+                echo "voy a activar el siguiente nivel\n";
                 $tournament->setEnabledLevel(false);
+                $level = $tournament->getLevel();
                 $tournament->setLevel($tournament->getLevel()+1);
-                $em->flush();
+                $em->persist($tournament);
                 $gearman = $this->co->get('gearman');
+                
                 $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
                     'subject' => 'Finalizacion de Nivel',
                     'templateData' => array(
                         'title' => 'Nivel finalizado',
                         'subjectUser' => 'Nivel finalizado',
-                        'body' => '<p>El nivel '.$tournament->getLevel().' del torneo '.$tournament->getName().' ha finalizado. Por favor inicie el siguiente nivel</p>'
+                        'body' => '<p>El nivel '.$level.' del torneo '.$tournament->getName().' ha finalizado. Por favor inicie el siguiente nivel</p>'
                     )
                 )));
             }
+            else{
+                $tournament->setActive(false);
+            }
+            $em->flush();
         }
     }
     
@@ -221,6 +229,33 @@ class CheckerWorker
                 $this->notificationToAdminGameFinish($game);
     		}
     	}
+    }
+
+    /**
+     * @Gearman\Job(
+     *     name = "sendNotificationPlayersDuel",
+     *     description = "Envia notificaciones a los jugadores de los equipos cuando se finaliza el juego de manera manual"
+     * )
+     */
+    public function sendNotificationPlayersDuel(\GearmanJob $job)
+    {
+        $data = json_decode($job->workload(),true);
+        $gearman = $this->co->get('gearman');
+        $duelId = $data['duelId'];
+        $em = $this->co->get('doctrine')->getManager();
+        $duel = $em->getRepository("LiderBundle:Duel")->findOneBy(array("id" => $duelId, "active" => true, "deleted" => false));
+        if($duel)
+        {
+            if(!$duel->getExtraDuel())
+            {
+                $this->notificationDuel($duel->getPlayerOne(), $duel->getPlayerTwo()->getTeam(), $duel->getPlayerTwo());
+                $this->notificationDuel($duel->getPlayerTwo(), $duel->getPlayerOne()->getTeam(), $duel->getPlayerOne());
+            }
+            else{
+                $this->notificationExtraDuel($duel->getPlayerOne(), $duel->getPlayerTwo()->getTeam(), $duel->getPlayerTwo());
+                $this->notificationExtraDuel($duel->getPlayerTwo(), $duel->getPlayerOne()->getTeam(), $duel->getPlayerOne());
+            }
+        }
     }
 
     private function notificationToAdminGameFinish($game)
@@ -360,9 +395,8 @@ class CheckerWorker
     	$player2 = $this->selectPlayer($team2, $game);
         $date = new \DateTime();
         $endDate = new \DateTime();
-        $endDate->modify('+'.$params['gamesParameters']['timeDuelExtra'].' day');
-    	$duel = new Duel();
-    	$duel->setGame($game);
+        $endDate->modify('+'.$params['gamesParameters']['timeDuel'].' day');
+    	$duel = new Duel();   	$duel->setGame($game);
     	$duel->setStartdate($date);
         $duel->setEndDate($endDate);
         $duel->setPlayerOne($player1);
@@ -388,6 +422,22 @@ class CheckerWorker
             'content' => array(
                 'title' => 'Tienes un Duelo Extra',
                 'subjectMessage' => 'Se ha generado el duelo de desempate',
+                'body' => $body
+            )
+        )));
+    }
+
+    private function notificationDuel($player, $teamvs, $playervs)
+    {
+        $gearman = $this->co->get('gearman');
+        $body = 'Se ha generado un duelo entre tu equipo y el equipo '.$teamvs->getName().', y tu has sido el seleccionado para jugarlo contra '.$playervs->getName().' '.$playervs->getLastname();
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
+            'subject' => 'Duelo Generado',
+            'to' => $player->getEmail(),
+            'viewName' => 'LiderBundle:Templates:emailnotification.html.twig',
+            'content' => array(
+                'title' => 'Tienes un Duelo',
+                'subjectMessage' => 'Se ha generado tu duelo',
                 'body' => $body
             )
         )));

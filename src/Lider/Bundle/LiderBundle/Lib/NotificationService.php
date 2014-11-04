@@ -75,10 +75,19 @@ class NotificationService
         }
         if(!is_null($viewName))
             $mail->addPart($this->templating->render($viewName, $viewparam), 'text/html');
-
-        $answer = $this->mailer->send($mail);
+        $mailer = $this->getNewConnection();
+        $answer = $mailer->send($mail);
         $this->flushSpoolMailer();
         return $answer;
+    }
+
+    private function getNewConnection()
+    {
+        $transport = \Swift_SmtpTransport::newInstance($this->co->getParameter('mailer_host'), 465, 'ssl');
+        $transport->setUsername($this->co->getParameter('mailer_user'));
+        $transport->setPassword($this->co->getParameter('mailer_password'));
+        $mailer = \Swift_Mailer::newInstance($transport);
+        return $mailer;
     }
     
     // public function sendEmail($subject, $message, $from, $to)

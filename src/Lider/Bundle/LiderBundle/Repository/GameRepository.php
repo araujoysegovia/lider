@@ -50,10 +50,17 @@ class GameRepository extends MainRepository
 		return $r;
     }
 
-
-    public function getDuelsForGame($game)
+    public function getGamesNoHaveActiveDuels()
     {
-    	
+    	$query =  $this->createQueryBuilder('g')
+						->select('g')
+						->leftJoin('g.duels', 'd', 'WITH', 'd.deleted = false')		
+						->where('g.deleted = false AND g.active = true AND g.finished = false and d.active = false AND d.finished = true');
+
+		$query = $query->getQuery();
+		$r = $query->getArrayResult();
+		
+		return $r;
     }
 
     public function findGameFromTwoTeams($team1, $team2, $tournamentId)
@@ -80,8 +87,9 @@ class GameRepository extends MainRepository
 	    	->join('g.team_one', 'po')
 	    	->join('g.team_two', 'two')
 	    	->leftJoin('g.team_winner', 'win')
-	    	->where('g.finished = true and g.deleted=false and g.active = false and (po.id = :team or two.id = :team or win.id = :team)')
-	    	->setParameter('team', $team, \Doctrine\DBAL\Types\Type::INTEGER);
+	    	->where('g.finished = true and g.deleted=false and g.active = false and (po.id = :team or two.id = :team or win.id = :team) and g.level = :l')
+	    	->setParameter('team', $team, \Doctrine\DBAL\Types\Type::INTEGER)
+	    	->setParameter('l', 1, \Doctrine\DBAL\Types\Type::INTEGER);
 
 
 		$query = $query->getQuery();
@@ -98,6 +106,18 @@ class GameRepository extends MainRepository
 	    	->leftJoin('g.duels', 'd')
 	    	->where('g.finished = false and g.deleted=false and g.active = true and g.id in (:ids)')
 	    	->setParameter('ids', $gameIds);
+		$query = $query->getQuery();
+    	$r = $query->getResult();
+		return $r;
+	}
+
+	public function getGamesDontStart()
+	{
+		$query = $this->createQueryBuilder('g')
+    		->select('g, po, two')
+	    	->join('g.team_one', 'po')
+	    	->join('g.team_two', 'two')
+	    	->where('g.finished = false and g.deleted=false and g.active = false');
 		$query = $query->getQuery();
     	$r = $query->getResult();
 		return $r;

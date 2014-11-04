@@ -21,28 +21,32 @@
 				        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ game.teamTwo.image }}?width=30&height=30"/></td>
 				        			</tr>
 				        		</thead>
-				        		<tbody>
-				        			{% for duel in game.duels %}
-				        				{% if duel.playerOne.team.id == game.teamOne.id %}
-						        			<tr>
-						        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerOne.image }}?width=30&height=30"/></td>
-						        				<td style="vertical-align: middle;">{{ duel.playerOne.name }} {{ duel.playerOne.lastname }}</td>
-						        				<td style="width: 50px; vertical-align: middle;">vs</td>
-						        				<td style="vertical-align: middle;">{{ duel.playerTwo.name }} {{ duel.playerTwo.lastname }}</td>
-						        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerTwo.image }}?width=30&height=30"/></td>
-						        			</tr>
-						        		{% else %}
-						        			<tr>
-						        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerTwo.image }}?width=30&height=30"/></td>
-						        				<td style="vertical-align: middle;">{{ duel.playerTwo.name }} {{ duel.playerTwo.lastname }}</td>
-						        				<td style="width: 50px; vertical-align: middle;">vs</td>
-						        				<td style="vertical-align: middle;">{{ duel.playerOne.name }} {{ duel.playerOne.lastname }}</td>
-						        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerOne.image }}?width=30&height=30"/></td>
-						        			</tr>
-						        		{% endif %}
+				        		{% if game.duels is defined %}
+				        			<tbody>
+				        			
+					        			{% for duel in game.duels %}
+					        				{% if duel.playerOne.team.id == game.teamOne.id %}
+							        			<tr>
+							        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerOne.image }}?width=30&height=30"/></td>
+							        				<td style="vertical-align: middle;">{{ duel.playerOne.name }} {{ duel.playerOne.lastname }}</td>
+							        				<td style="width: 50px; vertical-align: middle;">vs</td>
+							        				<td style="vertical-align: middle;">{{ duel.playerTwo.name }} {{ duel.playerTwo.lastname }}</td>
+							        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerTwo.image }}?width=30&height=30"/></td>
+							        			</tr>
+							        		{% else %}
+							        			<tr>
+							        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerTwo.image }}?width=30&height=30"/></td>
+							        				<td style="vertical-align: middle;">{{ duel.playerTwo.name }} {{ duel.playerTwo.lastname }}</td>
+							        				<td style="width: 50px; vertical-align: middle;">vs</td>
+							        				<td style="vertical-align: middle;">{{ duel.playerOne.name }} {{ duel.playerOne.lastname }}</td>
+							        				<td style="width:70px; vertical-align: middle;"><img style="border-radius: 50%; width: 50px;" src="http://soylider.sifinca.net/image/{{ duel.playerOne.image }}?width=30&height=30"/></td>
+							        			</tr>
+							        		{% endif %}
 
-					        		{% endfor %}
-				        		</tbody>
+						        		{% endfor %}
+						        	
+				        			</tbody>
+				        		{% endif %}
 			        		</table>
 			        	</div>
 			        </div>

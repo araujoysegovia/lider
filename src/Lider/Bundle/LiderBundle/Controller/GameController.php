@@ -160,4 +160,10 @@ class GameController extends Controller
         return $this->get("talker")->response($return);
     }
     
+    public function pruebaAction()
+    {
+        $em = $this->get('doctrine')->getManager();
+        $games = $em->getRepository("LiderBundle:Game")->getGamesNoHaveActiveDuels();
+        return $this->get("talker")->response($games);
+    }
 }

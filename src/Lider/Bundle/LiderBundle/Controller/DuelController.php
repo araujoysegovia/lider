@@ -220,4 +220,14 @@ class DuelController extends Controller
        return $this->get("talker")->response($d);
         
     }
+
+    public function notificationByDuelAction($duelId)
+    {
+        $gearman = $this->get('gearman');
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~sendNotificationPlayersDuel', json_encode(array(
+                'duelId' => $duelId
+        )));
+        
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));      
+    }
 }
