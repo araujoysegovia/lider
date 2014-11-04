@@ -643,9 +643,14 @@ class PlayerController extends Controller
         if(!$role)
             throw new \Exception("Role no found");
 
-        $team = $em->getRepository("LiderBundle:Team")->findOneBy(array("id" => $data['team']['id'], "deleted" => false));
-        if(!$team)
-            throw new \Exception("Team no found");       
+        if($data['team']['id']){
+            $team = $em->getRepository("LiderBundle:Team")->findOneBy(array("id" => $data['team']['id'], "deleted" => false));
+            if(!$team)
+                throw new \Exception("Team no found");           
+
+            $player->setTeam($team);
+        }
+        
         
         $player->setName($data['name']);
         $player->setLastname($data['lastname']);
@@ -655,10 +660,9 @@ class PlayerController extends Controller
         $roles = $player->getRoles();        
         foreach ($roles as $key => $value) {
             $player->removeRole($value);
-        }        
-        $player->addRole($role);
-
-        $player->setTeam($team);
+        }
+        
+        $player->addRole($role);        
         $player->setActive($data['active']);
 
         $em->flush();

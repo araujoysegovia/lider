@@ -952,7 +952,9 @@ var routerManager = Backbone.Router.extend({
 					},
 					roles: {						
 					},
-					team:{ },
+					team:{ 
+						validation: { required: false}
+					},
 					active: {
 						type: "boolean"
 					}
@@ -1070,21 +1072,24 @@ var routerManager = Backbone.Router.extend({
 				},	
 				{ 
 					field: "team",
-					title:"Equipo",					
+					title:"Equipo",	
+					
 					template:  function(e){						
 						if(e.team){
 							return e.team.name;
 						}
 					},					
 					editor:	function (container, options) {
-						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+						var input =  $('<input data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
 					        .kendoDropDownList({
-					            autoBind: true,	
+					            autoBind: false,	
+					            validation: { required: false},
 					            dataBound: function(e) {
-					            	input.data("kendoDropDownList").trigger("change");
+					            	//input.data("kendoDropDownList").trigger("change");
 					            },
-					            dataSource: {		                	
+					            dataSource: {
+					            	batch: false,	                	
 					                transport: {
 					                    read: "home/team/"
 					                },
@@ -1100,8 +1105,11 @@ var routerManager = Backbone.Router.extend({
 					    		        }
 					                },
 					            },
-					            dataTextField: "name",
-					            dataValueField:"id",				            
+					            //value: "jaja",
+					   			// valuePrimitive: true,
+								dataTextField: "name",
+								dataValueField: "id",
+								optionLabel: "Selecciona un equipo"
 					        });
 					} 
 				},
