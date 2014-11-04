@@ -952,8 +952,7 @@ var routerManager = Backbone.Router.extend({
 					},
 					roles: {						
 					},
-					team:{ 
-						validation: { required: false}
+					team:{						
 					},
 					active: {
 						type: "boolean"
@@ -1038,8 +1037,7 @@ var routerManager = Backbone.Router.extend({
 					template:  function(e){						
 						if(e.roles[0]){
 							return e.roles[0].name;
-						}
-						
+						}						
 					},
 					editor:	function (container, options) {
 						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
@@ -1083,10 +1081,9 @@ var routerManager = Backbone.Router.extend({
 						var input =  $('<input data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
 					        .kendoDropDownList({
-					            autoBind: false,	
-					            validation: { required: false},
+					            autoBind: false,
 					            dataBound: function(e) {
-					            	//input.data("kendoDropDownList").trigger("change");
+					            	input.data("kendoDropDownList").trigger("change");
 					            },
 					            dataSource: {
 					            	batch: false,	                	
@@ -1105,8 +1102,6 @@ var routerManager = Backbone.Router.extend({
 					    		        }
 					                },
 					            },
-					            //value: "jaja",
-					   			// valuePrimitive: true,
 								dataTextField: "name",
 								dataValueField: "id",
 								optionLabel: "Selecciona un equipo"
