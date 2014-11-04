@@ -3595,12 +3595,12 @@ var routerManager = Backbone.Router.extend({
 				
 				var trTeamDuels = $('<thead>'+
 									 '<tr>'+
-								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerTwo.image+'?width=50&height=50"/><br/><h4>'+data.playerTwo.name+'</h4><button class="btn" style="margin-bottom:40px;" data-id="p1" disabled="disabled">Resetear Duelo</button</td>'+
+								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerOne.image+'?width=50&height=50"/><br/><h4>'+data.playerOne.name+'</h4><button class="btn" style="margin-bottom:40px;" data-id="p1" disabled="disabled">Resetear Duelo</button</td>'+
 								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerOne.image+'?width=50&height=50"/><br/><h4>'+data.playerOne.name+'</h4><button class="btn" style="margin-bottom:40px;" data-id="p2" disabled="disabled">Resetear Duelo</button</td>'+
+								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerTwo.image+'?width=50&height=50"/><br/><h4>'+data.playerTwo.name+'</h4><button class="btn" style="margin-bottom:40px;" data-id="p2" disabled="disabled">Resetear Duelo</button</td>'+
 								    '</tr>'+
 							   '</thead>');
-				if(data.playerTwo.duel)
+				if(data.playerOne.duel)
 				{
 					trTeamDuels.find('button[data-id=p1]').addClass('btn-success').attr("disabled", false);
 				}
@@ -3622,16 +3622,16 @@ var routerManager = Backbone.Router.extend({
 					}).addClass('tr-game');
 					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
 					console.log(question.answers);
-					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
+					if(question.answers && question.answers.playerOne  && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
 					{
 						var buttonOne = $('<button>Resetear</button>').addClass('btn');
-						if(question.answers.playerTwo.find) buttonOne.addClass('btn-success');
+						if(question.answers.playerOne.find) buttonOne.addClass('btn-success');
 						else buttonOne.addClass('btn-danger');
 						buttonOne.click(function(){
 							$.confirm({
 							    text: "Desea resetear esta pregunta ?",
 							    confirm: function(button) {
-							    	me.resetQuestion(question.answers.playerTwo.token, duel, modal);
+							    	me.resetQuestion(question.answers.playerOne.token, duel, modal);
 							    },
 							    cancel: function(button) {
 							        // do something
@@ -3645,9 +3645,9 @@ var routerManager = Backbone.Router.extend({
 						resetOne.append(buttonOne);
 					}
 					tr.append(resetOne);
-					if(question.answers && question.answers.playerTwo && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
+					if(question.answers && question.answers.playerOne && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
 					{
-						var answerOne = $('<td style="vertical-align: middle;"><p>'+question.answers.playerTwo.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
+						var answerOne = $('<td style="vertical-align: middle;"><p>'+question.answers.playerOne.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
 						tr.append(answerOne);
 					}
 					else{
@@ -3658,9 +3658,9 @@ var routerManager = Backbone.Router.extend({
 					
 					var q = $('<td style="vertical-align: middle;"><p>'+question.question+'</p></td>').css('width', '400px').css('text-align', 'center');
 					tr.append(q);
-					if(question.answers && question.answers.playerOne  && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
+					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
-						var answerTwo = $('<td style="vertical-align: middle;"><p>'+question.answers.playerOne.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
+						var answerTwo = $('<td style="vertical-align: middle;"><p>'+question.answers.playerTwo.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
 						tr.append(answerTwo);
 					}
 					else{
@@ -3670,16 +3670,16 @@ var routerManager = Backbone.Router.extend({
 					
 					var resetTwo = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
 					
-					if(question.answers && question.answers.playerOne  && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
+					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
 						var buttonTwo = $('<button>Resetear</button>').addClass('btn');
-						if(question.answers.playerOne.find) buttonTwo.addClass('btn-success');
+						if(question.answers.playerTwo.find) buttonTwo.addClass('btn-success');
 						else buttonTwo.addClass('btn-danger');
 						buttonTwo.click(function(){
 							$.confirm({
 							    text: "Desea resetear esta pregunta ?",
 							    confirm: function(button) {
-							    	me.resetQuestion(question.answers.playerOne.token, duel, modal);
+							    	me.resetQuestion(question.answers.playerTwo.token, duel, modal);
 							    },
 							    cancel: function(button) {
 							        // do something

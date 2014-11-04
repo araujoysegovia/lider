@@ -388,7 +388,7 @@ class CheckerWorker
     	$player2 = $this->selectPlayer($team2, $game);
         $date = new \DateTime();
         $endDate = new \DateTime();
-        $endDate->modify('+'.$params['gamesParameters']['timeDuelExtra'].' day');
+        $endDate->modify('+'.$params['gamesParameters']['timeDuel'].' day');
     	$duel = new Duel();
     	$duel->setGame($game);
     	$duel->setStartdate($date);

@@ -5382,3 +5382,119 @@ PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/2012121
 [2014-10-14 09:15:03] loaded. Ctrl+C to break
 PHP Fatal error:  Call to a member function getTeam() on a non-object in /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php on line 45
 PHP Fatal error:  Call to a member function getTeam() on a non-object in /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php on line 45
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+[2014-11-04 07:32:06] loading...
+[2014-11-04 07:32:06] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+[2014-11-04 07:32:06] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 6
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\jobs
+
+@Worker\#jobs : 6
+@Worker\jobs
+
+[2014-11-04 07:32:06] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationTeam 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationDuel 
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+    # LiderBundleLiderBundleWorkernotification~sendNotificationGroup 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationDuels 
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationTeam 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationDuel 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationGroup 
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 6
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationDuels 
+
+@worker\servers :
+    # LiderBundleLiderBundleWorkernotification~sendNotificationTeam 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationDuel 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationGroup 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationDuels 
+
+    Worker to Send Notifications
+
+[2014-11-04 07:32:06] loaded. Ctrl+C to break
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+    Worker to Send Notifications
+
+
+[2014-11-04 07:32:06] loaded. Ctrl+C to break
+[2014-11-04 07:32:06] loaded. Ctrl+C to break
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 6
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationTeam 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationDuel 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationGroup 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationDuels 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-11-04 07:32:06] loaded. Ctrl+C to break
