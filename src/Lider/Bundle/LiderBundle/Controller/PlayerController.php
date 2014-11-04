@@ -288,7 +288,21 @@ class PlayerController extends Controller
         foreach ($slist as $value) {
             array_unshift($list, $value);
         }
-        return $this->get("talker")->response(array("total" => count($list), "data" => $list));
+
+        $newList = [];
+        foreach ($list as $key => $value) {                        
+            if($value['total'] > 0){
+                $percentageCorrect = ($value['win'] / $value['total']) * 100;
+                $percentageIncorrect = ($value['lost'] / $value['total']) * 100;
+                $percentageCorrect = round($percentageCorrect);
+                $percentageIncorrect = round($percentageIncorrect);
+                $value['percentageCorrect'] = $percentageCorrect;
+                $value['percentageIncorrect'] = $percentageIncorrect;
+            }            
+            $newList[] = $value;
+        }
+        
+        return $this->get("talker")->response(array("total" => count($list), "data" => $newList));
     }
 
     public function getRangePositionByPracticeAction($tournamentId = null)
@@ -313,7 +327,21 @@ class PlayerController extends Controller
         foreach ($slist as $value) {
             array_unshift($list, $value);
         }
-        return $this->get("talker")->response(array("total" => count($list), "data" => $list));
+
+        $newList = [];
+        foreach ($list as $key => $value) {                        
+            if($value['total'] > 0){
+                $percentageCorrect = ($value['win'] / $value['total']) * 100;
+                $percentageIncorrect = ($value['lost'] / $value['total']) * 100;
+                $percentageCorrect = round($percentageCorrect);
+                $percentageIncorrect = round($percentageIncorrect);
+                $value['percentageCorrect'] = $percentageCorrect;
+                $value['percentageIncorrect'] = $percentageIncorrect;
+            }            
+            $newList[] = $value;
+        }
+
+        return $this->get("talker")->response(array("total" => count($list), "data" => $newList));
     }    
 
     public function getGeneralStatisticsAction(){
