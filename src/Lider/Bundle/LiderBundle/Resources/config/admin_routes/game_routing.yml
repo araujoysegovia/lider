@@ -35,6 +35,13 @@ admin_game_getbygroup:
     requirements:
       id: \d+
 
+admin_game_getforsecondlevel:
+    pattern:  /elimination/{tournament}
+    defaults: { _controller: LiderBundle:Game:getGamesWithoutGroup }
+    methods:  [GET]
+    requirements:
+      id: \d+
+
 stop_game:
     pattern:  /stop
     defaults: { _controller: LiderBundle:Game:stopGames }

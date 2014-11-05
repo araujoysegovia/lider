@@ -81,6 +81,14 @@ class GameController extends Controller
         return $this->get("talker")->response(array('count' => count($list), 'data' => $list));
     }
 
+    public function getGamesWithoutGroupAction($tournament = null)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $repo = $em->getRepository('LiderBundle:Game');
+        $list = $repo->findGamesByNoGroup($tournament);
+        return $this->get("talker")->response(array('count' => count($list), 'data' => $list));
+    }
+
     public function generateDuelAction()
     {
         $request = $this->get("request");

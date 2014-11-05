@@ -861,8 +861,6 @@ var routerManager = Backbone.Router.extend({
 			    }
 			],			
 			serverSorting: false,
-
-
 			dataBound: function(e) {
 			    //console.log("dataBound");
 			    //console.log(e)
@@ -954,7 +952,8 @@ var routerManager = Backbone.Router.extend({
 					},
 					roles: {						
 					},
-					team:{ },
+					team:{						
+					},
 					active: {
 						type: "boolean"
 					}
@@ -1038,8 +1037,7 @@ var routerManager = Backbone.Router.extend({
 					template:  function(e){						
 						if(e.roles[0]){
 							return e.roles[0].name;
-						}
-						
+						}						
 					},
 					editor:	function (container, options) {
 						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
@@ -1072,21 +1070,23 @@ var routerManager = Backbone.Router.extend({
 				},	
 				{ 
 					field: "team",
-					title:"Equipo",					
+					title:"Equipo",	
+					
 					template:  function(e){						
 						if(e.team){
 							return e.team.name;
 						}
 					},					
 					editor:	function (container, options) {
-						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+						var input =  $('<input data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
 					        .kendoDropDownList({
-					            autoBind: true,	
+					            autoBind: false,
 					            dataBound: function(e) {
 					            	input.data("kendoDropDownList").trigger("change");
 					            },
-					            dataSource: {		                	
+					            dataSource: {
+					            	batch: false,	                	
 					                transport: {
 					                    read: "home/team/"
 					                },
@@ -1102,8 +1102,9 @@ var routerManager = Backbone.Router.extend({
 					    		        }
 					                },
 					            },
-					            dataTextField: "name",
-					            dataValueField:"id",				            
+								dataTextField: "name",
+								dataValueField: "id",
+								optionLabel: "Selecciona un equipo"
 					        });
 					} 
 				},
@@ -2243,16 +2244,22 @@ var routerManager = Backbone.Router.extend({
 				    	type: 'string'
 				    },				    
 				    total: {
-				    	type: 'int'
+				    	type: 'number'
 				    },
 				    win: {
-				    	type: 'int' 
+				    	type: 'number' 
+				    },
+				    percentageCorrect: {
+				    	type: 'number'
 				    },
 				    winHelp: {
-				    	type: 'int' 
+				    	type: 'number' 
 				    },
 				    lost: {
-				    	type: 'int' 
+				    	type: 'number' 
+				    },
+				    percentageIncorrect: {
+				    	type: 'number'
 				    },
 				    totalPoint: {
 				    	type: 'number'
@@ -2278,6 +2285,12 @@ var routerManager = Backbone.Router.extend({
 					title:"PC"
 				},
 				{
+					field: "percentageCorrect",
+					title: "PC %",
+					width: "100px",
+					template:  "#: percentageCorrect +' %' #",					
+				},				
+				{
 					field: "winHelp",
 					title:"PCA"
 				},
@@ -2285,6 +2298,12 @@ var routerManager = Backbone.Router.extend({
 					field: "lost",
 					title:"PI"
 				},	
+				{
+					field: "percentageIncorrect",
+					title: "PIC %",
+					width: "100px",
+					template:  "#: percentageIncorrect +' %' #",					
+				},				
 				{
 					field: "totalPoint",
 					title:"Puntos"
@@ -2412,24 +2431,31 @@ var routerManager = Backbone.Router.extend({
 				    	type: 'string'
 				    },			    
 				    total: {
-				    	type: 'int'
+				    	type: 'number'
 				    },
 				    win: {
-				    	type: 'int' 
+				    	type: 'number' 
+				    },
+				    percentageCorrect: {
+				    	type: 'number'
 				    },
 				    winHelp: {
-				    	type: 'int' 
+				    	type: 'number' 
 				    },
 				    lost: {
-				    	type: 'int' 
-				    }				    
+				    	type: 'number' 
+				    },
+				    percentageIncorrect: {
+				    	type: 'number'
+				    }
+
 				}
 			},
 			columns: [			
 				{ 
 					field: "fullname",
 					title:"Jugador",
-					width: "250px"									
+					width: "350px"									
 				},									
 				{ 
 					field: "total",
@@ -2440,15 +2466,27 @@ var routerManager = Backbone.Router.extend({
 					title:"PC"
 				},
 				{
+					field: "percentageCorrect",
+					title: "PC %",
+					width: "100px",
+					template:  "#: percentageCorrect +' %' #",					
+				},
+				{
 					field: "winHelp",
 					title:"PCA"
 				},
 				{
 					field: "lost",
 					title:"PI"
-				}									
+				},
+				{
+					field: "percentageIncorrect",
+					title: "PI %",
+					width: "100px",
+					template:  "#: percentageIncorrect +' %' #",
+				}								
 			],
-			toolbar: [],
+			toolbar: false,
 			command: [],
 			serverFiltering: false,
 			serverSorting: false,
@@ -3048,8 +3086,10 @@ var routerManager = Backbone.Router.extend({
 		panelHeading.append(title).append(form.append(form.append(div)));
 		container.append(panelHeading).append(panelBody);
 		$("#entity-content").append(container);
-		var select = $('<select></select>').addClass('form-control select-tournament');
-		var option = $('<option></option>').attr('value', '0').html('Seleccione un torneo');
+		var selectTournament = $('<select></select>').addClass('form-control select-tournament');
+		var optionTournament = $('<option></option>').attr('value', '0').html('Seleccione un torneo');
+		var selectLevel = $('<select></select>').addClass('form-control select-level').css("margin-left", "15px");
+		var optionLevel = $('<option></option>').attr('value', '0').html('Seleccione una vista de torneo');
 		var loader = $(document.body).loaderPanel();
 		loader.show();
 		var configTorunament = {
@@ -3065,12 +3105,15 @@ var routerManager = Backbone.Router.extend({
 		    },            
 			success: function(response){
 				var data = response;
-				select.append(option);
+				console.log(data);
+				selectTournament.append(optionTournament);
+				selectLevel.append(optionLevel);
 				_.each(data, function(tournament){
-					var option = $('<option></option>').attr('value', tournament.id).html(tournament.name);
-					select.append(option)
+					var option = $('<option></option>').attr('value', tournament.id).attr("level", tournament.level).html(tournament.name);
+					selectTournament.append(option)
 				})
-				div.prepend(select);
+				div.prepend(selectTournament);
+				div.append(selectLevel);
 			},
 			error: function(){},
 	    	complete: function(){
@@ -3079,33 +3122,91 @@ var routerManager = Backbone.Router.extend({
         }
         $.ajax(configTorunament);
 
-        select.change(function(op){
-        	panelBody.empty();
-        	var loader1 = $(document.body).loaderPanel();
-			loader1.show();
-        	var config = {
-				type: "GET",
-	            url: "home/game/group/"+select.val(),
-	            contentType: "application/json",
-	            dataType: "json",
-	            //data: JSON.stringify(param),
-    	     	statusCode: {
-			      401:function() { 
-			      	window.location = '';
-			      }		   
-			    },	            
-				success: function(response){
-					var data = response.data;
-					me.data = data;
-					me.viewOne();
-				},
-				error: function(){},
-				complete: function(){
-		    		loader1.hide();
-		    	}
-	        }
-	        $.ajax(config);
+        selectTournament.change(function(op){
+        	var option = $(this).find('option:selected');
+        	var level = option.attr('level');
+        	var optionGroup = $('<option></option>').attr('level', '1').attr('value', option.attr('value')).html('Fase de grupos');
+			selectLevel.append(optionGroup);
+        	console.log(level);
+        	if(level > 1)
+        	{
+        		var optionElimination = $('<option></option>').attr('level', '2').attr('value', option.attr('value')).html('Fase eliminatoria');
+        		selectLevel.append(optionElimination);
+        	}
+        	me.callViewOne(panelBody, selectTournament.val());
+        	
 		})
+		selectLevel.change(function(op){
+			var option = $(this).find('option:selected');
+			if(option.attr('level') == 1)
+			{
+				me.callViewOne(panelBody, option.attr('value'));
+			}
+			else if(option.attr('level') == 2)
+			{
+				me.callViewTwo(panelBody, option.attr('value'));
+			}
+		})
+	},
+
+	callViewOne: function(panelBody, tournament)
+	{
+		var me = this;
+		panelBody.empty();
+    	var loader1 = $(document.body).loaderPanel();
+		loader1.show();
+    	var config = {
+			type: "GET",
+            url: "home/game/group/"+tournament,
+            contentType: "application/json",
+            dataType: "json",
+            //data: JSON.stringify(param),
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },	            
+			success: function(response){
+				var data = response.data;
+				me.data = data;
+				me.viewOne();
+			},
+			error: function(){},
+			complete: function(){
+	    		loader1.hide();
+	    	}
+        }
+        $.ajax(config);
+	},
+
+	callViewTwo: function(panelBody, tournament)
+	{
+		var me = this;
+		panelBody.empty();
+    	var loader1 = $(document.body).loaderPanel();
+		loader1.show();
+    	var config = {
+			type: "GET",
+            url: "home/game/elimination/"+tournament,
+            contentType: "application/json",
+            dataType: "json",
+            //data: JSON.stringify(param),
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },	            
+			success: function(response){
+				var data = response.data;
+				me.data = data;
+				me.viewTwo();
+			},
+			error: function(){},
+			complete: function(){
+	    		loader1.hide();
+	    	}
+        }
+        $.ajax(config);
 	},
 
 	viewOne: function(){
@@ -3163,6 +3264,186 @@ var routerManager = Backbone.Router.extend({
 			})
 			me.createPanel(group.name, container);
 		})
+	},
+
+	viewTwo: function()
+	{
+		var me = this;
+		var container = $('<div></div>');
+		_.each(me.data, function(game){
+			console.log(game);
+			var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html(game.startdate.date)).css("padding", "0 20px 40px 0");
+
+
+			var table = $('<table></table>');
+			
+				//console.log(game)
+				var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
+				var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top:10px; margin-bottom: 10px;" class="div-game"></div></td>').css('width', '15px');
+				tr.append(status);					
+
+				var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+				tr.append(img1);
+
+				var name1 = $('<td style="vertical-align: middle;"><span>'+game.team_one.name+'</span></td>');
+				tr.append(name1);
+
+				var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
+				tr.append(vs);
+
+				var name2 = $('<td style="vertical-align: middle;"><span>'+game.team_two.name+'</span></td>');
+				tr.append(name2);
+
+				var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+				tr.append(img2);
+
+				tr.click(function(){
+					me.showDuelFromGame(game);
+				});
+
+				if(game.active){
+					status.children('div').css('background', '#8BFFA7');
+				}
+				else if(!game.active && !game.finished){
+					status.children('div').css('background', '#E2E2E2');
+					status.unbind("click");
+				}
+				else if(game.finished){
+					status.children('div').css('background', '#A0394A');
+				}
+				table.append(tr);
+			fieldset.append(table);
+			container.append(fieldset);	
+
+		})
+		me.createPanel('Octavos de final', container);
+		
+	},
+
+	// viewTwo: function()
+	// {
+	// 	var me = this;
+	// 	var teams = [];
+
+	// 	var diagram = $("<div></div>").attr("id", "tournamentDiagram").css('height', '800px');
+	// 	$('div[data-id=general]').append(diagram);
+	// 	var $go = go.GraphObject.make;
+	// 	this.myDiagram =
+	//       $go(go.Diagram, "tournamentDiagram",  // create a Diagram for the DIV HTML element
+	//         {
+	//           initialContentAlignment: go.Spot.Center,  // center the content
+	//           "textEditingTool.starting": go.TextEditingTool.SingleClick,
+	//           // "textEditingTool.textValidation": isValidScore,
+	//           layout: $go(go.TreeLayout, { angle: 180 }),
+	//           "undoManager.isEnabled": true
+	//         });
+	//     this.myDiagram.nodeTemplate =
+ //      		$go(go.Node, "Auto",
+ //      			{ background: "#44CCFF" },
+	// 	        { selectable: false },
+	// 	        // $go(go.Shape, "Rectangle",
+	// 	        //   { fill: 'whitesmoke', strokeWidth: 2 },
+	// 	        //   // Shape.fill is bound to Node.data.color
+	// 	        //   new go.Binding("fill", "color")),
+	// 			// $go(go.Picture,
+	// 			// 	{margin: 10, width: 50, height: 50, background: "red"},
+	// 			// new go.Binding('image')),
+	// 	        $go(go.Panel, "Table",
+	// 	          $go(go.RowColumnDefinition, { column: 0, separatorStroke: "black" }),
+	// 	          $go(go.RowColumnDefinition, { column: 1, separatorStroke: "black" }),
+	// 	          $go(go.RowColumnDefinition, { row: 0, separatorStroke: "black" }),
+	// 	          $go(go.RowColumnDefinition, { row: 1, separatorStroke: "black" }),
+	// 	          $go(go.TextBlock, "",
+	// 	            { row: 0,
+	// 	              wrap: go.TextBlock.None, margin: 5, width: 90,
+	// 	              isMultiline: false, textAlign: 'left' },
+	// 	            new go.Binding("text", "player1").makeTwoWay()),
+	// 	          $go(go.TextBlock, "",
+	// 	            { row: 1,
+	// 	              wrap: go.TextBlock.None, margin: 5, width: 90,
+	// 	              isMultiline: false, textAlign: 'left' },
+	// 	            new go.Binding("text", "player2").makeTwoWay()),
+	// 	          $go(go.TextBlock, "",
+	// 	            { column: 1, row: 0,
+	// 	              wrap: go.TextBlock.None, margin: 2, width: 25,
+	// 	              isMultiline: false, editable: true, textAlign: 'right' },
+	// 	            new go.Binding("text", "score1").makeTwoWay()),
+	// 	          $go(go.TextBlock, "",
+	// 	            { column: 1, row: 1,
+	// 	              wrap: go.TextBlock.None, margin: 2, width: 25,
+	// 	              isMultiline: false, editable: true, textAlign: 'right' },
+	// 	            new go.Binding("text", "score2").makeTwoWay())
+	// 	        )
+ //      		);
+
+	//     // define the Link template
+	//     this.myDiagram.linkTemplate =
+	//       $go(go.Link,
+	//         { routing: go.Link.Orthogonal,
+	//           selectable: false },
+	//         $go(go.Shape));
+
+	//     _.each(me.data, function(game){
+	//     	// teams[] = {'player1'}
+	// 		teams.push(game.team_one.name);
+	// 		teams.push(game.team_two.name);
+	// 	})
+	// 	me.makeModel(teams);
+	// },
+
+	createPairs: function(players)
+	{
+		if (players.length % 2 !== 0) players.push('(empty)');
+	    var startingGroups = players.length / 2;
+	    var levelGroups = [];
+	    var currentLevel = Math.ceil(Math.log(startingGroups) / Math.log(2));
+	    for (var i = 0; i < startingGroups; i++) {
+	    	levelGroups.push(currentLevel + '-' + i);
+	    }
+	    var totalGroups = [];
+	    this.makeLevel(levelGroups, currentLevel, totalGroups, players);
+	    return totalGroups;
+	},
+
+	makeLevel: function(levelGroups, currentLevel, totalGroups, players) {
+		currentLevel--;
+		var len = levelGroups.length;
+		var parentKeys = [];
+		var parentNumber = 0;
+		var p = '';
+		for (var i = 0; i < len; i++) {
+			if (parentNumber === 0) {
+				p = currentLevel + '-' + parentKeys.length;
+				parentKeys.push(p);
+	        }
+
+	        if (players !== null) {
+	        	var p1 = players[i*2];
+		        var p2 = players[(i*2) + 1];
+		        totalGroups.push({ key: levelGroups[i], parent: p, player1: p1, player2: p2, parentNumber: parentNumber });
+	        } else {
+	        	totalGroups.push({ key: levelGroups[i], parent: p, parentNumber: parentNumber });
+	        }
+
+	        parentNumber++;
+	        if (parentNumber > 1) parentNumber = 0;
+      	}
+      	console.log(totalGroups);
+
+      	// after the first created level there are no player names
+      	if (currentLevel >= 0) this.makeLevel(parentKeys, currentLevel, totalGroups, null)
+    },
+
+    makeModel: function(players) {
+    	var me = this;
+    	this.myDiagram.model = new go.TreeModel(me.createPairs(players));
+    },
+
+    isValidScore: function(textblock, oldstr, newstr) {
+    	if (newstr === "" || newstr[0] === '-' || newstr.length > 3) return false;
+    	return !isNaN(parseInt(newstr, 10));
+    // Here it would also be possible to disallow entering
+    // the same score for two players, if that is desired.
 	},
 
 	showDuelFromGame: function(game){
