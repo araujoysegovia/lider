@@ -38,6 +38,7 @@ class TournamentController extends Controller
 
             $arr['id'] = $tournament->getId();
             $arr['name'] = $tournament->getName();
+            $arr['level'] = $tournament->getLevel();
             $arr['teams'] = $teams;
             $array[] = $arr;
         }
