@@ -174,29 +174,36 @@ class CheckerWorker
     private function finishTournamentLevel($gameId)
     {
         $em = $this->co->get('doctrine')->getManager();
-        $game = $em->getRepository("LiderBundle:Game")->find($gameId);
-        $tournament = $game->getTournament();
-        $list = $em->getRepository("LiderBundle:Game")->getArrayEntityWithOneLevel(array('finished' => false,"tournament" => $tournament->getId()));
+        $game = $em->getRepository("LiderBundle:Game")->getArrayEntityWithOneLevel(array("id" => $gameId));
+        $list = $em->getRepository("LiderBundle:Game")->getArrayEntityWithOneLevel(array('finished' => false,"tournament" => $game['data'][0]['tournament']['id']));
+
         echo "cantidad de juegos no finalizados ".$list['total']."\n";
         if($list['total'] == 0)
         {
+            $tournament = $em->getRepository("LiderBundle:Tournament")->find($game['data'][0]['tournament']['id']);
             echo "no existen juegos activos\n";
             if($tournament->getLevel() < 5)
             {
                 echo "voy a activar el siguiente nivel\n";
                 $tournament->setEnabledLevel(false);
+                $level = $tournament->getLevel();
                 $tournament->setLevel($tournament->getLevel()+1);
-                $em->flush();
+                $em->persist($tournament);
                 $gearman = $this->co->get('gearman');
+                
                 $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
                     'subject' => 'Finalizacion de Nivel',
                     'templateData' => array(
                         'title' => 'Nivel finalizado',
                         'subjectUser' => 'Nivel finalizado',
-                        'body' => '<p>El nivel '.$tournament->getLevel().' del torneo '.$tournament->getName().' ha finalizado. Por favor inicie el siguiente nivel</p>'
+                        'body' => '<p>El nivel '.$level.' del torneo '.$tournament->getName().' ha finalizado. Por favor inicie el siguiente nivel</p>'
                     )
                 )));
             }
+            else{
+                $tournament->setActive(false);
+            }
+            $em->flush();
         }
     }
     

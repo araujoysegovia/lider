@@ -401,7 +401,7 @@ var routerManager = Backbone.Router.extend({
 			        		value["help"] = false;
 			        	})
 			        	
-			        	//console.log(data)
+			        	console.log(data)
 			        	
 			        	data.answers[parseInt(data.selected) - 1].selected = true;
 			        	data.answers[parseInt(data.help) - 1].help = true;			        				       

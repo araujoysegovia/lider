@@ -22,8 +22,8 @@ class GameManager
 
 	public function __construct($em, $dm, $pm, $qm, $co){
 		$this->em = $em;
-		$this->dm = $dm;		
-		$this->pm = $pm;		
+		$this->dm = $dm;
+		$this->pm = $pm;
 		$this->qm = $qm;
 		$this->co = $co;
 	}
@@ -61,7 +61,7 @@ class GameManager
 		//$tournament = $this->em->getRepository("LiderBundle:Tournament")->findOneBy(array("id" =>$tournamentId, "deleted" => false));
 		$tournament = $this->em->getRepository("LiderBundle:Tournament")->getTournament($tournamentId);
 		if(!$tournament){
-			throw new \Exception("Entity no found", 1);			
+			throw new \Exception("Entity no found", 1);
 		}
 		$games = $this->em->getRepository("LiderBundle:Game")
 						  ->findBy(array("tournament" => $tournament->getId(), "deleted" => false, "level" => $tournament->getLevel()));
@@ -69,7 +69,7 @@ class GameManager
 
 		//Borrar juegos del torneo
 		if(!is_null($games)){
-			foreach ($games as $key => $game) {			
+			foreach ($games as $key => $game) {
 				$game->setDeleted(true);
 				//Borrar duelos del torneo
 				if(!is_null($game->getDuels())){
@@ -99,7 +99,7 @@ class GameManager
 					   ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
 					   
 		foreach ($groups as $key => $value) {
-			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));			
+			$startDate = new \DateTime($tournament->getStartdate()->format('Y-m-d H:i:s'));
 			//echo "\n\n";
 			//echo "\n ----------------------------- ".$value->getName()." ---------------------------------------";
 			$teams = array();
@@ -122,12 +122,12 @@ class GameManager
 
 					if($i !=1){
 						$startDate->modify('+'.$interval.' day');
-					}										
+					}
 
 					$endDate = new \DateTime($startDate->format('Y-m-d H:i:s'));
 					$endDate->modify('+'.($interval - 1).' day');
 					// echo "\n".$endDate->format('Y-m-d H:i:s');
-					for ($j=1; $j <= (floor($countTeams/2)) ; $j++) { 
+					for ($j=1; $j <= (floor($countTeams/2)) ; $j++) {
 						if($pos >= $countTeams){
 							// echo "\n pos = ".$pos;
 							$x = floor($pos/$countTeams);
@@ -166,7 +166,6 @@ class GameManager
 				}
 			}else{
 				throw new \Exception("El grupo ".$value->getName()." no tiene la cantidad valida de equipos", 1);
-				
 			}
 
 			//echo "\n ----------------------------------------------------------------------";
@@ -176,6 +175,7 @@ class GameManager
 
 	private function generateGameForSecondLevel($tournament, $interval, $startDate)
 	{
+		$gearman = $this->co->get('gearman');
 		$teams = $this->em->getRepository("LiderBundle:Team")
 									 ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
 
@@ -270,6 +270,13 @@ class GameManager
 			$this->em->persist($game);
 		}
 		$this->em->flush();
+
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart', json_encode(array(
+            'subject' => 'Juegos generados',
+            'content' => array(
+                'title' => 'Juegos Generados',
+            )
+        )));
 		// Esparcir terceros mejores en caso de que sea necesario
 		// $con = $nextRound - $totalTeams;
 		// if($con > 0)
@@ -586,25 +593,35 @@ class GameManager
                 'games' => $gamesId
             )
         )));
-	}	
+	}
 
 	/**
 	 * Detener duelos hasta la fecha actual
 	 */
 	public function stopDuels()
 	{
-		$date = new \DateTime();		
+		$date = new \DateTime();
 		$duels = $this->em->getRepository("LiderBundle:Duel")->getExpiredDuels($date);
-				
 		foreach ($duels as $key => $duel) {
-			
 			$duel->setFinished(true);
 			$duel->setActive(false);
-					
 		}
 
 		$this->em->flush();
-	}	
+	}
+
+	// private function stopGamesNoHaveActiveDuels($gameId)
+	// {
+	// 	$games = $this->em->getRepository("LiderBundle:duel")->getGamesNoHaveActiveDuels();
+	// 	$gearman = $this->co->get('gearman');
+	// 	foreach ($games as $key => $game) {
+	// 		$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkerchequear~stopGameManual', json_encode(array(
+	//             'gameId' => $game['id'],
+	//         )));
+	// 	}
+
+		
+	// }
 
 	/**
 	 * Generar preguntas para un duelo
