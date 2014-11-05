@@ -861,8 +861,6 @@ var routerManager = Backbone.Router.extend({
 			    }
 			],			
 			serverSorting: false,
-
-
 			dataBound: function(e) {
 			    //console.log("dataBound");
 			    //console.log(e)
@@ -954,7 +952,8 @@ var routerManager = Backbone.Router.extend({
 					},
 					roles: {						
 					},
-					team:{ },
+					team:{						
+					},
 					active: {
 						type: "boolean"
 					}
@@ -1038,8 +1037,7 @@ var routerManager = Backbone.Router.extend({
 					template:  function(e){						
 						if(e.roles[0]){
 							return e.roles[0].name;
-						}
-						
+						}						
 					},
 					editor:	function (container, options) {
 						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
@@ -1072,21 +1070,23 @@ var routerManager = Backbone.Router.extend({
 				},	
 				{ 
 					field: "team",
-					title:"Equipo",					
+					title:"Equipo",	
+					
 					template:  function(e){						
 						if(e.team){
 							return e.team.name;
 						}
 					},					
 					editor:	function (container, options) {
-						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+						var input =  $('<input data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
 					        .kendoDropDownList({
-					            autoBind: true,	
+					            autoBind: false,
 					            dataBound: function(e) {
 					            	input.data("kendoDropDownList").trigger("change");
 					            },
-					            dataSource: {		                	
+					            dataSource: {
+					            	batch: false,	                	
 					                transport: {
 					                    read: "home/team/"
 					                },
@@ -1102,8 +1102,9 @@ var routerManager = Backbone.Router.extend({
 					    		        }
 					                },
 					            },
-					            dataTextField: "name",
-					            dataValueField:"id",				            
+								dataTextField: "name",
+								dataValueField: "id",
+								optionLabel: "Selecciona un equipo"
 					        });
 					} 
 				},
@@ -2243,16 +2244,22 @@ var routerManager = Backbone.Router.extend({
 				    	type: 'string'
 				    },				    
 				    total: {
-				    	type: 'int'
+				    	type: 'number'
 				    },
 				    win: {
-				    	type: 'int' 
+				    	type: 'number' 
+				    },
+				    percentageCorrect: {
+				    	type: 'number'
 				    },
 				    winHelp: {
-				    	type: 'int' 
+				    	type: 'number' 
 				    },
 				    lost: {
-				    	type: 'int' 
+				    	type: 'number' 
+				    },
+				    percentageIncorrect: {
+				    	type: 'number'
 				    },
 				    totalPoint: {
 				    	type: 'number'
@@ -2278,6 +2285,12 @@ var routerManager = Backbone.Router.extend({
 					title:"PC"
 				},
 				{
+					field: "percentageCorrect",
+					title: "PC %",
+					width: "100px",
+					template:  "#: percentageCorrect +' %' #",					
+				},				
+				{
 					field: "winHelp",
 					title:"PCA"
 				},
@@ -2285,6 +2298,12 @@ var routerManager = Backbone.Router.extend({
 					field: "lost",
 					title:"PI"
 				},	
+				{
+					field: "percentageIncorrect",
+					title: "PIC %",
+					width: "100px",
+					template:  "#: percentageIncorrect +' %' #",					
+				},				
 				{
 					field: "totalPoint",
 					title:"Puntos"
@@ -2412,24 +2431,31 @@ var routerManager = Backbone.Router.extend({
 				    	type: 'string'
 				    },			    
 				    total: {
-				    	type: 'int'
+				    	type: 'number'
 				    },
 				    win: {
-				    	type: 'int' 
+				    	type: 'number' 
+				    },
+				    percentageCorrect: {
+				    	type: 'number'
 				    },
 				    winHelp: {
-				    	type: 'int' 
+				    	type: 'number' 
 				    },
 				    lost: {
-				    	type: 'int' 
-				    }				    
+				    	type: 'number' 
+				    },
+				    percentageIncorrect: {
+				    	type: 'number'
+				    }
+
 				}
 			},
 			columns: [			
 				{ 
 					field: "fullname",
 					title:"Jugador",
-					width: "250px"									
+					width: "350px"									
 				},									
 				{ 
 					field: "total",
@@ -2440,15 +2466,27 @@ var routerManager = Backbone.Router.extend({
 					title:"PC"
 				},
 				{
+					field: "percentageCorrect",
+					title: "PC %",
+					width: "100px",
+					template:  "#: percentageCorrect +' %' #",					
+				},
+				{
 					field: "winHelp",
 					title:"PCA"
 				},
 				{
 					field: "lost",
 					title:"PI"
-				}									
+				},
+				{
+					field: "percentageIncorrect",
+					title: "PI %",
+					width: "100px",
+					template:  "#: percentageIncorrect +' %' #",
+				}								
 			],
-			toolbar: [],
+			toolbar: false,
 			command: [],
 			serverFiltering: false,
 			serverSorting: false,
