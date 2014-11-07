@@ -3269,13 +3269,14 @@ var routerManager = Backbone.Router.extend({
 	viewTwo: function()
 	{
 		var me = this;
-		var container = $('<div></div>');
-		_.each(me.data, function(game){
-			console.log(game);
-			var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html(game.startdate.date)).css("padding", "0 20px 40px 0");
+		_.each(me.data, function(level){
+			var container = $('<div></div>');
+			_.each(level.game, function(game)
+			{
+				var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0");
 
 
-			var table = $('<table></table>');
+				var table = $('<table></table>');
 			
 				//console.log(game)
 				var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
@@ -3312,18 +3313,18 @@ var routerManager = Backbone.Router.extend({
 					status.children('div').css('background', '#A0394A');
 				}
 				table.append(tr);
-			fieldset.append(table);
-			container.append(fieldset);	
-
+				fieldset.append(table);
+				container.append(fieldset);
+			})
+			me.createPanel('Nivel '+level.level, container);
 		})
-		me.createPanel('Octavos de final', container);
 		
 	},
 
 	// viewTwo: function()
 	// {
 	// 	var me = this;
-	// 	var teams = [];
+	// 	var teams = {};
 
 	// 	var diagram = $("<div></div>").attr("id", "tournamentDiagram").css('height', '800px');
 	// 	$('div[data-id=general]').append(diagram);
@@ -3333,47 +3334,68 @@ var routerManager = Backbone.Router.extend({
 	//         {
 	//           initialContentAlignment: go.Spot.Center,  // center the content
 	//           "textEditingTool.starting": go.TextEditingTool.SingleClick,
-	//           // "textEditingTool.textValidation": isValidScore,
+	//           "textEditingTool.textValidation": me.isValidScore,
 	//           layout: $go(go.TreeLayout, { angle: 180 }),
 	//           "undoManager.isEnabled": true
 	//         });
 	//     this.myDiagram.nodeTemplate =
- //      		$go(go.Node, "Auto",
- //      			{ background: "#44CCFF" },
-	// 	        { selectable: false },
-	// 	        // $go(go.Shape, "Rectangle",
-	// 	        //   { fill: 'whitesmoke', strokeWidth: 2 },
-	// 	        //   // Shape.fill is bound to Node.data.color
-	// 	        //   new go.Binding("fill", "color")),
-	// 			// $go(go.Picture,
-	// 			// 	{margin: 10, width: 50, height: 50, background: "red"},
-	// 			// new go.Binding('image')),
-	// 	        $go(go.Panel, "Table",
-	// 	          $go(go.RowColumnDefinition, { column: 0, separatorStroke: "black" }),
-	// 	          $go(go.RowColumnDefinition, { column: 1, separatorStroke: "black" }),
-	// 	          $go(go.RowColumnDefinition, { row: 0, separatorStroke: "black" }),
-	// 	          $go(go.RowColumnDefinition, { row: 1, separatorStroke: "black" }),
-	// 	          $go(go.TextBlock, "",
-	// 	            { row: 0,
-	// 	              wrap: go.TextBlock.None, margin: 5, width: 90,
-	// 	              isMultiline: false, textAlign: 'left' },
-	// 	            new go.Binding("text", "player1").makeTwoWay()),
-	// 	          $go(go.TextBlock, "",
-	// 	            { row: 1,
-	// 	              wrap: go.TextBlock.None, margin: 5, width: 90,
-	// 	              isMultiline: false, textAlign: 'left' },
-	// 	            new go.Binding("text", "player2").makeTwoWay()),
-	// 	          $go(go.TextBlock, "",
-	// 	            { column: 1, row: 0,
-	// 	              wrap: go.TextBlock.None, margin: 2, width: 25,
-	// 	              isMultiline: false, editable: true, textAlign: 'right' },
-	// 	            new go.Binding("text", "score1").makeTwoWay()),
-	// 	          $go(go.TextBlock, "",
-	// 	            { column: 1, row: 1,
-	// 	              wrap: go.TextBlock.None, margin: 2, width: 25,
-	// 	              isMultiline: false, editable: true, textAlign: 'right' },
-	// 	            new go.Binding("text", "score2").makeTwoWay())
-	// 	        )
+ //      		$go(go.Node, "Auto",{
+	//       			selectable: false 
+	//       		}, 
+	      		
+	//       		$go(go.Shape, "Rectangle",{
+	//       			fill: 'whitesmoke', strokeWidth: 2 
+	//       		},
+	//       		// Shape.fill is bound to Node.data.color
+	//       		new go.Binding("fill", "color")),
+	      		
+	//       		$go(go.Panel, "Table",
+	// 				$go(go.RowColumnDefinition, { column: 0 }),
+	// 				$go(go.RowColumnDefinition, { column: 1, separatorStroke: "black" }),
+	// 				$go(go.RowColumnDefinition, { column: 2, separatorStroke: "black" }),
+	// 				$go(go.RowColumnDefinition, { row: 0, separatorStroke: "black" }),
+	// 				$go(go.RowColumnDefinition, { row: 1, separatorStroke: "black" }),
+	// 				$go(go.Picture,
+	// 	      		{
+	// 	      			row: 0,
+	// 	      			margin: 10, width: 50, height: 50, background: "red"
+	// 	      		},
+	// 	      		new go.Binding('image1')),
+	// 	      		$go(go.Picture,
+	// 	      		{
+	// 	      			row: 1,
+	// 	      			margin: 10, width: 50, height: 50, background: "red"
+	// 	      		},
+	// 	      		new go.Binding('image2')),
+	// 				$go(go.TextBlock, "",
+	// 				{ 
+	// 					row: 0, column: 1,
+	// 					wrap: go.TextBlock.None, margin: 10, width: 90,
+	// 					isMultiline: false, textAlign: 'left' 
+	// 				},
+	// 				new go.Binding("text", "player1").makeTwoWay()),
+	// 				$go(go.TextBlock, "",
+	// 				{ 
+	// 					row: 1, column: 1,
+	// 					wrap: go.TextBlock.None, margin: 10, width: 90,
+	// 					isMultiline: false, textAlign: 'left' 
+	// 				},
+	// 				new go.Binding("text", "player2").makeTwoWay()),
+	// 				$go(go.TextBlock, "",
+	// 			    { 
+	// 			    	column: 2, row: 0,
+	// 			        wrap: go.TextBlock.None, margin: 2, width: 25,
+	// 			        isMultiline: false, editable: true, textAlign: 'right' 
+	// 			    },
+	// 			    new go.Binding("text", "score1").makeTwoWay()),
+	// 			    $go(go.TextBlock, "",
+	// 			    { 
+	// 			    	column: 2, row: 1,
+	// 			        wrap: go.TextBlock.None, margin: 2, width: 25,
+	// 			        isMultiline: false, editable: true, textAlign: 'right' 
+	// 			    },
+	// 			    new go.Binding("text", "score2").makeTwoWay())
+	// 		    )
  //      		);
 
 	//     // define the Link template
@@ -3384,7 +3406,6 @@ var routerManager = Backbone.Router.extend({
 	//         $go(go.Shape));
 
 	//     _.each(me.data, function(game){
-	//     	// teams[] = {'player1'}
 	// 		teams.push(game.team_one.name);
 	// 		teams.push(game.team_two.name);
 	// 	})

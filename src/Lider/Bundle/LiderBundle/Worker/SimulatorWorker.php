@@ -45,11 +45,11 @@ class SimulatorWorker
                     echo "\n\t haciendo pregunta al jugador ". $duel->getPlayerOne()->getId();
                     $this->simulator($questions, $duel, $duel->getPlayerOne());
                 }
-                $questions = $this->getQuestion($duel->getId(), $duel->getPlayerTwo());
-                if($questions)
+                $questions2 = $this->getQuestion($duel->getId(), $duel->getPlayerTwo());
+                if($questions2)
                 {
                     echo "\n\t haciendo pregunta al jugador ". $duel->getPlayerTwo()->getId();
-                    $r =$this->simulator($questions, $duel, $duel->getPlayerTwo());
+                    $r =$this->simulator($questions2, $duel, $duel->getPlayerTwo());
                     if($r['lastOne'])
                     {
                         echo "\n\t Entre a la ultima";
@@ -290,6 +290,7 @@ class SimulatorWorker
         }
         $em->persist($playerPoint);
         $user->addPlayerPoint($playerPoint);
+        $em->flush();
     }
 
     private function applyPointsToDuel(&$duel, $user, $points)

@@ -239,9 +239,12 @@ class GroupController extends Controller
                 $games = $gameRepo->getGamesByTeam($team->getId());
                 $duelWin = $duelRepo->getTotalDuelWinnerByTeam($team->getId(), $tournamentId);
                 $questionWin = $questionRepo->findpercentOfQuestionWinByTeam(intval($team->getId()), intval($tournamentId));
+                
                 // echo $team->getId();
-                // print_r($questionWin);
+                print_r($questionWin);
                 // echo "Equipo = ".$team->getName()." win = ".$duelWin['win']." total =".$duelWin['total']."\n";
+                // echo $team->getName()." = ";
+                // echo $duelWin['win']. " - ".$duelWin['total']."\n";
                 $percentDuel = ($duelWin['win'] / $duelWin['total']) * 100;
                 
                 
@@ -300,8 +303,39 @@ class GroupController extends Controller
             foreach ($teams as $value) {
                 array_unshift($list, $value);
             }
+            for($i = 0; $i < count($list); $i++)
+            {
+                if($i+1 == count($list))
+                {
+                    break;
+                }
+                if($list[$i]['points'] < $list[$i+1]['points'])
+                {
+                    $temp = $list[$i];
+                    $list[$i] = $list[$i+1];
+                    $list[$i+1] = $temp;
+                }
+                elseif($list[$i]['points'] == $list[$i+1]['points'])
+                {
+                    if($list[$i]['duelWin'] < $list[$i+1]['duelWin'])
+                    {
+                        $temp = $list[$i];
+                        $list[$i] = $list[$i+1];
+                        $list[$i+1] = $temp;
+                    }
+                    elseif($list[$i]['duelWin'] == $list[$i+1]['duelWin'])
+                    {
+                        if($list[$i]['questionWin'] < $list[$i+1]['questionWin'])
+                        {
+                            $temp = $list[$i];
+                            $list[$i] = $list[$i+1];
+                            $list[$i+1] = $temp;
+                        }
+                    }
+                }
+                
+            }
             $l[$key]["teams"] = $list;
-            
         }
 
         return $this->get("talker")->response(array("total" => count($l), "data" => $l));

@@ -55,17 +55,23 @@ class CheckerWorker
 						->getMissingQuestionFromDuel($duel, $duel->getPlayerTwo());
 		
 		echo "Voy a comparar la cantidad de preugntas del jugador ".$duel->getPlayerOne()->getname()." ".$duel->getPlayerOne()->getLastname(). " y ".$duel->getPlayerTwo()->getname()." ".$duel->getPlayerTwo()->getLastname()."\n";
+        echo "Cantidad de preguntas del jugador ".$duel->getPlayerOne()->getname()." = ".count($qhf)."\n";
+        echo "Cantidad de preguntas del jugador ".$duel->getPlayerTwo()->getname()." = ".count($qhs)."\n";
 		if(count($qhf) == 0 && count($qhs) == 0){
-			
+			echo "entre cuando no hay preguntas\n";
 			$this->co->get('game_manager')->stopDuel($duel);
             $point1 = $duel->getPointOne();
             $point2 = $duel->getPointTwo();
+            echo "Cantidad de puntos del jugador ".$duel->getPlayerOne()->getname()." = ".$point1."\n";
+            echo "Cantidad de puntos del jugador ".$duel->getPlayerTwo()->getname()." = ".$point2."\n";
             if($point1 < $point2)
             {
+                echo "Gano El jugador ".$duel->getPlayerTwo()->getName()." ".$duel->getPlayerTwo()->getLastname()."\n";
                 $duel->setPlayerWin($duel->getPlayerTwo());
             }
             elseif($point1 > $point2)
             {
+                echo "Gano El Duelo el jugador ".$duel->getPlayerOne()->getName()." ".$duel->getPlayerOne()->getLastname()."\n";
                 $duel->setPlayerWin($duel->getPlayerOne());
             }
             $em->flush();
