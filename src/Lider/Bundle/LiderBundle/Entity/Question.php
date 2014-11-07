@@ -37,7 +37,7 @@ class Question extends Entity
 	private $category;
 	
 	/**
-	 * @ORM\OneToMany(targetEntity="Answer", mappedBy="question")
+	 * @ORM\OneToMany(targetEntity="Answer", mappedBy="question", cascade={"persist"})
 	 */
 	private $answers;
 	

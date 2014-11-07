@@ -69,3 +69,8 @@ services:
               pm: "@parameters_manager"
               qm: "@question_manager"
               co: "@service_container"
+    entityController:
+      class: Lider\Bundle\LiderBundle\Lib\ControllerService
+      arguments:
+        entityManager: "@doctrine.orm.entity_manager"
+        container: "@service_container"
