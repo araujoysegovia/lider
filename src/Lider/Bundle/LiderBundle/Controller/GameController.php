@@ -86,7 +86,43 @@ class GameController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $em->getRepository('LiderBundle:Game');
         $list = $repo->findGamesByNoGroup($tournament);
-        return $this->get("talker")->response(array('count' => count($list), 'data' => $list));
+        $return = array();
+        $level2 = array(
+            "level" => 2
+        );
+        $level3 = array(
+            "level" => 3
+        );
+        $level4 = array(
+            "level" => 4
+        );
+        $level5 = array(
+            "level" => 5
+        );
+        foreach($list as $game)
+        {
+            if($game['level'] == 2)
+            {
+                $level2['game'][] = $game;
+            }
+            if($game['level'] == 3)
+            {
+                $level3['game'][] = $game;
+            }
+            if($game['level'] == 4)
+            {
+                $level4['game'][] = $game;
+            }
+            if($game['level'] == 5)
+            {
+                $level5['game'][] = $game;
+            }
+        }
+        $return[] = $level2;
+        $return[] = $level3;
+        $return[] = $level4;
+        $return[] = $level5;
+        return $this->get("talker")->response(array('count' => count($return), 'data' => $return));
     }
 
     public function generateDuelAction()

@@ -85,10 +85,6 @@ class DuelRepository extends MainRepository
 						->setParameter('tei', $teamId)
 						->getQuery()
 						->getArrayResult();
-		if($teamId == 97)
-		{
-			// print_r($queryWin);
-		}
 		
 
 						// ->getArrayResult();
