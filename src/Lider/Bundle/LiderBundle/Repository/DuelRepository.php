@@ -65,8 +65,10 @@ class DuelRepository extends MainRepository
 						->leftJoin('po.team', 'to', 'WITH', 'to.deleted = false')
 						->leftJoin('pt.team', 'tt', 'WITH', 'tt.deleted = false')
 						->join('d.tournament', 't', 'WITH', 't.deleted = false AND t.id = :ti')
+						->join('d.game', 'g', 'WITH', 'g.deleted = false AND g.level = :l')
 						->where('d.deleted = false AND d.finished = TRUE AND (to.id = :tei or tt.id = :tei)')
 						->setParameter('ti', $tournamentId)
+						->setParameter('l', 1, \Doctrine\DBAL\Types\Type::INTEGER)
 						->setParameter('tei', $teamId)
 						->getQuery()
 						->getArrayResult();
@@ -76,15 +78,13 @@ class DuelRepository extends MainRepository
 						->join('d.player_win', 'pw', 'WITH', 'pw.deleted = false')
 						->leftJoin('pw.team', 'to', 'WITH', 'to.deleted = false')
 						->join('d.tournament', 't', 'WITH', 't.deleted = false AND t.id = :ti')
+						->join('d.game', 'g', 'WITH', 'g.deleted = false AND g.level = :l')
 						->where('d.deleted = false AND d.finished = TRUE AND to.id = :tei')
 						->setParameter('ti', $tournamentId)
+						->setParameter('l', 1, \Doctrine\DBAL\Types\Type::INTEGER)
 						->setParameter('tei', $teamId)
 						->getQuery()
 						->getArrayResult();
-		if($teamId == 97)
-		{
-			// print_r($queryWin);
-		}
 		
 
 						// ->getArrayResult();

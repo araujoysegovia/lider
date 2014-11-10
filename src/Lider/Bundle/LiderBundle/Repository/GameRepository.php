@@ -21,6 +21,23 @@ class GameRepository extends MainRepository
 		// echo $query->getSQL()."<br/><br/>";		
 		return $query->getArrayResult();
 	}
+
+	public function findGamesByNoGroup($tournament)
+	{
+		$query = $this->createQueryBuilder('g')
+						->select('g, to, tt')
+						->join('g.team_one', 'to', 'WITH','to.deleted = false')
+						->join('g.team_two', 'tt', 'WITH','tt.deleted = false')
+						->where('g.deleted = false and g.tournament = :t and g.level > :l')
+						->setParameter('t', $tournament, \Doctrine\DBAL\Types\Type::INTEGER)
+						->setParameter('l', 1, \Doctrine\DBAL\Types\Type::INTEGER)
+						->orderBy("g.indicator", 'ASC');
+
+		$query = $query->getQuery();
+		// echo $query->getSQL()."<br/><br/>";		
+		return $query->getArrayResult();
+	}
+
 	public function getExpiredGame($date)
     {
     	$query =  $this->createQueryBuilder('g')
