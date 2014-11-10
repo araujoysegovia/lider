@@ -32,121 +32,21 @@ abstract class Controller extends SymfonyController {
 
 	public function getAnswer($success, $message) {
 		return array (
-				"success" => $success,
-				"message" => $message
+			"success" => $success,
+			"message" => $message
 		);
-	}
-	
-	private function setPropertyChanges($propertyName, $oldValue, $newValue, $entityId){
-		$this->propertyChanged[] = array(
-			"propertyName" => $propertyName,
-			"oldValue" => $oldValue,
-			"newValue" => $newValue,
-			"entityId" => $entityId
-		);
-	}
-	
-	protected function getRequestEntity($id = null){
-		
-		
-		$request = $this->get("request");
-		$contentType = $request->headers->get('content_type');
-		$explode = explode(";", $contentType);
-		$contentType = $explode[0];
-		
-		switch ($contentType) {
-			case 'application/x-www-form-urlencoded':
-				return $this->applicationForm();
-				break;
-			case 'multipart/form-data':
-				return $this->applicationForm();
-				break;		
-			default:
-				return $this->applicationJson($id);
-				break;
-		}
-	}
-	
-	private function applicationForm(){
-		$em = $this->getDoctrine()->getEntityManager();
-		$request = $this->get("request");
-		$entityName = $this->getName();
-		$bundleName = $this->getBundleName();
-		$className = self::$NAMESPACE.$entityName;
-		
-		$reflectionClass = new \ReflectionClass($className);
-		$metadata = $em->getClassMetadata($className);
-		$associations = $metadata->associationMappings;
-		$fieldMapping = $metadata->fieldMappings;
-		
-		do {
-			$props = $reflectionClass->getProperties();
-			foreach ($props as $prop) {
-				$value = $request->get($prop->getName());
-				$setter = "set" . ucwords($prop->getName());
-				if(!$is_null($value)){
-					if (array_key_exists($prop->getName(), $associations)) {
-						$asso = $associations[$prop->getName()];
-						$entity = $asso["targetEntity"];
-						$obj = $em->getRepository($entity)->find($value);
-						$value = $obj;
-						if($asso["type"] == 4 || $asso["type"] == 8){
-							if (substr($prop->getName(), -1) == "s")
-								$setter = 'add' . ucwords(substr($prop->getName(), 0, -1));
-							else
-								$setter = 'add' . ucwords($prop->getName());
-						}
-					}elseif (array_key_exists($prop->getName(), $fieldMapping)) {
-						if ($fieldMapping[$prop->getName()]["type"] == "datetime") {
-							$date = $value;
-							$value = new \DateTime($date);
-						}
-					}
-					if(method_exists($newClass, $setter))
-						$newClass->$setter($value);
-				}
-			}
-			$reflectionClass = $reflectionClass->getParentClass();
-		} while (false !== $reflectionClass);
-		
-		return $newClass;
-	}
-	
-	private function applicationJson($id = null){
-		$em = $this->getDoctrine()->getEntityManager();
-		$request = $this->get("request");
-		$data = $request->getContent();
-		
-		if(empty($data) || !$data)
-			throw new \Exception("No data for update");
-			
-		$data = json_decode($data, true);
-		
-		$entityName = $this->getName();
-		$bundleName = $this->getBundleName();
-		$className = self::$NAMESPACE.$entityName;
-				
-		if(!is_null($id)){
-			$metadata = $em->getClassMetadata($className);			
-			$idField = $metadata->identifier[0];
-			$data[$idField] = $id;
-		}
-		  
-		$newClass = $this->get("talker")->denormalizeEntity($className, $data);
-
-		
-		return $newClass;
 	}
 	
 	public function listAction($id = null) {
+
 		$em = $this->getDoctrine()->getEntityManager();
 		$request = $this->get("request");
+		$className = self::$NAMESPACE.$this->getName();
+		$md = $em->getClassMetadata($className);
+		$associations = $md->associationMappings;
+		$fieldMapping = $md->fieldMappings;
 		if(is_null($id)){
-			$bundleName = $this->getBundleName();
-			$className = self::$NAMESPACE.$this->getName();
-			$md = $em->getClassMetadata($className);
-			$associations = $md->associationMappings;
-			$fieldMapping = $md->fieldMappings;
+			
 			$criteria = array();
 			foreach($associations as $name => $value){
 				$parameter = $request->get($name);
@@ -164,66 +64,177 @@ abstract class Controller extends SymfonyController {
 				}
 			}
 			
-			$user = $this->container->get('security.context')->getToken()->getUser();
+			$user = $this->get('security.context')->getToken()->getUser();
 
 			$roles = $user->getRoles();
 			$role = $roles[0];
-			
 			if($role->getId() > 1 && array_key_exists("company", $associations)){
 				$criteria["company"] = $user->getCompany()->getId();
 			}
-						
 			$filter = $request->get('filter');
 			if($filter){
 				$filter = json_decode($filter, true);
 			}
 			
 			$page = $request->get("page");
-			$skip = $request->get("skip");
-			$pageSize = $request->get('pageSize');
-			//$limit = $request->get("limit");			
-			$limit = $skip + $pageSize;	
-			$sort = $request->get('sort');			
-
-			$bundleName = $this->getBundleName();
+			$start = $request->get("start");
+			$limit = $request->get("limit");			
+	
+			$bundleName = $this->getBundleName();			
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$list = $repo->getArrayEntityWithOneLevel($criteria, $sort, $skip, $pageSize, $filter);
+			$list = $repo->getArrayEntityWithOneLevel($criteria, null, $start, $limit, $filter);
 			$this->afterList($list);
 			
 			return $this->get("talker")->response($list);
 			
 		}else{
-			$bundleName = $this->getBundleName();
-			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$list = $repo->getArrayEntityWithOneLevel(array("id" => $id));
-			$list = $list["data"];
-			if(count($list)>0) $list = $list[0];
-			$this->afterList($list);
-			return $this->get("talker")->response($list);
+			$idProperty = $md->identifier;
+			$idProperty = $idProperty[0];
+			$idType = $fieldMapping[$idProperty]['type'];
+			$val = $this->validateType($idType, $id);
+			if($val)
+			{
+				$bundleName = $this->getBundleName();
+				$repo = $em->getRepository($bundleName.":" . $this->getName());
+				$list = $repo->getArrayEntityWithOneLevel(array("id" => $id));
+				$list = $list["data"];
+				if(count($list)>0) $list = $list[0];
+				else throw $this->createNotFoundException('El recurso no existe.');
+				$this->afterList($list);
+				return $this->get("talker")->response($list);
+			}
+			else{
+				throw $this->createNotFoundException('El recurso no existe.');
+			}
+			
 		}
-		
+	}
+
+	protected function validateType($type, $value)
+	{
+		switch ($type) {
+			case 'uuid':
+				if(preg_match('/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/', $value, $matches)){
+					return true;
+				}
+				else{
+					return false;
+				}
+				break;
+			case 'integer':
+				if(is_numeric($value))
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			
+			default:
+				# code...
+				break;
+		}
 		
 	}
 	
 	protected function getBundleName(){
 		$request = $this->get("request");
 		$controller = $request->attributes->get('_controller');		
-		$matches    = explode("\\", $controller);		
-		if(count($matches) > 1)
+		$matches    = explode("\\", $controller);
+		if(count($matches) > 1){			
 			return  $matches[2];
-		else{
+		}else{			
 			$matches = explode(":", $controller);
 			return  $matches[0];
 		}
 	}
+
+	protected function normalizer($entity){        
+        $em = $this->get('doctrine_mongodb')->getManager();
+        $md = $em->getClassMetadata($document);
+                
+        $fm = $md->fieldMappings;
+        $arr = array();
+        foreach($fm as $key => $value)
+        {
+            $arr[$key] = $entity->{'get'.ucfirst($key)}();
+        }
+        return $arr;
+    }
+    
+	/**
+	 * Function que retorna los comentarios de una entidad
+	 *
+	 * @param id - Id de la entidad
+	 * 
+	 * @return array - Array con los comentarios
+	 */
+	public function getComments($uuid){
+		$dm = $this->get('doctrine_mongodb')->getManager();
+		$commentService = $this->get("commentService");
+		if(!$uuid)
+		{
+			throw new Exception("Id de la entidad necesario");
+		}
+		$repo = $dm->getRepository("CommentBundle:Comment");
+		$comments = $commentService->getCommentTree($this->namespace.$this->getName(), $uuid);
+		$ret=array();
+        foreach($comments as $id => $obj){
+            $entity = $this->normalizer($obj, "Sifinca\\CommentBundle\\Document\\Comment");
+            $ret[$id] = $entity;
+            if($obj->getChildren()){
+            	$list = $repo->consultCommentsFromParent($this->namespace.$this->getName(), $uuid, $id);
+            	$child = array();
+            	foreach($list as $key => $value){
+            		// echo "fjasdlñ";
+            		$ent = $this->normalizer($value, "Sifinca\\CommentBundle\\Document\\Comment");
+            		$child[] = $ent;
+            	}
+            	$ret[$id]['children'] = $child;
+            }
+            
+        }
+        return $this->get("talker")->response(array("total" => count($ret), "data" => $ret));
+	}
+
+	public function getParticipantsAction($id){
+		$commentService = $this->get("commentService");
+		if(!$id)
+		{
+			throw new Exception("Id de la entidad necesario");
+		}
+		$participants = $commentService->getParticipantFromEntity($this->namespace.$this->getName(), $id);
+		$ret=array();
+        foreach($participants as $id => $obj){
+            $entity = $this->normalizer($obj, "Sifinca\\CommentBundle\\Document\\Participant");
+            $ret[] = $entity;
+        }
+        return $this->get("talker")->response(array("total" => count($ret), "data" => $ret));
+	}
+
+	public function getCommentsFromParticipantsAction($idEntity, $idParticipant){
+		if(!$idEntity || $idParticipant)
+		{
+			throw new Exception("Id de la entidad o del participante necesario");
+		}
+		$commentService = $this->get("commentService");
+		$comments = $commentService->getCommentsFromParticipant($this->namespace.$this->getName(), $idEntity, $idParticipant);
+		$ret=array();
+        foreach($comments as $id => $obj){
+            $entity = $this->normalizer($obj, "Sifinca\\CommentBundle\\Document\\Comment");
+            $ret[] = $entity;
+        }
+        return $this->get("talker")->response(array("total" => count($ret), "data" => $ret));
+	}
+
+
 	
 	public function checkRouteAction(Request $request)
 	{
 		$method = $request->getMethod();
-		$comment = $request->get('comment');
 		switch($method)
 		{
-			case 'GET':
+			case 'GET':		
 				return $this->listAction();
 				break;
 			case 'POST':				
@@ -239,95 +250,105 @@ abstract class Controller extends SymfonyController {
 	}
 	
 	// +++++++++++++++++++ SAVE +++++++++++++++++++++++++++++
-	
-	protected function doSave(&$entity) {
-		$this->beforeSave($entity);
-		$em = $this->getDoctrine()->getEntityManager();
-		if(is_array($entity)){
-			foreach($entity as $ent){
-				$em->persist($ent);
-			}
-		}else{
-			$em->persist($entity);
-		}
-		
-		$this->afterPersist($entity);
-		
-		$validator = $this->get("validator");
-		$errors = $validator->validate($entity);
-		if (count($errors) > 0) {
-			throw new RuntimeException($errors->__toString());
-		}
-
-		$em->flush();
-		$this->afterSave($entity);
-		return $entity;
-	}
-	
 	public function saveAction() {
-		$entity = $this->getRequestEntity();
-		$save = $this->doSave($entity);
-		return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+		$entityService = $this->get("entityController");
+		$entityName = $this->getName();
+		$className = self::$NAMESPACE.$entityName;		
+		$entity = $entityService->getRequestEntity($className);
+		$this->beforeSave($entity);
+		$save = $entityService->doSave($entity);
+		$this->afterSave($entity);
+		$ids = array();
+		if(is_array($entity))
+		{
+			foreach($entity as $ent)
+			{
+				//$this->addParticipant($ent);
+				$ids[] = $ent->getId();
+			}
+		}
+		else{
+			//$this->addParticipant($entity);
+			$ids[] = $entity->getId();
+		}
+		return $this->get("talker")->response(array("success" => true, "message" => $this->save_successful, "total" => count($ids), "data" => $ids), 201);
 	}
 	
 	// +++++++++++++++++++ UPDATE +++++++++++++++++++++++++++++
-	
-	protected function doUpdate(&$entity) {
-		$em = $this->getDoctrine()->getEntityManager();
-		$validator = $this->get("validator");
-		$errors = $validator->validate($entity);
-		if (count($errors) > 0) {
-			throw new RuntimeException($errors->__toString());
-		}
-		$em->flush();
-		//echo $entity;
-		return $entity;
-	}
-	
 	public function updateAction($id = null) {
+		$em = $this->getDoctrine()->getEntityManager();
+		$entityName = $this->getName();
+		$className = self::$NAMESPACE.$entityName;
+		$entityService = $this->get("entityController");
+		$md = $em->getClassMetadata($className);
+		$associations = $md->associationMappings;
+		$fieldMapping = $md->fieldMappings;
+		$idProperty = $md->identifier;
+		$idProperty = $idProperty[0];
+		$idType = $fieldMapping[$idProperty]['type'];
+		$val = $this->validateType($idType, $id);
+		if($val)
+		{
 		
-		$ec = $this->getRequestEntity($id);		
-		if(is_null($ec->getId())){
-			throw new \Exception("Entity not found");
+			$ec = $entityService->getRequestEntity($className, $id);
+			
+		}
+		else{
+			throw $this->createNotFoundException('Entity Not Found.');
 		}
 		$this->beforeUpdate($ec);
-		$doUpdate = $this->doUpdate($ec);
+		$doUpdate = $entityService->doUpdate($ec);
 		$this->afterUpdate($doUpdate);
 		return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
 	}
 	
 	
 	// +++++++++++++++++++ DELETE +++++++++++++++++++++++++++++
-	
-	protected function doDelete($entity) {
-		$em = $this->getDoctrine()->getEntityManager();
-		if(is_array($entity)){
-			foreach($entity as $ent){
-				$ent->setDeleted(true);
-			}
-		}else{
-			$entity->setDeleted(true);
-		}
-		$em->flush();
-	}
-	
 	public function deleteAction($id = null) {
+		$entityService = $this->get("entityController");
+		$entityName = $this->getName();
+		$className = self::$NAMESPACE.$entityName;
 		if(!is_null($id)){
 			$bundleName = $this->getBundleName();
 			$em = $this->getDoctrine()->getEntityManager();
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$ec = $repo->find($id);
+			$md = $em->getClassMetadata($className);
+			$associations = $md->associationMappings;
+			$fieldMapping = $md->fieldMappings;
+			$idProperty = $md->identifier;
+			$idProperty = $idProperty[0];
+			$idType = $fieldMapping[$idProperty]['type'];
+			$val = $this->validateType($idType, $id);
+			if($val){
+				$ec = $repo->findOneBy(array("id" => $id, "deleted" => false));
+				if(!$ec)
+				{
+					throw $this->createNotFoundException('Entity Not Found.');
+				}
+			}
+			else
+				throw $this->createNotFoundException('Entity Not Found.');
 		}else{
-			$ec = $this->getRequestEntity();
+
+			$ec = $entityService->getRequestEntity($className);
 		}
 		$this->beforeDelete($ec);
 		$this->entityDeleted = $ec;
-		$doDelete = $this->doDelete($ec);
-		//throw new \Exception("dntrcd");
+		$doDelete = $entityService->doDelete($ec);
 		$this->afterDelete($doDelete);
-		return $this->get("talker")->response($this->getAnswer(true, $this->delete_successful));
+		return $this->get("talker")->response($this->getAnswer(true, $this->delete_successful), 204);
 	}
-	
+
+	// public function addParticipant($entity)
+	// {
+	// 	$user = $this->get('security.context')->getToken()->getUser();
+	// 	$commentService = $this->get("commentService");
+	// 	if($user->getId())
+	// 	{
+	// 		$namespace = $this->namespace.$this->getname();
+	// 		$commentService->addParticipant($namespace, $entity->getId(), $user->getId(), true);	
+	// 	}
+	// }
 	
 	/**
 	 * Funcin que realiza alguna accion despues de listar una entidad.
@@ -373,92 +394,6 @@ abstract class Controller extends SymfonyController {
 	 */
 	protected function afterDelete(&$Entity) {}
 	
-	
-	protected function applyPagination(&$data, $count, $start, $limit) {
-		$paginateData = array ();
-		for($i = $start; $i < ($start + $limit); $i ++) {
-			if ($count > $i) {
-				$paginateData [] = $data [$i];
-			}
-		}
-		$data = $paginateData;
-		return $data;
-	}
-	
-	
 	abstract protected function getName();
-	
-	
-	protected function addCompany(&$Entity, $addServer = true){
-		$user = $this->container->get('security.context')->getToken()->getUser();
-		$roles = $user->getRoles();
-		$role = $roles[0];
-		
-		$em = $this->getDoctrine()->getEntityManager();
-		$repo = $em->getRepository("AdminBundle:Company");
-		$company = $repo->find($user->getCompany()->getId());
-		
-		if($role->getId() > 1){
-			$Entity->setCompany($company);
-			if(!$company->getServer()){
-				throw new \Exception("Company does not have an associated server");
-			}
-			if($addServer && method_exists($Entity, "setServer"))
-				$Entity->setServer($company->getServer());
-			
-			return $user->getCompany();
-		}else{ 
-			if($addServer && method_exists($Entity, "setServer")){
-				$company = $repo->find($Entity->getCompany()->getId());
-				if(!$company->getServer()){
-					throw new \Exception("Company does not have an associated server");
-				}
-        		$Entity->setServer($company->getServer());
-        		
-			}
-        }
-	}
-	
-	protected function generatePassword($l) {
-		$alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
-		$pass = "";
-		for($i = 0; $i < $l; $i ++) {
-			$n = rand ( 0, strlen ( $alphabet ) - 1 );
-			$pass .= $alphabet [$n];
-		}
-		return $pass;
-	}
 
-	protected function normalizer($entity, $entityName){
-    	
-    	$em = $this->get('doctrine_mongodb')->getManager();
-    	$md = $em->getClassMetadata($entityName);
-    	
-    	$fm = $md->fieldMappings;
-    	$arr = array();
-    	foreach($fm as $key => $value)
-    	{
-    		if(array_key_exists("targetDocument", $value)){
-    			$arr[$key] = $this->normalizer($entity->{'get'.ucfirst($key)}(), $value['targetDocument']);
-    		}else{
-    			if(method_exists ( $entity, 'get'.ucfirst($key) )){
-    				$arr[$key] = $entity->{'get'.ucfirst($key)}();	
-    			}    			
-    		}
-    		
-    	}
-    	return $arr;
-    }
-    
-    protected function encode($array){
-    	$type = $this->get("ownRequest")->getType();
-    	$value = $this->get("ownRequest")->getSerialize()->encode($array, $type['type']);
-    	return $value;
-    }
-    
-    protected function serialize($entity){
-    	$arr = $this->normalizer($entity);
-    	return $this->encode($arr);
-    }
-	
 }

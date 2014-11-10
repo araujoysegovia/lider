@@ -396,21 +396,24 @@ var routerManager = Backbone.Router.extend({
 		        		delete data.user;
 		        		
 			        	_.each(data.answers, function(value){
-			        		
 			        		value["selected"] = false;
 			        		value["help"] = false;
 			        	})
 			        	
-			        	//console.log(data)
+			        	//console.log(data.selected)
 			        	
-			        	data.answers[parseInt(data.selected) - 1].selected = true;
-			        	data.answers[parseInt(data.help) - 1].help = true;			        				       
+		        		if(!(_.isObject(data.selected))){
+		        			data.answers[parseInt(data.selected) - 1].selected = true;
+			        		data.answers[parseInt(data.help) - 1].help = true;	
+		        		}		        				        				       
          	        	
 			        	//console.log(data)
 			        	if(data.selected == data.help){
 			        		alert("La respuesta correcta no puedo ser igual a la de ayuda");
 			        		throw "La respuesta correcta no puedo ser igual a la de ayuda";
 			        	}
+			        	
+			        	
 
 			            return kendo.stringify(data);		        
 		        }else{
@@ -788,8 +791,7 @@ var routerManager = Backbone.Router.extend({
 			    	field: "selected",
 			    	title: "Respuesta Correcta",
 			    	hidden: true,			    	
-			    	editor:	function (container, options) {
-						console.log("entro")
+			    	editor:	function (container, options) {						
 			    	    var input = $('<input required data-text-field="text" data-value-field="value" data-bind="value:' + options.field + '"/>')
 			            .appendTo(container)
 			            .kendoDropDownList({
