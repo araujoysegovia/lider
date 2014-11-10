@@ -5747,3 +5747,171 @@ Mensaje Enviado a: Array
     [5] => jsanchez@araujoysegovia.com
 )
 # admins: 6Mensaje Enviado al administrador
+
+Voy a enviar correo a AMELIA REGINA AMELIA REGINA
+
+Mensaje Enviado a: amarrugo@araujoysegovia.com
+
+Voy a enviar correo a ELIANA MARCELA ELIANA MARCELA
+
+Voy a enviar correo a AMELIA REGINA AMELIA REGINA
+
+Mensaje Enviado a: ebehainne@araujoysegovia.com
+
+Mensaje Enviado a: amarrugo@araujoysegovia.com
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+  [Doctrine\DBAL\DBALException]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+  An exception occurred while executing 'SELECT p0_.deleted AS deleted0, p0_.entrydate AS entrydate1, p0_.lastupdate AS lastupdate2, p0_.id AS id3, p0_.email AS email4, p0_.name AS name5, p0_.lastname AS lastname6, p0_.image AS image7, p0_.password AS password8, p0_.wonGames AS wongames9, p0_.lostGames AS lostgames10, p0_.active AS active11, p0_.changePassword AS changepassword12, p0_.office_id AS office_id13, p0_.team_id AS team_id14 FROM player p0_ INNER JOIN users_role u2_ ON p0_.id = u2_.user_id INNER JOIN roles r1_ ON r1_.id = u2_.role_id AND (r1_.deleted = false AND r1_.name = 'ADMIN') WHERE p0_.active = true AND p0_.deleted = false':  
+  SQLSTATE[HY000]: General error: 7 SSL connection has been closed unexpectedly                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+
+
+
+
+                                                                                 
+  [PDOException]                                                                 
+  SQLSTATE[HY000]: General error: 7 SSL connection has been closed unexpectedly  
+                                                                                 
+
+
+gearman:worker:execute [--no-description] worker
+
+
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+[2014-11-08 01:00:04] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 7
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationTeam 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationDuel 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationGroup 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationDuels 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-11-08 01:00:04] loaded. Ctrl+C to break
+An exception occurred while executing 'SELECT t0.deleted AS deleted1, t0.entrydate AS entrydate2, t0.lastupdate AS lastupdate3, t0.id AS id4, t0.email AS email5, t0.name AS name6, t0.lastname AS lastname7, t0.image AS image8, t0.password AS password9, t0.wonGames AS wongames10, t0.lostGames AS lostgames11, t0.active AS active12, t0.changePassword AS changepassword13, t0.office_id AS office_id14, t0.team_id AS team_id15 FROM player t0 WHERE t0.email IN (?, ?, ?, ?, ?) AND t0.deleted = ? LIMIT 1' with params ["pmojica@araujoysegovia.com", "amarrugo@araujoysegovia.com", "dpayares@araujoysegovia.com", "vduran@araujoysegovia.com", "eplaza@araujoysegovia.com", "false"]:
+
+SQLSTATE[HY000]: General error: 7 SSL connection has been closed unexpectedly
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+  [Doctrine\DBAL\DBALException]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+  An exception occurred while executing 'SELECT p0_.deleted AS deleted0, p0_.entrydate AS entrydate1, p0_.lastupdate AS lastupdate2, p0_.id AS id3, p0_.email AS email4, p0_.name AS name5, p0_.lastname AS lastname6, p0_.image AS image7, p0_.password AS password8, p0_.wonGames AS wongames9, p0_.lostGames AS lostgames10, p0_.active AS active11, p0_.changePassword AS changepassword12, p0_.office_id AS office_id13, p0_.team_id AS team_id14 FROM player p0_ INNER JOIN users_role u2_ ON p0_.id = u2_.user_id INNER JOIN roles r1_ ON r1_.id = u2_.role_id AND (r1_.deleted = false AND r1_.name = 'ADMIN') WHERE p0_.active = true AND p0_.deleted = false':  
+  SQLSTATE[HY000]: General error: 7 no connection to the server                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+
+
+
+
+                                                                 
+  [PDOException]                                                 
+  SQLSTATE[HY000]: General error: 7 no connection to the server  
+                                                                 
+
+
+gearman:worker:execute [--no-description] worker
+
+
+An exception occurred while executing 'SELECT t0.deleted AS deleted1, t0.entrydate AS entrydate2, t0.lastupdate AS lastupdate3, t0.id AS id4, t0.email AS email5, t0.name AS name6, t0.lastname AS lastname7, t0.image AS image8, t0.password AS password9, t0.wonGames AS wongames10, t0.lostGames AS lostgames11, t0.active AS active12, t0.changePassword AS changepassword13, t0.office_id AS office_id14, t0.team_id AS team_id15 FROM player t0 WHERE t0.email IN (?, ?, ?, ?, ?) AND t0.deleted = ? LIMIT 1' with params ["ncapela@araujoysegovia.com", "ebehainne@araujoysegovia.com", "vsierra@araujoysegovia.com", "acontreras@araujoysegovia.com", "pcruz@araujoysegovia.com", "false"]:
+
+SQLSTATE[HY000]: General error: 7 SSL connection has been closed unexpectedly
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+  [Doctrine\DBAL\DBALException]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+  An exception occurred while executing 'SELECT p0_.deleted AS deleted0, p0_.entrydate AS entrydate1, p0_.lastupdate AS lastupdate2, p0_.id AS id3, p0_.email AS email4, p0_.name AS name5, p0_.lastname AS lastname6, p0_.image AS image7, p0_.password AS password8, p0_.wonGames AS wongames9, p0_.lostGames AS lostgames10, p0_.active AS active11, p0_.changePassword AS changepassword12, p0_.office_id AS office_id13, p0_.team_id AS team_id14 FROM player p0_ INNER JOIN users_role u2_ ON p0_.id = u2_.user_id INNER JOIN roles r1_ ON r1_.id = u2_.role_id AND (r1_.deleted = false AND r1_.name = 'ADMIN') WHERE p0_.active = true AND p0_.deleted = false':  
+  SQLSTATE[HY000]: General error: 7 SSL connection has been closed unexpectedly                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+
+
+
+
+                                                                                 
+  [PDOException]                                                                 
+  SQLSTATE[HY000]: General error: 7 SSL connection has been closed unexpectedly  
+                                                                                 
+
+
+gearman:worker:execute [--no-description] worker
+
+
+# admins: 6PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+[2014-11-08 12:00:35] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 7
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationTeam 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationDuel 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationGroup 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationDuels 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-11-08 12:00:35] loaded. Ctrl+C to break
+PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+[2014-11-08 12:00:35] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 7
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationTeam 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationDuel 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationGroup 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationDuels 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-11-08 12:00:35] loaded. Ctrl+C to break
+Mensaje Enviado al administradorAn exception occurred while executing 'SELECT t0.deleted AS deleted1, t0.entrydate AS entrydate2, t0.lastupdate AS lastupdate3, t0.id AS id4, t0.email AS email5, t0.name AS name6, t0.lastname AS lastname7, t0.image AS image8, t0.password AS password9, t0.wonGames AS wongames10, t0.lostGames AS lostgames11, t0.active AS active12, t0.changePassword AS changepassword13, t0.office_id AS office_id14, t0.team_id AS team_id15 FROM player t0 WHERE t0.email IN (?, ?, ?, ?, ?) AND t0.deleted = ? LIMIT 1' with params ["ncapela@araujoysegovia.com", "ebehainne@araujoysegovia.com", "vsierra@araujoysegovia.com", "acontreras@araujoysegovia.com", "pcruz@araujoysegovia.com", "false"]:
+
+SQLSTATE[HY000]: General error: 7 no connection to the server# admins: 6Mensaje Enviado al administrador# admins: 6Mensaje Enviado al administrador
