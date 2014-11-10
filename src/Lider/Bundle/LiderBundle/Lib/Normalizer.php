@@ -206,6 +206,7 @@ class Normalizer extends GetSetMethodNormalizer
 					$asso = $associations [$key];
 						
 					$entity = $asso["targetEntity"];
+					
 					$mappedBy = $asso["mappedBy"];
 					$mbSetter = null;
 					if($asso ["type"] == 4)
@@ -246,45 +247,54 @@ class Normalizer extends GetSetMethodNormalizer
 							$setter = 'add' . ucwords ( $key );
 
 						$getter = 'get' . ucwords ( $key );
+						
 						$collection = $newClass->$getter();
+						if(is_object($collection)){
+							if($collection and $collection->count() > 0){
 
-						if($collection and $collection->count() > 0){
+								$foundInCollection = $this->lookInCollection ( $obj, $collection);
+								$toDelete = $this->removeNotBe($obj, $collection);
 
-							$foundInCollection = $this->lookInCollection ( $obj, $collection);
-							$toDelete = $this->removeNotBe($obj, $collection);
+								if (substr ( $asso ["fieldName"], - 1 ) == "s")
+									$removeMethod = 'remove' . ucwords ( substr ( $key, 0, - 1 ) );
+								else
+									$removeMethod = 'remove' . ucwords ( $key );
 
-							if (substr ( $asso ["fieldName"], - 1 ) == "s")
-								$removeMethod = 'remove' . ucwords ( substr ( $key, 0, - 1 ) );
-							else
-								$removeMethod = 'remove' . ucwords ( $key );
-
-							foreach ($toDelete as $key => $ent) {
-								$newClass->$removeMethod($ent);
-								if($asso ["type"] == 4){
-									$em->remove($ent);
+								foreach ($toDelete as $key => $ent) {
+									$newClass->$removeMethod($ent);
+									if($asso ["type"] == 4){
+										$em->remove($ent);
+									}
 								}
-							}
 
-							if(!is_array($foundInCollection) && !$foundInCollection){
+								if(!is_array($foundInCollection) && !$foundInCollection){
+									if(is_array($obj)){
+										foreach ($obj as $item) {
+											$newClass->$setter($item);
+										}
+									}else{
+										$newClass->$setter($obj);
+									}
+								}else if(is_array($foundInCollection)){
+									foreach ($foundInCollection as $k => $o) {
+										if(!$o){
+											foreach ($obj as $item) {
+												if($k == $item->getId())
+													$newClass->$setter($item);
+											}
+										}
+									}
+								}
+							}else{
 								if(is_array($obj)){
 									foreach ($obj as $item) {
 										$newClass->$setter($item);
 									}
 								}else{
 									$newClass->$setter($obj);
-								}
-							}else if(is_array($foundInCollection)){
-								foreach ($foundInCollection as $k => $o) {
-									if(!$o){
-										foreach ($obj as $item) {
-											if($k == $item->getId())
-												$newClass->$setter($item);
-										}
-									}
-								}
+								}							
 							}
 						}
-
 					}else{
 						if (method_exists ( $newClass, $setter )) {
 							$newClass->$setter($obj);
@@ -410,6 +420,5 @@ class Normalizer extends GetSetMethodNormalizer
 			return false;
 		}
 	}
-
 }
 ?>
