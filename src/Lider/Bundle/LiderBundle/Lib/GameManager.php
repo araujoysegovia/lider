@@ -572,27 +572,30 @@ class GameManager
 	{
 		$date = new \DateTime();		
 		$games = $this->em->getRepository("LiderBundle:Game")->getGamesToStart($date);
-
-		$params = $this->pm->getParameters();
-		$duelInterval = $params['gamesParameters']['timeDuel'];
-		$gamesId = array();
-		foreach ($games as $key => $game) {
-			$game->setFinished(false);
-			$game->setActive(true);
-			$this->em->persist($game);
-			$gamesId[] = $game->getId();
-			$this->generateDuel($game, $duelInterval);
+		if(count($games) > 0)
+		{
+			$params = $this->pm->getParameters();
+			$duelInterval = $params['gamesParameters']['timeDuel'];
+			$gamesId = array();
+			foreach ($games as $key => $game) {
+				$game->setFinished(false);
+				$game->setActive(true);
+				$this->em->persist($game);
+				$gamesId[] = $game->getId();
+				$this->generateDuel($game, $duelInterval);
+			}
+			$this->em->flush();
+			$gearman = $this->co->get('gearman');
+			$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotificationDuels', json_encode(array(
+	            'subject' => 'Duelos generado',
+	            'template' => 'LiderBundle:Templates:duelsnotificationadmin.html.twig',
+	            'content' => array(
+	                'title' => 'Duelos Generados',
+	                'games' => $gamesId
+	            )
+	        )));
 		}
-		$this->em->flush();
-		$gearman = $this->co->get('gearman');
-		$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotificationDuels', json_encode(array(
-            'subject' => 'Duelos generado',
-            'template' => 'LiderBundle:Templates:duelsnotificationadmin.html.twig',
-            'content' => array(
-                'title' => 'Duelos Generados',
-                'games' => $gamesId
-            )
-        )));
+		
 	}
 
 	/**
