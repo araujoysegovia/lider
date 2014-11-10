@@ -513,8 +513,8 @@ class GameManager
 			$this->em->persist($duel);
 
 			$this->generateQuestions($countQuestion, $duel);
-			// $this->notificationDuel($playerOne, $playerTwo->getTeam(), $playerTwo);
-			// $this->notificationDuel($playerTwo, $playerOne->getTeam(), $playerOne);
+			$this->notificationDuel($playerOne, $playerTwo->getTeam(), $playerTwo);
+			$this->notificationDuel($playerTwo, $playerOne->getTeam(), $playerOne);
 		}			
 
 		$this->em->flush();

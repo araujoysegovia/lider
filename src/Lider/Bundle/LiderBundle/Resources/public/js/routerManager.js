@@ -400,17 +400,19 @@ var routerManager = Backbone.Router.extend({
 			        		value["help"] = false;
 			        	})
 			        	
-			        	//console.log(data.selected)
-			        	
-		        		if(!(_.isObject(data.selected))){
-		        			data.answers[parseInt(data.selected) - 1].selected = true;
-			        		data.answers[parseInt(data.help) - 1].help = true;	
-		        		}		        				        				       
-         	        	
-			        	//console.log(data)
-			        	if(data.selected == data.help){
-			        		alert("La respuesta correcta no puedo ser igual a la de ayuda");
-			        		throw "La respuesta correcta no puedo ser igual a la de ayuda";
+			        	console.log(data)
+			        	if(data.selected){				        		
+				        	
+			        		if(!(_.isObject(data.selected))){
+			        			data.answers[parseInt(data.selected) - 1].selected = true;
+				        		data.answers[parseInt(data.help) - 1].help = true;	
+			        		}		        				        				       
+	         	        	
+				        	//console.log(data)
+				        	if(data.selected == data.help){
+				        		alert("La respuesta correcta no puedo ser igual a la de ayuda");
+				        		throw "La respuesta correcta no puedo ser igual a la de ayuda";
+				        	}
 			        	}
 			        	
 			        	
