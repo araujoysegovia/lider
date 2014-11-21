@@ -1,7 +1,7 @@
 var max, min;
-
 var routerManager = Backbone.Router.extend({
-
+	marginTopGame: 10,
+	heightGame: 110,
 	routes: {
 		"" : "home",   
 		"tournaments" : "tournaments", 
@@ -402,19 +402,19 @@ var routerManager = Backbone.Router.extend({
 			        	
 			        	//console.log(data.selected)
 			        	
-		        		if(!(_.isObject(data.selected))){
+			        	if(data.selected){
+			        		if(!(_.isObject(data.selected))){
 		        			data.answers[parseInt(data.selected) - 1].selected = true;
 			        		data.answers[parseInt(data.help) - 1].help = true;	
-		        		}		        				        				       
-         	        	
-			        	//console.log(data)
-			        	if(data.selected == data.help){
-			        		alert("La respuesta correcta no puedo ser igual a la de ayuda");
-			        		throw "La respuesta correcta no puedo ser igual a la de ayuda";
+			        		}		        				        				       
+	         	        	
+				        	//console.log(data)
+				        	if(data.selected == data.help){
+				        		alert("La respuesta correcta no puedo ser igual a la de ayuda");
+				        		throw "La respuesta correcta no puedo ser igual a la de ayuda";
+				        	}
 			        	}
-			        	
-			        	
-
+		        		
 			            return kendo.stringify(data);		        
 		        }else{
 	                if(data.filter){	                	
@@ -2078,8 +2078,6 @@ var routerManager = Backbone.Router.extend({
 				modalObj.modal('hide')
 			});			
 		});
-
-
 		
 	},
 
@@ -2603,6 +2601,7 @@ var routerManager = Backbone.Router.extend({
 
 						container.append(table);
 						
+
 						me.createPanel(value.name, container);
 					})
 				},
@@ -3107,7 +3106,7 @@ var routerManager = Backbone.Router.extend({
 		    },            
 			success: function(response){
 				var data = response;
-				console.log(data);
+				//console.log(data);
 				selectTournament.append(optionTournament);
 				selectLevel.append(optionLevel);
 				_.each(data, function(tournament){
@@ -3129,7 +3128,7 @@ var routerManager = Backbone.Router.extend({
         	var level = option.attr('level');
         	var optionGroup = $('<option></option>').attr('level', '1').attr('value', option.attr('value')).html('Fase de grupos');
 			selectLevel.append(optionGroup);
-        	console.log(level);
+        	//console.log(level);
         	if(level > 1)
         	{
         		var optionElimination = $('<option></option>').attr('level', '2').attr('value', option.attr('value')).html('Fase eliminatoria');
@@ -3270,58 +3269,173 @@ var routerManager = Backbone.Router.extend({
 
 	viewTwo: function()
 	{
+			
+		var h = 106;
+		var a = 20;
+		var b = 60;
+
 		var me = this;
+
 		_.each(me.data, function(level){
-			var container = $('<div></div>');
+
+			var container = $('<div class="level-'+level.level+'"></div>');
+			var sw = false;
+			var cont = 1;
+
+			var swline = false;
 			_.each(level.game, function(game)
 			{
-				var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0");
 
+				var mTop = 0;
+				var x = 0;
+				if(cont == 1 && sw){
+					mTop = b;	
+				}else{
+					if(sw){
 
-				var table = $('<table></table>');
-			
-				//console.log(game)
-				var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
-				var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top:10px; margin-bottom: 10px;" class="div-game"></div></td>').css('width', '15px');
-				tr.append(status);					
+						if(level.level > 2){
+							x = 2*h + a;												
+							l = (x/2) - (h/2);
+							mTop = 2*l + b;
+							//mTop = ((2 *((h) + a) + b) / 2) - (h/2);	
+						}else{
+							mTop = a;
+							cont = 0;
+						}
+						
+							
+					}else{
+						if(level.level > 2){
+							x = 2*h + a;													
+							mTop = (x/2) - (h/2);
+							console.log("mTop"+ mTop)
+							
+						}
+					}
+					
+				}
+				// console.log("cont : "+cont+ " mtop: "+mTop)
+				
+				var divGame = $('<div class="game" style="position: relative;"></div>').css('width', '250px').css('height', h).css("margin-top", mTop);
 
-				var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
-				tr.append(img1);
+				teamOne = $('<div></div>').css('margin-top', '5px');	
+				teamOneImg = $('<img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '50px').css('margin', '0px 10px');
+				teamOneName =  $('<span>'+game.team_one.name+'</span>');
 
-				var name1 = $('<td style="vertical-align: middle;"><span>'+game.team_one.name+'</span></td>');
-				tr.append(name1);
+				teamOne.append(teamOneImg);
+				teamOne.append(teamOneName);
+				divGame.append(teamOne);
 
-				var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
-				tr.append(vs);
+				teamTwo = $('<div></div>').css('margin-top', '5px');
+				teamTwoImg = $('<img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '50px').css('margin', '0px 10px');
+				teamTwoName =  $('<span>'+game.team_two.name+'</span>');
 
-				var name2 = $('<td style="vertical-align: middle;"><span>'+game.team_two.name+'</span></td>');
-				tr.append(name2);
+				teamTwo.append(teamTwoImg);
+				teamTwo.append(teamTwoName);
+				divGame.append(teamTwo);
 
-				var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
-				tr.append(img2);
-
-				tr.click(function(){
-					me.showDuelFromGame(game);
+				divLineTop = $('<div></div>').css({
+					'border-right': 'solid 1px',
+					'border-top' : 'solid 1px',
+					'position': 'absolute',
+					'height': '50%',
+					'top': '50%',
+					'bottom': '0px',
+					'right': '0px'
+				});
+				divLineDown = $('<div></div>').css({
+					'border-right': 'solid 1px',
+					'border-bottom' : 'solid 1px',
+					'position': 'absolute',
+					'height': '50%',
+					'top': '0px',
+					'bottom': '50%',
+					'right': '0px'
 				});
 
-				if(game.active){
-					status.children('div').css('background', '#8BFFA7');
+				if(swline){
+					divGame.append(divLineDown);
+					swline = false;
+				}else{
+					divGame.append(divLineTop);
+					swline = true;
 				}
-				else if(!game.active && !game.finished){
-					status.children('div').css('background', '#E2E2E2');
-					status.unbind("click");
-				}
-				else if(game.finished){
-					status.children('div').css('background', '#A0394A');
-				}
-				table.append(tr);
-				fieldset.append(table);
-				container.append(fieldset);
+				container.append(divGame);
+
+
+				sw = true;
+				cont++;
+				// var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0");
+
+
 			})
-			me.createPanel('Nivel '+level.level, container);
+
+			
+			divPanel = $('<div></div>').css('float', 'left').css('margin-left', '10px');
+			divPanel.append(container)
+			$('div[data-id=general]').append(divPanel);
+			//me.createPanel('Nivel '+level.level, container);
 		})
 		
 	},
+
+	// viewTwo: function()
+	// {
+	// 	console.log("Entro ")		
+	// 	var me = this;
+	// 	_.each(me.data, function(level){
+	// 		var container = $('<div></div>');
+	// 		_.each(level.game, function(game)
+	// 		{
+	// 			var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0");
+
+
+	// 			var table = $('<table></table>');
+			
+	// 			//console.log(game)
+	// 			var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
+	// 			var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top:10px; margin-bottom: 10px;" class="div-game"></div></td>').css('width', '15px');
+	// 			tr.append(status);					
+
+	// 			var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+	// 			tr.append(img1);
+
+	// 			var name1 = $('<td style="vertical-align: middle;"><span>'+game.team_one.name+'</span></td>');
+	// 			tr.append(name1);
+
+	// 			// var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
+	// 			// tr.append(vs);
+
+
+	// 			var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
+	// 			var name2 = $('<td style="vertical-align: middle;"><span>'+game.team_two.name+'</span></td>');
+	// 			tr.append(name2);
+
+	// 			var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+	// 			tr.append(img2);
+
+	// 			tr.click(function(){
+	// 				me.showDuelFromGame(game);
+	// 			});
+
+	// 			if(game.active){
+	// 				status.children('div').css('background', '#8BFFA7');
+	// 			}
+	// 			else if(!game.active && !game.finished){
+	// 				status.children('div').css('background', '#E2E2E2');
+	// 				status.unbind("click");
+	// 			}
+	// 			else if(game.finished){
+	// 				status.children('div').css('background', '#A0394A');
+	// 			}
+	// 			table.append(tr);
+	// 			fieldset.append(table);
+	// 			container.append(fieldset);
+	// 		})
+	// 		me.createPanel('Nivel '+level.level, container);
+	// 	})
+		
+	// },
 
 	// viewTwo: function()
 	// {
@@ -4043,7 +4157,7 @@ var routerManager = Backbone.Router.extend({
 		var body = $('<div></div>').addClass('panel-body').append(content);
 		panel.append(head).append(body).css({
 				float: 'left',
-				width:500,
+				//width:500,
 				marginLeft: 20
 			});
 		$('div[data-id=general]').append(panel);

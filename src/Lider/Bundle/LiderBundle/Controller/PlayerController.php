@@ -809,4 +809,34 @@ class PlayerController extends Controller
         
     }
 
+    /**
+     * Obtener todas las preguntas realizadas por un juegador tanto en duelos como en practicas
+     */
+    public function questionsForPlayerAction($playerId)
+    {
+
+        $dm = $this->get('doctrine_mongodb')->getManager();
+
+        $repo = $dm->getRepository('LiderBundle:QuestionHistory');
+
+        $questions =  $repo->questionsForPlayer();
+
+      
+        $qs = [];
+        $array = [];
+        foreach ($questions as $key => $value) {
+           // print_r($value->getQuestion());
+            $array[] = $this->normalizer($value, $this->documentNameSpace."QuestionHistory");
+            // $qs[] = $value->getQuestion();
+            // print_r($qs);
+        }
+
+        //print_r($array);
+
+
+        //print_r($questions);
+
+        return $this->get("talker")->response(array('total' => count($qs), 'data' => $qs)); 
+    }
+
 }
