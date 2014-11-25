@@ -23,6 +23,6 @@ class DuelCommand extends ContainerAwareCommand
         $gameManager = $this->getContainer()->get('game_manager');
         $gameManager->stopDuels();
         $gameManager->stopGames();
-        $gameManager->startGames();
+        $games = $gameManager->startGames();
     }
 }
