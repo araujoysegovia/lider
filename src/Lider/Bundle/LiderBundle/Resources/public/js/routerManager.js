@@ -3241,7 +3241,7 @@ var routerManager = Backbone.Router.extend({
 					var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
 					tr.append(img2);
 
-					tr.click(function(){
+					tr.click(function(){												
 						me.showDuelFromGame(game);
 					});
 
@@ -3276,28 +3276,37 @@ var routerManager = Backbone.Router.extend({
 
 		var me = this;
 
+		var x = 2*h + a;	
+		var l = ((x/2) - (h/2)) ;
 		_.each(me.data, function(level){
 
 			var container = $('<div class="level-'+level.level+'"></div>');
 			var sw = false;
 			var cont = 1;
-
+			var contG = 0;
 			var swline = false;
+
 			_.each(level.game, function(game)
 			{
 
 				var mTop = 0;
-				var x = 0;
+				var c = level.level - 2;
+				var d = level.level - 3;
+
 				if(cont == 1 && sw){
 					mTop = b;	
 				}else{
 					if(sw){
 
 						if(level.level > 2){
-							x = 2*h + a;												
-							l = (x/2) - (h/2);
-							mTop = 2*l + b;
-							//mTop = ((2 *((h) + a) + b) / 2) - (h/2);	
+																	
+							//l = (x/2) - (h/2);
+							//l = (h + (a/2) - (h/2)) * c + (b * d) + (a * d);
+							var l2 = (((x/2) - (h/2)) * c) + (b * d) + (a * d);
+							//mTop = 2*l + b;
+							console.log("level: "+level.level+" l: "+l2+" b: "+b)
+							mTop = (2*l2 + b);
+							
 						}else{
 							mTop = a;
 							cont = 0;
@@ -3305,21 +3314,24 @@ var routerManager = Backbone.Router.extend({
 						
 							
 					}else{
-						if(level.level > 2){
-							x = 2*h + a;													
-							mTop = (x/2) - (h/2);
-							console.log("mTop"+ mTop)
-							
+						if(level.level  == (me.data.length + 1)){
+
+							 mTop = (l*d) + (b*(d-1)) + (a*(d-1));
+
+						}else{
+							if(level.level > 2){								
+								mTop = ((l*c) + (b*d) + (a*d));
+							}
 						}
 					}
 					
 				}
 				// console.log("cont : "+cont+ " mtop: "+mTop)
 				
-				var divGame = $('<div class="game" style="position: relative;"></div>').css('width', '250px').css('height', h).css("margin-top", mTop);
+				var divGame = $('<div class="game panel" style="position: relative;"></div>').css('width', '250px').css('height', h).css("margin-top", mTop);
 
 				teamOne = $('<div></div>').css('margin-top', '5px');	
-				teamOneImg = $('<img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '50px').css('margin', '0px 10px');
+				teamOneImg = $('<img class="img-circle" src="image/'+game.team_one.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
 				teamOneName =  $('<span>'+game.team_one.name+'</span>');
 
 				teamOne.append(teamOneImg);
@@ -3327,37 +3339,66 @@ var routerManager = Backbone.Router.extend({
 				divGame.append(teamOne);
 
 				teamTwo = $('<div></div>').css('margin-top', '5px');
-				teamTwoImg = $('<img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '50px').css('margin', '0px 10px');
+				teamTwoImg = $('<img class="img-circle" src="image/'+game.team_two.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
 				teamTwoName =  $('<span>'+game.team_two.name+'</span>');
 
 				teamTwo.append(teamTwoImg);
 				teamTwo.append(teamTwoName);
 				divGame.append(teamTwo);
 
-				divLineTop = $('<div></div>').css({
-					'border-right': 'solid 1px',
+				var lineHeight = 0;
+				if(level.level > 2){
+					l = (h + (a/2) - (h/2)) * c + (b * d) + (a * d);
+					console.log(l)
+					lineHeight =  l + (b/2) + (h/2);
+				}else{
+					lineHeight = (a/2) + (h/2);
+				}
+
+				if(!(level.level  == (me.data.length + 1))){
+					divLineTop = $('<div></div>').css({
+						'border-right': 'solid 1px',
+						'border-top' : 'solid 1px',
+						'position': 'absolute',
+						'height': lineHeight,
+						'top': (h/2),
+						'bottom': '0px',
+						'right': '0px',
+						'width': '20px'
+					});
+					divLineDown = $('<div></div>').css({
+						'border-right': 'solid 1px',
+						'border-bottom' : 'solid 1px',
+						'position': 'absolute',
+						'height': lineHeight,
+						'top': '-'+(lineHeight - h/2)+'px',
+						// 'bottom': h/2,
+						'right': '0px',
+						'width': '20px'
+					});
+				}
+				
+
+				divLineJoin = $('<div></div>').css({
 					'border-top' : 'solid 1px',
 					'position': 'absolute',
-					'height': '50%',
-					'top': '50%',
-					'bottom': '0px',
-					'right': '0px'
-				});
-				divLineDown = $('<div></div>').css({
-					'border-right': 'solid 1px',
-					'border-bottom' : 'solid 1px',
-					'position': 'absolute',
-					'height': '50%',
-					'top': '0px',
-					'bottom': '50%',
-					'right': '0px'
+					'top': '-'+(lineHeight - h/2)+'px',
+					'right': '-10px',
+					'width': '10px'
 				});
 
 				if(swline){
-					divGame.append(divLineDown);
+					divGame.append(divLineJoin);
+					if(!(level.level  == (me.data.length + 1))){
+						divGame.append(divLineDown);	
+					}
+					
 					swline = false;
 				}else{
-					divGame.append(divLineTop);
+					if(!(level.level  == (me.data.length + 1))){
+						divGame.append(divLineTop);	
+					}
+					
 					swline = true;
 				}
 				container.append(divGame);
@@ -3365,17 +3406,20 @@ var routerManager = Backbone.Router.extend({
 
 				sw = true;
 				cont++;
+				contG++;
 				// var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0");
 
+				divGame.click(function () {					
+					me.showDuelFromGame(game);
+				});
 
-			})
-
+			});
 			
 			divPanel = $('<div></div>').css('float', 'left').css('margin-left', '10px');
 			divPanel.append(container)
 			$('div[data-id=general]').append(divPanel);
 			//me.createPanel('Nivel '+level.level, container);
-		})
+		});
 		
 	},
 
