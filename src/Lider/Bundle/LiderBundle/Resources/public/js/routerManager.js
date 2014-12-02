@@ -3304,7 +3304,7 @@ var routerManager = Backbone.Router.extend({
 							//l = (h + (a/2) - (h/2)) * c + (b * d) + (a * d);
 							var l2 = (((x/2) - (h/2)) * c) + (b * d) + (a * d);
 							//mTop = 2*l + b;
-							console.log("level: "+level.level+" l: "+l2+" b: "+b)
+							//console.log("level: "+level.level+" l: "+l2+" b: "+b)
 							mTop = (2*l2 + b);
 							
 						}else{
@@ -3314,12 +3314,84 @@ var routerManager = Backbone.Router.extend({
 						
 							
 					}else{
+						//Si es el ultimo nivel
 						if(level.level  == (me.data.length + 1)){
+							
+							mTop = (l*d) + (b*(d-1)) + (a*(d-1));
 
-							 mTop = (l*d) + (b*(d-1)) + (a*(d-1));
-
+							
+							//console.log(level.game)
+							
+							/*winner = $('<div></div>');
+							img = $('<img class="img-circle" src="image/'+level.game[0].team_one.image+'?width=45&height=45"/></td>')
+										.css('width', '45px');
+							winner.append(img);
+							container.append(winner);
+							*/
 						}else{
-							if(level.level > 2){								
+							if(level.level > 2){
+
+								
+
+								if(level.game.length == 2){
+									console.log(level.game)	
+
+									var teamLostG1 = {};
+									var teamLostG2 = {};
+
+									if(level.game[0]['point_one'] <= 0){										
+										console.log("GRUPO1 Perdio el equipo : "+ level.game[0]['team_one']['name'])
+										teamLostG1 = level.game[0]['team_one'];
+									}else{
+										console.log("GRUPO1 Perdio el equipo: "+ level.game[0]['team_two']['name'])
+										teamLostG1 = level.game[0]['team_two'];
+									}
+
+									if(level.game[1]['point_one'] <= 0){
+										console.log("GRUPO2 Perdio el equipo : "+ level.game[1]['team_one']['name'])
+										teamLostG2 = level.game[0]['team_one'];
+									}else{
+										console.log("GRUPO2 Perdio el equipo: "+ level.game[1]['team_two']['name'])
+										teamLostG2 = level.game[0]['team_two'];
+									}										
+
+									//var thirdPlace = $('<div class="game panel" style="position: absolute;"></div>').css('width', '250px').css('height', h);	
+									var thirdPlace = $('<div class="game panel" style="position: absolute;"></div>').css({
+										'width': '250px',
+										'height': '140px',
+										'top': '65%',
+										'left': '75%',
+										'right': 0,
+										'bottom': 0,
+										'border': '1px solid'
+									});	
+									
+									title = $('<center><b>Tercer puesto</b></center>').css('padding', '5px');
+									thirdPlace.append(title);
+
+									teamOne = $('<div></div>').css('margin-top', '5px');	
+									teamOneImg = $('<img class="img-circle" src="image/'+game.team_one.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
+									teamOneName =  $('<span>'+game.team_one.name+'</span>');
+
+									teamOne.append(teamOneImg);
+									teamOne.append(teamOneName);
+									thirdPlace.append(teamOne);
+
+									teamTwo = $('<div></div>').css('margin-top', '5px');
+									teamTwoImg = $('<img class="img-circle" src="image/'+game.team_two.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
+									teamTwoName =  $('<span>'+game.team_two.name+'</span>');
+
+									teamTwo.append(teamTwoImg);
+									teamTwo.append(teamTwoName);
+									thirdPlace.append(teamTwo);
+
+
+									container.append(thirdPlace);
+								}
+
+
+								
+								//console.log(level.level)								
 								mTop = ((l*c) + (b*d) + (a*d));
 							}
 						}
@@ -3349,7 +3421,7 @@ var routerManager = Backbone.Router.extend({
 				var lineHeight = 0;
 				if(level.level > 2){
 					l = (h + (a/2) - (h/2)) * c + (b * d) + (a * d);
-					console.log(l)
+					//console.log(l)
 					lineHeight =  l + (b/2) + (h/2);
 				}else{
 					lineHeight = (a/2) + (h/2);
@@ -3376,8 +3448,7 @@ var routerManager = Backbone.Router.extend({
 						'right': '0px',
 						'width': '20px'
 					});
-				}
-				
+				}				
 
 				divLineJoin = $('<div></div>').css({
 					'border-top' : 'solid 1px',
@@ -3391,8 +3462,7 @@ var routerManager = Backbone.Router.extend({
 					divGame.append(divLineJoin);
 					if(!(level.level  == (me.data.length + 1))){
 						divGame.append(divLineDown);	
-					}
-					
+					}					
 					swline = false;
 				}else{
 					if(!(level.level  == (me.data.length + 1))){
@@ -3418,159 +3488,10 @@ var routerManager = Backbone.Router.extend({
 			divPanel = $('<div></div>').css('float', 'left').css('margin-left', '10px');
 			divPanel.append(container)
 			$('div[data-id=general]').append(divPanel);
-			//me.createPanel('Nivel '+level.level, container);
+			
 		});
 		
 	},
-
-	// viewTwo: function()
-	// {
-	// 	console.log("Entro ")		
-	// 	var me = this;
-	// 	_.each(me.data, function(level){
-	// 		var container = $('<div></div>');
-	// 		_.each(level.game, function(game)
-	// 		{
-	// 			var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0");
-
-
-	// 			var table = $('<table></table>');
-			
-	// 			//console.log(game)
-	// 			var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
-	// 			var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top:10px; margin-bottom: 10px;" class="div-game"></div></td>').css('width', '15px');
-	// 			tr.append(status);					
-
-	// 			var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
-	// 			tr.append(img1);
-
-	// 			var name1 = $('<td style="vertical-align: middle;"><span>'+game.team_one.name+'</span></td>');
-	// 			tr.append(name1);
-
-	// 			// var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
-	// 			// tr.append(vs);
-
-
-	// 			var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
-	// 			var name2 = $('<td style="vertical-align: middle;"><span>'+game.team_two.name+'</span></td>');
-	// 			tr.append(name2);
-
-	// 			var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
-	// 			tr.append(img2);
-
-	// 			tr.click(function(){
-	// 				me.showDuelFromGame(game);
-	// 			});
-
-	// 			if(game.active){
-	// 				status.children('div').css('background', '#8BFFA7');
-	// 			}
-	// 			else if(!game.active && !game.finished){
-	// 				status.children('div').css('background', '#E2E2E2');
-	// 				status.unbind("click");
-	// 			}
-	// 			else if(game.finished){
-	// 				status.children('div').css('background', '#A0394A');
-	// 			}
-	// 			table.append(tr);
-	// 			fieldset.append(table);
-	// 			container.append(fieldset);
-	// 		})
-	// 		me.createPanel('Nivel '+level.level, container);
-	// 	})
-		
-	// },
-
-	// viewTwo: function()
-	// {
-	// 	var me = this;
-	// 	var teams = {};
-
-	// 	var diagram = $("<div></div>").attr("id", "tournamentDiagram").css('height', '800px');
-	// 	$('div[data-id=general]').append(diagram);
-	// 	var $go = go.GraphObject.make;
-	// 	this.myDiagram =
-	//       $go(go.Diagram, "tournamentDiagram",  // create a Diagram for the DIV HTML element
-	//         {
-	//           initialContentAlignment: go.Spot.Center,  // center the content
-	//           "textEditingTool.starting": go.TextEditingTool.SingleClick,
-	//           "textEditingTool.textValidation": me.isValidScore,
-	//           layout: $go(go.TreeLayout, { angle: 180 }),
-	//           "undoManager.isEnabled": true
-	//         });
-	//     this.myDiagram.nodeTemplate =
- //      		$go(go.Node, "Auto",{
-	//       			selectable: false 
-	//       		}, 
-	      		
-	//       		$go(go.Shape, "Rectangle",{
-	//       			fill: 'whitesmoke', strokeWidth: 2 
-	//       		},
-	//       		// Shape.fill is bound to Node.data.color
-	//       		new go.Binding("fill", "color")),
-	      		
-	//       		$go(go.Panel, "Table",
-	// 				$go(go.RowColumnDefinition, { column: 0 }),
-	// 				$go(go.RowColumnDefinition, { column: 1, separatorStroke: "black" }),
-	// 				$go(go.RowColumnDefinition, { column: 2, separatorStroke: "black" }),
-	// 				$go(go.RowColumnDefinition, { row: 0, separatorStroke: "black" }),
-	// 				$go(go.RowColumnDefinition, { row: 1, separatorStroke: "black" }),
-	// 				$go(go.Picture,
-	// 	      		{
-	// 	      			row: 0,
-	// 	      			margin: 10, width: 50, height: 50, background: "red"
-	// 	      		},
-	// 	      		new go.Binding('image1')),
-	// 	      		$go(go.Picture,
-	// 	      		{
-	// 	      			row: 1,
-	// 	      			margin: 10, width: 50, height: 50, background: "red"
-	// 	      		},
-	// 	      		new go.Binding('image2')),
-	// 				$go(go.TextBlock, "",
-	// 				{ 
-	// 					row: 0, column: 1,
-	// 					wrap: go.TextBlock.None, margin: 10, width: 90,
-	// 					isMultiline: false, textAlign: 'left' 
-	// 				},
-	// 				new go.Binding("text", "player1").makeTwoWay()),
-	// 				$go(go.TextBlock, "",
-	// 				{ 
-	// 					row: 1, column: 1,
-	// 					wrap: go.TextBlock.None, margin: 10, width: 90,
-	// 					isMultiline: false, textAlign: 'left' 
-	// 				},
-	// 				new go.Binding("text", "player2").makeTwoWay()),
-	// 				$go(go.TextBlock, "",
-	// 			    { 
-	// 			    	column: 2, row: 0,
-	// 			        wrap: go.TextBlock.None, margin: 2, width: 25,
-	// 			        isMultiline: false, editable: true, textAlign: 'right' 
-	// 			    },
-	// 			    new go.Binding("text", "score1").makeTwoWay()),
-	// 			    $go(go.TextBlock, "",
-	// 			    { 
-	// 			    	column: 2, row: 1,
-	// 			        wrap: go.TextBlock.None, margin: 2, width: 25,
-	// 			        isMultiline: false, editable: true, textAlign: 'right' 
-	// 			    },
-	// 			    new go.Binding("text", "score2").makeTwoWay())
-	// 		    )
- //      		);
-
-	//     // define the Link template
-	//     this.myDiagram.linkTemplate =
-	//       $go(go.Link,
-	//         { routing: go.Link.Orthogonal,
-	//           selectable: false },
-	//         $go(go.Shape));
-
-	//     _.each(me.data, function(game){
-	// 		teams.push(game.team_one.name);
-	// 		teams.push(game.team_two.name);
-	// 	})
-	// 	me.makeModel(teams);
-	// },
 
 	createPairs: function(players)
 	{
@@ -3696,8 +3617,7 @@ var routerManager = Backbone.Router.extend({
 					            },
 					        };
 					       $.ajax(config);
-					});
-					
+					});					
 				}else{
 					modalHeader.append(buttonSendNotification);
 					
