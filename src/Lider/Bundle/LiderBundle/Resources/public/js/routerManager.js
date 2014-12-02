@@ -3270,12 +3270,17 @@ var routerManager = Backbone.Router.extend({
 
 	viewTwo: function()
 	{
+
+	},
+
+	viewTwo: function()
+	{
 		var me = this;
 		_.each(me.data, function(level){
 			var container = $('<div></div>');
 			_.each(level.game, function(game)
 			{
-				var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0");
+				var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0").css("border", "solid 1px");
 
 
 				var table = $('<table></table>');
@@ -3320,6 +3325,11 @@ var routerManager = Backbone.Router.extend({
 			})
 			me.createPanel('Nivel '+level.level, container);
 		})
+		
+	},
+
+	createLevel: function(level)
+	{
 		
 	},
 
