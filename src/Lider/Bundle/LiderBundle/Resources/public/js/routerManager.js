@@ -3334,24 +3334,19 @@ var routerManager = Backbone.Router.extend({
 								
 
 								if(level.game.length == 2){
-									console.log(level.game)	
-
+									
 									var teamLostG1 = {};
 									var teamLostG2 = {};
 
-									if(level.game[0]['point_one'] <= 0){										
-										console.log("GRUPO1 Perdio el equipo : "+ level.game[0]['team_one']['name'])
+									if(level.game[0]['point_one'] <= 0){																				
 										teamLostG1 = level.game[0]['team_one'];
 									}else{
-										console.log("GRUPO1 Perdio el equipo: "+ level.game[0]['team_two']['name'])
 										teamLostG1 = level.game[0]['team_two'];
 									}
 
-									if(level.game[1]['point_one'] <= 0){
-										console.log("GRUPO2 Perdio el equipo : "+ level.game[1]['team_one']['name'])
+									if(level.game[1]['point_one'] <= 0){										
 										teamLostG2 = level.game[0]['team_one'];
-									}else{
-										console.log("GRUPO2 Perdio el equipo: "+ level.game[1]['team_two']['name'])
+									}else{										
 										teamLostG2 = level.game[0]['team_two'];
 									}										
 
@@ -3390,8 +3385,6 @@ var routerManager = Backbone.Router.extend({
 								}
 
 
-								
-								//console.log(level.level)								
 								mTop = ((l*c) + (b*d) + (a*d));
 							}
 						}
