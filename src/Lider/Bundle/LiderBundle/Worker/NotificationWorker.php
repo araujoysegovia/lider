@@ -353,7 +353,6 @@ class NotificationWorker
             $games = $repo->getGamesDontStart();
             $data['content']['games'] = $games;
             try{
-            
                 // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
                 echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
