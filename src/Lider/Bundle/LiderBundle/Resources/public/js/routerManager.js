@@ -18,6 +18,7 @@ var routerManager = Backbone.Router.extend({
 		"images": "images",
 		"sendNotifications": "sendNotifications",
 		"games": "games",
+		"realTime": "realTime",
 		"reportPlayerAnalysis": "reportPlayerAnalysis",
 		"reportTeamByGroup": "reportTeamByGroup",
 		"reportByCategory": "reportByCategory",
@@ -4141,6 +4142,31 @@ var routerManager = Backbone.Router.extend({
 			group[g.id] = temp;
 		})
 		return group;
+	},
+
+	realTime: function(){
+		var me = this;
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Inicio: "",
+		  	Juegos: "Tiempo Real"
+		});
+		 //var socket = io();
+      var socket = io.connect('http://localhost:3000');    
+      // Handler for .ready() called.
+
+     /* $('form').submit(function(){
+        console.log($('#m').val());
+        socket.emit('chat message2', $('#m').val());
+        $('#m').val('');
+        return false;
+      });*/
+
+		socket.emit("realTime", "datos"); 
+        socket.on('realTime', function(msg){
+          alert(msg);
+        });
+     
 	},
 
 	sendNotifications: function () {
