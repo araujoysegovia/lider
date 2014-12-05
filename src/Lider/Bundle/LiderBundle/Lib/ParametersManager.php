@@ -12,17 +12,17 @@ class ParametersManager {
     /**
      * Setear los parametros de configuración para el juego
      */
-    public function setParameters(array $params){    	
+    public function setParameters(array $params){
     	$yaml = new Parser();
 
     	try{
-    		$parameters = $yaml->parse(file_get_contents($this->pathParameters));	
+    		$parameters = $yaml->parse(file_get_contents($this->pathParameters));
 
 		 	foreach ($params as $key => $value) {
 		 		if(!is_null($value)){
 		 			$parameters['gamesParameters'][$key] = $value;
 		 		}
-		 	}			 	
+		 	}
 
 		 	$dumper = new Dumper();
 			$yaml = $dumper->dump($parameters, 2);
@@ -48,14 +48,11 @@ class ParametersManager {
 		}
 
 		try {
-		    $parameters = $yaml->parse(file_get_contents($this->pathParameters));		   
+		    $parameters = $yaml->parse(file_get_contents($this->pathParameters));
 		} catch (ParseException $e) {
 		    printf("Unable to parse the YAML string: %s", $e->getMessage());
 		}
 
     	return $parameters;
     }
-
-
 }
-	

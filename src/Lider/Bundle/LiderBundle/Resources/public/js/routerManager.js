@@ -18,6 +18,7 @@ var routerManager = Backbone.Router.extend({
 		"images": "images",
 		"sendNotifications": "sendNotifications",
 		"games": "games",
+		"realTime": "realTime",
 		"reportPlayerAnalysis": "reportPlayerAnalysis",
 		"reportTeamByGroup": "reportTeamByGroup",
 		"reportByCategory": "reportByCategory",
@@ -2725,27 +2726,27 @@ var routerManager = Backbone.Router.extend({
 					    	'<input type="number" class="form-control" id="timeDuelExtra">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Cantidad de preguntas para el duelo</label>'+						    
+						    '<label >Cantidad de preguntas para el duelo</label>'+
 					    	'<input type="number" class="form-control" id="countQuestionDuel">'+
 						  '</div>'+	
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Cantidad de preguntas para el duelo extra</label>'+						    
+						    '<label >Cantidad de preguntas para el duelo extra</label>'+
 					    	'<input type="number" class="form-control" id="countQuestionDuelExtra">'+
-						  '</div>'+	
+						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Puntos por pregunta sin ayuda</label>'+						    
+						    '<label>Puntos por pregunta sin ayuda</label>'+
 					    	'<input type="number" class="form-control" id="questionPoints">'+
-						  '</div>'+	
+						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Puntos por pregunta con ayuda</label>'+						    
+						    '<label>Puntos por pregunta con ayuda</label>'+
 					    	'<input type="number" class="form-control" id="questionPointsHelp">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Puntos por juego</label>'+						    
+						    '<label>Puntos por juego</label>'+
 					    	'<input type="number" class="form-control" id="gamePoints">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Sumar Puntos en Duelo Extra</label>'+						    
+						    '<label>Sumar Puntos en Duelo Extra</label>'+
 					    	'<select id="pointExtraDuel" class="form-control">'+
 					    		'<option value=true>Si</option>'+
 					    		'<option value=false>No</option>'+
@@ -2762,31 +2763,31 @@ var routerManager = Backbone.Router.extend({
 
 		//Setear valores de los parametros de configuracion
 		parameters = {
-			type: "GET", 			
+			type: "GET",
 		    url: "params",
 	        contentType: 'application/json',
 	        dataType: "json",
 	     	statusCode: {
 		      401:function() { 
 		      	window.location = '';
-		      }		   
-		    },	        
+		      }
+		    },
 	        success: function(data){
 	        	if(!(_.isNull(data))){
 	        		$("#timeQuestionPractice").val(data['gamesParameters']['timeQuestionPractice']);
 		        	$("#timeQuestionDuel").val(data['gamesParameters']['timeQuestionDuel'])
 		        	$("#timeGame").val(data['gamesParameters']['timeGame'])
-		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])	
-		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])	
-		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])	
-		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])	
-		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])	
-		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])	
-		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])	
-		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])	
-		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])		        	
+		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])
+		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])
+		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])
+		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])
+		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])
+		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])
+		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])
+		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])
+		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])
 		        	$("#pointExtraDuel").val(data['gamesParameters']['pointExtraDuel'])
-	        	}	        	
+	        	}
 	        },
 	        error: function(){},
 		};
@@ -2796,7 +2797,7 @@ var routerManager = Backbone.Router.extend({
 		var validator = $("#form-params").kendoValidator().data("kendoValidator"),
         status = $(".status");
         
-		//Enviar datos de parametrizacion				
+		//Enviar datos de parametrizacion
 		$(".btn-save-parameters").click(function (e) {
 					
 			e.preventDefault();
@@ -2815,9 +2816,9 @@ var routerManager = Backbone.Router.extend({
 						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
 						"questionPoints": $("#questionPoints").val(),
 						"questionPointsHelp": $("#questionPointsHelp").val(),
-						"gamePoints": $("#gamePoints").val(),						
+						"gamePoints": $("#gamePoints").val(),
 						"pointExtraDuel": $("#pointExtraDuel").val(),
-					};	
+					};
 
 		            parameters = {
 						type: "POST", 
@@ -2833,9 +2834,9 @@ var routerManager = Backbone.Router.extend({
 					$.ajax(parameters);
 		    }
 		    else {
-				alert("Uno o varios campos no cumplen con el formato")            
-		    }					
-		});		
+				alert("Uno o varios campos no cumplen con el formato")
+		    }
+		});
 	},
 	
 	/**
@@ -2848,13 +2849,13 @@ var routerManager = Backbone.Router.extend({
 		var navBar = $('<nav class="navbar navbar-default" role="navigation">'+	
 					 	'<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">'+
 						 	'<form class="navbar-form navbar-left" role="search">'+
-						 		'<div class="form-group">'+						         						          
+						 		'<div class="form-group">'+
 						          '<input id="min"  type="number" class="form-control" placeholder="Minimo">'+
 						        '</div>'+
-						        '<div class="form-group">'+						          						         
+						        '<div class="form-group">'+
 						          '<input id="max"  type="number" class="form-control" placeholder="Máximo">'+
-						        '</div>'+						        
-						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+						        
+						        '</div>'+
+						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+
 					        '</form>'+
 					         '<ul class="nav navbar-nav navbar-right" style="margin-top:10px; margin-right: 10px;">'+
 					        	'<li><button type="button" class="btn btn-success save-popup" >Guardar</button></li>'+
@@ -2886,12 +2887,12 @@ var routerManager = Backbone.Router.extend({
 						        '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
 						        '<h4 class="modal-title" id="myModalLabel">Guardar grupos</h4>'+
 						      '</div>'+
-						      '<div class="modal-body">'+	
+						      '<div class="modal-body">'+
 						      	'<form>'+
 						      		'<div class="form-group">'+
 						      			'<label>Torneo</label>'+
 						      			'<select class="form-control select-tournaments"></select>'+
-						      		'</div>'+						      		
+						      		'</div>'+
 						      	'</form>'+
 						      '</div>'+
 						      '<div class="modal-footer">'+
@@ -2950,10 +2951,9 @@ var routerManager = Backbone.Router.extend({
 							"teams": {}
 						};
 						_.each(value.teams, function (v, k) {
-														
 							var team = {
 								"id": v.id,
-								"name": v.name,								
+								"name": v.name,
 							};
 							
 							group['teams'][k] = team;
@@ -2978,19 +2978,18 @@ var routerManager = Backbone.Router.extend({
             	     	statusCode: {
 					      401:function() { 
 					      	window.location = '';
-					      }		   
-					    },			            
-			            success: function(data){			            	
+					      }
+					    },
+			            success: function(data){
 			            },
 			            error: function(){},
 					};
-											
-					var ajax = $.ajax(parameters);										
+					var ajax = $.ajax(parameters);
 				}
 				modalObj.modal('hide')
-			});			
+			});
 		});
-	},	
+	},
 
 	/**
 	 * Gurdar imagenes generales
@@ -3003,11 +3002,11 @@ var routerManager = Backbone.Router.extend({
 						  '<div class="form-group">'+
 						    '<label  class="required">Nombre</label>'+
 						    '<input type="text" class="form-control" id="image-name" required="required" >'+
-						  '</div>'+							  
+						  '</div>'+
 						  '<div class="form-group">'+
 						    '<label  class="required">Im&aacute;gen</label>'+
 						    '<input type="file" class="form-control" id="file-image" required="required" >'+
-						  '</div>'+							  				  		 
+						  '</div>'+
 						  '<button type="submit" class="btn btn-primary btn-save-image">Guardar</button>'+
 					 '</form>');
 
@@ -3017,10 +3016,10 @@ var routerManager = Backbone.Router.extend({
 		var well = $("<div></div>");
 		container.append(well);
 		//Guardar imagen en BD mongo
-		form.submit(function (e) {		
-			e.preventDefault();	
+		form.submit(function (e) {
+			e.preventDefault();
 			var img = form.find('#file-image');
-			var imageName = form.find('#image-name').val();			
+			var imageName = form.find('#image-name').val();
 			var file = img[0].files[0];
 
 			var formData = new FormData();
@@ -3028,16 +3027,16 @@ var routerManager = Backbone.Router.extend({
 			formData.append("image", file);
 
 			parameters = {
-				type: "POST", 
+				type: "POST",
 				data: formData,
 			    url: "image",
-		        contentType: false,	  
-		        processData: false,      
+		        contentType: false,
+		        processData: false,
     	     	statusCode: {
-			      401:function() { 
+			      401:function() {
 			      	window.location = '';
-			      }		   
-			    },		        
+			      }
+			    },
 		        success: function(data){	 		        	
 		        	//alert("Imagen gurdada exitosamente: "+data.id);
 		        	// var well = container.find(".well");
@@ -4156,6 +4155,31 @@ var routerManager = Backbone.Router.extend({
 			group[g.id] = temp;
 		})
 		return group;
+	},
+
+	realTime: function(){
+		var me = this;
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Inicio: "",
+		  	Juegos: "Tiempo Real"
+		});
+		 //var socket = io();
+      var socket = io.connect('http://localhost:3000');    
+      // Handler for .ready() called.
+
+     /* $('form').submit(function(){
+        console.log($('#m').val());
+        socket.emit('chat message2', $('#m').val());
+        $('#m').val('');
+        return false;
+      });*/
+
+		socket.emit("realTime", "datos"); 
+        socket.on('realTime', function(msg){
+          alert(msg);
+        });
+     
 	},
 
 	sendNotifications: function () {
