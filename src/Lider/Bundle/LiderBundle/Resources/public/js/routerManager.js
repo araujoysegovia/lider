@@ -4138,9 +4138,15 @@ var routerManager = Backbone.Router.extend({
         return false;
       });*/
 
-		socket.emit("realTime", "datos"); 
-        socket.on('realTime', function(msg){
-          alert(msg);
+		//socket.emit("realTime", "datos"); 
+        socket.on('question', function(obj){
+          console.log("question")
+          console.log(obj)
+        });
+
+        socket.on('time', function(obj){
+          console.log("time")
+          console.log(obj)
         });
      
 	},

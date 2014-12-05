@@ -13,8 +13,25 @@ io.on('connection', function(socket){
     console.log('user disconnected');
   });
   
-  socket.on('realTime', function(datos){  
-      io.emit("realTime", datos); 
+  socket.on('question', function(question, user){
+      console.log(user);
+      console.log(question);
+      io.emit("question", question, user); 
+  });
+
+  socket.on('time', function(datos){
+      console.log(datos)
+      io.emit("time", datos); 
+  });
+
+  socket.on('answer', function(datos){
+      console.log(datos)
+      io.emit("answer", datos); 
+  });
+
+  socket.on('help', function(datos){
+      console.log(datos)
+      io.emit("help", datos); 
   });
 
   
