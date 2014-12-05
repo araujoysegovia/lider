@@ -84,9 +84,12 @@ class GameManager
 		}elseif($tournament->getLevel() == 2){
 			$this->generateGameForSecondLevel($tournament, $interval, $date);
 		}
-		elseif($tournament->getLevel() > 2)
+		elseif($tournament->getLevel() > 2 && $tournament->getLevel() < 5)
 		{
 			$this->generateGamesAfterSecondLevel($tournament, $interval, $date);
+		}
+		else{
+			$this->generateGamesForLastLevel($tournament, $interval, $date);
 		}
 	}
 
@@ -323,6 +326,59 @@ class GameManager
 			$game->setEnddate(new \DateTime($endDate->format('Y-m-d').' 23:59:00'));
 			$game->setIndicator($leters[$i].$leters[$i+1]);
 			$this->em->persist($game);
+		}
+		$this->em->flush();
+	}
+
+	public function generateGamesForLastLevel($tournament, $interval, $startDate)
+	{
+		$gameRepo = $this->em->getRepository("LiderBundle:Game");
+		$previousLevel = $tournament->getLevel() - 1;
+		$games = $gameRepo->findBy(array("tournament" => $tournament->getId(), "level" => $previousLevel, "deleted" => false), array("indicator" => "ASC"));
+		$teams = array();
+		$teamsLoose = array();
+		$leters = array();
+		foreach($games as $game)
+		{
+			if($game->getTeamWinner()->getId() != $game->getTeamOne()->getId())
+			{
+				$teamsLoose[] = $game->getTeamOne();
+			}
+			else{
+				$teamsLoose[] = $game->getTeamTwo();
+			}
+			$teams[] = $game->getTeamWinner();
+			$leters[] = $game->getIndicator();
+		}
+		$endDate = new \DateTime($startDate->format('Y-m-d H:i:s'));
+		$endDate->modify('+'.($interval - 1).' day');
+		for($i = 0; $i < count($teams); $i = $i + 2)
+		{
+			$game = new Game();
+			$game->setTeamOne($teams[$i]);
+			$game->setTeamTwo($teams[$i+1]);
+			$game->setActive(false);
+			$game->setStartDate(new \DateTime($startDate->format('Y-m-d H:i:s')));
+			$game->setFinished(false);
+			$game->setLevel($tournament->getLevel());
+			$game->setTournament($tournament);
+			$game->setEnddate(new \DateTime($endDate->format('Y-m-d').' 23:59:00'));
+			$game->setIndicator($leters[$i].$leters[$i+1]);
+			$this->em->persist($game);
+		}
+		for($i = 0; $i < count($teamsLoose); $i = $i + 2)
+		{
+			$gameThird = new Game();
+			$gameThird->setTeamOne($teamsLoose[$i]);
+			$gameThird->setTeamTwo($teamsLoose[$i+1]);
+			$gameThird->setActive(false);
+			$gameThird->setStartDate(new \DateTime($startDate->format('Y-m-d H:i:s')));
+			$gameThird->setFinished(false);
+			$gameThird->setLevel($tournament->getLevel());
+			$gameThird->setTournament($tournament);
+			$gameThird->setEnddate(new \DateTime($endDate->format('Y-m-d').' 23:59:00'));
+			$gameThird->setIndicator("3rd");
+			$this->em->persist($gameThird);
 		}
 		$this->em->flush();
 	}

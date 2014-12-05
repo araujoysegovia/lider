@@ -26,7 +26,7 @@ class TournamentController extends Controller
     	$tournaments = $em->getRepository("LiderBundle:Tournament")->findBy(array("active" => true, "deleted" => false));
 //     	$entity = $em->getRepository("LiderBundle:Tournament")->activeTournament();
     	if(!$tournaments)
-    		throw new \Exception("Entity no found");
+    		throw new \Exception("Tournament no found");
 
         $array = array();
         foreach ($tournaments as $tournament) {
