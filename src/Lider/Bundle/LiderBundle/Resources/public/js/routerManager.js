@@ -4162,30 +4162,54 @@ var routerManager = Backbone.Router.extend({
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
-		  	Juegos: "Tiempo Real"
+		  	'Tiempo Real': "Tiempo Real"
 		});
-		 //var socket = io();
       var socket = io.connect('http://localhost:3000');    
-      // Handler for .ready() called.
 
-     /* $('form').submit(function(){
-        console.log($('#m').val());
-        socket.emit('chat message2', $('#m').val());
-        $('#m').val('');
-        return false;
-      });*/
-
-		//socket.emit("realTime", "datos"); 
-        socket.on('question', function(obj){
-          console.log("question")
-          console.log(obj)
+        socket.on('question', function(question, user){
+        	me.questionPlayer(question, user);
         });
 
-        socket.on('time', function(obj){
-          console.log("time")
-          console.log(obj)
+        socket.on('time', function(time, user){
+        });
+
+        socket.on('answer', function(answer, user){
+        });
+
+        socket.on('help', function(help, user){
         });
      
+	},
+
+	questionPlayer: function(question, user){
+		var question = JSON.parse(question);
+		var user = JSON.parse(user);
+		var div = $('<div></div>').attr('id', user.id).addClass('user-question');
+		var time = $('<span></span>').attr('id', 'time');
+		div.append(time);
+		var userDiv = $('<div></div>');
+		var userImg = $('<img src="image/'+user.image+'"/>').addClass('img-circle').css({
+			'width': '80px',
+			'height': '80px'
+		});
+		var userName = $('<label></label>').html(user.name+' '+user.latname);
+		userDiv.append(userImg).append(userName);
+		var questionDiv = $('<div></div>');
+		var q = $('<div></div>').html(question.question.question);
+		console.log(user);
+		questionDiv.append(q);
+		if(question.question.image)
+		{
+			var imageDiv = $('<img src="image/'+question.image+'"/>').css("width", "80px").css("height", "80px");
+			questionDiv.append(imageDiv);
+		}
+		var answerDiv = $('<div></div>');
+		_.each(question.question.answers, function(value, key){
+			var answer = $('<div></div>').html(value.answer);
+			answerDiv.append(answer);
+		})
+		div.append(userDiv).append(questionDiv).append(answerDiv);
+		$("#entity-content").append(div);
 	},
 
 	sendNotifications: function () {

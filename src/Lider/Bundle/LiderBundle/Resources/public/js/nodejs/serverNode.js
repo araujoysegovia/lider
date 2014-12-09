@@ -14,24 +14,19 @@ io.on('connection', function(socket){
   });
   
   socket.on('question', function(question, user){
-      console.log(user);
-      console.log(question);
       io.emit("question", question, user); 
   });
 
-  socket.on('time', function(datos){
-      console.log(datos)
-      io.emit("time", datos); 
+  socket.on('time', function(time, user){
+      io.emit("time", time, user); 
   });
 
-  socket.on('answer', function(datos){
-      console.log(datos)
-      io.emit("answer", datos); 
+  socket.on('answer', function(answer, user){
+      io.emit("answer", answer, user); 
   });
 
-  socket.on('help', function(datos){
-      console.log(datos)
-      io.emit("help", datos); 
+  socket.on('help', function(help, user){
+      io.emit("help", help, user); 
   });
 
   
