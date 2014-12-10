@@ -4171,9 +4171,11 @@ var routerManager = Backbone.Router.extend({
         });
 
         socket.on('time', function(time, user){
+        	me.timePlayer(time, user);
         });
 
         socket.on('answer', function(answer, user){
+        	me.answerPlayer(answer,user);
         });
 
         socket.on('help', function(help, user){
@@ -4182,35 +4184,92 @@ var routerManager = Backbone.Router.extend({
 	},
 
 	questionPlayer: function(question, user){
-		var question = JSON.parse(question);
+		var me = this;
 		var user = JSON.parse(user);
-		var div = $('<div></div>').attr('id', user.id).addClass('user-question');
-		var time = $('<span></span>').attr('id', 'time');
-		div.append(time);
-		var userDiv = $('<div></div>');
-		var userImg = $('<img src="image/'+user.image+'"/>').addClass('img-circle').css({
-			'width': '80px',
-			'height': '80px',
-			'margin-left': '20px'
-		});
-		var userName = $('<label></label>').html(user.name+' '+user.latname);
-		userDiv.append(userImg).append(userName);
-		var questionDiv = $('<div></div>');
-		var q = $('<div></div>').html(question.question.question);
-		console.log(user);
-		questionDiv.append(q);
-		if(question.question.image)
-		{
-			var imageDiv = $('<img src="image/'+question.image+'"/>').css("width", "80px").css("height", "80px");
-			questionDiv.append(imageDiv);
+		if($("#entity-content").find("div#"+user.id).length == 0){
+			var question = JSON.parse(question);
+			
+			var div = $('<div></div>').attr('id', user.id).addClass('user-question');
+			var time = $('<span></span>').attr('id', 'time').css({
+				"font-size":"20px",
+				"font-weight":"400",
+				"margin-left": "25px"
+			});
+			
+			var userDiv = $('<div></div>');
+			var userImg = $('<img src="image/'+user.image+'"/>').addClass('img-circle').css({
+				'width': '80px',
+				'height': '80px',
+				'margin-left': '20px'
+			});
+			var userName = $('<label></label>').html(user.name+' '+user.latname);
+			userDiv.append(userImg).append(userName).append(time);
+			//div.append(time);
+			var questionDiv = $('<div></div>');
+			var q = $('<div></div>').html(question.question.question);			
+			questionDiv.append(q);
+			if(question.question.image)
+			{
+				var imageDiv = $('<img src="image/'+question.image+'"/>').css("width", "80px").css("height", "80px");
+				questionDiv.append(imageDiv);
+			}
+			var answerDiv = $('<div></div>');
+			_.each(question.question.answers, function(value, key){
+				var answer = $('<div></div>').html(value.answer);
+				answer.css({
+					"border": "solid 1px",
+					"border-radius": "20px",
+					"background-color": "white",			
+					"margin-left": "10%",
+					"margin-right": "10%",
+					"margin-top": "5px"
+				})
+				answerDiv.append(answer);
+			})
+			div.append(userDiv).append(questionDiv).append(answerDiv);
+
+			var divAnswer = $("<div class='answer'></div>");
+			divAnswer.css({					
+					"border-radius": "20px",								
+					"margin-left": "10%",
+					"margin-right": "10%",					
+					"margin-top": "5px",					
+				})
+			div.append(divAnswer);
+			$("#entity-content").append(div);
+		}else{
+			$("div#"+user.id).remove();
+			me.questionPlayer();
 		}
-		var answerDiv = $('<div></div>');
-		_.each(question.question.answers, function(value, key){
-			var answer = $('<div></div>').html(value.answer);
-			answerDiv.append(answer);
-		})
-		div.append(userDiv).append(questionDiv).append(answerDiv);
-		$("#entity-content").append(div);
+	},
+
+	timePlayer:function(time, user){		
+		var user = JSON.parse(user);
+		var spanTime = $("div#"+user.id).find("span");
+		if(spanTime){
+			spanTime.html(time);
+		}		
+	},
+	answerPlayer:function(answer, user){
+		var user = JSON.parse(user);
+		var divAnswer = $("div#"+user.id).find("div.answer");
+		if(divAnswer){
+			divAnswer.html(answer);
+			switch(answer){
+				case "Correcto":
+					divAnswer.css("background-color","#5cb85c");
+				break;
+				case "Incorrecto":
+					divAnswer.css("background-color","#d9534f");
+				break;
+				case "Tiempo Agotado":
+					divAnswer.css("background-color","#F0AD4E");
+				break;
+			}
+		}
+		setTimeout(function(){
+			$("div#"+user.id).remove();
+		},2000);		
 	},
 
 	sendNotifications: function () {
