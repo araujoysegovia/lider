@@ -4190,7 +4190,8 @@ var routerManager = Backbone.Router.extend({
 		var userDiv = $('<div></div>');
 		var userImg = $('<img src="image/'+user.image+'"/>').addClass('img-circle').css({
 			'width': '80px',
-			'height': '80px'
+			'height': '80px',
+			'margin-left': '20px'
 		});
 		var userName = $('<label></label>').html(user.name+' '+user.latname);
 		userDiv.append(userImg).append(userName);

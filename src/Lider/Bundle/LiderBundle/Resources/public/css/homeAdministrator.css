@@ -300,6 +300,8 @@
 
 }
 .user-question{
+	border: 1px solid black;
+	border-radius: 20px;
 	width: 45%;
 	float: left;
 	margin-top: 10px;
