@@ -305,8 +305,29 @@
 	width: 45%;
 	float: left;
 	margin-top: 10px;
+	background: #727272;	
 	/* background: #73A7E1; */
 	/* color: white; */
 	padding: 20px;
 	text-align: center;
+	margin-right: 8px;
+}
+
+
+
+
+.user-question div[data-alert=true]{
+	margin-top: 38px;
+	/* Chrome y Safari */
+    -webkit-transform: rotate(-13deg);
+    /* Firefox */
+    -moz-transform: rotate(-13deg);
+    /* Opera */
+    -o-transform: rotate(-13deg);
+    /* IE 9 */
+    -ms-transform: rotate(-13deg);
+}
+.user-question .alert-msg{
+	font: normal 50px/1 'Righteous', cursive;
+	font-weight: bold;
 }

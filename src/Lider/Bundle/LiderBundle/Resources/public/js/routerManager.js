@@ -4189,7 +4189,7 @@ var routerManager = Backbone.Router.extend({
 		if($("#entity-content").find("div#"+user.id).length == 0){
 			var question = JSON.parse(question);
 			
-			var div = $('<div></div>').attr('id', user.id).addClass('user-question');
+			var div = $('<div></div>').attr('id', user.id).addClass('user-question')
 			var time = $('<span></span>').attr('id', 'time').css({
 				"font-size":"20px",
 				"font-weight":"400",
@@ -4206,7 +4206,14 @@ var routerManager = Backbone.Router.extend({
 			userDiv.append(userImg).append(userName).append(time);
 			//div.append(time);
 			var questionDiv = $('<div></div>');
-			var q = $('<div></div>').html(question.question.question);			
+			var q = $('<div></div>').html(question.question.question);
+			q.css({
+				"background-color": "white",
+				"min-height": "60px",
+				"border-radius": "10px",
+				"padding-top": "15px",
+				"padding-bottom": "15px"
+			});			
 			questionDiv.append(q);
 			if(question.question.image)
 			{
@@ -4218,10 +4225,8 @@ var routerManager = Backbone.Router.extend({
 				var answer = $('<div></div>').html(value.answer);
 				answer.css({
 					"border": "solid 1px",
-					"border-radius": "20px",
-					"background-color": "white",			
-					"margin-left": "10%",
-					"margin-right": "10%",
+					"border-radius": "5px",
+					"background-color": "white",
 					"margin-top": "5px"
 				})
 				answerDiv.append(answer);
@@ -4236,10 +4241,25 @@ var routerManager = Backbone.Router.extend({
 					"margin-top": "5px",					
 				})
 			div.append(divAnswer);
+		
+			var divAlert = $('<div></div>').attr("data-alert", "true").attr("id","showanw"+user.id)
+		 	.css("position", "relative")
+		 	.css("top", "-125px")
+		 	//.css("left", "180px")
+		 	//.css("width", "100%")
+		 	//.css("height", "100%")
+		 	.css("display", "none")
+		 	.css("z-index", "99");
+		 var msg = $("<span></span>").addClass("alert-msg");
+		 divAlert.append(msg);
+		 div.append(divAlert);
+
+
+
 			$("#entity-content").append(div);
 		}else{
 			$("div#"+user.id).remove();
-			me.questionPlayer();
+			me.questionPlayer(question, user);
 		}
 	},
 
@@ -4252,18 +4272,27 @@ var routerManager = Backbone.Router.extend({
 	},
 	answerPlayer:function(answer, user){
 		var user = JSON.parse(user);
-		var divAnswer = $("div#"+user.id).find("div.answer");
+		var divAnswer = $("div#showanw"+user.id);
 		if(divAnswer){
-			divAnswer.html(answer);
+			
 			switch(answer){
 				case "Correcto":
-					divAnswer.css("background-color","#5cb85c");
+					//divAnswer.css("background-color","#5cb85c");
+					divAnswer.find("span").html(answer).css("color", "#5CB85C");
+					 divAnswer.show();
+					//$("span", ".div-question").html("Tiempo Agotado").css("color", "#F0AD4E");
 				break;
 				case "Incorrecto":
-					divAnswer.css("background-color","#d9534f");
+					//divAnswer.css("background-color","#d9534f");
+					 divAnswer.find("span").html(answer).css("color", "#D9534F");
+					 divAnswer.show();
+
 				break;
 				case "Tiempo Agotado":
-					divAnswer.css("background-color","#F0AD4E");
+					//divAnswer.css("background-color","#F0AD4E");
+					divAnswer.find("span").css("color", "#F0AD4E");
+					 divAnswer.show();
+
 				break;
 			}
 		}
@@ -4271,6 +4300,7 @@ var routerManager = Backbone.Router.extend({
 			$("div#"+user.id).remove();
 		},2000);		
 	},
+	
 
 	sendNotifications: function () {
 
