@@ -712,6 +712,13 @@ class GameManager
 		$this->em->flush();
 	}
 
+	public function startDuel($duelId)
+	{
+		$duel = $this->em->getRepository('LiderBundle:Duel')->find($duelId);
+		$duel->setActive(true);
+		$this->em->flush();
+	}
+
 	/**
 	 * Detener un juego y finalizer sus duelos
 	 */

@@ -3937,8 +3937,9 @@ var routerManager = Backbone.Router.extend({
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
 				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Preguntas del duelo").css('display', 'inline');
-				
-				modalHeader.append(btnClose).append(titleHeading);
+				var activeDuel = $('<button></button>').addClass('btn btn-success').html('Iniciar').css('margin-left', '15px');
+				console.log(duel);
+				modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
 				
 				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
 
@@ -3972,7 +3973,6 @@ var routerManager = Backbone.Router.extend({
 						height: '40px',
 					}).addClass('tr-game');
 					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
-					console.log(question.answers);
 					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
 						var buttonOne = $('<button>Resetear</button>').addClass('btn');
