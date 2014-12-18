@@ -481,10 +481,8 @@ var routerManager = Backbone.Router.extend({
 			    {
 			    	 text: "Remover imagen",
 			    	 click: function (e) {
-			    		 e.preventDefault();
-			    		 console.log(e)
-		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-			    		 console.log(dataItem)
+			    		 e.preventDefault();			    		
+		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));			    		 
 		                 var id = dataItem.id;
 		                 config = {
 				            type: "POST",
@@ -860,7 +858,7 @@ var routerManager = Backbone.Router.extend({
 			    $('.img-question').children("img").click(function(){
 			    	
 			    	var id = $(this).attr("data-id");
-					console.log($(this).attr("data-id"))
+					
 					
 					//$('.input-file-team')
 					
@@ -4010,7 +4008,7 @@ var routerManager = Backbone.Router.extend({
 						height: '40px',
 					}).addClass('tr-game');
 					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
-					console.log(question.answers);
+					
 					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
 						var buttonOne = $('<button>Resetear</button>').addClass('btn');
@@ -4174,18 +4172,32 @@ var routerManager = Backbone.Router.extend({
         	me.timePlayer(time, user);
         });
 
-        socket.on('answer', function(answer, user){
-        	me.answerPlayer(answer,user);
+        socket.on('answer', function(answer, user,answerId){
+        	me.answerPlayer(answer,user,answerId);
         });
 
         socket.on('help', function(help, user){
         });
+
+        socket.on('load', function(userp){
+        	var user = JSON.parse(userp);
+        	if($("#entity-content").find("div#"+user.id).length > 0){
+        		me.answerPlayer("Recargar pagina",userp,"-1");
+        	}
+        });
+
+        socket.on('goOut', function(userp){
+        	var user = JSON.parse(userp);
+        	if($("#entity-content").find("div#"+user.id).length > 0){
+        		me.answerPlayer("Salir pagina",userp,"-1");
+        	}
+        });
      
 	},
 
-	questionPlayer: function(question, user){
+	questionPlayer: function(question, userp){
 		var me = this;
-		var user = JSON.parse(user);
+		var user = JSON.parse(userp);
 		if($("#entity-content").find("div#"+user.id).length == 0){
 			var question = JSON.parse(question);
 			
@@ -4222,7 +4234,9 @@ var routerManager = Backbone.Router.extend({
 			}
 			var answerDiv = $('<div></div>');
 			_.each(question.question.answers, function(value, key){
+				
 				var answer = $('<div></div>').html(value.answer);
+				answer.attr("id","answer_"+value.id);
 				answer.css({
 					"border": "solid 1px",
 					"border-radius": "5px",
@@ -4254,12 +4268,10 @@ var routerManager = Backbone.Router.extend({
 		 divAlert.append(msg);
 		 div.append(divAlert);
 
-
-
 			$("#entity-content").append(div);
 		}else{
 			$("div#"+user.id).remove();
-			me.questionPlayer(question, user);
+			me.questionPlayer(question, userp);
 		}
 	},
 
@@ -4270,35 +4282,47 @@ var routerManager = Backbone.Router.extend({
 			spanTime.html(time);
 		}		
 	},
-	answerPlayer:function(answer, user){
+	answerPlayer:function(answer, user,answerId){
 		var user = JSON.parse(user);
+		console.log("answerId");
+		console.log(answerId);
 		var divAnswer = $("div#showanw"+user.id);
+		var divAnswerRes = $("div#answer_"+answerId);
 		if(divAnswer){
 			
 			switch(answer){
 				case "Correcto":
-					//divAnswer.css("background-color","#5cb85c");
 					divAnswer.find("span").html(answer).css("color", "#5CB85C");
-					 divAnswer.show();
-					//$("span", ".div-question").html("Tiempo Agotado").css("color", "#F0AD4E");
+					divAnswerRes.addClass("btn-success");
+					divAnswerRes.css("background-color", "#5cb85c");
+					divAnswer.show();					
 				break;
-				case "Incorrecto":
-					//divAnswer.css("background-color","#d9534f");
-					 divAnswer.find("span").html(answer).css("color", "#D9534F");
-					 divAnswer.show();
+				case "Incorrecto":					
+					divAnswer.find("span").html(answer).css("color", "#D9534F");
+					divAnswerRes.addClass("btn-danger");
+					divAnswerRes.css("background-color", "#d9534f");	
+					divAnswer.show();
+				break;
+				case "Tiempo Agotado":					
+					divAnswer.find("span").html(answer).css("color", "#F0AD4E");
+					divAnswer.show();
 
 				break;
-				case "Tiempo Agotado":
-					//divAnswer.css("background-color","#F0AD4E");
-					divAnswer.find("span").css("color", "#F0AD4E");
-					 divAnswer.show();
+				case "Recargar pagina":					
+					divAnswer.find("span").html("Recargar página").css("color", "#F0AD4E");
+					divAnswer.show();
+
+				break;
+				case "Salir pagina":					
+					divAnswer.find("span").html("Salir página").css("color", "#F0AD4E");
+					divAnswer.show();
 
 				break;
 			}
 		}
 		setTimeout(function(){
 			$("div#"+user.id).remove();
-		},2000);		
+		},3000);		
 	},
 	
 
