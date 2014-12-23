@@ -4201,7 +4201,7 @@ var routerManager = Backbone.Router.extend({
 		if($("#entity-content").find("div#"+user.id).length == 0){
 			var question = JSON.parse(question);
 			
-			var div = $('<div></div>').attr('id', user.id).addClass('user-question')
+			var div = $('<div></div>').attr('id', user.id).addClass('user-question').css("max-height","300px");
 			var time = $('<span></span>').attr('id', 'time').css({
 				"font-size":"20px",
 				"font-weight":"400",
