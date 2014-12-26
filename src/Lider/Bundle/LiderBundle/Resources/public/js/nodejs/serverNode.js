@@ -25,8 +25,20 @@ io.on('connection', function(socket){
       io.emit("answer", answer, user, question, pointsForQuestion); 
   });
 
+  // socket.on('answer', function(answer, user,answerId){
+  //     io.emit("answer", answer, user,answerId); 
+  // });
+
   socket.on('help', function(help, user){
       io.emit("help", help, user); 
+  });
+
+  socket.on('load', function(user){
+      io.emit("load", user); 
+  });
+
+  socket.on('goOut', function(user){
+      io.emit("goOut", user); 
   });
 
   

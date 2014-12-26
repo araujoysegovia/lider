@@ -483,10 +483,8 @@ var routerManager = Backbone.Router.extend({
 			    {
 			    	 text: "Remover imagen",
 			    	 click: function (e) {
-			    		 e.preventDefault();
-			    		 console.log(e)
-		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-			    		 console.log(dataItem)
+			    		 e.preventDefault();			    		
+		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));			    		 
 		                 var id = dataItem.id;
 		                 config = {
 				            type: "POST",
@@ -862,7 +860,7 @@ var routerManager = Backbone.Router.extend({
 			    $('.img-question').children("img").click(function(){
 			    	
 			    	var id = $(this).attr("data-id");
-					console.log($(this).attr("data-id"))
+					
 					
 					//$('.input-file-team')
 					
@@ -4060,14 +4058,9 @@ var routerManager = Backbone.Router.extend({
 					socket.on('help', function(help, user){
 					});
 
-					
-
 
 					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
 					
-					
-
-					//console.log(question.answers);
 					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
 						var buttonOne = $('<button></button>').addClass('btn').css({
@@ -4352,47 +4345,162 @@ var routerManager = Backbone.Router.extend({
         });
 
         socket.on('time', function(time, user){
+        	me.timePlayer(time, user);
         });
 
-        socket.on('answer', function(answer, user){
+        socket.on('answer', function(answer, user,answerId){
+        	me.answerPlayer(answer,user,answerId);
         });
 
         socket.on('help', function(help, user){
         });
+
+        socket.on('load', function(userp){
+        	var user = JSON.parse(userp);
+        	if($("#entity-content").find("div#"+user.id).length > 0){
+        		me.answerPlayer("Recargar pagina",userp,"-1");
+        	}
+        });
+
+        socket.on('goOut', function(userp){
+        	var user = JSON.parse(userp);
+        	if($("#entity-content").find("div#"+user.id).length > 0){
+        		me.answerPlayer("Salir pagina",userp,"-1");
+        	}
+        });
      
 	},
 
-	questionPlayer: function(question, user){
-		var question = JSON.parse(question);
-		var user = JSON.parse(user);
-		var div = $('<div></div>').attr('id', user.id).addClass('user-question');
-		var time = $('<span></span>').attr('id', 'time');
-		div.append(time);
-		var userDiv = $('<div></div>');
-		var userImg = $('<img src="image/'+user.image+'"/>').addClass('img-circle').css({
-			'width': '80px',
-			'height': '80px',
-			'margin-left': '20px'
-		});
-		var userName = $('<label></label>').html(user.name+' '+user.latname);
-		userDiv.append(userImg).append(userName);
-		var questionDiv = $('<div></div>');
-		var q = $('<div></div>').html(question.question.question);
-		console.log(user);
-		questionDiv.append(q);
-		if(question.question.image)
-		{
-			var imageDiv = $('<img src="image/'+question.image+'"/>').css("width", "80px").css("height", "80px");
-			questionDiv.append(imageDiv);
+	questionPlayer: function(question, userp){
+		var me = this;
+		var user = JSON.parse(userp);
+		if($("#entity-content").find("div#"+user.id).length == 0){
+			var question = JSON.parse(question);
+			
+			var div = $('<div></div>').attr('id', user.id).addClass('user-question').css("max-height","300px");
+			var time = $('<span></span>').attr('id', 'time').css({
+				"font-size":"20px",
+				"font-weight":"400",
+				"margin-left": "25px"
+			});
+			
+			var userDiv = $('<div></div>');
+			var userImg = $('<img src="image/'+user.image+'"/>').addClass('img-circle').css({
+				'width': '80px',
+				'height': '80px',
+				'margin-left': '20px'
+			});
+			var userName = $('<label></label>').html(user.name+' '+user.latname);
+			userDiv.append(userImg).append(userName).append(time);
+			//div.append(time);
+			var questionDiv = $('<div></div>');
+			var q = $('<div></div>').html(question.question.question);
+			q.css({
+				"background-color": "white",
+				"min-height": "60px",
+				"border-radius": "10px",
+				"padding-top": "15px",
+				"padding-bottom": "15px"
+			});			
+			questionDiv.append(q);
+			if(question.question.image)
+			{
+				var imageDiv = $('<img src="image/'+question.image+'"/>').css("width", "80px").css("height", "80px");
+				questionDiv.append(imageDiv);
+			}
+			var answerDiv = $('<div></div>');
+			_.each(question.question.answers, function(value, key){
+				
+				var answer = $('<div></div>').html(value.answer);
+				answer.attr("id","answer_"+value.id);
+				answer.css({
+					"border": "solid 1px",
+					"border-radius": "5px",
+					"background-color": "white",
+					"margin-top": "5px"
+				})
+				answerDiv.append(answer);
+			})
+			div.append(userDiv).append(questionDiv).append(answerDiv);
+
+			var divAnswer = $("<div class='answer'></div>");
+			divAnswer.css({					
+					"border-radius": "20px",								
+					"margin-left": "10%",
+					"margin-right": "10%",					
+					"margin-top": "5px",					
+				})
+			div.append(divAnswer);
+		
+			var divAlert = $('<div></div>').attr("data-alert", "true").attr("id","showanw"+user.id)
+		 	.css("position", "relative")
+		 	.css("top", "-125px")
+		 	//.css("left", "180px")
+		 	//.css("width", "100%")
+		 	//.css("height", "100%")
+		 	.css("display", "none")
+		 	.css("z-index", "99");
+		 var msg = $("<span></span>").addClass("alert-msg");
+		 divAlert.append(msg);
+		 div.append(divAlert);
+
+			$("#entity-content").append(div);
+		}else{
+			$("div#"+user.id).remove();
+			me.questionPlayer(question, userp);
 		}
-		var answerDiv = $('<div></div>');
-		_.each(question.question.answers, function(value, key){
-			var answer = $('<div></div>').html(value.answer);
-			answerDiv.append(answer);
-		})
-		div.append(userDiv).append(questionDiv).append(answerDiv);
-		$("#entity-content").append(div);
 	},
+
+	timePlayer:function(time, user){		
+		var user = JSON.parse(user);
+		var spanTime = $("div#"+user.id).find("span");
+		if(spanTime){
+			spanTime.html(time);
+		}		
+	},
+	answerPlayer:function(answer, user,answerId){
+		var user = JSON.parse(user);
+		console.log("answerId");
+		console.log(answerId);
+		var divAnswer = $("div#showanw"+user.id);
+		var divAnswerRes = $("div#answer_"+answerId);
+		if(divAnswer){
+			
+			switch(answer){
+				case "Correcto":
+					divAnswer.find("span").html(answer).css("color", "#5CB85C");
+					divAnswerRes.addClass("btn-success");
+					divAnswerRes.css("background-color", "#5cb85c");
+					divAnswer.show();					
+				break;
+				case "Incorrecto":					
+					divAnswer.find("span").html(answer).css("color", "#D9534F");
+					divAnswerRes.addClass("btn-danger");
+					divAnswerRes.css("background-color", "#d9534f");	
+					divAnswer.show();
+				break;
+				case "Tiempo Agotado":					
+					divAnswer.find("span").html(answer).css("color", "#F0AD4E");
+					divAnswer.show();
+
+				break;
+				case "Recargar pagina":					
+					divAnswer.find("span").html("Recargar página").css("color", "#F0AD4E");
+					divAnswer.show();
+
+				break;
+				case "Salir pagina":					
+					divAnswer.find("span").html("Salir página").css("color", "#F0AD4E");
+					divAnswer.show();
+
+				break;
+			}
+		}
+		setTimeout(function(){
+			$("div#"+user.id).remove();
+		},3000);		
+	},
+	
 
 	sendNotifications: function () {
 
