@@ -3841,13 +3841,17 @@ var routerManager = Backbone.Router.extend({
 						me.showModalByDuel(duel);
 					});
 					
-
+					console.log(duel);
 					if(duel.player_one.teamId == game.team_one.id){
 						if(duel['player_one']['questionMissing'] > 0 && !duel['finished'] && duel['active'])
 						{
 							status.children('div').css('background', '#8BFFA7');
 							
-						}else{
+						}else if(!duel['finished'] && !duel['active']){
+							status.children('div').css('background', '#7E7E7E');
+						}
+						else
+						{
 							status.children('div').css('background', '#A0394A');
 						}
 
@@ -3855,7 +3859,11 @@ var routerManager = Backbone.Router.extend({
 						{
 							status2.children('div').css('background', '#8BFFA7');
 							
-						}else{
+						}
+						else if(!duel['finished'] && !duel['active']){
+							status2.children('div').css('background', '#7E7E7E');
+						}
+						else{
 							status2.children('div').css('background', '#A0394A');
 						}
 
@@ -3864,7 +3872,11 @@ var routerManager = Backbone.Router.extend({
 						{
 							status2.children('div').css('background', '#8BFFA7');
 							
-						}else{
+						}
+						else if(!duel['finished'] && !duel['active']){
+							status2.children('div').css('background', '#7E7E7E');
+						}
+						else{
 							status2.children('div').css('background', '#A0394A');
 						}
 
@@ -3872,7 +3884,11 @@ var routerManager = Backbone.Router.extend({
 						{
 							status.children('div').css('background', '#8BFFA7');
 							
-						}else{
+						}
+						else if(!duel['finished'] && !duel['active']){
+							status.children('div').css('background', '#7E7E7E');
+						}
+						else{
 							status.children('div').css('background', '#A0394A');
 						}
 	
@@ -3975,9 +3991,62 @@ var routerManager = Backbone.Router.extend({
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
 				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Preguntas del duelo").css('display', 'inline');
-				var activeDuel = $('<button></button>').addClass('btn btn-success').html('Iniciar').css('margin-left', '15px');
-				console.log(duel);
 				modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
+				if(!duel.active && !duel.finished)
+				{
+					var activeDuel = $('<button></button>').addClass('btn btn-success').html('Iniciar').css('margin-left', '15px');
+					activeDuel.click(function(){
+						$.confirm({
+						    text: "Desea Activar este duelo ?",
+						    confirm: function(button) {
+						    	var configStartDuel = {
+									type: "GET",
+							        url: "home/duel/start/"+duel.id,
+							        contentType: "application/json",
+							        dataType: "json",
+							        //data: JSON.stringify(param),
+								    statusCode: {
+									   401:function() { 
+										   window.location = '';
+									   }
+									},
+									success: function($data)
+									{
+										var n = noty({
+								    		text: "Duelo Activado",
+								    		timeout: 1000,
+								    		type: "success"
+								    	});
+								    	grid.dataSource.read();
+								    	grid.refresh();
+						            },
+						            error: function(xhr, status, error){
+						            	try{
+									    	var obj = jQuery.parseJSON(xhr.responseText);
+									    	var n = noty({
+									    		text: obj.message,
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}catch(ex){
+								    		var n = noty({
+									    		text: "Error",
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}
+						            },
+						        }
+						         $.ajax(configStartDuel);
+						    },
+						    cancel: function(button) {
+						        // do something
+						    }
+						});
+					})
+					
+					modalHeader.append(activeDuel);
+				}
 				
 				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
 

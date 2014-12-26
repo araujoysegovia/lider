@@ -562,7 +562,7 @@ class GameManager
 			$duel->setGame($game);
 			$duel->setPlayerOne($playerOne);
 			$duel->setPlayerTwo($playerTwo);
-			$duel->setActive(true);
+			$duel->setActive(false);
 			$duel->setTournament($game->getTournament());
 			$duel->setStartDate($startDate);
 			$duel->setEnddate(new \DateTime($endDate->format('Y-m-d').' 23:59:00'));
