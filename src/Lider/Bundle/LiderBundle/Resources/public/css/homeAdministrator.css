@@ -310,3 +310,17 @@
 	padding: 20px;
 	text-align: center;
 }
+
+.table-duel tr:nth-child(odd) {
+   background-color: #fff;
+   color:#777
+}
+
+.table-duel tr:nth-child(even) {
+   background-color: #EEE;
+   color:#000;
+}
+
+.span-check{
+	font-size: 30px;
+}

@@ -17,12 +17,12 @@ io.on('connection', function(socket){
       io.emit("question", question, user); 
   });
 
-  socket.on('time', function(time, user){
-      io.emit("time", time, user); 
+  socket.on('time', function(time, user, question){
+      io.emit("time", time, user, question); 
   });
 
-  socket.on('answer', function(answer, user){
-      io.emit("answer", answer, user); 
+  socket.on('answer', function(answer, user, question, pointsForQuestion){
+      io.emit("answer", answer, user, question, pointsForQuestion); 
   });
 
   socket.on('help', function(help, user){
