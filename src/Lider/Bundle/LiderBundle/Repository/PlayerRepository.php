@@ -84,5 +84,11 @@ class PlayerRepository extends MainRepository
 
 		return $query->getResult();
 	}
+
+
+	public function playerPointForDuel($playerId, $duelId)
+	{
+		
+	}
 		
 }

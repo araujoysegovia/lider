@@ -1,4 +1,5 @@
 var max, min;
+
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
 	heightGame: 110,
@@ -122,6 +123,7 @@ var routerManager = Backbone.Router.extend({
 				$('.btn-enabled-level', tournament.grid).on("click", function() {
                     var row = $(this).closest("tr");
                     var grid = tournament.grid.data("kendoGrid");
+                    console.log(grid)
                     var item = grid.dataItem(row);
                     if(item.level == 1)
                     {
@@ -3967,7 +3969,8 @@ var routerManager = Backbone.Router.extend({
 	{
 		var me = this;
 		var loader = $(document.body).loaderPanel();
-		loader.show();
+		loader.show();		
+
 		var configTorunament = {
 			type: "GET",
 	        url: "home/duel/questions/"+duel.id,
@@ -3982,14 +3985,15 @@ var routerManager = Backbone.Router.extend({
 			success: function(data){
 				loader.hide();
 				var modal = $("<div></div>").addClass("modal fade");
-				var modalDialog = $("<div></div>").addClass("modal-dialog").css('width', '1200px');
-				var modalHeader = $("<div></div>").addClass("modal-header");
+				var modalDialog = $("<div></div>").addClass("modal-dialog").css('width', '100%');
+				//var modalHeader = $("<div></div>").addClass("modal-header");
 				var btnClose = $("<button></button>").attr("type", "button").attr("data-dismiss", "modal").addClass("close");
 				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
 				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Preguntas del duelo").css('display', 'inline');
-				modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
+
+				//modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
 				if(!duel.active && !duel.finished)
 				{
 					var activeDuel = $('<button></button>').addClass('btn btn-success').html('Iniciar').css('margin-left', '15px');
@@ -4043,18 +4047,26 @@ var routerManager = Backbone.Router.extend({
 						});
 					})
 					
-					modalHeader.append(activeDuel);
+					//modalHeader.append(activeDuel);
 				}
 				
 				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
 
-				var tableDuels = $('<table></table>').css('width', '100%');
+				var tableDuels = $('<table class="table-duel" cellspacing="0" cellpadding="0"></table>').css('width', '100%');
 				
 				var trTeamDuels = $('<thead>'+
 									 '<tr>'+
-								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerOne.image+'?width=50&height=50"/><br/><h4>'+data.playerOne.name+'</h4><button class="btn" style="margin-bottom:40px;" data-id="p1" disabled="disabled">Resetear Duelo</button</td>'+
+								    	'<td colspan="3" style="vertical-align: middle; text-align: center;">'+
+								    		'<img width="30%" class="img-circle" src="image/'+data.playerTwo.image+'?width=150&height=150"/><br/>'+
+								    		'<h4>'+data.playerTwo.name+'</h4>'+
+								    		'<label id="playerPointTwo">'+duel.point_two+'</label>'+
+								    		//'<button class="btn" style="margin-bottom:40px;" data-id="p1" disabled="disabled">Resetear Duelo</button</td>'+
 								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    	'<td colspan="2" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+data.playerTwo.image+'?width=50&height=50"/><br/><h4>'+data.playerTwo.name+'</h4><button class="btn" style="margin-bottom:40px;" data-id="p2" disabled="disabled">Resetear Duelo</button</td>'+
+								    	'<td colspan="3" style="vertical-align: middle; text-align: center;">'+
+								    		'<img width="30%" class="img-circle" src="image/'+data.playerOne.image+'?width=150&height=150"/><br/>'+
+								    		'<h4>'+data.playerOne.name+'</h4>'+
+								    		'<label id="playerPointOne">'+duel.point_one+'</label>'+
+								    		//'<button class="btn" style="margin-bottom:40px;" data-id="p2" disabled="disabled">Resetear Duelo</button</td>'+
 								    '</tr>'+
 							   '</thead>');
 				if(data.playerOne.duel)
@@ -4068,21 +4080,75 @@ var routerManager = Backbone.Router.extend({
 				tableDuels.append(trTeamDuels);
 				
 				var duels = $("<div></div>").addClass("table-duels").append(tableDuels);
-				var modalContent = $("<div></div>").addClass("modal-content").css('width', '1200px');
-				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
+				var modalContent = $("<div></div>").addClass("modal-content").css({'font-size':'200%'});
+				//modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
+				modal.append(modalDialog.append(modalContent.append(modalBody)));
 				$(document.body).append(modal);
 				modal.modal("show");
 				
+
+				var socket = io.connect('http://localhost:3000');    
+
 				_.each(data.questions, function(question){
-					var tr = $('<tr></tr>').css({
-						height: '40px',
+
+
+					var tr = $('<tr id="'+question['questionId']+'"></tr>').css({
+						height: '150px',
 					}).addClass('tr-game');
+
+					tdTimeOne = $('<td style="vertical-align: middle;" id="timeOne'+question['questionId']+'" class="timeQuestion"><label></label></td>').css('width', '50px');
+					tr.append(tdTimeOne);					
+
+					tdTimeTwo = $('<td style="vertical-align: middle;" id="timeTwo'+question['questionId']+'" class="timeQuestion"><label></label></td>').css('width', '50px');
+					
+
+					// console.log(question)
+					// console.log(question['id'])
+					socket.on('time', function(time, user, qt){
+						
+						if(user['id'] == data.playerOne.id || user['id'] == data.playerTwo.id){
+							
+							//console.log(qt['id']+ '==' + question['questionId'])							
+							if(qt['id'] == question['questionId']){
+								// console.log("User: "+ user['email'])
+								// console.log("Tiempo: "+time)	
+								//console.log($('.timeQuestion').children('label'))
+								
+								if(user['id'] == data.playerOne.id){
+									$('#timeTwo'+question['questionId']).children('label').text(time);	
+								}else if(user['id'] == data.playerTwo.id){									
+									$('#timeOne'+question['questionId']).children('label').text(time);
+										
+								}
+								
+							}
+							
+						}
+						
+					});					
+
+					socket.on('help', function(help, user){
+					});
+
+
 					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
 					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
-						var buttonOne = $('<button>Resetear</button>').addClass('btn');
-						if(question.answers.playerOne.find) buttonOne.addClass('btn-success');
-						else buttonOne.addClass('btn-danger');
+						var buttonOne = $('<button></button>').addClass('btn').css({
+							'width': '90%',
+							'height': '40%',
+							'border': 'none',
+							'font-size': '125%'
+						});
+						if(question.answers.playerTwo.find){
+							//buttonOne.addClass('btn-success');
+							buttonOne.css({'background': 'none', 'color': '#008000'});
+							buttonOne.addClass('glyphicon glyphicon-ok');
+						}else{
+							//buttonOne.addClass('btn-danger');	
+							buttonOne.css({'background': 'none', 'color': '#FF0000'});
+							buttonOne.addClass('glyphicon glyphicon-remove');
+						} 
 						buttonOne.click(function(){
 							$.confirm({
 							    text: "Desea resetear esta pregunta ?",
@@ -4094,49 +4160,103 @@ var routerManager = Backbone.Router.extend({
 							    }
 							});
 						})
+
+						spanCheck = $('<span class="span-check"></span>');
+						buttonOne.append(spanCheck);
+
 						resetOne.append(buttonOne);
 					}
 					else{
-						var buttonOne = $('<button>Resetear</button>').addClass('btn btn-default').attr("disabled", "disabled");
+						var buttonOne = $('<button class="btnOne"></button>').addClass('btn btn-default').attr("disabled", "disabled").css({
+							'width': '90%',
+							'height': '40%',
+							'border': 'none',
+							'font-size': '125%'
+						});
+
+						spanCheck = $('<span class="span-check"></span>');
+						buttonOne.append(spanCheck);
+
 						resetOne.append(buttonOne);
 					}
+
 					tr.append(resetOne);
-					if(question.answers && question.answers.playerOne && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
+					if(question.answers && question.answers.playerTwo && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
-						var answerOne = $('<td style="vertical-align: middle;"><p>'+question.answers.playerOne.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
+						var answerOne = $('<td style="vertical-align: middle;"><p>'+question.answers.playerTwo.answer+'</p></td>');
+						answerOne.css({
+							'width': '200px',
+							'text-align': 'center',
+							'font-size': '125%'
+						});
 						tr.append(answerOne);
 					}
 					else{
-						var answerOne = $('<td style="vertical-align: middle;"><p></p></td>').css('width', '200px').css('text-align', 'center');
+						var answerOne = $('<td style="vertical-align: middle;"><p></p></td>');
+						answerOne.css({
+							'width': '200px',
+							'text-align': 'center',
+							'font-size': '125%'
+						});
 						tr.append(answerOne);
 					}
 					
 					
-					var q = $('<td style="vertical-align: middle;"><p>'+question.question+'</p></td>').css('width', '400px').css('text-align', 'center');
+					var q = $('<td style="vertical-align: middle;">'+
+								'<p>'+question.question+'</p>'+
+							  '</td>');
+					q.css({
+						'width': '400px',
+						'text-align': 'center',
+						'font-size': '130%'
+					});
+					
 					tr.append(q);
 					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
-						var answerTwo = $('<td style="vertical-align: middle;"><p>'+question.answers.playerTwo.answer+'</p></td>').css('width', '200px').css('text-align', 'center');
+						var answerTwo = $('<td style="vertical-align: middle;"><p>'+question.answers.playerOne.answer+'</p></td>');
+						answerTwo.css({
+							'width': '200px',
+							'text-align': 'center',
+							'font-size': '125%'
+						});
 						tr.append(answerTwo);
 					}
 					else{
-						var answerTwo = $('<td style="vertical-align: middle;"><p></p></td>').css('width', '200px').css('text-align', 'center');
+						var answerTwo = $('<td style="vertical-align: middle;"><p></p></td>');
+						answerTwo.css({
+							'width': '200px',
+							'text-align': 'center',
+							'font-size': '125%'
+						});
 						tr.append(answerTwo);
 					}
 					
 					var resetTwo = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
-					
-					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
+					if(question.answers && question.answers.playerOne  && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
 					{
-						var buttonTwo = $('<button>Resetear</button>').addClass('btn');
-						if(question.answers.playerTwo.find) buttonTwo.addClass('btn-success');
-						else buttonTwo.addClass('btn-danger');
+						var buttonTwo = $('<button></button>').addClass('btn').css({
+							'width': '90%',
+							'height': '40%',
+							'border': 'none',
+							'font-size': '125%',							
+						});
+						if(question.answers.playerOne.find){
+							//buttonTwo.addClass('btn-success');	
+							buttonTwo.css({'background': 'none', 'color': '#008000'});												
+							buttonTwo.addClass('glyphicon glyphicon-ok');
+
+						}else {
+							//buttonTwo.addClass('btn-danger');	
+							buttonTwo.css({'background': 'none', 'color': '#FF0000'});
+							buttonTwo.addClass('glyphicon glyphicon-remove');
+						}
 						buttonTwo.click(function(){
 							$.confirm({
 							    text: "Desea resetear esta pregunta ?",
 							    confirm: function(button) {
-							    	me.resetQuestion(question.answers.playerTwo.token, duel, modal);
-							    },
+							    	me.resetQuestion(question.answers.playerOne.token, duel, modal);
+								},
 							    cancel: function(button) {
 							        // do something
 							    }
@@ -4145,18 +4265,121 @@ var routerManager = Backbone.Router.extend({
 						resetTwo.append(buttonTwo);
 					}
 					else{
-						var buttonTwo = $('<button>Resetear</button>').addClass('btn btn-default').attr("disabled", "disabled");
+						var buttonTwo = $('<button class="btnTwo"></button>').addClass('btn btn-default').attr("disabled", "disabled").css({
+							'width': '90%',
+							'height': '40%',
+							'border': 'none',
+							'font-size': '125%'							
+						});
 						resetTwo.append(buttonTwo);
 					}
 
 					tr.append(resetTwo);
+
+					tr.append(tdTimeTwo);
+
 					tableDuels.append(tr);
 				});
 				modalBody.append(duels);
 
+				pointsPlayerOne = duel.point_one;
+				pointsPlayerTwo = duel.point_two;
+
+				console.log("Puntos playerOne: "+ pointsPlayerOne);
+				console.log("Puntos playerTwo: "+ pointsPlayerTwo);
+
+				socket.on('answer', function(answer, user, questionId, pointsForQuestion){
+
+					pointsForQuestion = pointsForQuestion || 0;
+					user = JSON.parse(user);
+
+					if(user['id'] == data.playerOne.id){
+
+						pointsPlayerOne = parseInt(pointsPlayerOne) + parseInt(pointsForQuestion);
+						
+						$('#playerPointOne').text(pointsPlayerOne);
+						//$('#timeTwo'+question['questionId']).children('label').text(time);										
+						switch(answer){
+							case 'Correcto': 
+								btnTwo = $('#'+questionId).find('.btnTwo');
+								//btnTwo.removeClass('btn-default');					
+								//btnTwo.addClass('btn-success');
+								btnTwo.attr("disabled", false);
+								//sc = btnOne.find('.span-check');							
+								btnTwo.css({'background': 'none', 'color': '#008000'});
+								btnTwo.addClass('glyphicon glyphicon-ok');
+								break;							
+							case 'Incorrecto': 
+								btnTwo = $('#'+questionId).find('.btnTwo');
+								// btnTwo.removeClass('btn-default');					
+								// btnTwo.addClass('btn-danger');
+								btnTwo.attr("disabled", false);
+
+								//sc = btnOne.find('.span-check');
+								btnTwo.css({'background': 'none', 'color': '#FF0000'});
+								btnTwo.addClass('glyphicon glyphicon-remove');
+								break;
+							case 'Tiempo Agotado':
+								btnTwo = $('#'+questionId).find('.btnTwo');
+								//btnTwo.removeClass('btn-default');					
+								//btnTwo.addClass('btn-warning');
+								btnTwo.attr("disabled", false);
+
+								//sc = btnOne.find('.span-check');
+								btnTwo.css({'background': 'none', 'color': '#FF0000'});
+								btnTwo.addClass('glyphicon glyphicon-remove');
+								break;
+						}	
+						
+					}else if(user['id'] == data.playerTwo.id){									
+						//$('#timeOne'+question['questionId']).children('label').text(time);
+						
+						pointsPlayerTwo = parseInt(pointsPlayerTwo) + parseInt(pointsForQuestion);
+
+						
+						$('#playerPointTwo').text(pointsPlayerTwo);
+						switch(answer){
+							case 'Correcto':
+								btnOne = $('#'+questionId).find('.btnOne');
+								// btnOne.removeClass('btn-default');					
+								// btnOne.addClass('btn-success');
+								btnOne.remove('disabled');
+	
+								// sc = btnOne.find('.span-check');	
+								// sc.addClass('glyphicon glyphicon-ok');
+								btnOne.css({'background': 'none', 'color': '#008000'});
+								btnOne.addClass('glyphicon glyphicon-ok');
+								break;
+							case 'Incorrecto':
+								btnOne = $('#'+questionId).feind('.btnOne');
+								// btnOne.removeClass('btn-default');					
+								// btnOne.addClass('btn-danger');
+								btnOne.remove('disabled');
+		
+								// sc = btnOne.find('.span-check');
+								// sc.addClass('glyphicon glyphicon-remove');
+								btnOne.css({'background': 'none', 'color': '#FF0000'});
+								btnOne.addClass('glyphicon glyphicon-remove');
+								break;
+							case 'Tiempo Agotado':
+								btnOne = $('#'+questionId).find('.btnOne');
+								// btnOne.removeClass('btn-default');					
+								// btnOne.addClass('btn-warning');
+								btnOne.remove('disabled');
+												
+								// sc = btnOne.find('.span-check');
+								// sc.addClass('glyphicon glyphicon-remove');
+								btnOne.css({'background': 'none', 'color': '#FF0000'});
+								btnOne.addClass('glyphicon glyphicon-remove');
+								break;					
+						}					
+					}
+					
+				});
+
 				modal.on("hidden.bs.modal", function(){
 		    		modal.remove();
-		    	})
+		    	});
 			},
 			error: function(){},
 	    	complete: function(){
@@ -4164,6 +4387,19 @@ var routerManager = Backbone.Router.extend({
 	    	}
         }
         $.ajax(configTorunament);
+	},
+
+	getQuestion: function () {
+		socket.on('question', function(question, user){
+			
+			currentQuestion = JSON.parse(question);
+			//console.log(currentQuestion)
+			currentUser = JSON.parse(user);
+
+			return currentUser;
+			//console.log(currentUser)
+			// 	//me.questionPlayer(question, user);
+		});
 	},
 
 	resetQuestion: function(token, duel, modal)
