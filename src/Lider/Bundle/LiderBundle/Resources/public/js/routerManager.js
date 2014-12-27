@@ -3993,7 +3993,7 @@ var routerManager = Backbone.Router.extend({
 				btnClose.append(spanClose).append(spanClose2);
 				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Preguntas del duelo").css('display', 'inline');
 
-				modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
+				//modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
 				if(!duel.active && !duel.finished)
 				{
 					var activeDuel = $('<button></button>').addClass('btn btn-success').html('Iniciar').css('margin-left', '15px');
@@ -4047,7 +4047,7 @@ var routerManager = Backbone.Router.extend({
 						});
 					})
 					
-					modalHeader.append(activeDuel);
+					//modalHeader.append(activeDuel);
 				}
 				
 				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
