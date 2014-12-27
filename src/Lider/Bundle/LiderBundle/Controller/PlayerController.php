@@ -58,8 +58,10 @@ class PlayerController extends Controller
     	if(!$atoken || !$code)
     		throw new \Exception("Token not found");
 		
+    	//echo "token: ".$atoken."<br/>";
     	$content = $this->getUserInfo($atoken);
     	$data = json_decode($content, true);
+    	//echo "con google";
     	//print_r($data);
     	if(!is_array($data) || (is_array($data) && !array_key_exists("email", $data)))
     		throw new \Exception("User not found");
