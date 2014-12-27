@@ -62,8 +62,8 @@ class CheckerWorker
 			$this->co->get('game_manager')->stopDuel($duel);
             $point1 = $duel->getPointOne();
             $point2 = $duel->getPointTwo();
-            echo "Cantidad de puntos del jugador ".$duel->getPlayerOne()->getname()." = ".$point1."\n";
-            echo "Cantidad de puntos del jugador ".$duel->getPlayerTwo()->getname()." = ".$point2."\n";
+            echo "Cantidad de puntos del jugador ".$duel->getPlayerOne()->getname()." = ".$point1." En el equipo ".$duel->getPlayerOne()->getTeam()->getName()."\n";
+            echo "Cantidad de puntos del jugador ".$duel->getPlayerTwo()->getname()." = ".$point2." En el equipo ".$duel->getPlayerTwo()->getTeam()->getName()."\n";
             if($point1 < $point2)
             {
                 echo "Gano El jugador ".$duel->getPlayerTwo()->getName()." ".$duel->getPlayerTwo()->getLastname()."\n";

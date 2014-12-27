@@ -366,4 +366,14 @@ class QuestionHistoryRepository extends MainMongoRepository
 		return $query;
 	}
 
+
+	public function questionsForPlayer()
+	{
+		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
+			->field('player.playerId')->equals(2)
+			->getQuery()
+			->execute();
+
+		return $query;
+	}
 }

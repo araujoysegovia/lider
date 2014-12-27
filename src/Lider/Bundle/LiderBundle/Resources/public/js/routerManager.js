@@ -1,7 +1,7 @@
 var max, min;
-
 var routerManager = Backbone.Router.extend({
-
+	marginTopGame: 10,
+	heightGame: 110,
 	routes: {
 		"" : "home",   
 		"tournaments" : "tournaments", 
@@ -18,6 +18,7 @@ var routerManager = Backbone.Router.extend({
 		"images": "images",
 		"sendNotifications": "sendNotifications",
 		"games": "games",
+		"realTime": "realTime",
 		"reportPlayerAnalysis": "reportPlayerAnalysis",
 		"reportTeamByGroup": "reportTeamByGroup",
 		"reportByCategory": "reportByCategory",
@@ -32,7 +33,7 @@ var routerManager = Backbone.Router.extend({
 	},
   
 	buildbreadcrumbs: function(items){
-		var obj = $(".breadcrumb", "#breadcrumbs").empty();	  
+		var obj = $(".breadcrumb", "#breadcrumbs").empty();
 		var l = _.keys(items).length, c=1;
 		_.each(items, function(url, name){
 			var list = $("<li></li>");
@@ -92,30 +93,28 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field: "active",
 					title: "Activo",
-			    	template: function(e){ 			    		
+			    	template: function(e){
 			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
 			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
-												
 						if(e.active == false){
 							return imgNoChecked;
 						}else{
 							return imgChecked;
-						}						
+						}
 					}
 				},
-				{ 
+				{
 					field: "enabledLevel",
 					title: "Activar Nivel",
 					width: 140,
-			    	template: function(e){ 			    		
+			    	template: function(e){
 			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
 			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
-												
 						if(e.enabledLevel == false){
 							return '<button type="button" class="btn btn-success btn-sm btn-enabled-level">Activar</button>';
 						}else{
 							return '<button type="button" class="btn btn-success btn-sm" disabled="disabled">Activar</button>';
-						}						
+						}
 					}
 				}
 			],
@@ -133,14 +132,14 @@ var routerManager = Backbone.Router.extend({
 						loader.show();
 						var config = {
 							type: 'POST',
-							url: "home/tournament/enablelevel",							
+							url: "home/tournament/enablelevel",
 				            contentType: "application/json",
 				            dataType: "json",
 				            data: JSON.stringify(data),
 	            	     	statusCode: {
-						      401:function() { 
+						      401:function() {
 						      	window.location = '';
-						      }		   
+						      }
 						    },
 				            success: function(response){
 				            	var n = noty({
@@ -254,10 +253,9 @@ var routerManager = Backbone.Router.extend({
 							$.ajax(config);
 						})
                     }
-     //                
                    // action.action.call(me,item);
                 })
-			}     
+			}
 		});
 	},
 
@@ -276,25 +274,25 @@ var routerManager = Backbone.Router.extend({
 		 		category: 'name'
 		 	},
 		  	model: {
-			    id: "id",			   
+			    id: "id",
 			    fields: {
-			    	id: { 
-			    		editable: false, 
+			    	id: {
+			    		editable: false,
 			    		nullable: true,
 			    		type: "number"
 			    	},
-			    	question: { 
+			    	question: {
 			    		type: "string"
 			    	},
-			    	category: {},	
+			    	category: {},
 			    	checked: {
-			    		type: "boolean",			    		
+			    		type: "boolean",
 			    	},
 			    	user: {
 			    		editable: false
 			    	},
 			    	answers: {
-			    		parse: function(rec){				    			
+			    		parse: function(rec){
 							if(_.isObject(rec)){
 								d = rec[0];
 							}
@@ -302,16 +300,16 @@ var routerManager = Backbone.Router.extend({
 						},
 			    	},
 			    	answerOne: {
-			    		type: "string",						
+			    		type: "string",
 			    	},
 			    	answerTwo: {
-			    		type: "string",	
+			    		type: "string",
 			    	},
 			    	answerThree: {
-			    		type: "string",		
+			    		type: "string",
 			    	},
 			    	answerFour: {
-			    		type: "string",	
+			    		type: "string",
 			    	},
 			    	selected: {
 			    		defaultValue: "1"
@@ -324,7 +322,7 @@ var routerManager = Backbone.Router.extend({
 				    	editable: false
 				    },
 				    level: {
-			    		editable: false,			    		
+			    		editable: false,
 			    		type: "number"
 				    }
 			    }
@@ -347,7 +345,7 @@ var routerManager = Backbone.Router.extend({
 					
 					if(d){
 						value["answerFour"] = d.answer;
-					}									
+					}
 					
 					if(a && a.selected){
 						value["selected"] = 1;
@@ -371,9 +369,8 @@ var routerManager = Backbone.Router.extend({
 					
 				})
 			},
-			parameterMap: function (data, type) {							
-		        if(type != "read") {	      
-		        	
+			parameterMap: function (data, type) {
+		        if(type != "read") {
 		        		if(!(_.isEmpty(data.answers))){
 		        			data.answers[0].answer = data.answerOne;
 				        	data.answers[1].answer = data.answerTwo;
@@ -388,7 +385,6 @@ var routerManager = Backbone.Router.extend({
 		        			data.answers.push({answer : data.answerFour});
 		        			
 		        		}
-			        			        		
 		        		delete data.answerOne;
 		        		delete data.answerTwo;
 		        		delete data.answerThree;
@@ -400,13 +396,13 @@ var routerManager = Backbone.Router.extend({
 			        		value["help"] = false;
 			        	})
 			        	
-			        	console.log(data)
-			        	if(data.selected){				        		
-				        	
+			        	//console.log(data.selected)
+			        	
+			        	if(data.selected){
 			        		if(!(_.isObject(data.selected))){
-			        			data.answers[parseInt(data.selected) - 1].selected = true;
-				        		data.answers[parseInt(data.help) - 1].help = true;	
-			        		}		        				        				       
+		        			data.answers[parseInt(data.selected) - 1].selected = true;
+			        		data.answers[parseInt(data.help) - 1].help = true;	
+			        		}
 	         	        	
 				        	//console.log(data)
 				        	if(data.selected == data.help){
@@ -414,31 +410,28 @@ var routerManager = Backbone.Router.extend({
 				        		throw "La respuesta correcta no puedo ser igual a la de ayuda";
 				        	}
 			        	}
-			        	
-			        	
-
-			            return kendo.stringify(data);		        
+		        		
+			            return kendo.stringify(data);
 		        }else{
-	                if(data.filter){	                	
+	                if(data.filter){
 	                    dataFilter = data.filter["filters"];
 
-	                    _.each(dataFilter, function (value, key) {                            
+	                    _.each(dataFilter, function (value, key) {
 
 	                    	if(question.associationNames[value['field']]){
                     		value["property"] = value["field"]+'.'+question.associationNames[value['field']];	
 	                    	}else{
 	                    		value["property"] = value["field"];
-	                    	}	                                            
+	                    	}
 	                        value["operator"] = me.validationOperator(value["operator"]);
 
 	                        delete dataFilter[key].field;
-	                                            
 	                    });
 	                    
 	                    data.filter = JSON.stringify(dataFilter);
 
 	                }    
-	                return data;			        	
+	                return data;
 		        }
 			},
 			width: "450px",
@@ -449,11 +442,11 @@ var routerManager = Backbone.Router.extend({
 			            edit: "Editar",  // This is the localization for Edit button
 			            update: "Actualizar",  // This is the localization for Update button
 			            cancel: "Cancelar"  // This is the localization for Cancel button
-			        },				        
+			        },
 			    },
 			    { 
-			        name: "destroy", 
-			        text: "Eliminar",				      
+			        name: "destroy",
+			        text: "Eliminar",
 			    },
 			    {
 			    	 text: "Verificar",
@@ -462,19 +455,18 @@ var routerManager = Backbone.Router.extend({
 			    		 e.preventDefault();
 
 		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-		                 var id = dataItem.id;		                
-		                 					
+		                 var id = dataItem.id;
 		                 config = {
-				            type: "POST",           
-				            url: "home/question/check/"+id,					            
+				            type: "POST",
+				            url: "home/question/check/"+id,
 				            contentType: "application/json",
 				            dataType: "json",
 				            //data: JSON.stringify(param),
 	            	     	statusCode: {
 						      401:function() { 
 						      	window.location = '';
-						      }		   
-						    },				            
+						      }
+						    },
 							success: function(){
 							   question.grid.data('kendoGrid').dataSource.read();
 							   question.grid.data('kendoGrid').refresh();
@@ -488,24 +480,21 @@ var routerManager = Backbone.Router.extend({
 			    },
 			    {
 			    	 text: "Remover imagen",
-			    	 click: function (e) {			    	
-			    		 e.preventDefault();
-			    		 console.log(e)
-		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-			    		 console.log(dataItem)
-		                 var id = dataItem.id;		                
-		                 					
+			    	 click: function (e) {
+			    		 e.preventDefault();			    		
+		                 var dataItem = this.dataItem($(e.currentTarget).closest("tr"));			    		 
+		                 var id = dataItem.id;
 		                 config = {
-				            type: "POST",           
-				            url: "home/question/image/"+id+"/remove",					            
+				            type: "POST",
+				            url: "home/question/image/"+id+"/remove",
 				            contentType: "application/json",
 				            dataType: "json",
 				            //data: JSON.stringify(param),
 	            	     	statusCode: {
 						      401:function() { 
 						      	window.location = '';
-						      }		   
-						    },				            
+						      }
+						    },
 							success: function(){
 							   question.grid.data('kendoGrid').dataSource.read();
 							   question.grid.data('kendoGrid').refresh();
@@ -514,10 +503,9 @@ var routerManager = Backbone.Router.extend({
 		                 }
 
 		                 $.ajax(config);
-							
-		             } 
-			    }			    
-		    ],	        
+		             }
+			    }
+		    ],
 			detailInit: function(e){
 				var grid = null;
 				
@@ -528,8 +516,8 @@ var routerManager = Backbone.Router.extend({
 						//batch: true,
 	                    transport: {
 	                        read: "home/answer?question=" + e.data.id,
-	                        update: {                        	
-	                                url: function (e) {      
+	                        update: {
+	                                url: function (e) {
 	                                	console.log(e)
 	                                    return "home/answer/" + e.id;
 	                                },
@@ -539,23 +527,23 @@ var routerManager = Backbone.Router.extend({
 			            	     	statusCode: {
 								      401:function() { 
 								      	window.location = '';
-								      }		   
+								      }
 								    }
 	                            },
 	                        parameterMap: function (data, type) {
 	                 			//console.log(data)
-	                 	        if (type !== "read") {	        	
+	                 	        if (type !== "read") {
 	                 	        	
-	                 	        	if(data.category && (_.isString(data.category))){		        		
+	                 	        	if(data.category && (_.isString(data.category))){
 	            	        			data.category = {
 	            			        			id: data.category
-	            			        	}		        		
+	            			        	}
 	            		        	}
 	                 	        	
-	                 	            return kendo.stringify(data);	                 	            
+	                 	            return kendo.stringify(data);
 	                 	        }
-	                     	}   	                        
-	                    },                        
+	                     	}
+	                    },
 	                    schema: {
 	                    	total: "total",
 	                    	data: "data",
@@ -576,12 +564,12 @@ var routerManager = Backbone.Router.extend({
 										type: "boolean"
 									}
 							   }
-					  	   }, 					  	
+					  	   },
 					    },
 					    change: function(e) {
 	
 					        if((e.field == "selected" || e.field == "help") && (e.action != "sync")) {
-					        	var data = this.data();				        	
+					        	var data = this.data();
 					        	var id = e.items[0].id;
 					        	_.each(data, function(value){
 						        	if(value.id != id){
@@ -594,17 +582,15 @@ var routerManager = Backbone.Router.extend({
 						        		
 						        	}else{
 						        		value[e.field] = true;
-						        	}						        							        	
+						        	}
 						        })
 						        
 						        kdataSource.sync();
 						        grid.data('kendoGrid').dataSource.read();
 			 					grid.data('kendoGrid').refresh();
-			 								 					
 			 					question.grid.data('kendoGrid').dataSource.read();
 			 					question.grid.data('kendoGrid').refresh();
 					        }
-					        
 					    },
 	                    serverPaging: true,
 	                    serverSorting: true,
@@ -621,36 +607,35 @@ var routerManager = Backbone.Router.extend({
 	                    sortable: true,
 	                    pageable: true,
 	                    columns: [
-	                        { 
+	                        {
 	                        	field: "answer",
 	                        	title: "Respuesta"
 	                        },
 	                        {
 	                        	field: "selected",
-	                        	title: "Correcta",                         	
-	        			    	template: function(e){ 	        			    			        			    		 	        							        						
+	                        	title: "Correcta",
+	        			    	template: function(e){
         							if(e.selected == false){
         								return imgNoChecked;
         							}else{
         								return imgChecked;
         							}
-	        						
 	        					}
 	                        },
 	                        {
 	                        	field: "help",
-	                        	title: "Ayuda",                        	
-	        			    	template: function(e){	
+	                        	title: "Ayuda",
+	        			    	template: function(e){
         							if(e.help == false){
         								return imgNoChecked;
         							}else{
         								return imgChecked;
-        							}	        						
+        							}
 	        					}
-	                        },                        
+	                        },
 	                        //{ command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
 	                    ],
-	                    editable: true,	                   
+	                    editable: true,
 	                });
 				}
 			},
@@ -661,7 +646,7 @@ var routerManager = Backbone.Router.extend({
 			    	width: "50px"
 			    },
 			    { 
-			    	field:"question", 
+			    	field:"question",
 			    	title: "Pregunta" ,
 			    	editor: function(container, options){
 			    		$('<textarea data-bind="value: ' + options.field + '"></textarea>')
@@ -670,17 +655,17 @@ var routerManager = Backbone.Router.extend({
 			    },
 				{ 
 					field: "category",
-					title:"Categoria",					
+					title:"Categoria",
 					template:  "#: category.name #",
 					editor:	function (container, options) {
 						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
 					        .kendoDropDownList({
-					            autoBind: true,	
+					            autoBind: true,
 					            dataBound: function(e) {
 					            	input.data("kendoDropDownList").trigger("change");
 					            },
-					            dataSource: {		                	
+					            dataSource: {
 					                transport: {
 					                    read: "home/category/"
 					                },
@@ -691,42 +676,42 @@ var routerManager = Backbone.Router.extend({
 					    				    id: "id",
 					    				    fields: {
 					    				    	id: { editable: false, nullable: true },
-					    				        name: { type: "string" },		        				        
+					    				        name: { type: "string" },
 					    				    }
 					    		        }
 					                },
 					            },
 					            dataTextField: "name",
-					            dataValueField:"id",				            
+					            dataValueField:"id",
 					        });
 					} 
 				},	
 			    {
 			    	field: "checked",
 			    	title: "Revisada",
-			    	width: "120px",			    	
-			    	template: function(e){ 			    	
+			    	width: "120px",
+			    	template: function(e){
 						if(e.checked == false){
 							return "No";
 						}else{
 							return "Si";
-						}					
+						}
 					}
 			    },
 			    {
 			    	field: "user",
 			    	title: "Usuario",
 			    	hidden: true,
-			    	template:  function (e){				    		
-			    		if(e.user){			    			
+			    	template:  function (e){
+			    		if(e.user){
 			    			return e.user.name;
 			    		}else{
 			    			return "";
-			    		}  		 
+			    		}
 			    	}
 			    },
 			    {
-			    	field: "answerOne",			    							    
+			    	field: "answerOne",
 			    	title: "Respuesta Uno",
 			    	hidden: true,
 			    	editor:	function (container, options) {
@@ -738,12 +723,12 @@ var routerManager = Backbone.Router.extend({
 			    		}else{
 			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
 				    		.appendTo(container);
-			    		}			    		
-			    	}			    	
+			    		}
+			    	}
 			    },
 			    {
 			    	field: "answerTwo",
-			    	title: "Respuesta Dos",	
+			    	title: "Respuesta Dos",
 			    	hidden: true,
 			    	editor:	function (container, options) {
 			    		var ans = options.model.answers[1];
@@ -754,7 +739,7 @@ var routerManager = Backbone.Router.extend({
 			    		}else{
 			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
 				    		.appendTo(container);
-			    		}			    		
+			    		}
 			    	}
 			    },
 			    {
@@ -770,7 +755,7 @@ var routerManager = Backbone.Router.extend({
 			    		}else{
 			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
 				    		.appendTo(container);
-			    		}			    		
+			    		}
 			    	}
 			    },
 			    {
@@ -782,18 +767,18 @@ var routerManager = Backbone.Router.extend({
 			    		if (typeof ans != 'undefined'){
 			    			$('<input type="text" class="k-input k-textbox" name="' + options.field + '" data-bind="value:' + options.field + '">')
 				    		 .appendTo(container)
-				    		 .val(ans.answer);	
+				    		 .val(ans.answer);
 			    		}	else{
 			    			$('<textarea data-bind="value: ' + options.field + '"></textarea>')
 				    		.appendTo(container);
-			    		}		    		
+			    		}
 			    	}
 			    },
 			    {
 			    	field: "selected",
 			    	title: "Respuesta Correcta",
-			    	hidden: true,			    	
-			    	editor:	function (container, options) {						
+			    	hidden: true,
+			    	editor:	function (container, options) {
 			    	    var input = $('<input required data-text-field="text" data-value-field="value" data-bind="value:' + options.field + '"/>')
 			            .appendTo(container)
 			            .kendoDropDownList({
@@ -873,7 +858,7 @@ var routerManager = Backbone.Router.extend({
 			    $('.img-question').children("img").click(function(){
 			    	
 			    	var id = $(this).attr("data-id");
-					console.log($(this).attr("data-id"))
+					
 					
 					//$('.input-file-team')
 					
@@ -2080,8 +2065,6 @@ var routerManager = Backbone.Router.extend({
 				modalObj.modal('hide')
 			});			
 		});
-
-
 		
 	},
 
@@ -2605,6 +2588,7 @@ var routerManager = Backbone.Router.extend({
 
 						container.append(table);
 						
+
 						me.createPanel(value.name, container);
 					})
 				},
@@ -2740,27 +2724,27 @@ var routerManager = Backbone.Router.extend({
 					    	'<input type="number" class="form-control" id="timeDuelExtra">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Cantidad de preguntas para el duelo</label>'+						    
+						    '<label >Cantidad de preguntas para el duelo</label>'+
 					    	'<input type="number" class="form-control" id="countQuestionDuel">'+
 						  '</div>'+	
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Cantidad de preguntas para el duelo extra</label>'+						    
+						    '<label >Cantidad de preguntas para el duelo extra</label>'+
 					    	'<input type="number" class="form-control" id="countQuestionDuelExtra">'+
-						  '</div>'+	
+						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Puntos por pregunta sin ayuda</label>'+						    
+						    '<label>Puntos por pregunta sin ayuda</label>'+
 					    	'<input type="number" class="form-control" id="questionPoints">'+
-						  '</div>'+	
+						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Puntos por pregunta con ayuda</label>'+						    
+						    '<label>Puntos por pregunta con ayuda</label>'+
 					    	'<input type="number" class="form-control" id="questionPointsHelp">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Puntos por juego</label>'+						    
+						    '<label>Puntos por juego</label>'+
 					    	'<input type="number" class="form-control" id="gamePoints">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label>Sumar Puntos en Duelo Extra</label>'+						    
+						    '<label>Sumar Puntos en Duelo Extra</label>'+
 					    	'<select id="pointExtraDuel" class="form-control">'+
 					    		'<option value=true>Si</option>'+
 					    		'<option value=false>No</option>'+
@@ -2777,31 +2761,31 @@ var routerManager = Backbone.Router.extend({
 
 		//Setear valores de los parametros de configuracion
 		parameters = {
-			type: "GET", 			
+			type: "GET",
 		    url: "params",
 	        contentType: 'application/json',
 	        dataType: "json",
 	     	statusCode: {
 		      401:function() { 
 		      	window.location = '';
-		      }		   
-		    },	        
+		      }
+		    },
 	        success: function(data){
 	        	if(!(_.isNull(data))){
 	        		$("#timeQuestionPractice").val(data['gamesParameters']['timeQuestionPractice']);
 		        	$("#timeQuestionDuel").val(data['gamesParameters']['timeQuestionDuel'])
 		        	$("#timeGame").val(data['gamesParameters']['timeGame'])
-		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])	
-		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])	
-		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])	
-		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])	
-		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])	
-		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])	
-		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])	
-		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])	
-		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])		        	
+		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])
+		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])
+		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])
+		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])
+		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])
+		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])
+		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])
+		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])
+		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])
 		        	$("#pointExtraDuel").val(data['gamesParameters']['pointExtraDuel'])
-	        	}	        	
+	        	}
 	        },
 	        error: function(){},
 		};
@@ -2811,7 +2795,7 @@ var routerManager = Backbone.Router.extend({
 		var validator = $("#form-params").kendoValidator().data("kendoValidator"),
         status = $(".status");
         
-		//Enviar datos de parametrizacion				
+		//Enviar datos de parametrizacion
 		$(".btn-save-parameters").click(function (e) {
 					
 			e.preventDefault();
@@ -2830,9 +2814,9 @@ var routerManager = Backbone.Router.extend({
 						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
 						"questionPoints": $("#questionPoints").val(),
 						"questionPointsHelp": $("#questionPointsHelp").val(),
-						"gamePoints": $("#gamePoints").val(),						
+						"gamePoints": $("#gamePoints").val(),
 						"pointExtraDuel": $("#pointExtraDuel").val(),
-					};	
+					};
 
 		            parameters = {
 						type: "POST", 
@@ -2848,9 +2832,9 @@ var routerManager = Backbone.Router.extend({
 					$.ajax(parameters);
 		    }
 		    else {
-				alert("Uno o varios campos no cumplen con el formato")            
-		    }					
-		});		
+				alert("Uno o varios campos no cumplen con el formato")
+		    }
+		});
 	},
 	
 	/**
@@ -2863,13 +2847,13 @@ var routerManager = Backbone.Router.extend({
 		var navBar = $('<nav class="navbar navbar-default" role="navigation">'+	
 					 	'<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">'+
 						 	'<form class="navbar-form navbar-left" role="search">'+
-						 		'<div class="form-group">'+						         						          
+						 		'<div class="form-group">'+
 						          '<input id="min"  type="number" class="form-control" placeholder="Minimo">'+
 						        '</div>'+
-						        '<div class="form-group">'+						          						         
+						        '<div class="form-group">'+
 						          '<input id="max"  type="number" class="form-control" placeholder="Máximo">'+
-						        '</div>'+						        
-						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+						        
+						        '</div>'+
+						        '<button type="submit" id="btn-generate" class="btn btn-default">Generar</button>'+
 					        '</form>'+
 					         '<ul class="nav navbar-nav navbar-right" style="margin-top:10px; margin-right: 10px;">'+
 					        	'<li><button type="button" class="btn btn-success save-popup" >Guardar</button></li>'+
@@ -2901,12 +2885,12 @@ var routerManager = Backbone.Router.extend({
 						        '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'+
 						        '<h4 class="modal-title" id="myModalLabel">Guardar grupos</h4>'+
 						      '</div>'+
-						      '<div class="modal-body">'+	
+						      '<div class="modal-body">'+
 						      	'<form>'+
 						      		'<div class="form-group">'+
 						      			'<label>Torneo</label>'+
 						      			'<select class="form-control select-tournaments"></select>'+
-						      		'</div>'+						      		
+						      		'</div>'+
 						      	'</form>'+
 						      '</div>'+
 						      '<div class="modal-footer">'+
@@ -2965,10 +2949,9 @@ var routerManager = Backbone.Router.extend({
 							"teams": {}
 						};
 						_.each(value.teams, function (v, k) {
-														
 							var team = {
 								"id": v.id,
-								"name": v.name,								
+								"name": v.name,
 							};
 							
 							group['teams'][k] = team;
@@ -2993,19 +2976,18 @@ var routerManager = Backbone.Router.extend({
             	     	statusCode: {
 					      401:function() { 
 					      	window.location = '';
-					      }		   
-					    },			            
-			            success: function(data){			            	
+					      }
+					    },
+			            success: function(data){
 			            },
 			            error: function(){},
 					};
-											
-					var ajax = $.ajax(parameters);										
+					var ajax = $.ajax(parameters);
 				}
 				modalObj.modal('hide')
-			});			
+			});
 		});
-	},	
+	},
 
 	/**
 	 * Gurdar imagenes generales
@@ -3018,11 +3000,11 @@ var routerManager = Backbone.Router.extend({
 						  '<div class="form-group">'+
 						    '<label  class="required">Nombre</label>'+
 						    '<input type="text" class="form-control" id="image-name" required="required" >'+
-						  '</div>'+							  
+						  '</div>'+
 						  '<div class="form-group">'+
 						    '<label  class="required">Im&aacute;gen</label>'+
 						    '<input type="file" class="form-control" id="file-image" required="required" >'+
-						  '</div>'+							  				  		 
+						  '</div>'+
 						  '<button type="submit" class="btn btn-primary btn-save-image">Guardar</button>'+
 					 '</form>');
 
@@ -3032,10 +3014,10 @@ var routerManager = Backbone.Router.extend({
 		var well = $("<div></div>");
 		container.append(well);
 		//Guardar imagen en BD mongo
-		form.submit(function (e) {		
-			e.preventDefault();	
+		form.submit(function (e) {
+			e.preventDefault();
 			var img = form.find('#file-image');
-			var imageName = form.find('#image-name').val();			
+			var imageName = form.find('#image-name').val();
 			var file = img[0].files[0];
 
 			var formData = new FormData();
@@ -3043,16 +3025,16 @@ var routerManager = Backbone.Router.extend({
 			formData.append("image", file);
 
 			parameters = {
-				type: "POST", 
+				type: "POST",
 				data: formData,
 			    url: "image",
-		        contentType: false,	  
-		        processData: false,      
+		        contentType: false,
+		        processData: false,
     	     	statusCode: {
-			      401:function() { 
+			      401:function() {
 			      	window.location = '';
-			      }		   
-			    },		        
+			      }
+			    },
 		        success: function(data){	 		        	
 		        	//alert("Imagen gurdada exitosamente: "+data.id);
 		        	// var well = container.find(".well");
@@ -3109,7 +3091,7 @@ var routerManager = Backbone.Router.extend({
 		    },            
 			success: function(response){
 				var data = response;
-				console.log(data);
+				//console.log(data);
 				selectTournament.append(optionTournament);
 				selectLevel.append(optionLevel);
 				_.each(data, function(tournament){
@@ -3131,7 +3113,7 @@ var routerManager = Backbone.Router.extend({
         	var level = option.attr('level');
         	var optionGroup = $('<option></option>').attr('level', '1').attr('value', option.attr('value')).html('Fase de grupos');
 			selectLevel.append(optionGroup);
-        	console.log(level);
+        	//console.log(level);
         	if(level > 1)
         	{
         		var optionElimination = $('<option></option>').attr('level', '2').attr('value', option.attr('value')).html('Fase eliminatoria');
@@ -3244,7 +3226,7 @@ var routerManager = Backbone.Router.extend({
 					var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
 					tr.append(img2);
 
-					tr.click(function(){
+					tr.click(function(){												
 						me.showDuelFromGame(game);
 					});
 
@@ -3272,150 +3254,250 @@ var routerManager = Backbone.Router.extend({
 
 	viewTwo: function()
 	{
+		var h = 106;
+		var a = 20;
+		var b = 60;
 		var me = this;
+
+		var x = 2*h + a;
+		var l = ((x/2) - (h/2)) ;
 		_.each(me.data, function(level){
-			var container = $('<div></div>');
+
+			var container = $('<div class="level-'+level.level+'"></div>');
+			var sw = false;
+			var cont = 1;
+			var contG = 0;
+			var swline = false;
+			var last = 0;
 			_.each(level.game, function(game)
 			{
-				var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0");
+				var mTop = 0;
+				var c = level.level - 2;
+				var d = level.level - 3;
+
+				if(cont == 1 && sw){
+					mTop = b;
+				}else{
+					if(sw){
+
+						if(level.level > 2){
+							//l = (x/2) - (h/2);
+							//l = (h + (a/2) - (h/2)) * c + (b * d) + (a * d);
+							var l2 = (((x/2) - (h/2)) * c) + (b * d) + (a * d);
+							//mTop = 2*l + b;
+							//console.log("level: "+level.level+" l: "+l2+" b: "+b)
+							mTop = (2*l2 + b);
+							
+						}else{
+							mTop = a;
+							cont = 0;
+						}
+						
+						
+					}else{
+						//Si es el ultimo nivel
+						if(level.level  == (me.data.length + 1)){
+							
+							mTop = (l*d) + (b*(d-1)) + (a*(d-1));							
+
+							if(last == 1){
+								if(level.game.length == 2){
+								
+								_.each(level.game, function (game) {
+																		
+									if(game['indicator'] == '3rd'){
+										
+										//Tercer puesto
+										var teamLost1 = game['team_one'];
+										var teamLost2 = game['team_two'];
+
+										var thirdPlace = $('<div class="game panel" style="position: absolute;"></div>').css({
+											'width': '250px',
+											'height': '140px',
+											'top': '65%',
+											'left': '75%',
+											'right': 0,
+											'bottom': 0,
+											'border': '1px solid'
+										});	
+										
+										title = $('<center><b>Tercer puesto</b></center>').css('padding', '5px');
+										thirdPlace.append(title);
+
+										teamOne = $('<div></div>').css('margin-top', '5px');	
+										teamOneImg = $('<img class="img-circle" src="image/'+teamLost1.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
+										teamOneName =  $('<span>'+teamLost1.name+'</span>');
+
+										teamOne.append(teamOneImg);
+										teamOne.append(teamOneName);
+										thirdPlace.append(teamOne);
+
+										teamTwo = $('<div></div>').css('margin-top', '5px');
+										teamTwoImg = $('<img class="img-circle" src="image/'+teamLost2.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
+										teamTwoName =  $('<span>'+teamLost2.name+'</span>');
+
+										teamTwo.append(teamTwoImg);
+										teamTwo.append(teamTwoName);
+										thirdPlace.append(teamTwo);
 
 
-				var table = $('<table></table>');
+										container.append(thirdPlace);
+
+										thirdPlace.click(function () {
+											me.showDuelFromGame(game);
+										});
+
+									}else{
+										
+										//Final
+										finalistOne = game['team_one'];
+										finalistTwo = game['team_two']
+										var final = $('<div class="game panel" style="position: relative;"></div>').css('width', '250px').css('height', h).css("margin-top", mTop);
+
+										teamOne = $('<div></div>').css('margin-top', '5px');
+										teamOneImg = $('<img class="img-circle" src="image/'+finalistOne.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
+										teamOneName =  $('<span>'+finalistOne.name+'</span>');
+
+										teamOne.append(teamOneImg);
+										teamOne.append(teamOneName);
+										final.append(teamOne);
+
+										teamTwo = $('<div></div>').css('margin-top', '5px');
+										teamTwoImg = $('<img class="img-circle" src="image/'+finalistTwo.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
+										teamTwoName =  $('<span>'+finalistTwo.name+'</span>');
+
+										teamTwo.append(teamTwoImg);
+										teamTwo.append(teamTwoName);
+										final.append(teamTwo);
+
+										container.append(final);
+
+										final.click(function () {
+											me.showDuelFromGame(game);
+										});
+									}
+								});
+
+							}
+							}
+
+							last++;							
+							//console.log(level.game)
+							
+							/*winner = $('<div></div>');
+							img = $('<img class="img-circle" src="image/'+level.game[0].team_one.image+'?width=45&height=45"/></td>')
+										.css('width', '45px');
+							winner.append(img);
+							container.append(winner);
+							*/
+						}else{
+							if(level.level > 2){
+								
+
+								mTop = ((l*c) + (b*d) + (a*d));
+							}
+						}
+					}
+				}
+				// console.log("cont : "+cont+ " mtop: "+mTop)
+				
+
+				if(!(level.level  == (me.data.length + 1))){
+
+					var divGame = $('<div class="game panel" style="position: relative;"></div>').css('width', '250px').css('height', h).css("margin-top", mTop);
+
+					teamOne = $('<div></div>').css('margin-top', '5px');
+					teamOneImg = $('<img class="img-circle" src="image/'+game.team_one.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
+					teamOneName =  $('<span>'+game.team_one.name+'</span>');
+
+					teamOne.append(teamOneImg);
+					teamOne.append(teamOneName);
+					divGame.append(teamOne);
+
+					teamTwo = $('<div></div>').css('margin-top', '5px');
+					teamTwoImg = $('<img class="img-circle" src="image/'+game.team_two.image+'?width=45&height=45"/></td>').css('width', '45px').css('margin', '0px 10px');
+					teamTwoName =  $('<span>'+game.team_two.name+'</span>');
+
+					teamTwo.append(teamTwoImg);
+					teamTwo.append(teamTwoName);
+					divGame.append(teamTwo);
+
+					var lineHeight = 0;
+					if(level.level > 2){
+						l = (h + (a/2) - (h/2)) * c + (b * d) + (a * d);
+						//console.log(l)
+						lineHeight =  l + (b/2) + (h/2);
+					}else{
+						lineHeight = (a/2) + (h/2);
+					}
+
+					if(!(level.level  == (me.data.length + 1))){
+						divLineTop = $('<div></div>').css({
+							'border-right': 'solid 1px',
+							'border-top' : 'solid 1px',
+							'position': 'absolute',
+							'height': lineHeight,
+							'top': (h/2),
+							'bottom': '0px',
+							'right': '0px',
+							'width': '20px'
+						});
+						divLineDown = $('<div></div>').css({
+							'border-right': 'solid 1px',
+							'border-bottom' : 'solid 1px',
+							'position': 'absolute',
+							'height': lineHeight,
+							'top': '-'+(lineHeight - h/2)+'px',
+							// 'bottom': h/2,
+							'right': '0px',
+							'width': '20px'
+						});
+					}				
+
+					divLineJoin = $('<div></div>').css({
+						'border-top' : 'solid 1px',
+						'position': 'absolute',
+						'top': '-'+(lineHeight - h/2)+'px',
+						'right': '-10px',
+						'width': '10px'
+					});
+
+					if(swline){
+						divGame.append(divLineJoin);
+						if(!(level.level  == (me.data.length + 1))){
+							divGame.append(divLineDown);
+						}
+						swline = false;
+					}else{
+						if(!(level.level  == (me.data.length + 1))){
+							divGame.append(divLineTop);
+						}
+						
+						swline = true;
+					}
+					container.append(divGame);
+
+
+					sw = true;
+					cont++;
+					contG++;
+					// var fieldset = $('<fieldset></fieldset>').append($('<legend></legend>').html("Juego "+game.indicator+" : "+ game.startdate.date)).css("padding", "0 20px 40px 0");
+
+					divGame.click(function () {
+						me.showDuelFromGame(game);
+					});
+
+				}
+
+			});
 			
-				//console.log(game)
-				var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
-				var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top:10px; margin-bottom: 10px;" class="div-game"></div></td>').css('width', '15px');
-				tr.append(status);					
-
-				var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
-				tr.append(img1);
-
-				var name1 = $('<td style="vertical-align: middle;"><span>'+game.team_one.name+'</span></td>');
-				tr.append(name1);
-
-				var vs = $('<td style="vertical-align: middle;">VS</td>').css('width', '50px').css('text-align', 'center');
-				tr.append(vs);
-
-				var name2 = $('<td style="vertical-align: middle;"><span>'+game.team_two.name+'</span></td>');
-				tr.append(name2);
-
-				var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
-				tr.append(img2);
-
-				tr.click(function(){
-					me.showDuelFromGame(game);
-				});
-
-				if(game.active){
-					status.children('div').css('background', '#8BFFA7');
-				}
-				else if(!game.active && !game.finished){
-					status.children('div').css('background', '#E2E2E2');
-					status.unbind("click");
-				}
-				else if(game.finished){
-					status.children('div').css('background', '#A0394A');
-				}
-				table.append(tr);
-				fieldset.append(table);
-				container.append(fieldset);
-			})
-			me.createPanel('Nivel '+level.level, container);
-		})
+			divPanel = $('<div></div>').css('float', 'left').css('margin-left', '10px');
+			divPanel.append(container)
+			$('div[data-id=general]').append(divPanel);
+			
+		});
 		
 	},
-
-	// viewTwo: function()
-	// {
-	// 	var me = this;
-	// 	var teams = {};
-
-	// 	var diagram = $("<div></div>").attr("id", "tournamentDiagram").css('height', '800px');
-	// 	$('div[data-id=general]').append(diagram);
-	// 	var $go = go.GraphObject.make;
-	// 	this.myDiagram =
-	//       $go(go.Diagram, "tournamentDiagram",  // create a Diagram for the DIV HTML element
-	//         {
-	//           initialContentAlignment: go.Spot.Center,  // center the content
-	//           "textEditingTool.starting": go.TextEditingTool.SingleClick,
-	//           "textEditingTool.textValidation": me.isValidScore,
-	//           layout: $go(go.TreeLayout, { angle: 180 }),
-	//           "undoManager.isEnabled": true
-	//         });
-	//     this.myDiagram.nodeTemplate =
- //      		$go(go.Node, "Auto",{
-	//       			selectable: false 
-	//       		}, 
-	      		
-	//       		$go(go.Shape, "Rectangle",{
-	//       			fill: 'whitesmoke', strokeWidth: 2 
-	//       		},
-	//       		// Shape.fill is bound to Node.data.color
-	//       		new go.Binding("fill", "color")),
-	      		
-	//       		$go(go.Panel, "Table",
-	// 				$go(go.RowColumnDefinition, { column: 0 }),
-	// 				$go(go.RowColumnDefinition, { column: 1, separatorStroke: "black" }),
-	// 				$go(go.RowColumnDefinition, { column: 2, separatorStroke: "black" }),
-	// 				$go(go.RowColumnDefinition, { row: 0, separatorStroke: "black" }),
-	// 				$go(go.RowColumnDefinition, { row: 1, separatorStroke: "black" }),
-	// 				$go(go.Picture,
-	// 	      		{
-	// 	      			row: 0,
-	// 	      			margin: 10, width: 50, height: 50, background: "red"
-	// 	      		},
-	// 	      		new go.Binding('image1')),
-	// 	      		$go(go.Picture,
-	// 	      		{
-	// 	      			row: 1,
-	// 	      			margin: 10, width: 50, height: 50, background: "red"
-	// 	      		},
-	// 	      		new go.Binding('image2')),
-	// 				$go(go.TextBlock, "",
-	// 				{ 
-	// 					row: 0, column: 1,
-	// 					wrap: go.TextBlock.None, margin: 10, width: 90,
-	// 					isMultiline: false, textAlign: 'left' 
-	// 				},
-	// 				new go.Binding("text", "player1").makeTwoWay()),
-	// 				$go(go.TextBlock, "",
-	// 				{ 
-	// 					row: 1, column: 1,
-	// 					wrap: go.TextBlock.None, margin: 10, width: 90,
-	// 					isMultiline: false, textAlign: 'left' 
-	// 				},
-	// 				new go.Binding("text", "player2").makeTwoWay()),
-	// 				$go(go.TextBlock, "",
-	// 			    { 
-	// 			    	column: 2, row: 0,
-	// 			        wrap: go.TextBlock.None, margin: 2, width: 25,
-	// 			        isMultiline: false, editable: true, textAlign: 'right' 
-	// 			    },
-	// 			    new go.Binding("text", "score1").makeTwoWay()),
-	// 			    $go(go.TextBlock, "",
-	// 			    { 
-	// 			    	column: 2, row: 1,
-	// 			        wrap: go.TextBlock.None, margin: 2, width: 25,
-	// 			        isMultiline: false, editable: true, textAlign: 'right' 
-	// 			    },
-	// 			    new go.Binding("text", "score2").makeTwoWay())
-	// 		    )
- //      		);
-
-	//     // define the Link template
-	//     this.myDiagram.linkTemplate =
-	//       $go(go.Link,
-	//         { routing: go.Link.Orthogonal,
-	//           selectable: false },
-	//         $go(go.Shape));
-
-	//     _.each(me.data, function(game){
-	// 		teams.push(game.team_one.name);
-	// 		teams.push(game.team_two.name);
-	// 	})
-	// 	me.makeModel(teams);
-	// },
-
 	createPairs: function(players)
 	{
 		if (players.length % 2 !== 0) players.push('(empty)');
@@ -3541,7 +3623,6 @@ var routerManager = Backbone.Router.extend({
 					        };
 					       $.ajax(config);
 					});
-					
 				}else{
 					modalHeader.append(buttonSendNotification);
 					
@@ -3643,7 +3724,7 @@ var routerManager = Backbone.Router.extend({
 					var name1 = $('<td class="click-duel" style="vertical-align: middle;"><span>'+p1.name.toLowerCase()+' '+p1.lastname.toLowerCase()+'</span></td>');
 					tr.append(name1);
 
-					var updatePoint1 = $('<td style="vertical-align: middle;"></td>');		
+					var updatePoint1 = $('<td style="vertical-align: middle;"></td>');
 					var buttonUpdatePoint1 = $('<span class="glyphicon glyphicon-repeat"></span>');
 
 					updatePoint1.append(buttonUpdatePoint1);
@@ -3654,12 +3735,12 @@ var routerManager = Backbone.Router.extend({
 									type: "GET",
 						            url: "home/player/update/points/"+p1.id+"/"+duel.id,
 						            contentType: "application/json",
-						            dataType: "json",						            
+						            dataType: "json",
 							     	statusCode: {
-								      401:function() { 
+								      401:function() {
 								      	window.location = '';
-								      }		   
-								    },            
+								      }
+								    },
 									success: function(response){
 										modal.modal("hide");
 										me.showDuelFromGame(game);
@@ -3685,7 +3766,7 @@ var routerManager = Backbone.Router.extend({
 							    		loader.hide();
 							    	}
 						        }
-						        $.ajax(config);						
+						        $.ajax(config);
 					});
 
 					var point1 = $('<td class="click-duel" style="vertical-align: middle; width:30px; text-align:center;"><span>'+pp1+'</span></td>');
@@ -3709,13 +3790,13 @@ var routerManager = Backbone.Router.extend({
 									type: "GET",
 						            url: "home/player/update/points/"+p2.id+"/"+duel.id,
 						            contentType: "application/json",
-						            dataType: "json",						            
+						            dataType: "json",
 							     	statusCode: {
-								      401:function() { 
+								      401:function() {
 								      	window.location = '';
-								      }		   
-								    },            
-									success: function(response){		
+								      }
+								    },
+									success: function(response){
 										modal.modal("hide");
 										me.showDuelFromGame(game);
 								    	// modal.modal("show");
@@ -3740,7 +3821,7 @@ var routerManager = Backbone.Router.extend({
 							    		loader.hide();
 							    	}
 						        }
-						        $.ajax(config);						
+						        $.ajax(config);
 					});
 
 					var name2 = $('<td class="click-duel" style="vertical-align: middle;"><span>'+p2.name.toLowerCase()+' '+p2.lastname.toLowerCase()+'</span></td>');
@@ -3758,13 +3839,17 @@ var routerManager = Backbone.Router.extend({
 						me.showModalByDuel(duel);
 					});
 					
-
+					console.log(duel);
 					if(duel.player_one.teamId == game.team_one.id){
 						if(duel['player_one']['questionMissing'] > 0 && !duel['finished'] && duel['active'])
 						{
 							status.children('div').css('background', '#8BFFA7');
 							
-						}else{
+						}else if(!duel['finished'] && !duel['active']){
+							status.children('div').css('background', '#7E7E7E');
+						}
+						else
+						{
 							status.children('div').css('background', '#A0394A');
 						}
 
@@ -3772,7 +3857,11 @@ var routerManager = Backbone.Router.extend({
 						{
 							status2.children('div').css('background', '#8BFFA7');
 							
-						}else{
+						}
+						else if(!duel['finished'] && !duel['active']){
+							status2.children('div').css('background', '#7E7E7E');
+						}
+						else{
 							status2.children('div').css('background', '#A0394A');
 						}
 
@@ -3781,7 +3870,11 @@ var routerManager = Backbone.Router.extend({
 						{
 							status2.children('div').css('background', '#8BFFA7');
 							
-						}else{
+						}
+						else if(!duel['finished'] && !duel['active']){
+							status2.children('div').css('background', '#7E7E7E');
+						}
+						else{
 							status2.children('div').css('background', '#A0394A');
 						}
 
@@ -3789,7 +3882,11 @@ var routerManager = Backbone.Router.extend({
 						{
 							status.children('div').css('background', '#8BFFA7');
 							
-						}else{
+						}
+						else if(!duel['finished'] && !duel['active']){
+							status.children('div').css('background', '#7E7E7E');
+						}
+						else{
 							status.children('div').css('background', '#A0394A');
 						}
 	
@@ -3804,13 +3901,13 @@ var routerManager = Backbone.Router.extend({
 								type: "GET",
 					            url: "home/duel/notification/"+duel.id,
 					            contentType: "application/json",
-					            dataType: "json",						            
+					            dataType: "json",
 						     	statusCode: {
 							      401:function() { 
 							      	window.location = '';
-							      }		   
-							    },            
-								success: function(response){		
+							      }
+							    },
+								success: function(response){
 									modal.modal("hide");
 									me.showDuelFromGame(game);
 							    	// modal.modal("show");
@@ -3892,8 +3989,62 @@ var routerManager = Backbone.Router.extend({
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
 				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Preguntas del duelo").css('display', 'inline');
-				
-				modalHeader.append(btnClose).append(titleHeading);
+				modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
+				if(!duel.active && !duel.finished)
+				{
+					var activeDuel = $('<button></button>').addClass('btn btn-success').html('Iniciar').css('margin-left', '15px');
+					activeDuel.click(function(){
+						$.confirm({
+						    text: "Desea Activar este duelo ?",
+						    confirm: function(button) {
+						    	var configStartDuel = {
+									type: "GET",
+							        url: "home/duel/start/"+duel.id,
+							        contentType: "application/json",
+							        dataType: "json",
+							        //data: JSON.stringify(param),
+								    statusCode: {
+									   401:function() { 
+										   window.location = '';
+									   }
+									},
+									success: function($data)
+									{
+										var n = noty({
+								    		text: "Duelo Activado",
+								    		timeout: 1000,
+								    		type: "success"
+								    	});
+								    	grid.dataSource.read();
+								    	grid.refresh();
+						            },
+						            error: function(xhr, status, error){
+						            	try{
+									    	var obj = jQuery.parseJSON(xhr.responseText);
+									    	var n = noty({
+									    		text: obj.message,
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}catch(ex){
+								    		var n = noty({
+									    		text: "Error",
+									    		timeout: 1000,
+									    		type: "error"
+									    	});
+								    	}
+						            },
+						        }
+						         $.ajax(configStartDuel);
+						    },
+						    cancel: function(button) {
+						        // do something
+						    }
+						});
+					})
+					
+					modalHeader.append(activeDuel);
+				}
 				
 				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
 
@@ -3927,8 +4078,7 @@ var routerManager = Backbone.Router.extend({
 						height: '40px',
 					}).addClass('tr-game');
 					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
-					console.log(question.answers);
-					if(question.answers && question.answers.playerOne  && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
+					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
 						var buttonOne = $('<button>Resetear</button>').addClass('btn');
 						if(question.answers.playerOne.find) buttonOne.addClass('btn-success');
@@ -4045,7 +4195,7 @@ var routerManager = Backbone.Router.extend({
 		var body = $('<div></div>').addClass('panel-body').append(content);
 		panel.append(head).append(body).css({
 				float: 'left',
-				width:500,
+				//width:500,
 				marginLeft: 20
 			});
 		$('div[data-id=general]').append(panel);
@@ -4073,6 +4223,177 @@ var routerManager = Backbone.Router.extend({
 		})
 		return group;
 	},
+
+	realTime: function(){
+		var me = this;
+		this.removeContent();
+		this.buildbreadcrumbs({
+		  	Inicio: "",
+		  	'Tiempo Real': "Tiempo Real"
+		});
+      var socket = io.connect('http://localhost:3000');    
+
+        socket.on('question', function(question, user){
+        	me.questionPlayer(question, user);
+        });
+
+        socket.on('time', function(time, user){
+        	me.timePlayer(time, user);
+        });
+
+        socket.on('answer', function(answer, user,answerId){
+        	me.answerPlayer(answer,user,answerId);
+        });
+
+        socket.on('help', function(help, user){
+        });
+
+        socket.on('load', function(userp){
+        	var user = JSON.parse(userp);
+        	if($("#entity-content").find("div#"+user.id).length > 0){
+        		me.answerPlayer("Recargar pagina",userp,"-1");
+        	}
+        });
+
+        socket.on('goOut', function(userp){
+        	var user = JSON.parse(userp);
+        	if($("#entity-content").find("div#"+user.id).length > 0){
+        		me.answerPlayer("Salir pagina",userp,"-1");
+        	}
+        });
+     
+	},
+
+	questionPlayer: function(question, userp){
+		var me = this;
+		var user = JSON.parse(userp);
+		if($("#entity-content").find("div#"+user.id).length == 0){
+			var question = JSON.parse(question);
+			
+			var div = $('<div></div>').attr('id', user.id).addClass('user-question').css("max-height","300px");
+			var time = $('<span></span>').attr('id', 'time').css({
+				"font-size":"20px",
+				"font-weight":"400",
+				"margin-left": "25px"
+			});
+			
+			var userDiv = $('<div></div>');
+			var userImg = $('<img src="image/'+user.image+'"/>').addClass('img-circle').css({
+				'width': '80px',
+				'height': '80px',
+				'margin-left': '20px'
+			});
+			var userName = $('<label></label>').html(user.name+' '+user.latname);
+			userDiv.append(userImg).append(userName).append(time);
+			//div.append(time);
+			var questionDiv = $('<div></div>');
+			var q = $('<div></div>').html(question.question.question);
+			q.css({
+				"background-color": "white",
+				"min-height": "60px",
+				"border-radius": "10px",
+				"padding-top": "15px",
+				"padding-bottom": "15px"
+			});			
+			questionDiv.append(q);
+			if(question.question.image)
+			{
+				var imageDiv = $('<img src="image/'+question.image+'"/>').css("width", "80px").css("height", "80px");
+				questionDiv.append(imageDiv);
+			}
+			var answerDiv = $('<div></div>');
+			_.each(question.question.answers, function(value, key){
+				
+				var answer = $('<div></div>').html(value.answer);
+				answer.attr("id","answer_"+value.id);
+				answer.css({
+					"border": "solid 1px",
+					"border-radius": "5px",
+					"background-color": "white",
+					"margin-top": "5px"
+				})
+				answerDiv.append(answer);
+			})
+			div.append(userDiv).append(questionDiv).append(answerDiv);
+
+			var divAnswer = $("<div class='answer'></div>");
+			divAnswer.css({					
+					"border-radius": "20px",								
+					"margin-left": "10%",
+					"margin-right": "10%",					
+					"margin-top": "5px",					
+				})
+			div.append(divAnswer);
+		
+			var divAlert = $('<div></div>').attr("data-alert", "true").attr("id","showanw"+user.id)
+		 	.css("position", "relative")
+		 	.css("top", "-125px")
+		 	//.css("left", "180px")
+		 	//.css("width", "100%")
+		 	//.css("height", "100%")
+		 	.css("display", "none")
+		 	.css("z-index", "99");
+		 var msg = $("<span></span>").addClass("alert-msg");
+		 divAlert.append(msg);
+		 div.append(divAlert);
+
+			$("#entity-content").append(div);
+		}else{
+			$("div#"+user.id).remove();
+			me.questionPlayer(question, userp);
+		}
+	},
+
+	timePlayer:function(time, user){		
+		var user = JSON.parse(user);
+		var spanTime = $("div#"+user.id).find("span");
+		if(spanTime){
+			spanTime.html(time);
+		}		
+	},
+	answerPlayer:function(answer, user,answerId){
+		var user = JSON.parse(user);
+		console.log("answerId");
+		console.log(answerId);
+		var divAnswer = $("div#showanw"+user.id);
+		var divAnswerRes = $("div#answer_"+answerId);
+		if(divAnswer){
+			
+			switch(answer){
+				case "Correcto":
+					divAnswer.find("span").html(answer).css("color", "#5CB85C");
+					divAnswerRes.addClass("btn-success");
+					divAnswerRes.css("background-color", "#5cb85c");
+					divAnswer.show();					
+				break;
+				case "Incorrecto":					
+					divAnswer.find("span").html(answer).css("color", "#D9534F");
+					divAnswerRes.addClass("btn-danger");
+					divAnswerRes.css("background-color", "#d9534f");	
+					divAnswer.show();
+				break;
+				case "Tiempo Agotado":					
+					divAnswer.find("span").html(answer).css("color", "#F0AD4E");
+					divAnswer.show();
+
+				break;
+				case "Recargar pagina":					
+					divAnswer.find("span").html("Recargar página").css("color", "#F0AD4E");
+					divAnswer.show();
+
+				break;
+				case "Salir pagina":					
+					divAnswer.find("span").html("Salir página").css("color", "#F0AD4E");
+					divAnswer.show();
+
+				break;
+			}
+		}
+		setTimeout(function(){
+			$("div#"+user.id).remove();
+		},3000);		
+	},
+	
 
 	sendNotifications: function () {
 
@@ -4118,10 +4439,10 @@ var routerManager = Backbone.Router.extend({
             dataType: "json",
             //data: JSON.stringify(param),
 	     	statusCode: {
-		      401:function() { 
+		      401:function() {
 		      	window.location = '';
-		      }		   
-		    },            
+		      }
+		    },
 			success: function(response){
 				var data = response;
 				_.each(data, function(tournament){
@@ -4180,8 +4501,8 @@ var routerManager = Backbone.Router.extend({
             	     	statusCode: {
 					      401:function() { 
 					      	window.location = '';
-					      }		   
-					    },		            	
+					      }
+					    },
 				        success: function(data){
 				        	alert("Notificaciones enviadas");
 				        },
@@ -4213,8 +4534,8 @@ var routerManager = Backbone.Router.extend({
             	     	statusCode: {
 					      401:function() { 
 					      	window.location = '';
-					      }		   
-					    },		            	
+					      }
+					    },
 				        success: function(data){
 				        	alert("Notificaciones enviadas");
 				        },

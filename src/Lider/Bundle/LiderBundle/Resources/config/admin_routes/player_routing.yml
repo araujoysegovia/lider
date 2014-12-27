@@ -64,3 +64,9 @@ admin_player_updatepointbyduel:
     pattern:  /update/points/{playerId}/{duelId}
     defaults: { _controller: LiderBundle:Player:updatePointsPlayerByDuel }
     methods:  [GET]
+
+#Obtener todas las preguntas de un jugador
+admin_player_questions:
+    pattern:  /total/questions/{playerId}
+    defaults: { _controller: LiderBundle:Player:questionsForPlayer }
+    methods:  [GET]

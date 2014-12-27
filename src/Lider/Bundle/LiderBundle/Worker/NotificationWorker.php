@@ -50,8 +50,6 @@ class NotificationWorker
 	        echo "\n\nVoy a enviar correo a ".$player->getName()." ".$player->getName();
 	        $team = $player->getTeam();
 //         $to = $this->getEmailFromTeamId($team->getId());
-       
-
             $send = $notificationService->sendEmail($data['subject'], $this->from, $data['to'], null, $data['viewName'], $data['content']);
             echo "\n\nMensaje Enviado a: ";
             print_r($data['to']);
@@ -111,7 +109,6 @@ class NotificationWorker
                 $content['members'] = $members;
 //                 $to = $this->getEmailFromTeamId($team->getId());
                 try{
-
                     $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
                     echo "Mensaje Enviado de equipo";
                 }catch(\Exception $e){
