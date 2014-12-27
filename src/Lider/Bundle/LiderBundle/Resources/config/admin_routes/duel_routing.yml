@@ -19,3 +19,8 @@ get_duels_notificationduel:
     pattern:  /notification/{duelId}
     defaults: { _controller: LiderBundle:Duel:notificationByDuel }
     methods: [GET]
+
+start_duel:
+    pattern:  /start/{duelId}
+    defaults: { _controller: LiderBundle:Duel:startDuel }
+    methods: [GET]
