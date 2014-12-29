@@ -3,6 +3,9 @@ var max, min;
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
 	heightGame: 110,
+	modalHeight : '600px',
+	questionFontSize : '90%',
+	answerFontSize : '70%',
 	routes: {
 		"" : "home",   
 		"tournaments" : "tournaments", 
@@ -3984,16 +3987,16 @@ var routerManager = Backbone.Router.extend({
 			},
 			success: function(data){
 				loader.hide();
-				var modal = $("<div></div>").addClass("modal fade");
+				var modal = $("<div></div>").addClass("modal fade").css({'overflow':'hidden'});
 				var modalDialog = $("<div></div>").addClass("modal-dialog").css('width', '100%');
-				//var modalHeader = $("<div></div>").addClass("modal-header");
+				var modalHeader = $("<div></div>").addClass("modal-header");
 				var btnClose = $("<button></button>").attr("type", "button").attr("data-dismiss", "modal").addClass("close");
 				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
 				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Preguntas del duelo").css('display', 'inline');
 
-				//modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
+				modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
 				if(!duel.active && !duel.finished)
 				{
 					var activeDuel = $('<button></button>').addClass('btn btn-success').html('Iniciar').css('margin-left', '15px');
@@ -4047,7 +4050,7 @@ var routerManager = Backbone.Router.extend({
 						});
 					})
 					
-					//modalHeader.append(activeDuel);
+					modalHeader.append(activeDuel);
 				}
 				
 				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
@@ -4080,14 +4083,17 @@ var routerManager = Backbone.Router.extend({
 				tableDuels.append(trTeamDuels);
 				
 				var duels = $("<div></div>").addClass("table-duels").append(tableDuels);
-				var modalContent = $("<div></div>").addClass("modal-content").css({'font-size':'200%'});
-				//modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
+				var modalContent = $("<div></div>").addClass("modal-content").css({
+							'font-size':'200%', 
+							'overflow': 'auto',
+							'height': me.modalHeight});
+				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
 				modal.append(modalDialog.append(modalContent.append(modalBody)));
 				$(document.body).append(modal);
 				modal.modal("show");
 				
 
-				var socket = io.connect('http://localhost:3000');    
+				var socket = io.connect('http://10.102.1.22:3000');    
 
 				_.each(data.questions, function(question){
 
@@ -4102,18 +4108,14 @@ var routerManager = Backbone.Router.extend({
 					tdTimeTwo = $('<td style="vertical-align: middle;" id="timeTwo'+question['questionId']+'" class="timeQuestion"><label></label></td>').css('width', '50px');
 					
 
-					// console.log(question)
-					// console.log(question['id'])
 					socket.on('time', function(time, user, qt){
 						
+						user = jQuery.parseJSON(user);
+						
 						if(user['id'] == data.playerOne.id || user['id'] == data.playerTwo.id){
-							
-							//console.log(qt['id']+ '==' + question['questionId'])							
+																			
 							if(qt['id'] == question['questionId']){
-								// console.log("User: "+ user['email'])
-								// console.log("Tiempo: "+time)	
-								//console.log($('.timeQuestion').children('label'))
-								
+
 								if(user['id'] == data.playerOne.id){
 									$('#timeTwo'+question['questionId']).children('label').text(time);	
 								}else if(user['id'] == data.playerTwo.id){									
@@ -4132,13 +4134,15 @@ var routerManager = Backbone.Router.extend({
 
 
 					var resetOne = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
+					
 					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
 						var buttonOne = $('<button></button>').addClass('btn').css({
 							'width': '90%',
 							'height': '40%',
 							'border': 'none',
-							'font-size': '125%'
+							'font-size': me.questionFontSize,
+							'background': 'none'
 						});
 						if(question.answers.playerTwo.find){
 							//buttonOne.addClass('btn-success');
@@ -4171,7 +4175,8 @@ var routerManager = Backbone.Router.extend({
 							'width': '90%',
 							'height': '40%',
 							'border': 'none',
-							'font-size': '125%'
+							'font-size': me.questionFontSize,
+							'background': 'none'
 						});
 
 						spanCheck = $('<span class="span-check"></span>');
@@ -4182,21 +4187,21 @@ var routerManager = Backbone.Router.extend({
 
 					tr.append(resetOne);
 					if(question.answers && question.answers.playerTwo && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
-					{
+					{						
 						var answerOne = $('<td style="vertical-align: middle;"><p>'+question.answers.playerTwo.answer+'</p></td>');
 						answerOne.css({
 							'width': '200px',
 							'text-align': 'center',
-							'font-size': '125%'
+							'font-size': me.answerFontSize
 						});
 						tr.append(answerOne);
 					}
-					else{
+					else{						
 						var answerOne = $('<td style="vertical-align: middle;"><p></p></td>');
 						answerOne.css({
 							'width': '200px',
 							'text-align': 'center',
-							'font-size': '125%'
+							'font-size': me.answerFontSize
 						});
 						tr.append(answerOne);
 					}
@@ -4208,17 +4213,17 @@ var routerManager = Backbone.Router.extend({
 					q.css({
 						'width': '400px',
 						'text-align': 'center',
-						'font-size': '130%'
+						'font-size': me.questionFontSize
 					});
 					
 					tr.append(q);
-					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
+					if(question.answers && question.answers.playerOne  && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
 					{
 						var answerTwo = $('<td style="vertical-align: middle;"><p>'+question.answers.playerOne.answer+'</p></td>');
 						answerTwo.css({
 							'width': '200px',
 							'text-align': 'center',
-							'font-size': '125%'
+							'font-size': me.answerFontSize
 						});
 						tr.append(answerTwo);
 					}
@@ -4227,7 +4232,7 @@ var routerManager = Backbone.Router.extend({
 						answerTwo.css({
 							'width': '200px',
 							'text-align': 'center',
-							'font-size': '125%'
+							'font-size': me.answerFontSize
 						});
 						tr.append(answerTwo);
 					}
@@ -4239,7 +4244,8 @@ var routerManager = Backbone.Router.extend({
 							'width': '90%',
 							'height': '40%',
 							'border': 'none',
-							'font-size': '125%',							
+							'font-size': me.questionFontSize,
+							'background': 'none'							
 						});
 						if(question.answers.playerOne.find){
 							//buttonTwo.addClass('btn-success');	
@@ -4269,7 +4275,8 @@ var routerManager = Backbone.Router.extend({
 							'width': '90%',
 							'height': '40%',
 							'border': 'none',
-							'font-size': '125%'							
+							'font-size': me.questionFontSize,
+							'background': 'none'					
 						});
 						resetTwo.append(buttonTwo);
 					}
@@ -4282,25 +4289,30 @@ var routerManager = Backbone.Router.extend({
 				});
 				modalBody.append(duels);
 
+								
 				pointsPlayerOne = duel.point_one;
-				pointsPlayerTwo = duel.point_two;
+				pointsPlayerTwo = duel.point_two;				
 
-				console.log("Puntos playerOne: "+ pointsPlayerOne);
-				console.log("Puntos playerTwo: "+ pointsPlayerTwo);
-
-				socket.on('answer', function(answer, user, questionId, pointsForQuestion){
+				socket.on('answer', function(answer, user, questionId, pointsForQuestion, answerId){
 
 					pointsForQuestion = pointsForQuestion || 0;
+					if(pointsForQuestion  == '-1'){
+						pointsForQuestion = 0;	
+					}
 					user = JSON.parse(user);
 
 					if(user['id'] == data.playerOne.id){
 
-						pointsPlayerOne = parseInt(pointsPlayerOne) + parseInt(pointsForQuestion);
+						console.log("Sumatoria puntos: ")
+						console.log(parseInt(pointsPlayerOne)+ ' + '+ parseInt(pointsForQuestion))
 						
-						$('#playerPointOne').text(pointsPlayerOne);
 						//$('#timeTwo'+question['questionId']).children('label').text(time);										
 						switch(answer){
 							case 'Correcto': 
+								
+								pointsPlayerOne = parseInt(pointsPlayerOne) + parseInt(pointsForQuestion);								
+								$('#playerPointOne').text(pointsPlayerOne);
+								
 								btnTwo = $('#'+questionId).find('.btnTwo');
 								//btnTwo.removeClass('btn-default');					
 								//btnTwo.addClass('btn-success');
@@ -4310,6 +4322,10 @@ var routerManager = Backbone.Router.extend({
 								btnTwo.addClass('glyphicon glyphicon-ok');
 								break;							
 							case 'Incorrecto': 
+								
+								pointsPlayerOne = parseInt(pointsPlayerOne);								
+								$('#playerPointOne').text(pointsPlayerOne);
+								
 								btnTwo = $('#'+questionId).find('.btnTwo');
 								// btnTwo.removeClass('btn-default');					
 								// btnTwo.addClass('btn-danger');
@@ -4320,6 +4336,10 @@ var routerManager = Backbone.Router.extend({
 								btnTwo.addClass('glyphicon glyphicon-remove');
 								break;
 							case 'Tiempo Agotado':
+								
+								pointsPlayerOne = parseInt(pointsPlayerOne);								
+								$('#playerPointOne').text(pointsPlayerOne);
+								
 								btnTwo = $('#'+questionId).find('.btnTwo');
 								//btnTwo.removeClass('btn-default');					
 								//btnTwo.addClass('btn-warning');
@@ -4334,12 +4354,12 @@ var routerManager = Backbone.Router.extend({
 					}else if(user['id'] == data.playerTwo.id){									
 						//$('#timeOne'+question['questionId']).children('label').text(time);
 						
-						pointsPlayerTwo = parseInt(pointsPlayerTwo) + parseInt(pointsForQuestion);
-
 						
-						$('#playerPointTwo').text(pointsPlayerTwo);
 						switch(answer){
 							case 'Correcto':
+								pointsPlayerTwo = parseInt(pointsPlayerTwo) + parseInt(pointsForQuestion);								
+								$('#playerPointTwo').text(pointsPlayerTwo);
+								
 								btnOne = $('#'+questionId).find('.btnOne');
 								// btnOne.removeClass('btn-default');					
 								// btnOne.addClass('btn-success');
@@ -4351,7 +4371,9 @@ var routerManager = Backbone.Router.extend({
 								btnOne.addClass('glyphicon glyphicon-ok');
 								break;
 							case 'Incorrecto':
-								btnOne = $('#'+questionId).feind('.btnOne');
+								pointsPlayerTwo = parseInt(pointsPlayerTwo);								
+								$('#playerPointTwo').text(pointsPlayerTwo);
+								btnOne = $('#'+questionId).find('.btnOne');
 								// btnOne.removeClass('btn-default');					
 								// btnOne.addClass('btn-danger');
 								btnOne.remove('disabled');
@@ -4362,6 +4384,8 @@ var routerManager = Backbone.Router.extend({
 								btnOne.addClass('glyphicon glyphicon-remove');
 								break;
 							case 'Tiempo Agotado':
+								pointsPlayerTwo = parseInt(pointsPlayerTwo);								
+								$('#playerPointTwo').text(pointsPlayerTwo);
 								btnOne = $('#'+questionId).find('.btnOne');
 								// btnOne.removeClass('btn-default');					
 								// btnOne.addClass('btn-warning');
@@ -4467,7 +4491,7 @@ var routerManager = Backbone.Router.extend({
 		  	Inicio: "",
 		  	'Tiempo Real': "Tiempo Real"
 		});
-      var socket = io.connect('http://localhost:3000');    
+      var socket = io.connect('http://10.102.1.22:3000');    
 
         socket.on('question', function(question, user){
         	me.questionPlayer(question, user);
@@ -4477,7 +4501,7 @@ var routerManager = Backbone.Router.extend({
         	me.timePlayer(time, user);
         });
 
-        socket.on('answer', function(answer, user,answerId){
+        socket.on('answer', function(answer, user, questionId, pointsForQuestion, answerId){
         	me.answerPlayer(answer,user,answerId);
         });
 
@@ -4510,7 +4534,9 @@ var routerManager = Backbone.Router.extend({
 			var time = $('<span></span>').attr('id', 'time').css({
 				"font-size":"20px",
 				"font-weight":"400",
-				"margin-left": "25px"
+				"margin-left": "25px",
+				"margin-right": "20px",
+				"margin-bottom": "10px"
 			});
 			
 			var userDiv = $('<div></div>');
