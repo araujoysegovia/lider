@@ -140,7 +140,7 @@ class DuelController extends Controller
             $q = array(
     			'question' => $question->getQuestion()->getQuestion(),
     			'questionId' => $question->getQuestion()->getId(),
-            	'image' => $question->getQuestion()->getImage(),                
+            	'image' => $question->getQuestion()->getImage(),                  
     			'answers' => array(
                     'playerOne' => array(),
                     'playerTwo' => array(),
@@ -159,8 +159,9 @@ class DuelController extends Controller
                             'answerId' => $mongoQuestion->getSelectedAnswer()->getAnswerId(),
                             'answer' => $mongoQuestion->getSelectedAnswer()->getAnswer(),
                             'find' => $mongoQuestion->getFind(),
-                            'help' => $mongoQuestion->getSelectedAnswer()->getHelp()
+                            //'help' => $mongoQuestion->getSelectedAnswer()->getHelp()
                         );
+                        $q['useHelp'] = $mongoQuestion->getUseHelp();
                     }
                     elseif($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerOne']['id'])
                     {
@@ -180,8 +181,9 @@ class DuelController extends Controller
                             'answerId' => $mongoQuestion->getSelectedAnswer()->getAnswerId(),
                             'answer' => $mongoQuestion->getSelectedAnswer()->getAnswer(),
                             'find' => $mongoQuestion->getFind(),
-                            'help' => $mongoQuestion->getSelectedAnswer()->getHelp()
+                            //'help' => $mongoQuestion->getSelectedAnswer()->getHelp()
                         );
+                        $q['useHelp'] = $mongoQuestion->getUseHelp();
                     }
                     elseif($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerTwo']['id'])
                     {

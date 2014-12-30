@@ -3,10 +3,10 @@ var max, min;
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
 	heightGame: 110,
-	modalMinHeight : '950px',
-	modalMaxHeight : '9500px',
-	questionFontSize : '120%',
-	answerFontSize : '110%',
+	modalMinHeight : '700px',
+	modalMaxHeight : '700px',
+	questionFontSize : '70%',
+	answerFontSize : '60%',
 	routes: {
 		"" : "home",   
 		"tournaments" : "tournaments", 
@@ -4230,7 +4230,8 @@ var routerManager = Backbone.Router.extend({
 							buttonOne.css({'background': 'none', 'color': '#008000'});
 							buttonOne.addClass('glyphicon glyphicon-ok');							
 
-							if(question.answers.playerTwo.help){
+							//if(question.answers.playerTwo.help){
+							if(question.useHelp){
 								setTimeout(function () {					
 
 									sh = $('#helpOne'+question['questionId']);									
@@ -4246,7 +4247,8 @@ var routerManager = Backbone.Router.extend({
 							buttonOne.css({'background': 'none', 'color': '#FF0000'});
 							buttonOne.addClass('glyphicon glyphicon-remove');
 
-							if(question.answers.playerTwo.help){
+							//if(question.answers.playerTwo.help){
+							if(question.useHelp){
 								setTimeout(function () {					
 
 									sh = $('#helpOne'+question['questionId']);									
