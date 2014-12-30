@@ -89,24 +89,6 @@ class NotificationService
         $mailer = \Swift_Mailer::newInstance($transport);
         return $mailer;
     }
-    
-    // public function sendEmail($subject, $message, $from, $to)
-    // {
-    //     $em = $this->registerEmailInLog($subject, $message, $from, $to);
-    //     $mail = \Swift_Message::newInstance()
-    //     ->setSubject($subject)
-    //     ->setFrom($from)
-    //     ->setTo($to)
-    //     ->setBody($message);
-    //     $mail->getHeaders()->addTextHeader('X-SMTPAPI', json_encode(array(
-    //                 "unique_args" => array(
-    //                         "logId" => $em->getId()
-    //                  )
-    //             )));
-    //     $answer = $this->mailer->send($mail);
-    //     $this->flushSpoolMailer();
-    //     return $answer;
-    // }
 
     private function flushSpoolMailer(){
         $spool = $this->mailer->getTransport()->getSpool();

@@ -27,6 +27,9 @@ class Entity{
      */
     private $lastupdate;
 
+    public function __construct()
+    {        
+    }
 
     /**
      * @ORM\PrePersist()

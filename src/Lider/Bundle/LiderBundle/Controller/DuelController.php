@@ -201,7 +201,7 @@ class DuelController extends Controller
 
     public function getDuelAction($duelId)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $user = $this->container->get('security.context')->getToken()->getUser();
         $duels = $em->getRepository("LiderBundle:Duel")->findCurrentPlayerDuel($user);
@@ -229,5 +229,30 @@ class DuelController extends Controller
         )));
         
         return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));      
+    }
+
+    /**
+     * Funcion para cerrar el duelo de manera manual
+     */
+    public function closeDuelManualAction($duelId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('LiderBundle:Duel');
+        if(!$duelId)
+        {
+            throw new \Exception("Id del duelo necesario", 1);
+        }
+        $duel = $repo->find($duelId);
+        if($duel->getPointOne() > $duel->getPointTwo())
+        {
+            $duel->setPlayerWin($duel->getPlayerOne());
+        }
+        elseif($duel->getPointOne() < $duel->getPointTwo())
+        {
+            $duel->setPlayerWin($duel->getPlayerTwo());
+        }
+        $duel->setActive(false);
+        $duel->setFinished(true);
+        $em->flush();
     }
 }
