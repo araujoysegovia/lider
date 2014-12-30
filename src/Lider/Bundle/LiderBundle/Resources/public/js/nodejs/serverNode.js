@@ -17,16 +17,37 @@ io.on('connection', function(socket){
       io.emit("question", question, user); 
   });
 
-  socket.on('time', function(time, user){
-      io.emit("time", time, user); 
+  socket.on('time', function(time, user, question){
+      io.emit("time", time, user, question); 
   });
 
-  socket.on('answer', function(answer, user){
-      io.emit("answer", answer, user); 
+  socket.on('answer', function(answer, user, question, ptnPlayer, answerId){
+      io.emit("answer", answer, user, question, ptnPlayer, answerId); 
+//      console.log("question")
+//      console.log(question)
+//      console.log('pointsForQuestion')
+//      console.log(pointsForQuestion)
+//      console.log('answerId')
+//      console.log(answerId)
+//      console.log('----------------------------')
   });
 
-  socket.on('help', function(help, user){
-      io.emit("help", help, user); 
+  // socket.on('answer', function(answer, user,answerId){
+  //     io.emit("answer", answer, user,answerId); 
+  // });
+
+  socket.on('help', function(help, user, questionId){
+	  console.log('questionId')
+	  console.log(questionId)
+      io.emit("help", help, user, questionId); 
+  });
+
+  socket.on('load', function(user){
+      io.emit("load", user); 
+  });
+
+  socket.on('goOut', function(user){
+      io.emit("goOut", user); 
   });
 
   

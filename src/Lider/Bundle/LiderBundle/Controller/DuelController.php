@@ -140,6 +140,7 @@ class DuelController extends Controller
             $q = array(
     			'question' => $question->getQuestion()->getQuestion(),
     			'questionId' => $question->getQuestion()->getId(),
+            	'image' => $question->getQuestion()->getImage(),
     			'answers' => array(
                     'playerOne' => array(),
                     'playerTwo' => array(),
@@ -228,7 +229,15 @@ class DuelController extends Controller
                 'duelId' => $duelId
         )));
         
-        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));      
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+
+    public function startDuelAction($duelId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $gameManager = $this->get('game_manager');
+        $gameManager->startDuel($duelId);
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
     /**

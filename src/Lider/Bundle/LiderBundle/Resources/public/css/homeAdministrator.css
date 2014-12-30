@@ -305,8 +305,40 @@
 	width: 45%;
 	float: left;
 	margin-top: 10px;
+	background: #727272;	
 	/* background: #73A7E1; */
 	/* color: white; */
 	padding: 20px;
 	text-align: center;
+}
+
+.table-duel tr:nth-child(odd) {
+   background-color: #fff;
+   color:#777
+}
+
+.table-duel tr:nth-child(even) {
+   background-color: #EEE;
+   color:#000;
+}
+
+.span-check{
+	font-size: 30px;
+	margin-right: 8px;
+}
+
+.user-question div[data-alert=true]{
+	margin-top: 38px;
+	/* Chrome y Safari */
+    -webkit-transform: rotate(-13deg);
+    /* Firefox */
+    -moz-transform: rotate(-13deg);
+    /* Opera */
+    -o-transform: rotate(-13deg);
+    /* IE 9 */
+    -ms-transform: rotate(-13deg);
+}
+.user-question .alert-msg{
+	font: normal 50px/1 'Righteous', cursive;
+	font-weight: bold;
 }
