@@ -21,8 +21,8 @@ io.on('connection', function(socket){
       io.emit("time", time, user, question); 
   });
 
-  socket.on('answer', function(answer, user, question, pointsForQuestion){
-      io.emit("answer", answer, user, question, pointsForQuestion); 
+  socket.on('answer', function(answer, user, question, pointsForQuestion, answerId){
+      io.emit("answer", answer, user, question, pointsForQuestion, answerId); 
   });
 
   // socket.on('answer', function(answer, user,answerId){

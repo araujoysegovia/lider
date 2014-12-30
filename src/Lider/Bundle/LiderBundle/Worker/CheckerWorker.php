@@ -140,7 +140,7 @@ class CheckerWorker
 		$em = $this->co->get('doctrine')->getManager();
         // $game = $em->getRepository("LiderBundle:Game")->find($gameId);
 		$parameters = $this->co->get('parameters_manager')->getParameters();
-		$duels = $em->getRepository('LiderBundle:Duel')->findBy(array("active" => true, "finished" => false, "game" =>$game));
+		$duels = $em->getRepository('LiderBundle:Duel')->findBy(array("finished" => false, "game" =>$game));
 		if(count($duels) == 0){
 			$win = $this->checkWinTeam($game);
 			if(!is_null($win))
@@ -402,7 +402,8 @@ class CheckerWorker
         $date = new \DateTime();
         $endDate = new \DateTime();
         $endDate->modify('+'.$params['gamesParameters']['timeDuel'].' day');
-    	$duel = new Duel();   	$duel->setGame($game);
+    	$duel = new Duel();
+    	$duel->setGame($game);
     	$duel->setStartdate($date);
         $duel->setEndDate($endDate);
         $duel->setPlayerOne($player1);
