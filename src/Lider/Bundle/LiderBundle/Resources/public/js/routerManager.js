@@ -7,6 +7,7 @@ var routerManager = Backbone.Router.extend({
 	modalMaxHeight : '700px',
 	questionFontSize : '70%',
 	answerFontSize : '60%',
+	socket:null,
 	routes: {
 		"" : "home",   
 		"tournaments" : "tournaments", 
@@ -56,8 +57,14 @@ var routerManager = Backbone.Router.extend({
 		});
 	},
 
-	removeContent: function(){
+	removeContent: function(value){
+		var me = this;
 		$("#entity-content").empty();
+		if(value == "realTime"){
+			//console.log(me.socket);
+		}else{
+			me.socket.removeListener('question');
+		}
 	},  
   
 	tournaments: function() {
@@ -4132,7 +4139,7 @@ var routerManager = Backbone.Router.extend({
 				modal.modal("show");
 				
 
-				var socket = io.connect('http://10.101.1.118:3000');    
+				me.socket = io.connect('http://10.101.1.118:3000');    
 
 				_.each(data.questions, function(question){
 
@@ -4155,7 +4162,7 @@ var routerManager = Backbone.Router.extend({
 					
 					
 					
-					socket.on('time', function(time, user, qt){
+					me.socket.on('time', function(time, user, qt){
 						
 						user = jQuery.parseJSON(user);
 						
@@ -4176,7 +4183,7 @@ var routerManager = Backbone.Router.extend({
 						
 					});					
 
-					socket.on('help', function(help, user, questionId){
+					me.socket.on('help', function(help, user, questionId){
 						
 						
 						user = jQuery.parseJSON(user);
@@ -4445,7 +4452,7 @@ var routerManager = Backbone.Router.extend({
 //				
 				var bool = true;
 				var count = 0;
-				socket.on('answer', function(answer, user, questionId, ptnPlayer, answerId){
+				me.socket.on('answer', function(answer, user, questionId, ptnPlayer, answerId){
 					user = JSON.parse(user);
 //					console.log("entre "+count)
 //					console.log(user)
@@ -4598,7 +4605,8 @@ var routerManager = Backbone.Router.extend({
 	},
 
 	getQuestion: function () {
-		socket.on('question', function(question, user){
+		var me = this;
+		me.socket.on('question', function(question, user){
 			
 			currentQuestion = JSON.parse(question);
 			//console.log(currentQuestion)
@@ -4670,36 +4678,36 @@ var routerManager = Backbone.Router.extend({
 
 	realTime: function(){
 		var me = this;
-		this.removeContent();
+		this.removeContent("realTime");
 		this.buildbreadcrumbs({
 		  	Inicio: "",
 		  	'Tiempo Real': "Tiempo Real"
 		});
-      var socket = io.connect('http://10.101.1.118:3000');    
+      me.socket = io.connect('http://10.101.1.118:3000');    
 
-        socket.on('question', function(question, user){
+        me.socket.on('question', function(question, user){
         	me.questionPlayer(question, user);
         });
 
-        socket.on('time', function(time, user){
+        me.socket.on('time', function(time, user){
         	me.timePlayer(time, user);
         });
 
-        socket.on('answer', function(answer, user, questionId, pointsForQuestion, answerId){
+        me.socket.on('answer', function(answer, user, questionId, pointsForQuestion, answerId){
         	me.answerPlayer(answer,user,answerId);
         });
 
 //        socket.on('help', function(help, user){
 //        });
 
-        socket.on('load', function(userp){
+        me.socket.on('load', function(userp){
         	var user = JSON.parse(userp);
         	if($("#entity-content").find("div#"+user.id).length > 0){
         		me.answerPlayer("Recargar pagina",userp,"-1");
         	}
         });
 
-        socket.on('goOut', function(userp){
+        me.socket.on('goOut', function(userp){
         	var user = JSON.parse(userp);
         	if($("#entity-content").find("div#"+user.id).length > 0){
         		me.answerPlayer("Salir pagina",userp,"-1");
@@ -4712,6 +4720,7 @@ var routerManager = Backbone.Router.extend({
 		var me = this;
 		var user = JSON.parse(userp);
 		if($("#entity-content").find("div#"+user.id).length == 0){
+			me.questionA = true;
 			var question = JSON.parse(question);
 			
 			var div = $('<div></div>').attr('id', user.id).addClass('user-question').css("max-height","300px");
@@ -4785,7 +4794,7 @@ var routerManager = Backbone.Router.extend({
 
 			$("#entity-content").append(div);
 		}else{
-			$("div#"+user.id).remove();
+			$("#entity-content").find("div#"+user.id).remove();
 			me.questionPlayer(question, userp);
 		}
 	},
@@ -4798,11 +4807,13 @@ var routerManager = Backbone.Router.extend({
 		}		
 	},
 	answerPlayer:function(answer, user,answerId){
+		var me = this;
 		var user = JSON.parse(user);
 		console.log("answerId");
 		console.log(answerId);
 		var divAnswer = $("div#showanw"+user.id);
 		var divAnswerRes = $("div#answer_"+answerId);
+		me.questionA = false;
 		if(divAnswer){
 			
 			switch(answer){
@@ -4836,7 +4847,11 @@ var routerManager = Backbone.Router.extend({
 			}
 		}
 		setTimeout(function(){
-			$("div#"+user.id).remove();
+			
+			if(!me.questionA){
+				$("div#"+user.id).remove();
+			}
+			
 		},3000);		
 	},
 	
