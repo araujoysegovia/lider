@@ -7718,3 +7718,117 @@ Mensaje Enviado a: Array
     [2] => naferhernandezmendoza@gmail.com
 )
 Mensaje Enviado al administrador
+
+Voy a enviar correo a Eduardo 2 Eduardo 2
+
+Voy a enviar correo a Benjamin Benjamin
+
+Mensaje Enviado a: eduard.escallon@gmail.com
+
+Voy a enviar correo a Nafer 2 Nafer 2
+
+Mensaje Enviado a: bperez@araujoysegovia.net# admins: 6
+
+Mensaje Enviado a: naferhernandezmendoza@gmail.comMensaje Enviado al administrador# admins: 6Mensaje Enviado al administrador
+
+Voy a enviar correo a Eduardo 2 Eduardo 2
+
+Voy a enviar correo a Deivis Deivis
+
+Voy a enviar correo a Benjamin Benjamin
+
+Mensaje Enviado a: dherrera@araujoysegovia.net# admins: 6
+
+Mensaje Enviado a: eduard.escallon@gmail.com
+
+                                                                                                                                                                                                                                                                          
+  [InvalidArgumentException]                                                                                                                                                                                                                                              
+  The directory "/var/www/html/lider/app/cache/dev/annotations" is not writable. Both, the webserver and the console user need access. You can manage access rights for multiple users with "chmod +a". If your system does not support this, check out the acl package.  
+                                                                                                                                                                                                                                                                          
+
+
+gearman:worker:execute [--no-description] worker
+
+
+
+
+Mensaje Enviado a: bperez@araujoysegovia.netPHP Warning:  PHP Startup: Unable to load dynamic library '/usr/lib/php5/20121212/php_mongo.so' - /usr/lib/php5/20121212/php_mongo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+[2014-12-30 11:15:19] loading...
+
+@Worker\className : Lider\Bundle\LiderBundle\Worker\NotificationWorker
+@Worker\fileName : /var/www/html/lider/src/Lider/Bundle/LiderBundle/Worker/NotificationWorker.php
+@Worker\nameSpace : Lider\Bundle\LiderBundle\Worker
+@Worker\callableName: LiderBundleLiderBundleWorkernotification
+@Worker\supervisord : /usr/bin/php /var/www/html/lider/app/console gearman:worker:execute LiderBundleLiderBundleWorkernotification --no-interaction
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 7
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationTeam 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationDuel 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationGroup 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationDuels 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart 
+
+@worker\servers :
+
+    #localhost - 10.102.1.21:4730
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2014-12-30 11:15:19] loaded. Ctrl+C to break
+
+
+Voy a enviar correo a Eduardo 2 Eduardo 2
+
+Mensaje Enviado a: eduard.escallon@gmail.com# admins: 6
+
+Voy a enviar correo a Eduardo 2 Eduardo 2
+
+Mensaje Enviado a: Array
+(
+    [0] => eduard.escallon@gmail.com
+    [1] => lizethcabrales@gmail.com
+)
+Mensaje Enviado al administrador
+
+Voy a enviar correo a Eduardo 2 Eduardo 2
+
+Voy a enviar correo a Lizeth 2 Lizeth 2
+
+Voy a enviar correo a Benjamin Benjamin# admins: 6
+
+Mensaje Enviado a: eduard.escallon@gmail.com
+
+Mensaje Enviado a: lizethcabrales@gmail.com
+
+Mensaje Enviado a: bperez@araujoysegovia.netMensaje Enviado al administrador
+
+Voy a enviar correo a Eduardo 2 Eduardo 2
+
+Voy a enviar correo a Benjamin Benjamin
+
+Voy a enviar correo a Nafer 2 Nafer 2
+
+Mensaje Enviado a: bperez@araujoysegovia.net
+
+Mensaje Enviado a: eduard.escallon@gmail.com# admins: 6
+
+Mensaje Enviado a: naferhernandezmendoza@gmail.comMensaje Enviado al administrador
+
+Voy a enviar correo a Deivis Deivis
+
+Voy a enviar correo a Eduardo 2 Eduardo 2
+
+Mensaje Enviado a: eduard.escallon@gmail.com
+
+Mensaje Enviado a: dherrera@araujoysegovia.net
+
+Voy a enviar correo a Eduardo 2 Eduardo 2
+
+Mensaje Enviado a: eduard.escallon@gmail.com

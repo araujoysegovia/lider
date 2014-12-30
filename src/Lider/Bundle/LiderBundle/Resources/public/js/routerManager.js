@@ -3,13 +3,13 @@ var max, min;
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
 	heightGame: 110,
-	modalMinHeight : '950px',
-	modalMaxHeight : '9500px',
+	modalMinHeight : '850px',
+	modalMaxHeight : '850px',
 	questionFontSize : '120%',
 	answerFontSize : '110%',
 	routes: {
 		"" : "home",   
-		"tournaments" : "tournaments", 
+		"tournaments" : "tournaments",
 		"questions" : "questions",
 		"players" : "players",
 		"groups" : "groups",
@@ -4132,7 +4132,7 @@ var routerManager = Backbone.Router.extend({
 				modal.modal("show");
 				
 
-				var socket = io.connect('http://10.101.1.118:3000');    
+				var socket = io.connect('http://10.102.1.22:3000');    
 
 				_.each(data.questions, function(question){
 
@@ -4673,7 +4673,7 @@ var routerManager = Backbone.Router.extend({
 		  	Inicio: "",
 		  	'Tiempo Real': "Tiempo Real"
 		});
-      var socket = io.connect('http://10.101.1.118:3000');    
+      var socket = io.connect('http://10.102.1.22:3000');   
 
         socket.on('question', function(question, user){
         	me.questionPlayer(question, user);
