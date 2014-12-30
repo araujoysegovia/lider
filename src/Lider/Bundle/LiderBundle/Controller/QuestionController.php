@@ -13,6 +13,8 @@ class QuestionController extends Controller
 {
     private $maxSec = 45;
 
+    public $playerPointsForDuel = 0;
+
     public function getName(){
         return "Question";
     }
@@ -226,6 +228,7 @@ class QuestionController extends Controller
     
     public function getQuestionAction($duelId)
     {
+
         $em = $this->getDoctrine()->getEntityManager();
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repository = $em->getRepository('LiderBundle:Duel');
@@ -236,6 +239,16 @@ class QuestionController extends Controller
 
         $playerOne = $duel->getPlayerOne();
         $playerTwo = $duel->getPlayerTwo();
+
+        // $playerOnePoints = $playerOne->getPlayerPoints();
+        // $pointsOne = 0;
+
+        // foreach ($playerOnePoints as $key => $value) {
+        //     $pointsOne = $pointsOne + $value->getPoints();
+        // }
+
+        // echo "Puntos jugador 1 : ".$pointsOne;
+
 
         $user = $this->container->get('security.context')->getToken()->getUser();
 
@@ -299,7 +312,7 @@ class QuestionController extends Controller
          
             $array = array(
                 'token' => $questionHistory->getId(),
-                'question' => $question[0]                
+                'question' => $question[0],                
             ); 
                
         }
@@ -366,9 +379,15 @@ class QuestionController extends Controller
         $wonGames = $user->getWonGames();
         $lostGames = $user->getLostGames();
         $playerPoints = $user->getPlayerPoints();
-        
+        //print_r($playerPoints);
+
+        //echo $playerPoints->getPoints();
+
         $team = $user->getTeam();
         $duel = $em->getRepository('LiderBundle:Duel')->find($questionHistory->getDuelId());
+        if(empty($question))
+            throw new \Exception("Duel not found");  
+
 
         if($diffTime >= $maxSec || $questionId=="no-answer"){
             $res = array();
@@ -433,6 +452,24 @@ class QuestionController extends Controller
         }
 
         $res['lastOne'] = $lastOne;
+
+        $parameters = $this->get('parameters_manager')->getParameters();
+        $pointsForQuestion = $parameters['gamesParameters']['questionPoints'];
+
+        $help = $questionHistory->getUseHelp();
+        if($help){
+            $pointsForQuestion = $parameters['gamesParameters']['questionPointsHelp'];
+        }
+        
+
+        //$player = $em->getRepository("LiderBundle:Player")->findOneBy(array("id" => $user->getId(), "duel" => $duel, "deleted" => false));
+        //echo $player->getPlayerPoints()->getPoints();
+        // echo $playerPoints->getPoints();
+
+        //$playerPointsForDuel = $playerPoints + $pointsForQuestion;
+
+        $res['pointsForQuestion'] = $pointsForQuestion;
+        //$res['playerPoints'] = $playerPointsForDuel;
 
         $gearman = $this->get('gearman');
         
@@ -712,16 +749,24 @@ class QuestionController extends Controller
                 $player->setWonGames($player->getWonGames() - 1);
                 if($duel->getPlayerOne()->getId() == $player->getId())
                 {
+                    echo "entro 1";
                     $duel->setPointOne($duel->getPointOne() - $question->getPoints());
                 }
                 elseif($duel->getPlayerTwo()->getId() == $player->getId())
                 {
+                    echo "entro 2";
                     $duel->setPointTwo($duel->getPointTwo() - $question->getPoints());
                 } 
+
+                echo "player ".$player->getId()."<br/>";
+                echo "points ".$question->getPoints()."<br/>";
+                echo "duels ".$duel->getId()."<br/>";
+                echo "question ".$question->getQuestion()->getQuestionId()."<br/>";
                 $playerPoint = $playerPointRepository->findOneBy(array("player" => $player->getId(), "points" => $question->getPoints(), "duel" => $duel->getId(), "question" => $question->getQuestion()->getQuestionId()));
                 $em->remove($playerPoint);
             }
             else{
+                echo "entro 3";
                 $player->setLostGames($player->getLostGames() - 1);
             }
             if(!$duel->getActive() && $duel->getFinished())
