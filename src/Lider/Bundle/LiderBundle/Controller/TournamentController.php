@@ -78,6 +78,15 @@ class TournamentController extends Controller
         return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
 
+    public function generateDuelsAction()
+    {
+        $gameManager = $this->get('game_manager');
+        $gameManager->stopDuels();
+        $gameManager->stopGames();
+        $games = $gameManager->startGames();
+        return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
+    }
+
     public function tournamentTemsAction($tournamentId)
     {
         $teams = $em->getRepository("LiderBundle:Team")

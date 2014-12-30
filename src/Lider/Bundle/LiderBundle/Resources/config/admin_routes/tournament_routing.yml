@@ -43,3 +43,8 @@ enable_level:
     pattern:  /enablelevel
     defaults: { _controller: LiderBundle:Tournament:activeLevel }
     methods:  [POST]
+
+generate_duels:
+    pattern:  /generate/duels
+    defaults: { _controller: LiderBundle:Tournament:generateDuels }
+    methods:  [POST]
