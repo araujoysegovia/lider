@@ -98,6 +98,8 @@ class GameManager
 	 */
 	private function generateGameForFirtsLevel($tournament, $interval)
 	{
+		// echo "tournamentId<br/>";
+		// echo $tournament->getId();
 		$groups = $this->em->getRepository("LiderBundle:Group")
 					   ->findBy(array("tournament" => $tournament->getId(), "deleted" => false));
 					   
@@ -116,7 +118,7 @@ class GameManager
 			// }
 			// echo "\n\n";
 			$countTeams = count($teams);
-
+			// echo "<br/>".$countTeams;
 			if($countTeams == 3 || ($countTeams%2 == 0)){
 
 				for ($i=1; $i <= self::$COUNT_GAMES ; $i++) { 
@@ -142,10 +144,13 @@ class GameManager
 						$p = $pos;
 						$v= $p +$i;
 
-						if($v > $countTeams){
+
+						if($v >= $countTeams){
 							$v = $v - $countTeams;
 						}
 
+						// echo "<br/>p ".$p;
+						// echo "<br/>v ".$v; 
 						//echo "\t $p=".$teams[$p]->getName()." VS $v=".$teams[$v]->getName()."\n";
 						//$now = new Date();
 						

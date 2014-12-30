@@ -28,6 +28,7 @@ var routerManager = Backbone.Router.extend({
 		"reportTeamByGroup": "reportTeamByGroup",
 		"reportByCategory": "reportByCategory",
 		"reportByPractice": "reportByPractice",
+		'generateDuel': 'generateDuel',
 	},
 
 	home: function() {
@@ -261,9 +262,42 @@ var routerManager = Backbone.Router.extend({
                     }
                    // action.action.call(me,item);
                 })
-			}
+			},
+			toolbar: [
+  			    { name: "create", text: "Agregar registro" },
+  			    { 
+  			    	name: "generateDuel",
+  			    	template: function(){  			    		
+  			    		var btn = '<a class="k-button"  onclick="generateDuel()">Generar duelos</a>';  			    		
+  			    		return btn;
+  			    	}
+  			    }
+		  	],
 		});
 	},
+
+
+	generateDuel: function () {
+
+		
+		parameters = {
+			type: "POST",
+            url: "home/tournament/generate/duels",
+            contentType: 'application/json',
+            dataType: "json",
+	     	statusCode: {
+		      401:function() { 
+		      	window.location = '';
+		      }		   
+		    },	            
+            success: function(data){
+        		alert("Duelos generados");
+            },
+            error: function(){},            
+		};
+		
+		$.ajax(parameters);	
+	},	
 
 	questions: function(){
 		var me = this;
@@ -4098,7 +4132,7 @@ var routerManager = Backbone.Router.extend({
 				modal.modal("show");
 				
 
-				var socket = io.connect('http://10.102.1.22:3000');    
+				var socket = io.connect('http://10.101.1.118:3000');    
 
 				_.each(data.questions, function(question){
 
@@ -4154,10 +4188,7 @@ var routerManager = Backbone.Router.extend({
 							if(questionId == question['questionId']){
 								
 								if(user['id'] == data.playerOne.id){
-									sh = $('#helpTwo'+question['questionId']);
-									
-									console.log(sh)
-									
+									sh = $('#helpTwo'+question['questionId']);									
 									sh.css('display', 'block');
 									
 								}else if(user['id'] == data.playerTwo.id){								
@@ -4190,14 +4221,39 @@ var routerManager = Backbone.Router.extend({
 							'font-size': me.questionFontSize,						
 						});						
 						
+						console.log("QUESTION")
+						console.log(question)
+
 						if(question.answers.playerTwo.find){
 							//buttonOne.addClass('btn-success');
+							
 							buttonOne.css({'background': 'none', 'color': '#008000'});
-							buttonOne.addClass('glyphicon glyphicon-ok');
+							buttonOne.addClass('glyphicon glyphicon-ok');							
+
+							if(question.answers.playerTwo.help){
+								setTimeout(function () {					
+
+									sh = $('#helpOne'+question['questionId']);									
+									sh.css('display', 'block');
+
+								}, 500);
+							}
+
+							
+
 						}else{
 							//buttonOne.addClass('btn-danger');	
 							buttonOne.css({'background': 'none', 'color': '#FF0000'});
 							buttonOne.addClass('glyphicon glyphicon-remove');
+
+							if(question.answers.playerTwo.help){
+								setTimeout(function () {					
+
+									sh = $('#helpOne'+question['questionId']);									
+									sh.css('display', 'block');
+
+								}, 500);
+							}
 						} 
 						buttonOne.click(function(){
 							$.confirm({
@@ -4255,16 +4311,12 @@ var routerManager = Backbone.Router.extend({
 						});
 						tr.append(answerOne);
 					}
-					
-					console.log('Pregunta')
-					console.log(question)
+
 					
 					var q = $('<td style="vertical-align: middle;">'+
 								'<p>'+question.question+'</p>'+
 							  '</td>');
 					
-					console.log("Imagen de pregunta")
-					console.log(question.image)
 					if(!(_.isNull(question.image))){
 						q.append('<img src="image/'+question.image+'?width=100&height=100"/>');
 					}
@@ -4316,10 +4368,30 @@ var routerManager = Backbone.Router.extend({
 							buttonTwo.css({'background': 'none', 'color': '#008000'});												
 							buttonTwo.addClass('glyphicon glyphicon-ok');
 
+							if(question.answers.playerOne.help){
+
+								setTimeout(function () {					
+
+									sh = $('#helpTwo'+question['questionId']);									
+									sh.css('display', 'block');
+
+								}, 500);
+							}
+
 						}else {
 							//buttonTwo.addClass('btn-danger');	
 							buttonTwo.css({'background': 'none', 'color': '#FF0000'});
 							buttonTwo.addClass('glyphicon glyphicon-remove');
+
+							if(question.answers.playerOne.help){
+								
+								setTimeout(function () {					
+
+									sh = $('#helpTwo'+question['questionId']);									
+									sh.css('display', 'block');
+
+								}, 500);
+							}
 						}
 						buttonTwo.click(function(){
 							$.confirm({
@@ -4601,7 +4673,7 @@ var routerManager = Backbone.Router.extend({
 		  	Inicio: "",
 		  	'Tiempo Real': "Tiempo Real"
 		});
-      var socket = io.connect('http://10.102.1.22:3000');    
+      var socket = io.connect('http://10.101.1.118:3000');    
 
         socket.on('question', function(question, user){
         	me.questionPlayer(question, user);
@@ -4968,6 +5040,11 @@ function generateGroup(){
 	Backbone.history.navigate("generateGroups", true);
 }
 
+function generateDuel(){
+	
+	var router = new routerManager();
+	Backbone.history.navigate("generateDuel", true);
+}
 // function selectTournament(){
 	
 // 	var router = new routerManager();

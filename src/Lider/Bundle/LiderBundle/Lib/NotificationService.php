@@ -76,7 +76,7 @@ class NotificationService
         if(!is_null($viewName))
             $mail->addPart($this->templating->render($viewName, $viewparam), 'text/html');
         $mailer = $this->getNewConnection();
-        $answer = $mailer->send($mail);
+        //$answer = $mailer->send($mail);
         $this->flushSpoolMailer();
         return $answer;
     }
