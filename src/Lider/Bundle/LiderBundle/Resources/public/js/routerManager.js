@@ -3,9 +3,10 @@ var max, min;
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
 	heightGame: 110,
-	modalHeight : '600px',
-	questionFontSize : '90%',
-	answerFontSize : '70%',
+	modalMinHeight : '950px',
+	modalMaxHeight : '9500px',
+	questionFontSize : '120%',
+	answerFontSize : '110%',
 	routes: {
 		"" : "home",   
 		"tournaments" : "tournaments", 
@@ -3844,7 +3845,7 @@ var routerManager = Backbone.Router.extend({
 						me.showModalByDuel(duel);
 					});
 					
-					console.log(duel);
+//					console.log(duel);
 					if(duel.player_one.teamId == game.team_one.id){
 						if(duel['player_one']['questionMissing'] > 0 && !duel['finished'] && duel['active'])
 						{
@@ -3989,14 +3990,14 @@ var routerManager = Backbone.Router.extend({
 				loader.hide();
 				var modal = $("<div></div>").addClass("modal fade").css({'overflow':'hidden'});
 				var modalDialog = $("<div></div>").addClass("modal-dialog").css('width', '100%');
-				var modalHeader = $("<div></div>").addClass("modal-header");
+				//var modalHeader = $("<div></div>").addClass("modal-header");
 				var btnClose = $("<button></button>").attr("type", "button").attr("data-dismiss", "modal").addClass("close");
 				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
 				var spanClose2 = $("<span></span>").addClass("sr-only").html("Close");
 				btnClose.append(spanClose).append(spanClose2);
 				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Preguntas del duelo").css('display', 'inline');
 
-				modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
+				//modalHeader.append(btnClose).append(titleHeading).append(activeDuel);
 				if(!duel.active && !duel.finished)
 				{
 					var activeDuel = $('<button></button>').addClass('btn btn-success').html('Iniciar').css('margin-left', '15px');
@@ -4050,7 +4051,7 @@ var routerManager = Backbone.Router.extend({
 						});
 					})
 					
-					modalHeader.append(activeDuel);
+					//modalHeader.append(activeDuel);
 				}
 				
 				var modalBody = $("<div></div>").addClass("modal-body").css('text-align', 'center');
@@ -4059,19 +4060,21 @@ var routerManager = Backbone.Router.extend({
 				
 				var trTeamDuels = $('<thead>'+
 									 '<tr>'+
-								    	'<td colspan="3" style="vertical-align: middle; text-align: center;">'+
-								    		'<img width="30%" class="img-circle" src="image/'+data.playerTwo.image+'?width=150&height=150"/><br/>'+
+								    	'<td colspan="4" style="vertical-align: middle; text-align: center;">'+
+								    		'<img width="20%" class="img-circle" src="image/'+data.playerTwo.image+'?width=150&height=150"/><br/>'+
 								    		'<h4>'+data.playerTwo.name+'</h4>'+
 								    		'<label id="playerPointTwo">'+duel.point_two+'</label>'+
 								    		//'<button class="btn" style="margin-bottom:40px;" data-id="p1" disabled="disabled">Resetear Duelo</button</td>'+
-								    	'<td style="vertical-align: middle; text-align: center;"></td>'+
-								    	'<td colspan="3" style="vertical-align: middle; text-align: center;">'+
-								    		'<img width="30%" class="img-circle" src="image/'+data.playerOne.image+'?width=150&height=150"/><br/>'+
+								    	'<td class="active-duel" style="vertical-align: middle; text-align: center;"></td>'+
+								    	'<td colspan="4" style="vertical-align: middle; text-align: center;">'+
+								    		'<img width="20%" class="img-circle" src="image/'+data.playerOne.image+'?width=150&height=150"/><br/>'+
 								    		'<h4>'+data.playerOne.name+'</h4>'+
 								    		'<label id="playerPointOne">'+duel.point_one+'</label>'+
 								    		//'<button class="btn" style="margin-bottom:40px;" data-id="p2" disabled="disabled">Resetear Duelo</button</td>'+
 								    '</tr>'+
 							   '</thead>');
+				
+				trTeamDuels.find('.active-duel').append(activeDuel);
 				if(data.playerOne.duel)
 				{
 					trTeamDuels.find('button[data-id=p1]').addClass('btn-success').attr("disabled", false);
@@ -4086,8 +4089,10 @@ var routerManager = Backbone.Router.extend({
 				var modalContent = $("<div></div>").addClass("modal-content").css({
 							'font-size':'200%', 
 							'overflow': 'auto',
-							'height': me.modalHeight});
-				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
+							//'height': me.modalHeight
+							'min-height': me.modalMinHeight,
+							'max-height': me.modalMaxHeight});
+				//modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody)));
 				modal.append(modalDialog.append(modalContent.append(modalBody)));
 				$(document.body).append(modal);
 				modal.modal("show");
@@ -4099,7 +4104,7 @@ var routerManager = Backbone.Router.extend({
 
 
 					var tr = $('<tr id="'+question['questionId']+'"></tr>').css({
-						height: '150px',
+//						height: '100px',
 					}).addClass('tr-game');
 
 					tdTimeOne = $('<td style="vertical-align: middle;" id="timeOne'+question['questionId']+'" class="timeQuestion"><label></label></td>').css('width', '50px');
@@ -4108,6 +4113,14 @@ var routerManager = Backbone.Router.extend({
 					tdTimeTwo = $('<td style="vertical-align: middle;" id="timeTwo'+question['questionId']+'" class="timeQuestion"><label></label></td>').css('width', '50px');
 					
 
+					spanHelpOne = $('<td ><span id="helpOne'+question['questionId']+'" class="glyphicon glyphicon-adjust" style="display: none; color: #428BCA"></span></td>').css('width', '50px');
+					
+					tr.append(spanHelpOne);
+					
+					spanHelpTwo = $('<td><span id="helpTwo'+question['questionId']+'" class="glyphicon glyphicon-adjust" style="display: none; color: #428BCA"></span></td>').css('width', '50px');
+					
+					
+					
 					socket.on('time', function(time, user, qt){
 						
 						user = jQuery.parseJSON(user);
@@ -4129,7 +4142,35 @@ var routerManager = Backbone.Router.extend({
 						
 					});					
 
-					socket.on('help', function(help, user){
+					socket.on('help', function(help, user, questionId){
+						
+						
+						user = jQuery.parseJSON(user);
+						
+						if(user['id'] == data.playerOne.id || user['id'] == data.playerTwo.id){
+							
+													
+							//console.log(questionId +' =='+ question['questionId'])
+							if(questionId == question['questionId']){
+								
+								if(user['id'] == data.playerOne.id){
+									sh = $('#helpTwo'+question['questionId']);
+									
+									console.log(sh)
+									
+									sh.css('display', 'block');
+									
+								}else if(user['id'] == data.playerTwo.id){								
+									
+									sh = $('#helpOne'+question['questionId']);
+									sh.css('display', 'block');
+										
+								}
+								
+							}
+						}
+//						spanHelp = $('<span class="glyphicon glyphicon-adjust"></span>').css({'color': '#428BCA'});
+						
 					});
 
 
@@ -4137,13 +4178,18 @@ var routerManager = Backbone.Router.extend({
 					
 					if(question.answers && question.answers.playerTwo  && _.isObject(question.answers.playerTwo) && question.answers.playerTwo.answer !== undefined)
 					{
-						var buttonOne = $('<button></button>').addClass('btn').css({
-							'width': '90%',
-							'height': '40%',
-							'border': 'none',
-							'font-size': me.questionFontSize,
-							'background': 'none'
-						});
+//						var buttonOne = $('<button></button>').addClass('btn').css({
+//							'width': '90%',
+//							'height': '40%',
+//							'border': 'none',
+//							'font-size': me.questionFontSize,
+//							'background': 'none'
+//						});
+						
+						var buttonOne = $('<span></span>').css({						
+							'font-size': me.questionFontSize,						
+						});						
+						
 						if(question.answers.playerTwo.find){
 							//buttonOne.addClass('btn-success');
 							buttonOne.css({'background': 'none', 'color': '#008000'});
@@ -4157,7 +4203,7 @@ var routerManager = Backbone.Router.extend({
 							$.confirm({
 							    text: "Desea resetear esta pregunta ?",
 							    confirm: function(button) {
-							    	me.resetQuestion(question.answers.playerOne.token, duel, modal);
+							    	me.resetQuestion(question.answers.playerTwo.token, duel, modal);
 							    },
 							    cancel: function(button) {
 							        // do something
@@ -4171,16 +4217,20 @@ var routerManager = Backbone.Router.extend({
 						resetOne.append(buttonOne);
 					}
 					else{
-						var buttonOne = $('<button class="btnOne"></button>').addClass('btn btn-default').attr("disabled", "disabled").css({
-							'width': '90%',
-							'height': '40%',
-							'border': 'none',
-							'font-size': me.questionFontSize,
-							'background': 'none'
-						});
+//						var buttonOne = $('<button class="btnOne"></button>').addClass('btn btn-default').attr("disabled", "disabled").css({
+//							'width': '90%',
+//							'height': '40%',
+//							'border': 'none',
+//							'font-size': me.questionFontSize,
+//							'background': 'none'
+//						});
 
-						spanCheck = $('<span class="span-check"></span>');
-						buttonOne.append(spanCheck);
+						var buttonOne = $('<span class="btnOne"></span>').css({						
+							'font-size': me.questionFontSize,						
+						});	
+						
+//						spanCheck = $('<span class="span-check"></span>');
+//						buttonOne.append(spanCheck);
 
 						resetOne.append(buttonOne);
 					}
@@ -4206,10 +4256,19 @@ var routerManager = Backbone.Router.extend({
 						tr.append(answerOne);
 					}
 					
+					console.log('Pregunta')
+					console.log(question)
 					
 					var q = $('<td style="vertical-align: middle;">'+
 								'<p>'+question.question+'</p>'+
 							  '</td>');
+					
+					console.log("Imagen de pregunta")
+					console.log(question.image)
+					if(!(_.isNull(question.image))){
+						q.append('<img src="image/'+question.image+'?width=100&height=100"/>');
+					}
+					
 					q.css({
 						'width': '400px',
 						'text-align': 'center',
@@ -4240,13 +4299,18 @@ var routerManager = Backbone.Router.extend({
 					var resetTwo = $('<td style="vertical-align: middle;"></td>').css('width', '70px');
 					if(question.answers && question.answers.playerOne  && _.isObject(question.answers.playerOne) && question.answers.playerOne.answer !== undefined)
 					{
-						var buttonTwo = $('<button></button>').addClass('btn').css({
-							'width': '90%',
-							'height': '40%',
-							'border': 'none',
-							'font-size': me.questionFontSize,
-							'background': 'none'							
+//						var buttonTwo = $('<button></button>').addClass('btn').css({
+//							'width': '90%',
+//							'height': '40%',
+//							'border': 'none',
+//							'font-size': me.questionFontSize,
+//							'background': 'none'							
+//						});
+						
+						var buttonTwo = $('<span></span>').css({						
+							'font-size': me.questionFontSize,						
 						});
+						
 						if(question.answers.playerOne.find){
 							//buttonTwo.addClass('btn-success');	
 							buttonTwo.css({'background': 'none', 'color': '#008000'});												
@@ -4271,48 +4335,81 @@ var routerManager = Backbone.Router.extend({
 						resetTwo.append(buttonTwo);
 					}
 					else{
-						var buttonTwo = $('<button class="btnTwo"></button>').addClass('btn btn-default').attr("disabled", "disabled").css({
-							'width': '90%',
-							'height': '40%',
-							'border': 'none',
-							'font-size': me.questionFontSize,
-							'background': 'none'					
+//						var buttonTwo = $('<button class="btnTwo"></button>').addClass('btn btn-default').attr("disabled", "disabled").css({
+//							'width': '90%',
+//							'height': '40%',
+//							'border': 'none',
+//							'font-size': me.questionFontSize,
+//							'background': 'none'					
+//						});
+						
+						var buttonTwo = $('<span class="btnTwo"></span>').css({						
+							'font-size': me.questionFontSize,						
 						});
+						
 						resetTwo.append(buttonTwo);
 					}
 
 					tr.append(resetTwo);
 
+					tr.append(spanHelpTwo);
 					tr.append(tdTimeTwo);
-
+					
 					tableDuels.append(tr);
 				});
 				modalBody.append(duels);
 
-								
-				pointsPlayerOne = duel.point_one;
-				pointsPlayerTwo = duel.point_two;				
-
-				socket.on('answer', function(answer, user, questionId, pointsForQuestion, answerId){
-
-					pointsForQuestion = pointsForQuestion || 0;
-					if(pointsForQuestion  == '-1'){
-						pointsForQuestion = 0;	
-					}
+				
+//				console.log("duel")
+//				console.log(duel)
+				
+//				pointsPlayerOne = 0;
+//				pointsPlayerTwo = 0;
+//				
+//				pointsPlayerOne = duel.point_one;
+//				pointsPlayerTwo = duel.point_two;	
+//				
+				var bool = true;
+				var count = 0;
+				socket.on('answer', function(answer, user, questionId, ptnPlayer, answerId){
 					user = JSON.parse(user);
+//					console.log("entre "+count)
+//					console.log(user)
+					//count++;
+//					if(bool){
+//						pointsPlayerOne = duel.point_one;
+//						pointsPlayerTwo = duel.point_two;	
+//						
+//						bool = false;
+//					}
+					
+//					console.log("pointsForQuestion: ")
+//					console.log(pointsForQuestion)
+//					pointsForQuestion = pointsForQuestion || 0;
+//					if(pointsForQuestion  == '-1'){
+//						pointsForQuestion = 0;	
+//					}
+					
 
 					if(user['id'] == data.playerOne.id){
-
-						console.log("Sumatoria puntos: ")
-						console.log(parseInt(pointsPlayerOne)+ ' + '+ parseInt(pointsForQuestion))
+						
+						
+						console.log("Puntos jugador One")
+						console.log(ptnPlayer)
 						
 						//$('#timeTwo'+question['questionId']).children('label').text(time);										
 						switch(answer){
 							case 'Correcto': 
 								
-								pointsPlayerOne = parseInt(pointsPlayerOne) + parseInt(pointsForQuestion);								
-								$('#playerPointOne').text(pointsPlayerOne);
-								
+//								console.log("Sumatoria puntos PlayerOne: ")
+//								console.log(pointsPlayerOne)
+//								console.log('+')
+//								console.log(pointsForQuestion)
+//								
+//								pointsPlayerOne = parseInt(pointsPlayerOne) + parseInt(pointsForQuestion);
+//								
+//								$('#playerPointOne').text(pointsPlayerOne);
+								$('#playerPointOne').text(ptnPlayer);
 								btnTwo = $('#'+questionId).find('.btnTwo');
 								//btnTwo.removeClass('btn-default');					
 								//btnTwo.addClass('btn-success');
@@ -4323,8 +4420,10 @@ var routerManager = Backbone.Router.extend({
 								break;							
 							case 'Incorrecto': 
 								
-								pointsPlayerOne = parseInt(pointsPlayerOne);								
-								$('#playerPointOne').text(pointsPlayerOne);
+//								console.log("Sumatoria puntos PlayerOne: ")
+//								console.log(parseInt(pointsPlayerOne)+ ' + '+ parseInt(pointsForQuestion))		
+//								pointsPlayerOne = parseInt(pointsPlayerOne);								
+//								$('#playerPointOne').text(pointsPlayerOne);
 								
 								btnTwo = $('#'+questionId).find('.btnTwo');
 								// btnTwo.removeClass('btn-default');					
@@ -4337,8 +4436,10 @@ var routerManager = Backbone.Router.extend({
 								break;
 							case 'Tiempo Agotado':
 								
-								pointsPlayerOne = parseInt(pointsPlayerOne);								
-								$('#playerPointOne').text(pointsPlayerOne);
+//								console.log("Sumatoria puntos PlayerOne: ")
+//								console.log(parseInt(pointsPlayerOne)+ ' + '+ parseInt(pointsForQuestion))		
+//								pointsPlayerOne = parseInt(pointsPlayerOne);								
+								//$('#playerPointOne').text(pointsPlayerOne);
 								
 								btnTwo = $('#'+questionId).find('.btnTwo');
 								//btnTwo.removeClass('btn-default');					
@@ -4354,11 +4455,20 @@ var routerManager = Backbone.Router.extend({
 					}else if(user['id'] == data.playerTwo.id){									
 						//$('#timeOne'+question['questionId']).children('label').text(time);
 						
+						console.log("Puntos jugador TWO")
+						console.log(ptnPlayer)
 						
 						switch(answer){
 							case 'Correcto':
-								pointsPlayerTwo = parseInt(pointsPlayerTwo) + parseInt(pointsForQuestion);								
-								$('#playerPointTwo').text(pointsPlayerTwo);
+//								console.log("Sumatoria puntos PlayerTwo: ")
+//								console.log(pointsPlayerTwo)
+//								console.log('+')
+//								console.log(pointsForQuestion)
+//								
+//								pointsPlayerTwo = parseInt(pointsPlayerTwo) + parseInt(pointsForQuestion);		
+//								//pointsPlayerTwo = parseInt(pointsPlayerTwo) + parseInt(pointsForQuestion);								
+//								$('#playerPointTwo').text(pointsPlayerTwo);
+								$('#playerPointTwo').text(ptnPlayer);
 								
 								btnOne = $('#'+questionId).find('.btnOne');
 								// btnOne.removeClass('btn-default');					
@@ -4371,8 +4481,8 @@ var routerManager = Backbone.Router.extend({
 								btnOne.addClass('glyphicon glyphicon-ok');
 								break;
 							case 'Incorrecto':
-								pointsPlayerTwo = parseInt(pointsPlayerTwo);								
-								$('#playerPointTwo').text(pointsPlayerTwo);
+								//pointsPlayerTwo = parseInt(pointsPlayerTwo);								
+								//$('#playerPointTwo').text(pointsPlayerTwo);
 								btnOne = $('#'+questionId).find('.btnOne');
 								// btnOne.removeClass('btn-default');					
 								// btnOne.addClass('btn-danger');
@@ -4384,8 +4494,8 @@ var routerManager = Backbone.Router.extend({
 								btnOne.addClass('glyphicon glyphicon-remove');
 								break;
 							case 'Tiempo Agotado':
-								pointsPlayerTwo = parseInt(pointsPlayerTwo);								
-								$('#playerPointTwo').text(pointsPlayerTwo);
+								//pointsPlayerTwo = parseInt(pointsPlayerTwo);								
+								//$('#playerPointTwo').text(pointsPlayerTwo);
 								btnOne = $('#'+questionId).find('.btnOne');
 								// btnOne.removeClass('btn-default');					
 								// btnOne.addClass('btn-warning');
@@ -4505,8 +4615,8 @@ var routerManager = Backbone.Router.extend({
         	me.answerPlayer(answer,user,answerId);
         });
 
-        socket.on('help', function(help, user){
-        });
+//        socket.on('help', function(help, user){
+//        });
 
         socket.on('load', function(userp){
         	var user = JSON.parse(userp);

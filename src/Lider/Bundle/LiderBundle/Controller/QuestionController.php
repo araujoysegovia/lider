@@ -468,8 +468,20 @@ class QuestionController extends Controller
 
         //$playerPointsForDuel = $playerPoints + $pointsForQuestion;
 
+        
+        
         $res['pointsForQuestion'] = $pointsForQuestion;
-        //$res['playerPoints'] = $playerPointsForDuel;
+        
+        
+        if($user->getId() == $duel->getPlayerOne()->getId()){
+        	
+        	$res['pointsPlayer'] = $duel->getPointOne();
+        	
+        }elseif($user->getId() == $duel->getPlayerTwo()->getId()){
+        	
+        	$res['pointsPlayer'] = $duel->getPointTwo();
+        }
+//         $res['playerPoints'] = $playerPointsForDuel;
 
         $gearman = $this->get('gearman');
         
@@ -688,7 +700,7 @@ class QuestionController extends Controller
     			{
     				$c++;
     				 
-    				echo $c . " - ".$d['duelId'] . " == ". $duel->getId(). "\n";
+    				//echo $c . " - ".$d['duelId'] . " == ". $duel->getId(). "\n";
     				
     				if($d['player.playerId'] == $duel->getPlayerOne()->getId())
     				{
@@ -748,28 +760,21 @@ class QuestionController extends Controller
             {
                 $player->setWonGames($player->getWonGames() - 1);
                 if($duel->getPlayerOne()->getId() == $player->getId())
-                {
-                    echo "entro 1";
+                {                   
                     $duel->setPointOne($duel->getPointOne() - $question->getPoints());
                 }
                 elseif($duel->getPlayerTwo()->getId() == $player->getId())
                 {
-                    echo "entro 2";
                     $duel->setPointTwo($duel->getPointTwo() - $question->getPoints());
                 } 
-
-                echo "player ".$player->getId()."<br/>";
-                echo "points ".$question->getPoints()."<br/>";
-                echo "duels ".$duel->getId()."<br/>";
-                echo "question ".$question->getQuestion()->getQuestionId()."<br/>";
+            
                 $playerPoint = $playerPointRepository->findOneBy(array("player" => $player->getId(), "points" => $question->getPoints(), "duel" => $duel->getId(), "question" => $question->getQuestion()->getQuestionId()));
                 $em->remove($playerPoint);
             }
-            else{
-                echo "entro 3";
+            else{                
                 $player->setLostGames($player->getLostGames() - 1);
             }
-            if(!$duel->getActive() && $duel->getFinished())
+            if($duel->getFinished())
             {
                 $game = $duel->getGame();
                 $duel->setActive(true);

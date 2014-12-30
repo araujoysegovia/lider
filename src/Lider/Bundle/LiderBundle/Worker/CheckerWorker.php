@@ -74,6 +74,8 @@ class CheckerWorker
                 echo "Gano El Duelo el jugador ".$duel->getPlayerOne()->getName()." ".$duel->getPlayerOne()->getLastname()."\n";
                 $duel->setPlayerWin($duel->getPlayerOne());
             }
+            $duel->setActive(false);
+            $duel->setFinished(true);
             $em->flush();
             // $gameId = $duel->getGame()->getId();
             $game = $duel->getGame();
@@ -89,33 +91,62 @@ class CheckerWorker
     	$list = $repo->getDuelsByGameArray($game->getId());
     	$countT1 = 0;
         $countT2 = 0;
-        $team1 = $list[0]['player_one']['team']['id'];
-        $team2 = $list[0]['player_two']['team']['id'];
+        $team1 = $em->getRepository("LiderBundle:Team")->find($list[0]['player_one']['team']['id']);
+        $team2 = $em->getRepository("LiderBundle:Team")->find($list[0]['player_two']['team']['id']);
         foreach($list as $duel)
         {
-            // echo "puntos del equipo ".$duel[->getPlayerOne()]->getTeam()->getName()." ".$duel->getPointOne()."\n";
-            // echo "puntos del equipo ".$duel->getPlayerTwo()->getTeam()->getName()." ".$duel->getPointTwo()."\n";
+//             echo "puntos del equipo ".$duel[->getPlayerOne()]->getTeam()->getName()." ".$duel->getPointOne()."\n";
+//             echo "puntos del equipo ".$duel->getPlayerTwo()->getTeam()->getName()." ".$duel->getPointTwo()."\n";
+			print_r($duel['player_one']);
             if($duel['point_one'] > $duel['point_two'])
             {
-                $countT1++;
+            	foreach($team1->getPlayers() as $player)
+            	{
+            		if($duel['player_one']['id'] == $player->getId())
+            		{
+            			$countT1++;
+            			break;
+            		}
+            	}
+            	foreach($team2->getPlayers() as $player)
+            	{
+            		if($duel['player_one']['id'] == $player->getId())
+            		{
+            			$countT2++;
+            			break;
+            		}
+            	}
             }
             elseif($duel['point_one'] < $duel['point_two']){
-                $countT2++;
+            foreach($team1->getPlayers() as $player)
+            	{
+            		if($duel['player_two']['id'] == $player->getId())
+            		{
+            			$countT1++;
+            			break;
+            		}
+            	}
+            	foreach($team2->getPlayers() as $player)
+            	{
+            		if($duel['player_two']['id'] == $player->getId())
+            		{
+            			$countT2++;
+            			break;
+            		}
+            	}
             }
         }
         echo "puntos del equipo ".$list[0]['player_one']['team']['name']." = ".$countT1. "\n";
         echo "puntos del equipo ".$list[0]['player_two']['team']['name']." = ".$countT2. "\n";
     	if($countT1 < $countT2)
     	{
-            $team = $em->getRepository("LiderBundle:Team")->find($team2);
-            echo "gano el equipo 2 ".$team->getName()."\n";
-    		return $team;
+            echo "gano el equipo 2 ".$team2->getName()."\n";
+    		return $team2;
     	}
     	elseif($countT1 > $countT2)
     	{
-            $team = $em->getRepository("LiderBundle:Team")->find($team1);
-            echo "gano el equipo 1 ".$team->getName()."\n";
-    		return $team;
+            echo "gano el equipo 1 ".$team1->getName()."\n";
+    		return $team1;
     	}
     	return null;
     }
@@ -141,6 +172,7 @@ class CheckerWorker
         // $game = $em->getRepository("LiderBundle:Game")->find($gameId);
 		$parameters = $this->co->get('parameters_manager')->getParameters();
 		$duels = $em->getRepository('LiderBundle:Duel')->findBy(array("finished" => false, "game" =>$game));
+		echo count($duels);
 		if(count($duels) == 0){
 			$win = $this->checkWinTeam($game);
 			if(!is_null($win))

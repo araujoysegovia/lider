@@ -140,6 +140,7 @@ class DuelController extends Controller
             $q = array(
     			'question' => $question->getQuestion()->getQuestion(),
     			'questionId' => $question->getQuestion()->getId(),
+            	'image' => $question->getQuestion()->getImage(),
     			'answers' => array(
                     'playerOne' => array(),
                     'playerTwo' => array(),
