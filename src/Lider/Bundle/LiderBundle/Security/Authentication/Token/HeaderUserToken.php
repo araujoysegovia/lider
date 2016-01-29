@@ -22,7 +22,7 @@ class HeaderUserToken extends AbstractToken
 	
 	/**
 	 * {@inheritdoc}
-
+	 */
 	public function serialize()
 	{
 		return serialize(array(
@@ -34,7 +34,7 @@ class HeaderUserToken extends AbstractToken
 	
 	/**
 	 * {@inheritdoc}
-	 
+	 */
 	public function unserialize($serialized)
 	{
 		list($this->digest,

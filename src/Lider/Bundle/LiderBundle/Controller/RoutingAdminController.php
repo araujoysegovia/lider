@@ -1,4 +1,4 @@
-<?php
+prog<?php
 
 namespace Lider\Bundle\LiderBundle\Controller;
 
@@ -16,7 +16,7 @@ class RoutingAdminController extends SymfonyController
     }
 
 
-    /**   
+    /**
      * @Template("LiderBundle:Administrator:index.html.twig")
      */
     public function loginPageAction(Request $request)
@@ -34,7 +34,7 @@ class RoutingAdminController extends SymfonyController
 
     	//return $this->render('LiderBundle:Administrator:index.html.twig');
     }
-    
+
     public function loginFailureAction(Request $request)
     {
     	if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
@@ -45,12 +45,12 @@ class RoutingAdminController extends SymfonyController
     		throw new \Exception($error);
     	}
     }
-    
-    /**   
+
+    /**
      * @Template("LiderBundle:Administrator:home.html.twig")
      */
     public function homePageAction(Request $request)
-    {    
+    {
     	$em = $this->getDoctrine()->getEntityManager();
     	$user = $this->container->get('security.context')->getToken()->getUser();
 		return array("user" => $user);

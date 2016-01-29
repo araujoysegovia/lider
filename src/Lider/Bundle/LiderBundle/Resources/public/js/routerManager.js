@@ -63,7 +63,9 @@ var routerManager = Backbone.Router.extend({
 		if(value == "realTime"){
 			//console.log(me.socket);
 		}else{
-			me.socket.removeListener('question');
+			if(!(_.isNull(me.socket))){
+				me.socket.removeListener('question');
+			}
 		}
 	},  
   
@@ -4139,7 +4141,7 @@ var routerManager = Backbone.Router.extend({
 				modal.modal("show");
 				
 
-				me.socket = io.connect('http://10.101.1.118:3000');    
+				me.socket = io.connect('http://10.101.1.118:3000');
 
 				_.each(data.questions, function(question){
 
@@ -4238,7 +4240,7 @@ var routerManager = Backbone.Router.extend({
 							buttonOne.addClass('glyphicon glyphicon-ok');							
 
 							//if(question.answers.playerTwo.help){
-							if(question.useHelp){
+							if(question.playerTwo.useHelp){
 								setTimeout(function () {					
 
 									sh = $('#helpOne'+question['questionId']);									
@@ -4255,7 +4257,7 @@ var routerManager = Backbone.Router.extend({
 							buttonOne.addClass('glyphicon glyphicon-remove');
 
 							//if(question.answers.playerTwo.help){
-							if(question.useHelp){
+							if(question.playerTwo.useHelp){
 								setTimeout(function () {					
 
 									sh = $('#helpOne'+question['questionId']);									
@@ -4377,8 +4379,8 @@ var routerManager = Backbone.Router.extend({
 							buttonTwo.css({'background': 'none', 'color': '#008000'});												
 							buttonTwo.addClass('glyphicon glyphicon-ok');
 
-							if(question.answers.playerOne.help){
-
+							if(question.playerOne.useHelp){
+								
 								setTimeout(function () {					
 
 									sh = $('#helpTwo'+question['questionId']);									
@@ -4392,7 +4394,8 @@ var routerManager = Backbone.Router.extend({
 							buttonTwo.css({'background': 'none', 'color': '#FF0000'});
 							buttonTwo.addClass('glyphicon glyphicon-remove');
 
-							if(question.answers.playerOne.help){
+							//if(question.answers.playerOne.help){
+							if(question.playerOne.useHelp){
 								
 								setTimeout(function () {					
 

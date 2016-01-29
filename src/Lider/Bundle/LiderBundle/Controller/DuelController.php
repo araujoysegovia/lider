@@ -161,7 +161,7 @@ class DuelController extends Controller
                             'find' => $mongoQuestion->getFind(),
                             //'help' => $mongoQuestion->getSelectedAnswer()->getHelp()
                         );
-                        $q['useHelp'] = $mongoQuestion->getUseHelp();
+                        $q['playerOne']['useHelp'] = $mongoQuestion->getUseHelp();
                     }
                     elseif($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerOne']['id'])
                     {
@@ -183,7 +183,7 @@ class DuelController extends Controller
                             'find' => $mongoQuestion->getFind(),
                             //'help' => $mongoQuestion->getSelectedAnswer()->getHelp()
                         );
-                        $q['useHelp'] = $mongoQuestion->getUseHelp();
+                        $q['playerTwo']['useHelp'] = $mongoQuestion->getUseHelp();
                     }
                     elseif($mongoQuestion->getPlayer()->getPlayerId() == $questionArray['playerTwo']['id'])
                     {

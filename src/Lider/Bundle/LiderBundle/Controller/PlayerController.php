@@ -50,7 +50,7 @@ class PlayerController extends Controller
     
     public function loginWithGoogleAction(Request $request){
 
-    	$em = $this->getDoctrine()->getEntityManager();
+    	$em = $this->getDoctrine()->get0Manager();
     	$dm = $this->get('doctrine_mongodb')->getManager();
     	
     	$atoken = $request->get("access_token");
@@ -129,7 +129,7 @@ class PlayerController extends Controller
 
     private function login($user, $session = null)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $dm = $this->get('doctrine_mongodb')->getManager();
         $request = $this->get("request");
         if(is_null($session))
