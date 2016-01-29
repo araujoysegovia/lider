@@ -1,5 +1,4 @@
-prog<?php
-
+<?php
 namespace Lider\Bundle\LiderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
