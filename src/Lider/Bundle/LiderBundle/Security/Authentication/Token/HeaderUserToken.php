@@ -42,7 +42,7 @@ class HeaderUserToken extends AbstractToken
 			$parentStr) = unserialize($serialized);
 		parent::unserialize($parentStr);
 	}
-	*/
+	
 }
 
 ?>
