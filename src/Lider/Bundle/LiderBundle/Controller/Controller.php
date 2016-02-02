@@ -38,7 +38,7 @@ abstract class Controller extends SymfonyController {
 	}
 	
 	public function listAction($id = null) {
-
+		
 		$em = $this->getDoctrine()->getEntityManager();
 		$request = $this->get("request");
 		$className = self::$NAMESPACE.$this->getName();
@@ -72,6 +72,11 @@ abstract class Controller extends SymfonyController {
 				$criteria["company"] = $user->getCompany()->getId();
 			}
 			$filter = $request->get('filter');
+			
+			if($filter == "")
+			{
+				$filter = null;
+			}
 			if($filter){
 				$filter = json_decode($filter, true);
 			}
