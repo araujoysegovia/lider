@@ -77,8 +77,8 @@ abstract class Controller extends SymfonyController {
 			}
 			
 			$page = $request->get("page");
-			$start = $request->get("start");
-			$limit = $request->get("limit");			
+			$start = $request->get("skip");
+			$limit = $request->get("pageSize");			
 	
 			$bundleName = $this->getBundleName();			
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
