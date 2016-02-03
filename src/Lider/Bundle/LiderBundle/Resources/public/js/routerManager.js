@@ -5020,35 +5020,35 @@ var routerManager = Backbone.Router.extend({
 		
 		//Enviar un mensaje a los jugadores
 		form.find(".send-not-players").click(function () {
-			$.confirm({
-			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles el duelos que les corresponde ?",
-			    confirm: function(button) {
-			    	var data = {
-			    		"tournamentId": form.find('.select-tournament').val()
-			    	}
-        			parameters = {
-						type: "GET",
-					    url: "home/player/notification",
-				        contentType: 'application/json',
-		            	dataType: "json",
-		            	data: data,
-            	     	statusCode: {
-					      401:function() { 
-					      	window.location = '';
-					      }
-					    },
-				        success: function(data){
-				        	alert("Notificaciones enviadas");
-				        },
-				        error: function(){}
-					};
+			// $.confirm({
+			//     text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles el duelos que les corresponde ?",
+			//     confirm: function(button) {
+			//     	var data = {
+			//     		"tournamentId": form.find('.select-tournament').val()
+			//     	}
+   //      			parameters = {
+			// 			type: "GET",
+			// 		    url: "home/player/notification",
+			// 	        contentType: 'application/json',
+		 //            	dataType: "json",
+		 //            	data: data,
+   //          	     	statusCode: {
+			// 		      401:function() { 
+			// 		      	window.location = '';
+			// 		      }
+			// 		    },
+			// 	        success: function(data){
+			// 	        	alert("Notificaciones enviadas");
+			// 	        },
+			// 	        error: function(){}
+			// 		};
 
-					$.ajax(parameters);
-			    },
-			    cancel: function(button) {
-			        // do something
-			    }
-			});
+			// 		$.ajax(parameters);
+			//     },
+			//     cancel: function(button) {
+			//         // do something
+			//     }
+			// });
 		});
 
 		form.submit(function (e) {
