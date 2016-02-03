@@ -83,11 +83,19 @@ abstract class Controller extends SymfonyController {
 			
 			$page = $request->get("page");
 			$start = $request->get("skip");
-			$limit = $request->get("pageSize");			
+			$limit = $request->get("pageSize");	
+			$sort = $request->get("sort");
+			$sortField = null;
+			$sortType = null;
+			if(!is_null($sort))
+			{
+				$sortField = $sort[0]['field'];
+				$sortType = $sort[0]['dir'];
+			}
 	
 			$bundleName = $this->getBundleName();			
 			$repo = $em->getRepository($bundleName.":" . $this->getName());
-			$list = $repo->getArrayEntityWithOneLevel($criteria, null, $start, $limit, $filter);
+			$list = $repo->getArrayEntityWithOneLevel($criteria, $sortField, $start, $limit, $filter, $sortType);
 			$this->afterList($list);
 			
 			return $this->get("talker")->response($list);

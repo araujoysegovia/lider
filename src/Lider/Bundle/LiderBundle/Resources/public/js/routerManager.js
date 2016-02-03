@@ -990,8 +990,6 @@ var routerManager = Backbone.Router.extend({
 					},
 					roles: {						
 					},
-					team:{						
-					},
 					active: {
 						type: "boolean"
 					}
@@ -1106,46 +1104,46 @@ var routerManager = Backbone.Router.extend({
 					        });
 					}   
 				},	
-				{ 
-					field: "team",
-					title:"Equipo",	
-					
-					template:  function(e){						
-						if(e.team){
-							return e.team.name;
-						}
-					},					
-					editor:	function (container, options) {
-						var input =  $('<input data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
-					        .appendTo(container)
-					        .kendoDropDownList({
-					            autoBind: false,
-					            dataBound: function(e) {
-					            	input.data("kendoDropDownList").trigger("change");
-					            },
-					            dataSource: {
-					            	batch: false,	                	
-					                transport: {
-					                    read: "home/team/"
-					                },
-					                schema: {
-					    			  	total: "total",
-					    		    	data: "data",
-					    		        model: {
-					    				    id: "id",
-					    				    fields: {
-					    				    	id: { editable: false, nullable: true },
-					    				        name: { type: "string" },		        				        
-					    				    }
-					    		        }
-					                },
-					            },
-								dataTextField: "name",
-								dataValueField: "id",
-								optionLabel: "Selecciona un equipo"
-					        });
-					} 
-				},
+//				{ 
+//					field: "team",
+//					title:"Equipo",	
+//					
+//					template:  function(e){						
+//						if(e.team){
+//							return e.team.name;
+//						}
+//					},					
+//					editor:	function (container, options) {
+//						var input =  $('<input data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+//					        .appendTo(container)
+//					        .kendoDropDownList({
+//					            autoBind: false,
+//					            dataBound: function(e) {
+//					            	input.data("kendoDropDownList").trigger("change");
+//					            },
+//					            dataSource: {
+//					            	batch: false,	                	
+//					                transport: {
+//					                    read: "home/team/"
+//					                },
+//					                schema: {
+//					    			  	total: "total",
+//					    		    	data: "data",
+//					    		        model: {
+//					    				    id: "id",
+//					    				    fields: {
+//					    				    	id: { editable: false, nullable: true },
+//					    				        name: { type: "string" },		        				        
+//					    				    }
+//					    		        }
+//					                },
+//					            },
+//								dataTextField: "name",
+//								dataValueField: "id",
+//								optionLabel: "Selecciona un equipo"
+//					        });
+//					} 
+//				},
 				{ 
 					field: "active",
 					title: "Activo",
@@ -4890,6 +4888,12 @@ var routerManager = Backbone.Router.extend({
 						    	'<button type="button" class="btn btn-primary send-not-duels">Enviar</button>'+
 						    '</div>'+
 						  '</div>'+
+						  '<div class="form-group">'+
+						    '<label  class="col-sm-2 control-label">Notificación a todos los jugadores del torneo</label>'+
+						    '<div class="col-sm-10">'+
+						    	'<button type="button" class="btn btn-primary send-not-players">Enviar</button>'+
+						    '</div>'+
+						  '</div>'+
 					 '</form>');
 
 		container.append(form);
@@ -4983,6 +4987,39 @@ var routerManager = Backbone.Router.extend({
 
 		//Enviar notificaciones de los duelos
 		form.find(".send-not-duels").click(function () {
+			$.confirm({
+			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles el duelos que les corresponde ?",
+			    confirm: function(button) {
+			    	var data = {
+			    		"tournamentId": form.find('.select-tournament').val()
+			    	}
+        			parameters = {
+						type: "GET",
+					    url: "home/player/notification",
+				        contentType: 'application/json',
+		            	dataType: "json",
+		            	data: data,
+            	     	statusCode: {
+					      401:function() { 
+					      	window.location = '';
+					      }
+					    },
+				        success: function(data){
+				        	alert("Notificaciones enviadas");
+				        },
+				        error: function(){}
+					};
+
+					$.ajax(parameters);
+			    },
+			    cancel: function(button) {
+			        // do something
+			    }
+			});
+		});
+		
+		//Enviar un mensaje a los jugadores
+		form.find(".send-not-players").click(function () {
 			$.confirm({
 			    text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles el duelos que les corresponde ?",
 			    confirm: function(button) {
