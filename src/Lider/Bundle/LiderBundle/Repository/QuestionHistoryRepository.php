@@ -354,10 +354,10 @@ class QuestionHistoryRepository extends MainMongoRepository
 			// ->getQuery()
 			// ->execute();
 			
-		if(!is_null($tournamentId))
-		{
-			$query->field("tournament.tournamentId")->equals($tournamentId);
-		}
+		// if(!is_null($tournamentId))
+		// {
+		// 	$query->field("tournament.tournamentId")->equals($tournamentId);
+		// }
 		$query = $query->getQuery()->execute();
 		return $query;
 	}
