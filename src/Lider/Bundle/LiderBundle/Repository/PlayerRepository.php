@@ -90,5 +90,20 @@ class PlayerRepository extends MainRepository
 	{
 		
 	}
+
+	public function findPlayersByTournament($tournamentId)
+	{
+		$query = $this->createQueryBuilder('p')
+		->select("p")
+		->leftJoin('p.team', "t", "WITH", "t.deleted = FALSE")
+		->leftJoin('t.group', 'g', 'WITH', 'g.deleted = FALSE')
+		->leftJoin('g.tournament', 'to', 'WITH', 'to.deleted = FALSE')
+		->where('p.deleted = FALSE AND to.id = :tid')
+		->setParameter('tid', $tournamentId)
+		->getQuery();
+
+		return $query->getResult();
+
+	}
 		
 }

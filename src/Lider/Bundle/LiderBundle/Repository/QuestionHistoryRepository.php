@@ -338,22 +338,27 @@ class QuestionHistoryRepository extends MainMongoRepository
 		return $query;
 	}
 
-	public function getGeneralCategoryReport()
+	public function getGeneralCategoryReport($tournamentId = null)
 	{
 		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
-		  	->group(array("question.categoryName" => 1),
+		  	->group(array("question.categoryName" => 1, "question.tournament" => 2),
 					  array('win' => 0, 'lost' => 0, 'total' => 0))
 			->reduce('function (obj, prev){
-
 				prev.total++;
 				if(obj.find){
 					prev.win++;
 				}else{
 					prev.lost++;
 				}
-			}')				
-			->getQuery()
-			->execute();
+			}');
+			// ->getQuery()
+			// ->execute();
+			
+		if(!is_null($tournamentId))
+		{
+			$query->field("tournament.tournamentId")->equals($tournamentId);
+		}
+		$query = $query->getQuery()->execute();
 		return $query;
 	}
 

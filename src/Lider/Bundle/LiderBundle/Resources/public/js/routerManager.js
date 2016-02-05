@@ -999,7 +999,7 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field:"image", 
 					title: "Imagen" ,
-					width: "150px",					
+					width: "90px",					
 					template: function(e){
 						var src = 'http://10.102.1.22/lider/web';
 						if(_.isEmpty(e.image)){
@@ -1017,20 +1017,24 @@ var routerManager = Backbone.Router.extend({
 				},	
 				{ 
 					field:"name", 
-					title: "Nombre" 
+					title: "Nombre",
+					width: "150px"
 				},				
 				{ 
 					field:"lastname", 
-					title: "Apellido" 
+					title: "Apellido",
+					width: "150px"
 				},
 				{ 
 					field:"email", 
 					editable: false,
-					title: "Correo" 
+					title: "Correo",
+					width: "250px"
 				},				
 				{ 
 					field: "office",
 					title:"Oficina",					
+					width: "150px",
 					//template:  "#: office.name #",
 					template:  function(e){						
 						if(e.office){
@@ -1069,7 +1073,7 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field: "roles",
 					title:"Role",
-					width: "150px",					
+					width: "90px",					
 					template:  function(e){						
 						if(e.roles[0]){
 							return e.roles[0].name;
@@ -1147,7 +1151,7 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field: "active",
 					title: "Activo",
-					width: "100px",
+					width: "90px",
 			    	template: function(e){
 						if(e.active == false){
 							return "No";
@@ -1260,7 +1264,7 @@ var routerManager = Backbone.Router.extend({
 			    },
 			    {
 			    	 text: "Resetear contraseña",
-			    	 click: function (e) {			    		
+			    	 click: function (e) {
 						e.preventDefault();
 						mec = this;
 						var dataItem = mec.dataItem($(e.currentTarget).closest("tr"));
@@ -1314,8 +1318,95 @@ var routerManager = Backbone.Router.extend({
 		    		 
 							
 		             } 
+			    },
+			    {
+			    	 text: "Notificar",
+			    	 click: function (e) {
+						e.preventDefault();
+						me = this;
+						var dataItem = me.dataItem($(e.currentTarget).closest("tr"));
+						var id = dataItem.id;
+						var modal = $("<div></div>").addClass("modal fade").attr({"tabindex": "-1", "role":"dialog"});
+						var modalDialog = $("<div></div>").addClass("modal-dialog");
+						var modalContent = $("<div></div>").addClass("modal-content");
+						var modalHeader = $("<div></div>").addClass("modal-header");
+						var btnClose = $("<button></button>").attr({"type": "button", "data-dismiss": "modal", "aria-label": "Close"}).addClass("Close.");
+						var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
+						btnClose.append(spanClose);
+						var titleHeading = $("<h4></h4>").addClass("modal-title").html("Notificar a todos los jugadores");
+						modalHeader.append(titleHeading);
+						var modalBody = $("<div></div>").addClass("modal-body");
+						
+						var formBody = $("<form></form>");
+						
+						var divSubject = $("<div></div>").addClass("form-group");
+						var labelSubject = $("<label></label>").attr({"for": "subjectMessage"}).html("Asunto");
+						var subject = $("<input></input").attr({"type": "text", "placeholder": "Asunto", "id": "subjectMessage"}).addClass("form-control");
+						divSubject.append(labelSubject).append(subject);
+						
+						var divBody = $("<div></div>").addClass("form-group");
+						var labelBody = $("<label></label>").attr({"for": "bodyMessage"}).html("Mensaje");
+						var body = $("<textarea></textarea").attr({"placeholder": "Mensaje", "id": "bodyMessage", "rows": "5"}).addClass("form-control");
+						divBody.append(labelBody).append(body);
+						
+						formBody.append(divSubject).append(divBody);
+						modalBody.append(formBody);
+
+						var modalFooter = $("<div></div>").addClass("modal-footer");
+						var btnCancel = $("<button></button>").addClass("btn btn-default").attr("data-dismiss", "modal").html("Cancelar");
+						var btnSend = $("<button></button>").addClass("btn btn-primary").html("Enviar");
+						modalFooter.append(btnCancel).append(btnSend);
+
+						modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody).append(modalFooter)));
+						$(document.body).append(modal);
+						modal.modal("show");
+
+						btnSend.click(function(){
+							var su = subject.val();
+							var bo = body.val();
+							if(!_.isNull(su) && !_.isNull(bo))
+							{
+								$.confirm({
+								    text: "Desea enviar este mensaje a "+dataItem.name+" "+dataItem.lastname+"?",
+								    confirm: function(button) {
+
+								    	var data = {
+								    		"player": id,
+								    		"subject": su,
+								    		"message": bo
+								    	}
+					        			parameters = {
+											type: "GET",
+										    url: "home/player/player/notification",
+									        contentType: 'application/json',
+							            	dataType: "json",
+							            	data: data,
+					            	     	statusCode: {
+										      401:function() { 
+										      	window.location = '';
+										      }
+										    },
+									        success: function(data){
+									        	modal.modal("hide");
+									        },
+									        error: function(){}
+										};
+
+										$.ajax(parameters);
+								    },
+								    cancel: function(button) {
+								        // do something
+								    }
+								});
+							}
+							else{
+								alert("Por favor rellene los campos Asunto y Mensaje");
+							}
+							
+						})
+		            }
 			    }
-			],								
+			],
 		})
 	},
 
@@ -2656,25 +2747,136 @@ var routerManager = Backbone.Router.extend({
 		this.buildbreadcrumbs({
 		  	Inicio: "",
 		  	Reporte: "reportByCategory"
-		});		
+		});
 
+
+		var form = $('<form id="form-notification" role="form">'+
+					  '<div class="form-group">'+
+					    '<label  class="col-sm-2 control-label">Torneo</label>'+
+					    '<div class="col-sm-10">'+
+					    	'<select class="form-control select-tournament">'+
+					    		'<option value=0>Seleccione Un torneo></option>'+
+					    	'</select>'+
+					    '</div>'+
+					  '</div>'+
+					'</form>');
+		
+		var select = form.find(".select-tournament");
 		var chart = $('<div id="chart"></div>');
-		$('#entity-content').append(chart);
+		$('#entity-content').append(form).append(chart);
 
+		select.change(function(){
+			if(form.find('.select-tournament').val() != 0){
+	        	var data = {"tournament": form.find('.select-tournament').val()};
+	        }
+	        else{
+	        	var data = {};
+	        }
+	        config = {
+	            type: 'GET',
+	            url: 'home/question/category/report',
+	            contentType: "application/json",
+	            dataType: "json",
+	            data: data,
+		     	statusCode: {
+					401:function() { 
+						window.location = '';
+					}
+			    },
+				success: function(response){
+				   data = response['data'];
+				   var series = [{
+				   		name: 'Ganados',
+				   		color: '#0a76b9',
+				   		data: []
+				   },{
+				   		name: 'Perdidos',
+				   		
+				   		data: []
+				   }];
+				   var categoriesAxis= [];
+				   _.each(data, function (value, key) {
+				   		
+				   		categoriesAxis.push(value['question.categoryName']);
+				   		series[0]['data'].push(value['win']);
+				   		series[1]['data'].push(value['lost']);
+				   })
+
+			        $("#chart").kendoChart({
+			            title: {
+			                text: "Reporte por Categorias"
+			            },
+			            legend: {
+			                position: "bottom"
+			            },
+			            seriesDefaults: {
+			                type: "column"
+			            },
+			            series: series,
+			            valueAxis: {
+			                line: {
+			                    visible: false
+			                }
+			            },
+			            categoryAxis: {
+			                categories: categoriesAxis,
+			                majorGridLines: {
+			                    visible: false
+			                }
+			            },
+			            tooltip: {
+			                visible: true,
+			                format: "{0}"
+			            }
+			        });
+
+				},
+				error: function(){}
+	        }
+
+	        $.ajax(config);
+		})
+		var loader = $(document.body).loaderPanel();
+		loader.show();
+		var configTorunament = {
+			type: "GET",
+            url: "home/tournament/tournament",
+            contentType: "application/json",
+            dataType: "json",
+            //data: JSON.stringify(param),
+	     	statusCode: {
+		      401:function() {
+		      	window.location = '';
+		      }
+		    },
+			success: function(response){
+				var data = response;
+				_.each(data, function(tournament){
+					var option = $('<option></option>').attr('value', tournament.id).html(tournament.name);
+					form.find('.select-tournament').append(option)
+				})
+			},
+			error: function(){},
+	    	complete: function(){
+	    		loader.hide();
+	    	}
+        }
+        $.ajax(configTorunament);
+
+        
 
         config = {
-            type: 'GET',           
+            type: 'GET',
             url: 'home/question/category/report',
-            contentType: "application/json",            
-            dataType: "json",				            
+            contentType: "application/json",
+            dataType: "json",
 	     	statusCode: {
 				401:function() { 
 					window.location = '';
-				}		   
+				}
 		    },
 			success: function(response){
 			   data = response['data'];
-			   console.log(data)
 			   var series = [{
 			   		name: 'Ganados',
 			   		color: '#0a76b9',
@@ -2718,7 +2920,7 @@ var routerManager = Backbone.Router.extend({
 		                visible: true,
 		                format: "{0}"
 		            }
-		        });		
+		        });
 
 			},
 			error: function(){}
@@ -2732,17 +2934,17 @@ var routerManager = Backbone.Router.extend({
 	 */
 	parametersConfig: function () {
 	
-		this.removeContent();		
+		this.removeContent();
 
 		var container = $('<div class="panel panel-default parameters"><h4>Par&aacute;metros del Juego</h4><hr/></div>');
-		var form = $('<form id="form-params" role="form">'+						  
+		var form = $('<form id="form-params" role="form">'+
 						  '<div class="form-group col-sm-4">'+
 						    '<label for="timeQuestionPractice" class="required">Tiempo de pregunta en practica (<i>segundos</i>)</label>'+
 						    '<input type="number" class="form-control" id="timeQuestionPractice" required="required" >'+
 						  '</div>'+	
 						  '<div class="form-group col-sm-4">'+
-						    '<label for="timeQuestionDuel">Tiempo de pregunta en duelo (<i>segundos</i>)</label>'+						  
-						    '<input type="number" class="form-control" id="timeQuestionDuel">'+						  
+						    '<label for="timeQuestionDuel">Tiempo de pregunta en duelo (<i>segundos</i>)</label>'+
+						    '<input type="number" class="form-control" id="timeQuestionDuel">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
 						    '<label for="timeGame">Tiempo de juego (<i>d&iacute;as</i>)</label>'+
@@ -2753,21 +2955,21 @@ var routerManager = Backbone.Router.extend({
 						    '<input type="number" class="form-control" id="timeDuel">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Mostrar respuesta correcta en modo practica</label>'+						    
+						    '<label >Mostrar respuesta correcta en modo practica</label>'+
 					    	'<select id="answerShowPractice" class="form-control">'+
 					    		'<option value=true>Si</option>'+
 					    		'<option value=false>No</option>'+
 					    	'</select>'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Mostrar respuesta correcta en modo juego</label>'+						    
+						    '<label >Mostrar respuesta correcta en modo juego</label>'+
 					    	'<select id="answerShowGame" class="form-control">'+
 					    		'<option value=true>Si</option>'+
 					    		'<option value=false>No</option>'+
 					    	'</select>'+
-						  '</div>'+		
+						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Tiempo del duelo extra (desempate)</label>'+						    
+						    '<label >Tiempo del duelo extra (desempate)</label>'+
 					    	'<input type="number" class="form-control" id="timeDuelExtra">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
@@ -5020,35 +5222,92 @@ var routerManager = Backbone.Router.extend({
 		
 		//Enviar un mensaje a los jugadores
 		form.find(".send-not-players").click(function () {
-			// $.confirm({
-			//     text: "Desea enviar una  notificaci&oacute;n a los jugadores informandoles el duelos que les corresponde ?",
-			//     confirm: function(button) {
-			//     	var data = {
-			//     		"tournamentId": form.find('.select-tournament').val()
-			//     	}
-   //      			parameters = {
-			// 			type: "GET",
-			// 		    url: "home/player/notification",
-			// 	        contentType: 'application/json',
-		 //            	dataType: "json",
-		 //            	data: data,
-   //          	     	statusCode: {
-			// 		      401:function() { 
-			// 		      	window.location = '';
-			// 		      }
-			// 		    },
-			// 	        success: function(data){
-			// 	        	alert("Notificaciones enviadas");
-			// 	        },
-			// 	        error: function(){}
-			// 		};
+			var tournament = form.find('.select-tournament').val();
+			if(!_.isNull(tournament) && tournament != 0)
+			{
+				var modal = $("<div></div>").addClass("modal fade").attr({"tabindex": "-1", "role":"dialog"});
+				var modalDialog = $("<div></div>").addClass("modal-dialog");
+				var modalContent = $("<div></div>").addClass("modal-content");
+				var modalHeader = $("<div></div>").addClass("modal-header");
+				var btnClose = $("<button></button>").attr({"type": "button", "data-dismiss": "modal", "aria-label": "Close"}).addClass("Close.");
+				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
+				btnClose.append(spanClose);
+				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Notificar a todos los jugadores");
+				modalHeader.append(titleHeading);
+				var modalBody = $("<div></div>").addClass("modal-body");
+				
+				var formBody = $("<form></form>");
+				
+				var divSubject = $("<div></div>").addClass("form-group");
+				var labelSubject = $("<label></label>").attr({"for": "subjectMessage"}).html("Asunto");
+				var subject = $("<input></input").attr({"type": "text", "placeholder": "Asunto", "id": "subjectMessage"}).addClass("form-control");
+				divSubject.append(labelSubject).append(subject);
+				
+				var divBody = $("<div></div>").addClass("form-group");
+				var labelBody = $("<label></label>").attr({"for": "bodyMessage"}).html("Mensaje");
+				var body = $("<textarea></textarea").attr({"placeholder": "Mensaje", "id": "bodyMessage", "rows": "5"}).addClass("form-control");
+				divBody.append(labelBody).append(body);
+				
+				formBody.append(divSubject).append(divBody);
+				modalBody.append(formBody);
 
-			// 		$.ajax(parameters);
-			//     },
-			//     cancel: function(button) {
-			//         // do something
-			//     }
-			// });
+				var modalFooter = $("<div></div>").addClass("modal-footer");
+				var btnCancel = $("<button></button>").addClass("btn btn-default").attr("data-dismiss", "modal").html("Cancelar");
+				var btnSend = $("<button></button>").addClass("btn btn-primary").html("Enviar");
+				modalFooter.append(btnCancel).append(btnSend);
+
+				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody).append(modalFooter)));
+				$(document.body).append(modal);
+				modal.modal("show");
+
+				btnSend.click(function(){
+					var su = subject.val();
+					var bo = body.val();
+					if(!_.isNull(su) && !_.isNull(bo))
+					{
+						$.confirm({
+						    text: "Desea enviar este mensaje a los jugadores ?",
+						    confirm: function(button) {
+
+						    	var data = {
+						    		"tournamentId": tournament,
+						    		"subject": su,
+						    		"message": bo
+						    	}
+			        			parameters = {
+									type: "GET",
+								    url: "home/player/all/notification",
+							        contentType: 'application/json',
+					            	dataType: "json",
+					            	data: data,
+			            	     	statusCode: {
+								      401:function() { 
+								      	window.location = '';
+								      }
+								    },
+							        success: function(data){
+							        	modal.modal("hide");
+							        },
+							        error: function(){}
+								};
+
+								$.ajax(parameters);
+						    },
+						    cancel: function(button) {
+						        // do something
+						    }
+						});
+					}
+					else{
+						alert("Por favor rellene los campos Asunto y Mensaje");
+					}
+					
+				})
+			}
+			else{
+				alert("Por favor seleccione un torneo");
+			}
+			
 		});
 
 		form.submit(function (e) {

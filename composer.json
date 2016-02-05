@@ -23,7 +23,8 @@
         "doctrine/mongodb-odm-bundle": "~3.0",
         "nelmio/cors-bundle": "~1.0",
         "mmoreram/gearman-bundle": "dev-master",
-        "avalanche123/imagine-bundle": "v2.1"
+        "avalanche123/imagine-bundle": "v2.1",
+        "mailgun/mailgun-php": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

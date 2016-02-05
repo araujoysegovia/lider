@@ -50,7 +50,7 @@ class NotificationWorker
 	        echo "\n\nVoy a enviar correo a ".$player->getName()." ".$player->getName();
 	        $team = $player->getTeam();
 //         $to = $this->getEmailFromTeamId($team->getId());
-           // $send = $notificationService->sendEmail($data['subject'], $this->from, $data['to'], null, $data['viewName'], $data['content']);
+            $send = $notificationService->sendEmail($data['subject'], $this->from, $data['to'], null, $data['viewName'], $data['content']);
             echo "\n\nMensaje Enviado a: ";
             print_r($data['to']);
 
@@ -367,6 +367,43 @@ class NotificationWorker
         $repo = $em->getRepository("LiderBundle:Player");
         $admins = $repo->findAdmin();
         return $admins;
+    }
+
+    /**
+     * Send Email games dont start
+     *
+     * @param \GearmanJob $job Object with job parameters
+     *
+     * @return boolean
+     *
+     * @Gearman\Job(
+     *     name = "sendEmailToPlayersFromTournament",
+     *     description = "Send an Email to Admin from games dont start"
+     * )
+     */
+    public function sendEmailToPlayersFromTournament(\GearmanJob $job)
+    {
+        $em = $this->co->get('doctrine')->getManager();
+        $repoPlayer = $em->getRepository("LiderBundle:Player");
+        $data = json_decode($job->workload(),true);
+        $players = $repoPlayer->findPlayersByTournament($data['tournament']);
+        $notificationService = $this->co->get("notificationService");
+
+        $template = "LiderBundle:Templates:emailnotification.html.twig";
+        $to = array();
+        foreach($players as $player)
+        {
+            $to[] = $player->getEmail();
+        }
+        $subject = $data['subject'];
+        try{
+            $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
+            print_r($send);
+            echo "Mensaje Enviado a";
+            print_r($to);
+        }catch(\Exception $e){
+            echo $e->getMessage();
+        }
     }
 }
 ?>

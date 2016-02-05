@@ -689,6 +689,57 @@ class PlayerController extends Controller
 
     }
 
+    public function notificationAllAction()
+    {
+        $gearman = $this->get('gearman');
+      
+        $request = $this->get("request");
+     
+        $tournament = $request->get('tournamentId');
+        $subject = $request->get("subject");
+        $message = $request->get("message");
+
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmailToPlayersFromTournament', json_encode(array(
+                'tournament' => $tournament,
+                "subject" => $subject,
+                "content" => array(
+                    "title" => "Notificacion del administrador",
+                    "subjectMessage" => $subject,
+                    "body" => $message
+                )
+            )));
+   
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+
+    public function notificationPlayerAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repoPlayer = $em->getRepository("LiderBundle:Player");
+        $gearman = $this->get('gearman');
+      
+        $request = $this->get("request");
+     
+        $playerId = $request->get('player');
+        $subject = $request->get("subject");
+        $message = $request->get("message");
+        $template = "LiderBundle:Templates:emailnotification.html.twig";
+        $player = $repoPlayer->find($playerId);
+
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
+                "subject" => $subject,
+                "to" => $player->getEmail(),
+                "viewName" => $template,
+                "content" => array(
+                    "title" => "Notificacion del administrador",
+                    "subjectMessage" => $subject,
+                    "body" => $message
+                )
+            )));
+   
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+
     public function notificationDuelAction()
     {
        

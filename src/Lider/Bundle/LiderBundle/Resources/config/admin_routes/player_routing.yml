@@ -54,6 +54,16 @@ admin_player_notification:
     defaults: { _controller: LiderBundle:Player:notificationDuel }
     methods:  [GET]
 
+admin_player_notification_all_admin:
+    pattern:  /all/notification
+    defaults: { _controller: LiderBundle:Player:notificationAll }
+    methods:  [GET]
+
+admin_player_notification_admin:
+    pattern:  /player/notification
+    defaults: { _controller: LiderBundle:Player:notificationPlayer }
+    methods:  [GET]
+
 #Resetear password del jugador
 admin_player_password_reset:
     pattern:  /password/reset/{id}
