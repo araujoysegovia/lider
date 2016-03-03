@@ -648,8 +648,8 @@ var routerManager = Backbone.Router.extend({
 	                    pageSize: 10,  
 					});
 					
-					var imgChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-check.png'/>";
-		    		var imgNoChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-no-check.png'/>";
+					var imgChecked = "<img src='../images/icon-check.png'/>";
+		    		var imgNoChecked = "<img src='../images/icon-no-check.png'/>";
 		    		
 					grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
 	                    dataSource: kdataSource,
@@ -1543,8 +1543,8 @@ var routerManager = Backbone.Router.extend({
 					title: "Activo",
 					width: "100px",
 			    	template: function(e){ 			    		
-			    		var imgChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='../images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='../images/icon-no-check.png'/>"; 
 												
 						if(e.active == false){
 							return imgNoChecked;
@@ -2215,8 +2215,8 @@ var routerManager = Backbone.Router.extend({
 		  	Categorias: "reportquestions"
 		});
 
-		var imgChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-check.png'/>";
-		var imgNoChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-no-check.png'/>";
+		var imgChecked = "<img src='../images/icon-check.png'/>";
+		var imgNoChecked = "<img src='../images/icon-no-check.png'/>";
 
 		var questionReport = new Entity({
 			container:  $("#entity-content"),
