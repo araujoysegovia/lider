@@ -1543,13 +1543,15 @@ var routerManager = Backbone.Router.extend({
 					title: "Activo",
 					width: "100px",
 			    	template: function(e){ 			    		
-			    		var imgChecked = "<img src='../images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='../images/icon-no-check.png'/>"; 
+			    		// var imgChecked = "<img src='../images/icon-check.png'/>";
+			    		// var imgNoChecked = "<img src='../images/icon-no-check.png'/>"; 
 												
 						if(e.active == false){
-							return imgNoChecked;
+							return 'No';
+							//return imgNoChecked;
 						}else{
-							return imgChecked;
+							//return imgChecked;
+							return 'Si';
 						}						
 					}
 				}
