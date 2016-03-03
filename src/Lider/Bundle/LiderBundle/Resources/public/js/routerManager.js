@@ -109,8 +109,8 @@ var routerManager = Backbone.Router.extend({
 					field: "active",
 					title: "Activo",
 			    	template: function(e){
-			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-no-check.png'/>"; 
 						if(e.active == false){
 							return imgNoChecked;
 						}else{
@@ -123,8 +123,8 @@ var routerManager = Backbone.Router.extend({
 					title: "Activar Nivel",
 					width: 140,
 			    	template: function(e){
-			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-no-check.png'/>"; 
 						if(e.enabledLevel == false){
 							return '<button type="button" class="btn btn-success btn-sm btn-enabled-level">Activar</button>';
 						}else{
@@ -647,8 +647,8 @@ var routerManager = Backbone.Router.extend({
 	                    pageSize: 10,  
 					});
 					
-					var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-		    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+					var imgChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-check.png'/>";
+		    		var imgNoChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-no-check.png'/>";
 		    		
 					grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
 	                    dataSource: kdataSource,
@@ -878,7 +878,7 @@ var routerManager = Backbone.Router.extend({
 					width: "150px",	
 					filterable: false,
 					template: function(e){
-						var src = 'http://soylider.sifinca.net';
+						var src = 'http://172.99.68.200';
 						if(_.isEmpty(e.image)){
 							src = src + "/bundles/lider/images/none.png";
 						}else{
@@ -1542,8 +1542,8 @@ var routerManager = Backbone.Router.extend({
 					title: "Activo",
 					width: "100px",
 			    	template: function(e){ 			    		
-			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-no-check.png'/>"; 
 												
 						if(e.active == false){
 							return imgNoChecked;
@@ -2214,8 +2214,8 @@ var routerManager = Backbone.Router.extend({
 		  	Categorias: "reportquestions"
 		});
 
-		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+		var imgChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-check.png'/>";
+		var imgNoChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-no-check.png'/>";
 
 		var questionReport = new Entity({
 			container:  $("#entity-content"),
@@ -2351,8 +2351,8 @@ var routerManager = Backbone.Router.extend({
 		  	Reporte: "reportPlayerAnalysis"
 		});
 
-		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+		var imgChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-check.png'/>";
+		var imgNoChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-no-check.png'/>";
 
 		var reportPlayerAnalysis = new Entity({
 			container:  $("#entity-content"),
@@ -2541,8 +2541,8 @@ var routerManager = Backbone.Router.extend({
 		  	Reporte: "reportByPractice"
 		});
 
-		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+		var imgChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-check.png'/>";
+		var imgNoChecked = "<img src='http://172.99.68.200/bundles/lider/images/icon-no-check.png'/>";
 
 		var reportByPractice = new Entity({
 			container:  $("#entity-content"),

@@ -100,7 +100,7 @@ groupBuilder.prototype = {
 
 			var img = value.image;
 			if(!img){
-				img = 'http://soylider.sifinca.net/bundles/lider/images/team_default.png'
+				img = 'http://172.99.68.200/bundles/lider/images/team_default.png'
 			}
 
 			var panel = $('<div id="team-'+value.id+'" class="g-panel-team" draggable="true" >'+

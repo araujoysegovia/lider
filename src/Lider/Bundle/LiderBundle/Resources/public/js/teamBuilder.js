@@ -233,7 +233,7 @@ teamBuilder.prototype = {
 			if(value){
 				var img = value.image;
 				if(!img){
-					img = 'http://soylider.sifinca.net/bundles/lider/images/avatar.png'
+					img = 'http://172.99.68.200/bundles/lider/images/avatar.png'
 				}
 				//ondragstart="drag(event)"
 				var panel = $('<div id="player-'+value.id+'" class="panel-player" draggable="true" >'+
