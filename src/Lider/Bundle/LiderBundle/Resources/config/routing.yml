@@ -5,12 +5,12 @@ default_data:
 admin_module:
     resource: "@LiderBundle/Resources/config/admin_routes/routing.yml"
     prefix:   /admin
-    #host: soylider.sifinca.net
+    #host: lider.sifinca.net
 
 player_module:
     resource: "@LiderBundle/Resources/config/player_routes/routing.yml"
     prefix:   /
-    #host: soylider.sifinca.net
+    #host: lider.sifinca.net
 
 image_route:
     pattern:  /image/{id}
