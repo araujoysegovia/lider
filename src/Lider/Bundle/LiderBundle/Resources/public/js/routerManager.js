@@ -125,14 +125,11 @@ var routerManager = Backbone.Router.extend({
 					title: "Activar Nivel",
 					width: 140,
 			    	template: function(e){
-			    		//var imgChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-check.png'/>";
-			    		//var imgNoChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-no-check.png'/>"; 
-						if(e.active == false){
-							//return 'imgNoChecked';
-							return 'No';
+			    		
+			    		if(e.enabledLevel == false){
+							return '<button type="button" class="btn btn-success btn-sm btn-enabled-level">Activar</button>';
 						}else{
-							//return imgChecked;
-							return 'Si';
+							return '<button type="button" class="btn btn-success btn-sm" disabled="disabled">Activar</button>';
 						}
 					}
 				}
