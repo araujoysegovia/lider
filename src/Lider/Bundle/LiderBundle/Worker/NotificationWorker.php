@@ -109,7 +109,7 @@ class NotificationWorker
                 $content['members'] = $members;
 //                 $to = $this->getEmailFromTeamId($team->getId());
                 try{
-                    // $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                   // $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
                     echo "Mensaje Enviado de equipo";
                 }catch(\Exception $e){
                     echo $e->getMessage();
@@ -166,7 +166,11 @@ class NotificationWorker
             'duelId' => base64_encode($duel->getId())
         );
         try{
+<<<<<<< HEAD
             // $send = $notificationService->sendEmail($subject, $this->from, $player->getEmail(), null, "LiderBundle:Templates:duelnotification.html.twig", $content);
+=======
+            //$send = $notificationService->sendEmail($subject, $this->from, $player->getEmail(), null, "LiderBundle:Templates:duelnotification.html.twig", $content);
+>>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
             echo "Mensaje Enviado de duelo a ".$player->getEmail();
         }catch(\Exception $e){
             echo $e->getMessage();
@@ -216,7 +220,11 @@ class NotificationWorker
                 }
                 $content['members'] = $members;
                 try{
+<<<<<<< HEAD
                     // $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+=======
+                    //$send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+>>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
                     echo "Mensaje Enviado";
                     echo "\n $this->to";
                 }catch(\Exception $e){
@@ -263,7 +271,11 @@ class NotificationWorker
                 $to[] = $value->getEmail();
             }
             try{
+<<<<<<< HEAD
                 // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $body);
+=======
+               // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $body);
+>>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
                 echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
                 echo $e->getMessage();
@@ -308,7 +320,11 @@ class NotificationWorker
             $games = $repo->getGamesFromArrayId($data['content']['games']);
             $data['content']['games'] = $games;
             try{
+<<<<<<< HEAD
                 // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
+=======
+               // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
+>>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
                 echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
                 echo $e->getMessage();
@@ -353,7 +369,11 @@ class NotificationWorker
             $games = $repo->getGamesDontStart();
             $data['content']['games'] = $games;
             try{
+<<<<<<< HEAD
                 // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
+=======
+               // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
+>>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
                 echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
                 echo $e->getMessage();
@@ -367,6 +387,43 @@ class NotificationWorker
         $repo = $em->getRepository("LiderBundle:Player");
         $admins = $repo->findAdmin();
         return $admins;
+    }
+
+    /**
+     * Send Email games dont start
+     *
+     * @param \GearmanJob $job Object with job parameters
+     *
+     * @return boolean
+     *
+     * @Gearman\Job(
+     *     name = "sendEmailToPlayersFromTournament",
+     *     description = "Send an Email to Admin from games dont start"
+     * )
+     */
+    public function sendEmailToPlayersFromTournament(\GearmanJob $job)
+    {
+        $em = $this->co->get('doctrine')->getManager();
+        $repoPlayer = $em->getRepository("LiderBundle:Player");
+        $data = json_decode($job->workload(),true);
+        $players = $repoPlayer->findPlayersByTournament($data['tournament']);
+        $notificationService = $this->co->get("notificationService");
+
+        $template = "LiderBundle:Templates:emailnotification.html.twig";
+        $to = array();
+        foreach($players as $player)
+        {
+            $to[] = $player->getEmail();
+        }
+        $subject = $data['subject'];
+        try{
+            $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
+            print_r($send);
+            echo "Mensaje Enviado a";
+            print_r($to);
+        }catch(\Exception $e){
+            echo $e->getMessage();
+        }
     }
 }
 ?>

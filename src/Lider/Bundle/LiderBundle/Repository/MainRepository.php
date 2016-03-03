@@ -75,7 +75,7 @@ class MainRepository extends EntityRepository
         );
     }
 
-    protected function getSQLStructure(array $criteria, $orderBy = null, $sresult = null, $limit = null, $filter = null)
+    protected function getSQLStructure(array $criteria, $orderBy = null, $sresult = null, $limit = null, $filter = null, $orderType = null)
     {
         $em = $this->getEntityManager();
         $criteria = $this->fixCriteria($criteria);
@@ -141,13 +141,18 @@ class MainRepository extends EntityRepository
             }
         }
         if (!is_null($orderBy)) {
-            if(is_array($orderBy)){
-                foreach ($orderBy as $key => $value) {
-                    $query->orderBy('z.'.$value['field']);
-                }
-            }else{
-                $query->orderBy("z.".$orderBy);    
-            }
+	        switch ($orderType) {
+	            case 'asc':
+	                $query->orderBy("z.".$orderBy, "ASC");
+	                break;
+	            case 'desc':
+	                $query->orderBy("z.".$orderBy, "DESC");
+	                break;
+	                
+	            default:
+	                $query->orderBy("z.".$orderBy);
+	                break;
+	        }
         }
         if($filter)
         {
@@ -163,9 +168,9 @@ class MainRepository extends EntityRepository
     }
 
 
-    public function getArrayEntityWithOneLevel(array $criteria, $orderBy = null, $sresult = null, $limit = null, array $filter = null) {
+    public function getArrayEntityWithOneLevel(array $criteria, $orderBy = null, $sresult = null, $limit = null, array $filter = null, $orderType) {
 
-        $query = $this->getSQLStructure($criteria, $orderBy, $sresult, $limit, $filter);
+        $query = $this->getSQLStructure($criteria, $orderBy, $sresult, $limit, $filter, $orderType);
         $sql = $query->getQuery()->getSQL();
         // echo $sql;
         $data = $query->getQuery()->getArrayResult();
