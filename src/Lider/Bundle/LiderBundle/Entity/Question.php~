@@ -47,6 +47,12 @@ class Question extends Entity
 	private $checked;
 	
 	/**
+	 * @ORM\Column(type="date")
+	 * @Assert\NotBlank()
+	 */
+	private $dateLastChecked;
+			
+	/**
 	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
 	 * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
 	 */

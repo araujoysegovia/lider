@@ -1002,7 +1002,8 @@ var routerManager = Backbone.Router.extend({
 					title: "Imagen" ,
 					width: "90px",					
 					template: function(e){
-						var src = 'http://10.102.1.22/lider/web';
+						//var src = 'http://10.102.1.22/lider/web';
+						var src = 'http://www.sifinca.net/lider/web';
 						if(_.isEmpty(e.image)){
 							src = src + "/bundles/lider/images/avatar.png";
 						}else{
