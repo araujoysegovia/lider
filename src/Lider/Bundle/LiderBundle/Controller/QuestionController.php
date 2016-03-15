@@ -34,6 +34,9 @@ class QuestionController extends Controller
         $entity->setUser($user);
         $entity->setChecked(true);
         
+        $date =  new \DateTime();
+        $entity->setDateLastChecked($date);
+        
         $em->flush();
         
         return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));

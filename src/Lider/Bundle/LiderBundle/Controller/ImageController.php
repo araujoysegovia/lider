@@ -12,7 +12,8 @@ class ImageController extends SymfonyController
      * Obtener la imagen de mongo por id
      */
 	public function getAction($id) {
-				
+
+		echo "entro aqui";
 		$dm = $this->get('doctrine_mongodb')->getManager();
 		$request = $this->get("request");
 		$width = $request->get("width");

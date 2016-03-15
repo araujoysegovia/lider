@@ -48,7 +48,6 @@ class Question extends Entity
 	
 	/**
 	 * @ORM\Column(type="date", nullable=true)
-	 * @Assert\NotBlank()
 	 */
 	private $dateLastChecked;
 			
@@ -278,5 +277,29 @@ class Question extends Entity
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * Set dateLastChecked
+     *
+     * @param \DateTime $dateLastChecked
+     *
+     * @return Question
+     */
+    public function setDateLastChecked($dateLastChecked)
+    {
+        $this->dateLastChecked = $dateLastChecked;
+
+        return $this;
+    }
+
+    /**
+     * Get dateLastChecked
+     *
+     * @return \DateTime
+     */
+    public function getDateLastChecked()
+    {
+        return $this->dateLastChecked;
     }
 }

@@ -47,8 +47,7 @@ class Question extends Entity
 	private $checked;
 	
 	/**
-	 * @ORM\Column(type="date")
-	 * @Assert\NotBlank()
+	 * @ORM\Column(type="date", nullable=true)
 	 */
 	private $dateLastChecked;
 			

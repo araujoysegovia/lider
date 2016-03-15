@@ -1,4 +1,5 @@
 var max, min;
+var server = 'http://162.209.101.142/';
 
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
@@ -109,14 +110,12 @@ var routerManager = Backbone.Router.extend({
 					field: "active",
 					title: "Activo",
 			    	template: function(e){
-			    		//var imgChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-check.png'/>";
-			    		//var imgNoChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='"+server+"/lider/web/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='"+server+"/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
 						if(e.active == false){
-							//return 'imgNoChecked';
-							return 'No';
+							return imgNoChecked;
 						}else{
-							//return imgChecked;
-							return 'Si';
+							return imgChecked;
 						}
 					}
 				},
@@ -129,7 +128,13 @@ var routerManager = Backbone.Router.extend({
 			    		if(e.enabledLevel == false){
 							return '<button type="button" class="btn btn-success btn-sm btn-enabled-level">Activar</button>';
 						}else{
-							return '<button type="button" class="btn btn-success btn-sm" disabled="disabled">Activar</button>';
+							
+							if(e.active){
+								return '<button type="button" class="btn btn-success btn-sm" >Activar</button>';
+							}else{
+								return '<button type="button" class="btn btn-success btn-sm" disabled="disabled">Activar</button>';
+							}
+							
 						}
 					}
 				}
@@ -335,6 +340,10 @@ var routerManager = Backbone.Router.extend({
 			    		type: "string"
 			    	},
 			    	category: {},
+			    	dateLastChecked: { 
+			    		type: "date", 
+			    		parse: parseDate
+			    	},
 			    	checked: {
 			    		type: "boolean",
 			    	},
@@ -648,9 +657,12 @@ var routerManager = Backbone.Router.extend({
 	                    pageSize: 10,  
 					});
 					
-					var imgChecked = "<img src='../images/icon-check.png'/>";
-		    		var imgNoChecked = "<img src='../images/icon-no-check.png'/>";
+//					var imgChecked = "<img src='../images/icon-check.png'/>";
+//		    		var imgNoChecked = "<img src='../images/icon-no-check.png'/>";
 		    		
+					var imgChecked = "<img src='"+server+"lider/web/bundles/lider/images/icon-check.png'/>";
+		    		var imgNoChecked = "<img src='"+server+"lider/web/bundles/lider/images/icon-no-check.png'/>";
+					
 					grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
 	                    dataSource: kdataSource,
 	                    scrollable: false,
@@ -736,6 +748,15 @@ var routerManager = Backbone.Router.extend({
 					        });
 					} 
 				},	
+			    {
+			    	field: "dateLastChecked",
+			    	title: "Ultima revision",
+			    	width: "150px",
+			    	template: "#= kendo.toString(kendo.parseDate(dateLastChecked, 'yyyy-MM-dd'), 'dd/MM/yyyy') #"
+//			    	template: function(e){
+//						return 'pro';
+//					}
+			    },
 			    {
 			    	field: "checked",
 			    	title: "Revisada",
@@ -879,9 +900,8 @@ var routerManager = Backbone.Router.extend({
 					width: "150px",	
 					filterable: false,
 					template: function(e){
-						var src = 'http://172.99.68.200';
 						if(_.isEmpty(e.image)){
-							src = src + "/bundles/lider/images/none.png";
+							src = server+'lider/web/bundles/lider/images/none.png';
 						}else{
 							src = src + "/app.php/image/"+e.image;
 						}
@@ -1003,9 +1023,9 @@ var routerManager = Backbone.Router.extend({
 					width: "90px",					
 					template: function(e){
 						//var src = 'http://10.102.1.22/lider/web';
-						var src = 'http://www.sifinca.net/lider/web';
+						var src = server;
 						if(_.isEmpty(e.image)){
-							src = src + "/bundles/lider/images/avatar.png";
+							src = src + "web/bundles/lider/images/avatar.png";
 						}else{
 							src = src + "/app.php/image/"+e.image;
 						}
@@ -1544,15 +1564,13 @@ var routerManager = Backbone.Router.extend({
 					title: "Activo",
 					width: "100px",
 			    	template: function(e){ 			    		
-			    		// var imgChecked = "<img src='../images/icon-check.png'/>";
-			    		// var imgNoChecked = "<img src='../images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='"+server+"lider/web/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='"+server+"lider/web/bundles/lider/images/icon-no-check.png'/>"; 
 												
 						if(e.active == false){
-							return 'No';
-							//return imgNoChecked;
+							return imgNoChecked;
 						}else{
-							//return imgChecked;
-							return 'Si';
+							return imgChecked;
 						}						
 					}
 				}
@@ -1777,11 +1795,11 @@ var routerManager = Backbone.Router.extend({
 					width: "150px",
 					
 					template: function(e){
-						var src = 'http://10.102.1.22/lider/web';
+						var src = server;
 						if(_.isEmpty(e.image)){
-							src = src + "/bundles/lider/images/team.png";
+							src = src + "lider/web/bundles/lider/images/team.png";
 						}else{
-							src = src + "/app.php/image/"+e.image;
+							src = src + "web/app.php/image/"+e.image;
 						}
 						var img = "<div class='img-team'>"+
 								     	"<img  data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
