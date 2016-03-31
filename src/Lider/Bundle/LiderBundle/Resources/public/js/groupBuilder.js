@@ -5,6 +5,9 @@ var groupBuilder = function () {
 	}
 }
 
+//var server = 'http://162.209.101.142/';
+var server = 'http://lider.sifinca.net/'
+	
 groupBuilder.prototype = {
 
 	container: null,
@@ -100,7 +103,7 @@ groupBuilder.prototype = {
 
 			var img = value.image;
 			if(!img){
-				img = 'http://172.99.68.200/bundles/lider/images/team_default.png'
+				img = server + 'lider/web/bundles/lider/images/team_default.png'
 			}
 
 			var panel = $('<div id="team-'+value.id+'" class="g-panel-team" draggable="true" >'+

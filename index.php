@@ -1,5 +1,4 @@
 <?php
-
         header ("Location: http://lider.sifinca.net/web/admin");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitiona$
@@ -14,6 +13,8 @@
    <!--   <meta http-equiv="Refresh" content="5"; url="http://www.sifinca.net/sifincaui" /> -->
   </head>
   <body> 
+  
+  ajajjajaja
   </body>
 </html>
 

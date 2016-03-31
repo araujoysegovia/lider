@@ -109,7 +109,7 @@ class NotificationWorker
                 $content['members'] = $members;
 //                 $to = $this->getEmailFromTeamId($team->getId());
                 try{
-                   // $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                    $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
                     echo "Mensaje Enviado de equipo";
                 }catch(\Exception $e){
                     echo $e->getMessage();
@@ -166,11 +166,9 @@ class NotificationWorker
             'duelId' => base64_encode($duel->getId())
         );
         try{
-<<<<<<< HEAD
-            // $send = $notificationService->sendEmail($subject, $this->from, $player->getEmail(), null, "LiderBundle:Templates:duelnotification.html.twig", $content);
-=======
+
             //$send = $notificationService->sendEmail($subject, $this->from, $player->getEmail(), null, "LiderBundle:Templates:duelnotification.html.twig", $content);
->>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
+
             echo "Mensaje Enviado de duelo a ".$player->getEmail();
         }catch(\Exception $e){
             echo $e->getMessage();
@@ -220,12 +218,9 @@ class NotificationWorker
                 }
                 $content['members'] = $members;
                 try{
-<<<<<<< HEAD
-                    // $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
-=======
+
                     //$send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
->>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
-                    echo "Mensaje Enviado";
+                    echo "\nMensaje Enviado";
                     echo "\n $this->to";
                 }catch(\Exception $e){
                     echo $e->getMessage();
@@ -271,11 +266,9 @@ class NotificationWorker
                 $to[] = $value->getEmail();
             }
             try{
-<<<<<<< HEAD
-                // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $body);
-=======
+
                // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $body);
->>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
+
                 echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
                 echo $e->getMessage();
@@ -320,11 +313,9 @@ class NotificationWorker
             $games = $repo->getGamesFromArrayId($data['content']['games']);
             $data['content']['games'] = $games;
             try{
-<<<<<<< HEAD
-                // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
-=======
+
                // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
->>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
+
                 echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
                 echo $e->getMessage();
@@ -369,11 +360,9 @@ class NotificationWorker
             $games = $repo->getGamesDontStart();
             $data['content']['games'] = $games;
             try{
-<<<<<<< HEAD
-                // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
-=======
+
                // $send = $notificationService->sendEmail($subject, $this->from, $to, null, $template, $data['content']);
->>>>>>> 3bedce7cc3ded622fe56b25219dc0d4e30d69ff6
+
                 echo "Mensaje Enviado al administrador";
             }catch(\Exception $e){
                 echo $e->getMessage();

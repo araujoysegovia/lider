@@ -47,6 +47,11 @@ class Question extends Entity
 	private $checked;
 	
 	/**
+	 * @ORM\Column(type="date", nullable=true)
+	 */
+	private $dateLastChecked;
+			
+	/**
 	 * @ORM\ManyToOne(targetEntity="Player",cascade={"persist"})
 	 * @ORM\JoinColumn(name="player_id", referencedColumnName="id")
 	 */
@@ -272,5 +277,29 @@ class Question extends Entity
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * Set dateLastChecked
+     *
+     * @param \DateTime $dateLastChecked
+     *
+     * @return Question
+     */
+    public function setDateLastChecked($dateLastChecked)
+    {
+        $this->dateLastChecked = $dateLastChecked;
+
+        return $this;
+    }
+
+    /**
+     * Get dateLastChecked
+     *
+     * @return \DateTime
+     */
+    public function getDateLastChecked()
+    {
+        return $this->dateLastChecked;
     }
 }
