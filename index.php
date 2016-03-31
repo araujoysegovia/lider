@@ -1,5 +1,6 @@
 <?php
-        header ("Location: http://104.130.11.91/lider/web/app.php/admin");
+
+        header ("Location: http://lider.sifinca.net/web/admin");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitiona$
 <html xmlns="http://www.w3.org/1999/xhtml">
