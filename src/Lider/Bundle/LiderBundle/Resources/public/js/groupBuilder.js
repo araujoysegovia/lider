@@ -5,8 +5,9 @@ var groupBuilder = function () {
 	}
 }
 
-var server = 'http://162.209.101.142/';
-
+//var server = 'http://162.209.101.142/';
+var server = 'http://lider.sifinca.net/'
+	
 groupBuilder.prototype = {
 
 	container: null,

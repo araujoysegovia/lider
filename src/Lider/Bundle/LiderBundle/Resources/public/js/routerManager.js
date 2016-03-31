@@ -1,5 +1,7 @@
 var max, min;
-var server = 'http://162.209.101.142/';
+//var server = 'http://162.209.101.142/';
+
+var server = 'http://lider.sifinca.net/'
 
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
@@ -110,8 +112,9 @@ var routerManager = Backbone.Router.extend({
 					field: "active",
 					title: "Activo",
 			    	template: function(e){
-			    		var imgChecked = "<img src='"+server+"/lider/web/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='"+server+"/lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='"+server+"web/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='"+server+"web/bundles/lider/images/icon-no-check.png'/>"; 
+			    					    		
 						if(e.active == false){
 							return imgNoChecked;
 						}else{
@@ -660,8 +663,8 @@ var routerManager = Backbone.Router.extend({
 //					var imgChecked = "<img src='../images/icon-check.png'/>";
 //		    		var imgNoChecked = "<img src='../images/icon-no-check.png'/>";
 		    		
-					var imgChecked = "<img src='"+server+"lider/web/bundles/lider/images/icon-check.png'/>";
-		    		var imgNoChecked = "<img src='"+server+"lider/web/bundles/lider/images/icon-no-check.png'/>";
+					var imgChecked = "<img src='"+server+"web/bundles/lider/images/icon-check.png'/>";
+		    		var imgNoChecked = "<img src='"+server+"web/bundles/lider/images/icon-no-check.png'/>";
 					
 					grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
 	                    dataSource: kdataSource,
@@ -900,10 +903,17 @@ var routerManager = Backbone.Router.extend({
 					width: "150px",	
 					filterable: false,
 					template: function(e){
+						
+						//console.log("aca");
+						src = null;
+						
 						if(_.isEmpty(e.image)){
-							src = server+'lider/web/bundles/lider/images/none.png';
+							src = server+'web/bundles/lider/images/none.png';
+							//src = 'web/bundles/lider/images/none.png';
 						}else{
-							src = src + "/app.php/image/"+e.image;
+							//console.log("adijadjai")
+							//src = src + "/app.php/image/"+e.image;
+							src = server+"web/admin/image/"+e.image;
 						}
 						var img = "<div class='img-question'>"+
 								     	"<img data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
@@ -1027,7 +1037,7 @@ var routerManager = Backbone.Router.extend({
 						if(_.isEmpty(e.image)){
 							src = src + "web/bundles/lider/images/avatar.png";
 						}else{
-							src = src + "/app.php/image/"+e.image;
+							src = src + "web/admin/image/"+e.image;
 						}
 						var img = "<div class='img-player'>"+
 								     	"<img  data-id='"+e.id+"' src='"+src+"?width=40&height=40' width = '40px' height= '40px'/>"+
@@ -1564,8 +1574,8 @@ var routerManager = Backbone.Router.extend({
 					title: "Activo",
 					width: "100px",
 			    	template: function(e){ 			    		
-			    		var imgChecked = "<img src='"+server+"lider/web/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='"+server+"lider/web/bundles/lider/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='"+server+"web/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='"+server+"web/bundles/lider/images/icon-no-check.png'/>"; 
 												
 						if(e.active == false){
 							return imgNoChecked;

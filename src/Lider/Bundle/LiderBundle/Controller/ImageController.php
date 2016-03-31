@@ -13,7 +13,7 @@ class ImageController extends SymfonyController
      */
 	public function getAction($id) {
 
-		echo "entro aqui";
+		//echo "entro aqui";
 		$dm = $this->get('doctrine_mongodb')->getManager();
 		$request = $this->get("request");
 		$width = $request->get("width");
