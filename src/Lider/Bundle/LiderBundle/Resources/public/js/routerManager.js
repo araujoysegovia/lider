@@ -713,6 +713,7 @@ var routerManager = Backbone.Router.extend({
 			    { 
 			    	field:"question",
 			    	title: "Pregunta" ,
+			    	width: "250px",
 			    	editor: function(container, options){
 			    		$('<textarea data-bind="value: ' + options.field + '"></textarea>')
 			    		.appendTo(container);
@@ -722,6 +723,7 @@ var routerManager = Backbone.Router.extend({
 					field: "category",
 					title:"Categoria",
 					template:  "#: category.name #",
+					width: "120px",
 					editor:	function (container, options) {
 						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
@@ -926,7 +928,7 @@ var routerManager = Backbone.Router.extend({
 				{
 					field: "level",
 			    	title: "Nivel",
-			    	width: "100px"				
+			    	width: "90px"				
 			    }
 			],			
 			serverSorting: false,
