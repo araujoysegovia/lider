@@ -47,6 +47,10 @@ admin_tournament:
     resource: "@LiderBundle/Resources/config/admin_routes/tournament_routing.yml"
     prefix:   /home/tournament
 
+admin_parameters:
+    resource: "@LiderBundle/Resources/config/admin_routes/parameters_routing.yml"
+    prefix:   /home/parameters
+
 admin_question:
     resource: "@LiderBundle/Resources/config/admin_routes/question_routing.yml"
     prefix:   /home/question
@@ -112,3 +116,4 @@ stop_duels:
     pattern:  /duel/stop
     defaults: { _controller: LiderBundle:Game:stopDuels }
     methods:  [GET]
+    

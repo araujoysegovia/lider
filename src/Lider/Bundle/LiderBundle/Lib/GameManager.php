@@ -508,7 +508,8 @@ class GameManager
 	public function generateDuel($game, $interval)
 	{		
 		//$game = $this->em->getRepository("LiderBundle:Game")->findOneBy(array("id" => $gameId, "deleted" => false));
-
+		$repoParameters = $em->getRepository("LiderBundle:Parameters");
+		
 		$teamOne = $game->getTeamOne();
 		$teamTwo = $game->getTeamTwo();
 
@@ -547,8 +548,11 @@ class GameManager
 			}
 		}
 
-		$params = $this->pm->getParameters();
-		$countQuestion = $params['gamesParameters']['countQuestionDuel'];
+// 		$params = $this->pm->getParameters();
+// 		$countQuestion = $params['gamesParameters']['countQuestionDuel'];
+		$countQuestion = $repoParameters->findOneBy(array('name'=>'countQuestionDuel'));
+		$countQuestion = $countQuestion->getValue();
+		
 		$arraySecondPlayer = $secondPlayers;
 		
 		for ($i=0; $i < $x ; $i++) { 
@@ -631,12 +635,17 @@ class GameManager
 	 */
 	public function startGames()
 	{
+		$repoParameters = $em->getRepository("LiderBundle:Parameters");
+		
 		$date = new \DateTime();		
 		$games = $this->em->getRepository("LiderBundle:Game")->getGamesToStart($date);
 		if(count($games) > 0)
 		{
-			$params = $this->pm->getParameters();
-			$duelInterval = $params['gamesParameters']['timeDuel'];
+			//$params = $this->pm->getParameters();
+			//$duelInterval = $params['gamesParameters']['timeDuel'];
+			$duelInterval = $repoParameters->findOneBy(array('name'=>'timeDuel'));
+			$duelInterval = $duelInterval->getValue();
+			
 			$gamesId = array();
 			foreach ($games as $key => $game) {
 				$game->setFinished(false);

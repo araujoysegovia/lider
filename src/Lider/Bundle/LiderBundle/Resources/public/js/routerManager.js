@@ -3,6 +3,8 @@ var max, min;
 
 var server = 'http://lider.sifinca.net/'
 
+var parametros = null;
+	
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
 	heightGame: 110,
@@ -1809,9 +1811,9 @@ var routerManager = Backbone.Router.extend({
 					template: function(e){
 						var src = server;
 						if(_.isEmpty(e.image)){
-							src = src + "lider/web/bundles/lider/images/team.png";
+							src = src + "web/bundles/lider/images/team.png";
 						}else{
-							src = src + "web/app.php/image/"+e.image;
+							src = src + "web/admin/image/"+e.image;
 						}
 						var img = "<div class='img-team'>"+
 								     	"<img  data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
@@ -3045,7 +3047,7 @@ var routerManager = Backbone.Router.extend({
 		//Setear valores de los parametros de configuracion
 		parameters = {
 			type: "GET",
-		    url: "params",
+			url: "home/parameters/",
 	        contentType: 'application/json',
 	        dataType: "json",
 	     	statusCode: {
@@ -3053,22 +3055,88 @@ var routerManager = Backbone.Router.extend({
 		      	window.location = '';
 		      }
 		    },
-	        success: function(data){
+	        success: function(response){
+	        	
+	        	var data = response['data'];
+	        	
+	        	parametros = data;
+	        	
+	        	//console.log(data)
+	        	
 	        	if(!(_.isNull(data))){
-	        		$("#timeQuestionPractice").val(data['gamesParameters']['timeQuestionPractice']);
-		        	$("#timeQuestionDuel").val(data['gamesParameters']['timeQuestionDuel'])
-		        	$("#timeGame").val(data['gamesParameters']['timeGame'])
-		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])
-		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])
-		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])
-		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])
-		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])
-		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])
-		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])
-		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])
-		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])
-		        	$("#pointExtraDuel").val(data['gamesParameters']['pointExtraDuel'])
+	        		
+	        		for (i = 0; i < 13; i++){
+	        			
+	        			if(data[i]['name'] == 'timeQuestionPractice'){
+	        				$("#timeQuestionPractice").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'timeQuestionDuel'){
+	        				$("#timeQuestionDuel").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'timeGame'){
+	        				$("#timeGame").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'timeDuel'){
+	        				$("#timeDuel").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'answerShowPractice'){
+	        				$("#answerShowPractice").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'answerShowGame'){
+	        				$("#answerShowGame").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'timeDuelExtra'){
+	        				$("#timeDuelExtra").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'countQuestionDuel'){
+	        				$("#countQuestionDuel").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'countQuestionDuelExtra'){
+	        				$("#countQuestionDuel").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'questionPoints'){
+	        				$("#countQuestionDuel").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'questionPointsHelp'){
+	        				$("#countQuestionDuel").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'gamePoints'){
+	        				$("#gamePoints").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'pointExtraDuel'){
+	        				$("#pointExtraDuel").val(data[i]['value']);
+	        			}
+	        		}
+	        				        	
 	        	}
+	        	
+//	        	if(!(_.isNull(data))){
+//	        		$("#timeQuestionPractice").val(data['gamesParameters']['timeQuestionPractice']);
+//		        	$("#timeQuestionDuel").val(data['gamesParameters']['timeQuestionDuel'])
+//		        	$("#timeGame").val(data['gamesParameters']['timeGame'])
+//		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])
+//		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])
+//		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])
+//		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])
+//		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])
+//		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])
+//		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])
+//		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])
+//		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])
+//		        	$("#pointExtraDuel").val(data['gamesParameters']['pointExtraDuel'])
+//	        	}
 	        },
 	        error: function(){},
 		};
@@ -3080,43 +3148,151 @@ var routerManager = Backbone.Router.extend({
         
 		//Enviar datos de parametrizacion
 		$(".btn-save-parameters").click(function (e) {
-					
+			//alert('jajajja');	
+			
 			e.preventDefault();
 
-		 	if (validator.validate()) {
-		           
-					var data = {
-						"timeQuestionPractice" : $("#timeQuestionPractice").val(),
-						"timeQuestionDuel": $("#timeQuestionDuel").val(),
-						"timeGame": $("#timeGame").val(),
-						"timeDuel": $("#timeDuel").val(),
-						"answerShowPractice": $('#answerShowPractice').val(),
-						"answerShowGame": $('#answerShowGame').val(),
-						"timeDuelExtra": $("#timeDuelExtra").val(),
-						"countQuestionDuel": $("#countQuestionDuel").val(),
-						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
-						"questionPoints": $("#questionPoints").val(),
-						"questionPointsHelp": $("#questionPointsHelp").val(),
-						"gamePoints": $("#gamePoints").val(),
-						"pointExtraDuel": $("#pointExtraDuel").val(),
-					};
+			
 
-		            parameters = {
-						type: "POST", 
-						data: JSON.stringify(data),
-					    url: "params",
+			
+			if(parametros){
+				
+				for (i = 0; i < parametros.length; i++){
+									
+					var p ={
+						'id': parametros[i].id,
+						'name': parametros[i].name,
+						'value': $("#"+parametros[i].name).val()
+					};
+					
+					var parameters = {
+						type: "PUT", 
+						data: JSON.stringify(p),
+					    //url: "params",
+						url: "home/parameters/"+parametros[i]['id'],
 				        contentType: 'application/json',
 				        dataType: "json",
 				        success: function(){
-				        	alert("Parametros guardados exitosamente");
+				        	alert("Parametros actualizados exitosamente");
 				        },
-				        error: function(){},
+				        error: function(e){
+				        	console.log(e)
+				        	
+				        	
+				        	
+				        },
 					};
+	            
 					$.ajax(parameters);
-		    }
-		    else {
-				alert("Uno o varios campos no cumplen con el formato")
-		    }
+					
+				}
+				
+			}
+			
+		 	//if (validator.validate()) {
+
+//					var data = {
+//						"timeQuestionPractice" : $("#timeQuestionPractice").val(),
+//						"timeQuestionDuel": $("#timeQuestionDuel").val(),
+//						"timeGame": $("#timeGame").val(),
+//						"timeDuel": $("#timeDuel").val(),
+//						"answerShowPractice": $('#answerShowPractice').val(),
+//						"answerShowGame": $('#answerShowGame').val(),
+//						"timeDuelExtra": $("#timeDuelExtra").val(),
+//						"countQuestionDuel": $("#countQuestionDuel").val(),
+//						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
+//						"questionPoints": $("#questionPoints").val(),
+//						"questionPointsHelp": $("#questionPointsHelp").val(),
+//						"gamePoints": $("#gamePoints").val(),
+//						"pointExtraDuel": $("#pointExtraDuel").val(),
+//					};
+			
+			
+//			var data = [
+//				{	
+//					'name': 'timeQuestionPractice',
+//					'value':  $("#timeQuestionPractice").val()
+//				},
+//				{	
+//					'name': 'timeQuestionDuel',
+//					'value':  $("#timeQuestionDuel").val()
+//				},
+//				{	
+//					'name': 'timeGame',
+//					'value':  $("#timeGame").val()
+//				},
+//				{	
+//					'name': 'timeDuel',
+//					'value':  $("#timeDuel").val()
+//				},
+//				{	
+//					'name': 'answerShowPractice',
+//					'value':  $('#answerShowPractice').val()
+//				},
+//				{	
+//					'name': 'answerShowGame',
+//					'value':  $('#answerShowGame').val()
+//				},
+//				{	
+//					'name': 'timeDuelExtra',
+//					'value':  $("#timeDuelExtra").val()
+//				},
+//				{	
+//					'name': 'countQuestionDuel',
+//					'value':  $("#countQuestionDuel").val()
+//				},
+//				{	
+//					'name': 'countQuestionDuelExtra',
+//					'value':  $("#countQuestionDuelExtra").val()
+//				},
+//				{	
+//					'name': 'questionPoints',
+//					'value':  $("#questionPoints").val()
+//				},
+//				{	
+//					'name': 'questionPointsHelp',
+//					'value':  $("#questionPointsHelp").val()
+//				},
+//				{	
+//					'name': 'gamePoints',
+//					'value':  $("#gamePoints").val()
+//				},
+//				{	
+//					'name': 'pointExtraDuel',
+//					'value':  $("#pointExtraDuel").val()
+//				},
+//			];
+//
+//			for (i = 0; i < 13; i++){
+//				
+//				var sdata = data[i];
+//				
+//				var parameters = {
+//							type: "POST", 
+//							data: JSON.stringify(sdata),
+//						    //url: "params",
+//							url: "home/parameters/",
+//					        contentType: 'application/json',
+//					        dataType: "json",
+//					        success: function(){
+//					        	alert("Parametros guardados exitosamente");
+//					        },
+//					        error: function(e){
+//					        	console.log(e)
+//					        	
+//					        	
+//					        	
+//					        },
+//						};
+//			            
+//				$.ajax(parameters);
+//				
+//			}
+		           
+//		    }
+//		    else {
+//				alert("Uno o varios campos no cumplen con el formato")
+//		    }
 		});
 	},
 	

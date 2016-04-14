@@ -208,12 +208,30 @@ class PlayerController extends Controller
         // $arr['user']['gameInfo'] = $playerGameInfo;
         $parameters = $this->get('parameters_manager')->getParameters();
 
+        
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
+        
+        $ptimeQuestionPractice = $repoParameters->findOneBy(array('name'=>'timeQuestionPractice'));
+        $ptimeQuestionDuel = $repoParameters->findOneBy(array('name'=>'timeQuestionDuel'));
+        $ptimeGame = $repoParameters->findOneBy(array('name'=>'timeGame'));
+        $ptimeDuel = $repoParameters->findOneBy(array('name'=>'timeDuel'));
+        //echo "\n".$ptimeQuestionPractice->getValue();
+        
         $arr['config'] = array(
-            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'] ,
-            "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
-            "timeGame" => $parameters['gamesParameters']['timeGame'],
-            "timeDuel" => $parameters['gamesParameters']['timeDuel']
-        ); 
+        		"timeQuestionPractice" => $ptimeQuestionPractice->getValue(),
+        		"timeQuestionDuel" => $ptimeQuestionDuel->getValue(),
+        		"timeGame" => $ptimeGame->getValue(),
+        		"timeDuel" => $ptimeDuel->getValue()
+        );
+        
+//         $arr['config'] = array(
+//             "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'] ,
+//             "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
+//             "timeGame" => $parameters['gamesParameters']['timeGame'],
+//             "timeDuel" => $parameters['gamesParameters']['timeDuel']
+//         ); 
+
+        
 
         return $arr;
     }

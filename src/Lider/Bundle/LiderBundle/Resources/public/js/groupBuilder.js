@@ -103,7 +103,7 @@ groupBuilder.prototype = {
 
 			var img = value.image;
 			if(!img){
-				img = server + 'lider/web/bundles/lider/images/team_default.png'
+				img = server + 'web/bundles/lider/images/team_default.png'
 			}
 
 			var panel = $('<div id="team-'+value.id+'" class="g-panel-team" draggable="true" >'+
