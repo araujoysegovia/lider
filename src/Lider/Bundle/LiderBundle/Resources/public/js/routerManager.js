@@ -4551,7 +4551,7 @@ var routerManager = Backbone.Router.extend({
 				modal.modal("show");
 				
 
-				me.socket = io.connect('http://10.101.1.118:3000');
+				me.socket = io.connect('http://10.102.1.22:3000');
 
 				_.each(data.questions, function(question){
 
@@ -5094,9 +5094,10 @@ var routerManager = Backbone.Router.extend({
 		this.removeContent("realTime");
 		this.buildbreadcrumbs({
 		  	Inicio: "",
-		  	'Tiempo Real': "Tiempo Real"
+		  	'Tiempo Real': "Tiempo Real22"
 		});
-      me.socket = io.connect('http://10.101.1.118:3000');    
+		
+		me.socket = io.connect('http://10.102.1.22:3000');    
 
         me.socket.on('question', function(question, user){
         	me.questionPlayer(question, user);
