@@ -5,6 +5,8 @@ var server = 'http://lider.sifinca.net/'
 
 var parametros = null;
 	
+
+
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
 	heightGame: 110,
@@ -4551,7 +4553,7 @@ var routerManager = Backbone.Router.extend({
 				modal.modal("show");
 				
 
-				me.socket = io.connect('http://10.102.1.22:3000');
+				me.socket = io.connect('http://104.130.28.12:27000');
 
 				_.each(data.questions, function(question){
 
@@ -5094,20 +5096,23 @@ var routerManager = Backbone.Router.extend({
 		this.removeContent("realTime");
 		this.buildbreadcrumbs({
 		  	Inicio: "",
-		  	'Tiempo Real': "Tiempo Real22"
+		  	'Tiempo Real': "Tiempo Real"
 		});
 		
-		me.socket = io.connect('http://10.102.1.22:3000');    
+		me.socket = io.connect('http://104.130.28.12:27000');   
 
         me.socket.on('question', function(question, user){
+        	console.log('question')
         	me.questionPlayer(question, user);
         });
 
         me.socket.on('time', function(time, user){
+        	console.log('time')
         	me.timePlayer(time, user);
         });
 
         me.socket.on('answer', function(answer, user, questionId, pointsForQuestion, answerId){
+        	console.log('answer')
         	me.answerPlayer(answer,user,answerId);
         });
 
