@@ -2780,7 +2780,7 @@ var routerManager = Backbone.Router.extend({
 
 	reportByCategory: function () {
 		
-		console.log("Entroooo")
+		console.log("Entroooo2")
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
