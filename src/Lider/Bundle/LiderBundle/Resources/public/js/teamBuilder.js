@@ -5,7 +5,8 @@ var teamBuilder = function () {
 	}
 
 }
-var server = 'http://lider.sifinca.net/';
+//var server = 'http://lider.sifinca.net/';
+var server = 'http://www.sifinca.net/lider/web/app.php/';
 
 teamBuilder.prototype = {
 
