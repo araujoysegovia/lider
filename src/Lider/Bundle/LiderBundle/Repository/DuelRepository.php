@@ -24,7 +24,7 @@ class DuelRepository extends MainRepository
 		->select('d, p1, p2')
 		->join("d.player_one", "p1")
 		->join("d.player_two", "p2")
-		->where('d.active = false AND (d.player_one = :player OR d.player_two = :player)')
+		->where('d.active = false AND (d.player_one = :player OR d.player_two = :player) AND d.deleted = false')
 		->setParameter('player', $player)
 		->getQuery();
 	

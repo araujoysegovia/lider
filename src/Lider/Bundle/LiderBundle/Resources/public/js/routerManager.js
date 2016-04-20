@@ -1816,7 +1816,7 @@ var routerManager = Backbone.Router.extend({
 					template: function(e){
 						var src = server;
 						if(_.isEmpty(e.image)){
-							src = src + "web/bundles/lider/images/team.png";
+							src = srcFolder + "web/bundles/lider/images/team.png";
 						}else{
 							//src = src + "web/admin/image/"+e.image;
 							src = src + "image/"+e.image;
@@ -3108,15 +3108,15 @@ var routerManager = Backbone.Router.extend({
 	        			}
 	        			
 	        			if(data[i]['name'] == 'countQuestionDuelExtra'){
-	        				$("#countQuestionDuel").val(data[i]['value']);
+	        				$("#countQuestionDuelExtra").val(data[i]['value']);
 	        			}
 	        			
 	        			if(data[i]['name'] == 'questionPoints'){
-	        				$("#countQuestionDuel").val(data[i]['value']);
+	        				$("#questionPoints").val(data[i]['value']);
 	        			}
 	        			
 	        			if(data[i]['name'] == 'questionPointsHelp'){
-	        				$("#countQuestionDuel").val(data[i]['value']);
+	        				$("#questionPointsHelp").val(data[i]['value']);
 	        			}
 	        			
 	        			if(data[i]['name'] == 'gamePoints'){
