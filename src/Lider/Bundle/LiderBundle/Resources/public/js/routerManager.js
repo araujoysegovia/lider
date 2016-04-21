@@ -1,4 +1,13 @@
 var max, min;
+//var server = 'http://162.209.101.142/';
+
+var server = 'http://lider.sifinca.net/'
+//var server = 'http://www.sifinca.net/lider/web/app.php/';
+//var serverFolder = 'http://www.sifinca.net/lider/';
+var serverFolder = 'http://lider.sifinca.net/';
+var parametros = null;
+	
+
 
 var routerManager = Backbone.Router.extend({
 	marginTopGame: 10,
@@ -66,7 +75,10 @@ var routerManager = Backbone.Router.extend({
 			if(!(_.isNull(me.socket))){
 				me.socket.removeListener('question');
 			}
+<<<<<<< HEAD
 			
+=======
+>>>>>>> 80574c842ff02a7ff141fca6e79404b20b2c87bf
 		}
 	},  
   
@@ -110,8 +122,9 @@ var routerManager = Backbone.Router.extend({
 					field: "active",
 					title: "Activo",
 			    	template: function(e){
-			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='"+serverFolder+"web/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='"+serverFolder+"web/bundles/lider/images/icon-no-check.png'/>"; 
+			    					    		
 						if(e.active == false){
 							return imgNoChecked;
 						}else{
@@ -124,12 +137,17 @@ var routerManager = Backbone.Router.extend({
 					title: "Activar Nivel",
 					width: 140,
 			    	template: function(e){
-			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
-						if(e.enabledLevel == false){
+			    		
+			    		if(e.enabledLevel == false){
 							return '<button type="button" class="btn btn-success btn-sm btn-enabled-level">Activar</button>';
 						}else{
-							return '<button type="button" class="btn btn-success btn-sm" disabled="disabled">Activar</button>';
+							
+							if(e.active){
+								return '<button type="button" class="btn btn-success btn-sm" >Activar</button>';
+							}else{
+								return '<button type="button" class="btn btn-success btn-sm" disabled="disabled">Activar</button>';
+							}
+							
 						}
 					}
 				}
@@ -335,6 +353,10 @@ var routerManager = Backbone.Router.extend({
 			    		type: "string"
 			    	},
 			    	category: {},
+			    	dateLastChecked: { 
+			    		type: "date", 
+			    		parse: parseDate
+			    	},
 			    	checked: {
 			    		type: "boolean",
 			    	},
@@ -648,9 +670,12 @@ var routerManager = Backbone.Router.extend({
 	                    pageSize: 10,  
 					});
 					
-					var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-		    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+//					var imgChecked = "<img src='../images/icon-check.png'/>";
+//		    		var imgNoChecked = "<img src='../images/icon-no-check.png'/>";
 		    		
+					var imgChecked = "<img src='"+serverFolder+"web/bundles/lider/images/icon-check.png'/>";
+		    		var imgNoChecked = "<img src='"+serverFolder+"web/bundles/lider/images/icon-no-check.png'/>";
+					
 					grid = $("<div/>").appendTo(e.detailCell).kendoGrid({
 	                    dataSource: kdataSource,
 	                    scrollable: false,
@@ -698,6 +723,7 @@ var routerManager = Backbone.Router.extend({
 			    { 
 			    	field:"question",
 			    	title: "Pregunta" ,
+			    	width: "250px",
 			    	editor: function(container, options){
 			    		$('<textarea data-bind="value: ' + options.field + '"></textarea>')
 			    		.appendTo(container);
@@ -707,6 +733,7 @@ var routerManager = Backbone.Router.extend({
 					field: "category",
 					title:"Categoria",
 					template:  "#: category.name #",
+					width: "120px",
 					editor:	function (container, options) {
 						var input =  $('<input required data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
 					        .appendTo(container)
@@ -736,6 +763,15 @@ var routerManager = Backbone.Router.extend({
 					        });
 					} 
 				},	
+			    {
+			    	field: "dateLastChecked",
+			    	title: "Ultima revision",
+			    	width: "150px",
+			    	template: "#= kendo.toString(kendo.parseDate(dateLastChecked, 'yyyy-MM-dd'), 'dd/MM/yyyy') #"
+//			    	template: function(e){
+//						return 'pro';
+//					}
+			    },
 			    {
 			    	field: "checked",
 			    	title: "Revisada",
@@ -879,11 +915,18 @@ var routerManager = Backbone.Router.extend({
 					width: "150px",	
 					filterable: false,
 					template: function(e){
-						var src = 'http://soylider.sifinca.net';
+						
+						//console.log("aca");
+						src = null;
+						
 						if(_.isEmpty(e.image)){
-							src = src + "/bundles/lider/images/none.png";
+							src = serverFolder+'web/bundles/lider/images/none.png';
+							//src = 'web/bundles/lider/images/none.png';
 						}else{
-							src = src + "/app.php/image/"+e.image;
+							//console.log("adijadjai")
+							//src = src + "/app.php/image/"+e.image;
+							//src = server+"web/admin/image/"+e.image;
+							src = src + "image/"+e.image;
 						}
 						var img = "<div class='img-question'>"+
 								     	"<img data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
@@ -896,7 +939,7 @@ var routerManager = Backbone.Router.extend({
 				{
 					field: "level",
 			    	title: "Nivel",
-			    	width: "100px"				
+			    	width: "90px"				
 			    }
 			],			
 			serverSorting: false,
@@ -991,8 +1034,6 @@ var routerManager = Backbone.Router.extend({
 					},
 					roles: {						
 					},
-					team:{						
-					},
 					active: {
 						type: "boolean"
 					}
@@ -1002,13 +1043,15 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field:"image", 
 					title: "Imagen" ,
-					width: "150px",					
+					width: "90px",					
 					template: function(e){
-						var src = 'http://10.102.1.22/lider/web';
+						//var src = 'http://10.102.1.22/lider/web';
+						var src = server;
 						if(_.isEmpty(e.image)){
-							src = src + "/bundles/lider/images/avatar.png";
+							src = src + "web/bundles/lider/images/avatar.png";
 						}else{
-							src = src + "/app.php/image/"+e.image;
+							//src = src + "web/admin/image/"+e.image;
+							src = src + "image/"+e.image;
 						}
 						var img = "<div class='img-player'>"+
 								     	"<img  data-id='"+e.id+"' src='"+src+"?width=40&height=40' width = '40px' height= '40px'/>"+
@@ -1020,20 +1063,24 @@ var routerManager = Backbone.Router.extend({
 				},	
 				{ 
 					field:"name", 
-					title: "Nombre" 
+					title: "Nombre",
+					width: "150px"
 				},				
 				{ 
 					field:"lastname", 
-					title: "Apellido" 
+					title: "Apellido",
+					width: "150px"
 				},
 				{ 
 					field:"email", 
 					editable: false,
-					title: "Correo" 
+					title: "Correo",
+					width: "250px"
 				},				
 				{ 
 					field: "office",
 					title:"Oficina",					
+					width: "150px",
 					//template:  "#: office.name #",
 					template:  function(e){						
 						if(e.office){
@@ -1072,7 +1119,7 @@ var routerManager = Backbone.Router.extend({
 				{ 
 					field: "roles",
 					title:"Role",
-					width: "150px",					
+					width: "90px",					
 					template:  function(e){						
 						if(e.roles[0]){
 							return e.roles[0].name;
@@ -1107,50 +1154,50 @@ var routerManager = Backbone.Router.extend({
 					        });
 					}   
 				},	
-				{ 
-					field: "team",
-					title:"Equipo",	
-					
-					template:  function(e){						
-						if(e.team){
-							return e.team.name;
-						}
-					},					
-					editor:	function (container, options) {
-						var input =  $('<input data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
-					        .appendTo(container)
-					        .kendoDropDownList({
-					            autoBind: false,
-					            dataBound: function(e) {
-					            	input.data("kendoDropDownList").trigger("change");
-					            },
-					            dataSource: {
-					            	batch: false,	                	
-					                transport: {
-					                    read: "home/team/"
-					                },
-					                schema: {
-					    			  	total: "total",
-					    		    	data: "data",
-					    		        model: {
-					    				    id: "id",
-					    				    fields: {
-					    				    	id: { editable: false, nullable: true },
-					    				        name: { type: "string" },		        				        
-					    				    }
-					    		        }
-					                },
-					            },
-								dataTextField: "name",
-								dataValueField: "id",
-								optionLabel: "Selecciona un equipo"
-					        });
-					} 
-				},
+//				{ 
+//					field: "team",
+//					title:"Equipo",	
+//					
+//					template:  function(e){						
+//						if(e.team){
+//							return e.team.name;
+//						}
+//					},					
+//					editor:	function (container, options) {
+//						var input =  $('<input data-text-field="name" data-value-field="id" data-bind="value:' + options.field + '"/>')
+//					        .appendTo(container)
+//					        .kendoDropDownList({
+//					            autoBind: false,
+//					            dataBound: function(e) {
+//					            	input.data("kendoDropDownList").trigger("change");
+//					            },
+//					            dataSource: {
+//					            	batch: false,	                	
+//					                transport: {
+//					                    read: "home/team/"
+//					                },
+//					                schema: {
+//					    			  	total: "total",
+//					    		    	data: "data",
+//					    		        model: {
+//					    				    id: "id",
+//					    				    fields: {
+//					    				    	id: { editable: false, nullable: true },
+//					    				        name: { type: "string" },		        				        
+//					    				    }
+//					    		        }
+//					                },
+//					            },
+//								dataTextField: "name",
+//								dataValueField: "id",
+//								optionLabel: "Selecciona un equipo"
+//					        });
+//					} 
+//				},
 				{ 
 					field: "active",
 					title: "Activo",
-					width: "100px",
+					width: "90px",
 			    	template: function(e){
 						if(e.active == false){
 							return "No";
@@ -1263,7 +1310,7 @@ var routerManager = Backbone.Router.extend({
 			    },
 			    {
 			    	 text: "Resetear contraseña",
-			    	 click: function (e) {			    		
+			    	 click: function (e) {
 						e.preventDefault();
 						mec = this;
 						var dataItem = mec.dataItem($(e.currentTarget).closest("tr"));
@@ -1317,8 +1364,95 @@ var routerManager = Backbone.Router.extend({
 		    		 
 							
 		             } 
+			    },
+			    {
+			    	 text: "Notificar",
+			    	 click: function (e) {
+						e.preventDefault();
+						me = this;
+						var dataItem = me.dataItem($(e.currentTarget).closest("tr"));
+						var id = dataItem.id;
+						var modal = $("<div></div>").addClass("modal fade").attr({"tabindex": "-1", "role":"dialog"});
+						var modalDialog = $("<div></div>").addClass("modal-dialog");
+						var modalContent = $("<div></div>").addClass("modal-content");
+						var modalHeader = $("<div></div>").addClass("modal-header");
+						var btnClose = $("<button></button>").attr({"type": "button", "data-dismiss": "modal", "aria-label": "Close"}).addClass("Close.");
+						var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
+						btnClose.append(spanClose);
+						var titleHeading = $("<h4></h4>").addClass("modal-title").html("Notificar a todos los jugadores");
+						modalHeader.append(titleHeading);
+						var modalBody = $("<div></div>").addClass("modal-body");
+						
+						var formBody = $("<form></form>");
+						
+						var divSubject = $("<div></div>").addClass("form-group");
+						var labelSubject = $("<label></label>").attr({"for": "subjectMessage"}).html("Asunto");
+						var subject = $("<input></input").attr({"type": "text", "placeholder": "Asunto", "id": "subjectMessage"}).addClass("form-control");
+						divSubject.append(labelSubject).append(subject);
+						
+						var divBody = $("<div></div>").addClass("form-group");
+						var labelBody = $("<label></label>").attr({"for": "bodyMessage"}).html("Mensaje");
+						var body = $("<textarea></textarea").attr({"placeholder": "Mensaje", "id": "bodyMessage", "rows": "5"}).addClass("form-control");
+						divBody.append(labelBody).append(body);
+						
+						formBody.append(divSubject).append(divBody);
+						modalBody.append(formBody);
+
+						var modalFooter = $("<div></div>").addClass("modal-footer");
+						var btnCancel = $("<button></button>").addClass("btn btn-default").attr("data-dismiss", "modal").html("Cancelar");
+						var btnSend = $("<button></button>").addClass("btn btn-primary").html("Enviar");
+						modalFooter.append(btnCancel).append(btnSend);
+
+						modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody).append(modalFooter)));
+						$(document.body).append(modal);
+						modal.modal("show");
+
+						btnSend.click(function(){
+							var su = subject.val();
+							var bo = body.val();
+							if(!_.isNull(su) && !_.isNull(bo))
+							{
+								$.confirm({
+								    text: "Desea enviar este mensaje a "+dataItem.name+" "+dataItem.lastname+"?",
+								    confirm: function(button) {
+
+								    	var data = {
+								    		"player": id,
+								    		"subject": su,
+								    		"message": bo
+								    	}
+					        			parameters = {
+											type: "GET",
+										    url: "home/player/player/notification",
+									        contentType: 'application/json',
+							            	dataType: "json",
+							            	data: data,
+					            	     	statusCode: {
+										      401:function() { 
+										      	window.location = '';
+										      }
+										    },
+									        success: function(data){
+									        	modal.modal("hide");
+									        },
+									        error: function(){}
+										};
+
+										$.ajax(parameters);
+								    },
+								    cancel: function(button) {
+								        // do something
+								    }
+								});
+							}
+							else{
+								alert("Por favor rellene los campos Asunto y Mensaje");
+							}
+							
+						})
+		            }
 			    }
-			],								
+			],
 		})
 	},
 
@@ -1454,8 +1588,8 @@ var routerManager = Backbone.Router.extend({
 					title: "Activo",
 					width: "100px",
 			    	template: function(e){ 			    		
-			    		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-			    		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>"; 
+			    		var imgChecked = "<img src='"+serverFolder+"web/bundles/lider/images/icon-check.png'/>";
+			    		var imgNoChecked = "<img src='"+serverFolder+"web/bundles/lider/images/icon-no-check.png'/>"; 
 												
 						if(e.active == false){
 							return imgNoChecked;
@@ -1685,11 +1819,12 @@ var routerManager = Backbone.Router.extend({
 					width: "150px",
 					
 					template: function(e){
-						var src = 'http://10.102.1.22/lider/web';
+						var src = server;
 						if(_.isEmpty(e.image)){
-							src = src + "/bundles/lider/images/team.png";
+							src = srcFolder + "web/bundles/lider/images/team.png";
 						}else{
-							src = src + "/app.php/image/"+e.image;
+							//src = src + "web/admin/image/"+e.image;
+							src = src + "image/"+e.image;
 						}
 						var img = "<div class='img-team'>"+
 								     	"<img  data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
@@ -2126,8 +2261,8 @@ var routerManager = Backbone.Router.extend({
 		  	Categorias: "reportquestions"
 		});
 
-		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+		var imgChecked = "<img src='../images/icon-check.png'/>";
+		var imgNoChecked = "<img src='../images/icon-no-check.png'/>";
 
 		var questionReport = new Entity({
 			container:  $("#entity-content"),
@@ -2263,9 +2398,11 @@ var routerManager = Backbone.Router.extend({
 		  	Reporte: "reportPlayerAnalysis"
 		});
 
-		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
-
+		//var imgChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-check.png'/>";
+		//var imgNoChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-no-check.png'/>";
+		var imgChecked = "<img src='"+serverFolder+"web/bundles/lider/images/icon-check.png'/>";
+		var imgNoChecked = "<img src='"+serverFolder+"web/bundles/lider/images/icon-no-check.png'/>";
+		
 		var reportPlayerAnalysis = new Entity({
 			container:  $("#entity-content"),
 			url: "home/player/positions",
@@ -2453,8 +2590,8 @@ var routerManager = Backbone.Router.extend({
 		  	Reporte: "reportByPractice"
 		});
 
-		var imgChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-check.png'/>";
-		var imgNoChecked = "<img src='http://soylider.sifinca.net/bundles/lider/images/icon-no-check.png'/>";
+		var imgChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-check.png'/>";
+		var imgNoChecked = "<img src='http://172.99.68.200/lider/src/Lider/Bundle/Resources/public/images/icon-no-check.png'/>";
 
 		var reportByPractice = new Entity({
 			container:  $("#entity-content"),
@@ -2654,30 +2791,141 @@ var routerManager = Backbone.Router.extend({
 
 	reportByCategory: function () {
 		
-		console.log("Entroooo")
+		console.log("Entroooo2")
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
 		  	Reporte: "reportByCategory"
-		});		
+		});
 
+
+		var form = $('<form id="form-notification" role="form">'+
+					  '<div class="form-group">'+
+					    '<label  class="col-sm-2 control-label">Torneo</label>'+
+					    '<div class="col-sm-10">'+
+					    	'<select class="form-control select-tournament">'+
+					    		'<option value=0>Seleccione Un torneo></option>'+
+					    	'</select>'+
+					    '</div>'+
+					  '</div>'+
+					'</form>');
+		
+		var select = form.find(".select-tournament");
 		var chart = $('<div id="chart"></div>');
-		$('#entity-content').append(chart);
+		$('#entity-content').append(form).append(chart);
 
+		select.change(function(){
+			if(form.find('.select-tournament').val() != 0){
+	        	var data = {"tournament": form.find('.select-tournament').val()};
+	        }
+	        else{
+	        	var data = {};
+	        }
+	        config = {
+	            type: 'GET',
+	            url: 'home/question/category/report',
+	            contentType: "application/json",
+	            dataType: "json",
+	            data: data,
+		     	statusCode: {
+					401:function() { 
+						window.location = '';
+					}
+			    },
+				success: function(response){
+				   data = response['data'];
+				   var series = [{
+				   		name: 'Ganados',
+				   		color: '#0a76b9',
+				   		data: []
+				   },{
+				   		name: 'Perdidos',
+				   		
+				   		data: []
+				   }];
+				   var categoriesAxis= [];
+				   _.each(data, function (value, key) {
+				   		
+				   		categoriesAxis.push(value['question.categoryName']);
+				   		series[0]['data'].push(value['win']);
+				   		series[1]['data'].push(value['lost']);
+				   })
+
+			        $("#chart").kendoChart({
+			            title: {
+			                text: "Reporte por Categorias"
+			            },
+			            legend: {
+			                position: "bottom"
+			            },
+			            seriesDefaults: {
+			                type: "column"
+			            },
+			            series: series,
+			            valueAxis: {
+			                line: {
+			                    visible: false
+			                }
+			            },
+			            categoryAxis: {
+			                categories: categoriesAxis,
+			                majorGridLines: {
+			                    visible: false
+			                }
+			            },
+			            tooltip: {
+			                visible: true,
+			                format: "{0}"
+			            }
+			        });
+
+				},
+				error: function(){}
+	        }
+
+	        $.ajax(config);
+		})
+		var loader = $(document.body).loaderPanel();
+		loader.show();
+		var configTorunament = {
+			type: "GET",
+            url: "home/tournament/tournament",
+            contentType: "application/json",
+            dataType: "json",
+            //data: JSON.stringify(param),
+	     	statusCode: {
+		      401:function() {
+		      	window.location = '';
+		      }
+		    },
+			success: function(response){
+				var data = response;
+				_.each(data, function(tournament){
+					var option = $('<option></option>').attr('value', tournament.id).html(tournament.name);
+					form.find('.select-tournament').append(option)
+				})
+			},
+			error: function(){},
+	    	complete: function(){
+	    		loader.hide();
+	    	}
+        }
+        $.ajax(configTorunament);
+
+        
 
         config = {
-            type: 'GET',           
+            type: 'GET',
             url: 'home/question/category/report',
-            contentType: "application/json",            
-            dataType: "json",				            
+            contentType: "application/json",
+            dataType: "json",
 	     	statusCode: {
 				401:function() { 
 					window.location = '';
-				}		   
+				}
 		    },
 			success: function(response){
 			   data = response['data'];
-			   console.log(data)
 			   var series = [{
 			   		name: 'Ganados',
 			   		color: '#0a76b9',
@@ -2721,7 +2969,7 @@ var routerManager = Backbone.Router.extend({
 		                visible: true,
 		                format: "{0}"
 		            }
-		        });		
+		        });
 
 			},
 			error: function(){}
@@ -2735,17 +2983,17 @@ var routerManager = Backbone.Router.extend({
 	 */
 	parametersConfig: function () {
 	
-		this.removeContent();		
+		this.removeContent();
 
 		var container = $('<div class="panel panel-default parameters"><h4>Par&aacute;metros del Juego</h4><hr/></div>');
-		var form = $('<form id="form-params" role="form">'+						  
+		var form = $('<form id="form-params" role="form">'+
 						  '<div class="form-group col-sm-4">'+
 						    '<label for="timeQuestionPractice" class="required">Tiempo de pregunta en practica (<i>segundos</i>)</label>'+
 						    '<input type="number" class="form-control" id="timeQuestionPractice" required="required" >'+
 						  '</div>'+	
 						  '<div class="form-group col-sm-4">'+
-						    '<label for="timeQuestionDuel">Tiempo de pregunta en duelo (<i>segundos</i>)</label>'+						  
-						    '<input type="number" class="form-control" id="timeQuestionDuel">'+						  
+						    '<label for="timeQuestionDuel">Tiempo de pregunta en duelo (<i>segundos</i>)</label>'+
+						    '<input type="number" class="form-control" id="timeQuestionDuel">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
 						    '<label for="timeGame">Tiempo de juego (<i>d&iacute;as</i>)</label>'+
@@ -2756,21 +3004,21 @@ var routerManager = Backbone.Router.extend({
 						    '<input type="number" class="form-control" id="timeDuel">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Mostrar respuesta correcta en modo practica</label>'+						    
+						    '<label >Mostrar respuesta correcta en modo practica</label>'+
 					    	'<select id="answerShowPractice" class="form-control">'+
 					    		'<option value=true>Si</option>'+
 					    		'<option value=false>No</option>'+
 					    	'</select>'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Mostrar respuesta correcta en modo juego</label>'+						    
+						    '<label >Mostrar respuesta correcta en modo juego</label>'+
 					    	'<select id="answerShowGame" class="form-control">'+
 					    		'<option value=true>Si</option>'+
 					    		'<option value=false>No</option>'+
 					    	'</select>'+
-						  '</div>'+		
+						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
-						    '<label >Tiempo del duelo extra (desempate)</label>'+						    
+						    '<label >Tiempo del duelo extra (desempate)</label>'+
 					    	'<input type="number" class="form-control" id="timeDuelExtra">'+
 						  '</div>'+
 						  '<div class="form-group col-sm-4">'+
@@ -2812,7 +3060,7 @@ var routerManager = Backbone.Router.extend({
 		//Setear valores de los parametros de configuracion
 		parameters = {
 			type: "GET",
-		    url: "params",
+			url: "home/parameters/",
 	        contentType: 'application/json',
 	        dataType: "json",
 	     	statusCode: {
@@ -2820,22 +3068,88 @@ var routerManager = Backbone.Router.extend({
 		      	window.location = '';
 		      }
 		    },
-	        success: function(data){
+	        success: function(response){
+	        	
+	        	var data = response['data'];
+	        	
+	        	parametros = data;
+	        	
+	        	//console.log(data)
+	        	
 	        	if(!(_.isNull(data))){
-	        		$("#timeQuestionPractice").val(data['gamesParameters']['timeQuestionPractice']);
-		        	$("#timeQuestionDuel").val(data['gamesParameters']['timeQuestionDuel'])
-		        	$("#timeGame").val(data['gamesParameters']['timeGame'])
-		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])
-		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])
-		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])
-		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])
-		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])
-		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])
-		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])
-		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])
-		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])
-		        	$("#pointExtraDuel").val(data['gamesParameters']['pointExtraDuel'])
+	        		
+	        		for (i = 0; i < 13; i++){
+	        			
+	        			if(data[i]['name'] == 'timeQuestionPractice'){
+	        				$("#timeQuestionPractice").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'timeQuestionDuel'){
+	        				$("#timeQuestionDuel").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'timeGame'){
+	        				$("#timeGame").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'timeDuel'){
+	        				$("#timeDuel").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'answerShowPractice'){
+	        				$("#answerShowPractice").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'answerShowGame'){
+	        				$("#answerShowGame").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'timeDuelExtra'){
+	        				$("#timeDuelExtra").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'countQuestionDuel'){
+	        				$("#countQuestionDuel").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'countQuestionDuelExtra'){
+	        				$("#countQuestionDuelExtra").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'questionPoints'){
+	        				$("#questionPoints").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'questionPointsHelp'){
+	        				$("#questionPointsHelp").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'gamePoints'){
+	        				$("#gamePoints").val(data[i]['value']);
+	        			}
+	        			
+	        			if(data[i]['name'] == 'pointExtraDuel'){
+	        				$("#pointExtraDuel").val(data[i]['value']);
+	        			}
+	        		}
+	        				        	
 	        	}
+	        	
+//	        	if(!(_.isNull(data))){
+//	        		$("#timeQuestionPractice").val(data['gamesParameters']['timeQuestionPractice']);
+//		        	$("#timeQuestionDuel").val(data['gamesParameters']['timeQuestionDuel'])
+//		        	$("#timeGame").val(data['gamesParameters']['timeGame'])
+//		        	$("#timeDuel").val(data['gamesParameters']['timeDuel'])
+//		        	$("#answerShowPractice").val(data['gamesParameters']['answerShowPractice'])
+//		        	$("#answerShowGame").val(data['gamesParameters']['answerShowGame'])
+//		        	$("#timeDuelExtra").val(data['gamesParameters']['timeDuelExtra'])
+//		        	$("#countQuestionDuel").val(data['gamesParameters']['countQuestionDuel'])
+//		        	$("#countQuestionDuelExtra").val(data['gamesParameters']['countQuestionDuelExtra'])
+//		        	$("#questionPoints").val(data['gamesParameters']['questionPoints'])
+//		        	$("#questionPointsHelp").val(data['gamesParameters']['questionPointsHelp'])
+//		        	$("#gamePoints").val(data['gamesParameters']['gamePoints'])
+//		        	$("#pointExtraDuel").val(data['gamesParameters']['pointExtraDuel'])
+//	        	}
 	        },
 	        error: function(){},
 		};
@@ -2847,43 +3161,151 @@ var routerManager = Backbone.Router.extend({
         
 		//Enviar datos de parametrizacion
 		$(".btn-save-parameters").click(function (e) {
-					
+			//alert('jajajja');	
+			
 			e.preventDefault();
 
-		 	if (validator.validate()) {
-		           
-					var data = {
-						"timeQuestionPractice" : $("#timeQuestionPractice").val(),
-						"timeQuestionDuel": $("#timeQuestionDuel").val(),
-						"timeGame": $("#timeGame").val(),
-						"timeDuel": $("#timeDuel").val(),
-						"answerShowPractice": $('#answerShowPractice').val(),
-						"answerShowGame": $('#answerShowGame').val(),
-						"timeDuelExtra": $("#timeDuelExtra").val(),
-						"countQuestionDuel": $("#countQuestionDuel").val(),
-						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
-						"questionPoints": $("#questionPoints").val(),
-						"questionPointsHelp": $("#questionPointsHelp").val(),
-						"gamePoints": $("#gamePoints").val(),
-						"pointExtraDuel": $("#pointExtraDuel").val(),
-					};
+			
 
-		            parameters = {
-						type: "POST", 
-						data: JSON.stringify(data),
-					    url: "params",
+			
+			if(parametros){
+				
+				for (i = 0; i < parametros.length; i++){
+									
+					var p ={
+						'id': parametros[i].id,
+						'name': parametros[i].name,
+						'value': $("#"+parametros[i].name).val()
+					};
+					
+					var parameters = {
+						type: "PUT", 
+						data: JSON.stringify(p),
+					    //url: "params",
+						url: "home/parameters/"+parametros[i]['id'],
 				        contentType: 'application/json',
 				        dataType: "json",
 				        success: function(){
-				        	alert("Parametros guardados exitosamente");
+				        	alert("Parametros actualizados exitosamente");
 				        },
-				        error: function(){},
+				        error: function(e){
+				        	console.log(e)
+				        	
+				        	
+				        	
+				        },
 					};
+	            
 					$.ajax(parameters);
-		    }
-		    else {
-				alert("Uno o varios campos no cumplen con el formato")
-		    }
+					
+				}
+				
+			}
+			
+		 	//if (validator.validate()) {
+
+//					var data = {
+//						"timeQuestionPractice" : $("#timeQuestionPractice").val(),
+//						"timeQuestionDuel": $("#timeQuestionDuel").val(),
+//						"timeGame": $("#timeGame").val(),
+//						"timeDuel": $("#timeDuel").val(),
+//						"answerShowPractice": $('#answerShowPractice').val(),
+//						"answerShowGame": $('#answerShowGame').val(),
+//						"timeDuelExtra": $("#timeDuelExtra").val(),
+//						"countQuestionDuel": $("#countQuestionDuel").val(),
+//						"countQuestionDuelExtra": $("#countQuestionDuelExtra").val(),
+//						"questionPoints": $("#questionPoints").val(),
+//						"questionPointsHelp": $("#questionPointsHelp").val(),
+//						"gamePoints": $("#gamePoints").val(),
+//						"pointExtraDuel": $("#pointExtraDuel").val(),
+//					};
+			
+			
+//			var data = [
+//				{	
+//					'name': 'timeQuestionPractice',
+//					'value':  $("#timeQuestionPractice").val()
+//				},
+//				{	
+//					'name': 'timeQuestionDuel',
+//					'value':  $("#timeQuestionDuel").val()
+//				},
+//				{	
+//					'name': 'timeGame',
+//					'value':  $("#timeGame").val()
+//				},
+//				{	
+//					'name': 'timeDuel',
+//					'value':  $("#timeDuel").val()
+//				},
+//				{	
+//					'name': 'answerShowPractice',
+//					'value':  $('#answerShowPractice').val()
+//				},
+//				{	
+//					'name': 'answerShowGame',
+//					'value':  $('#answerShowGame').val()
+//				},
+//				{	
+//					'name': 'timeDuelExtra',
+//					'value':  $("#timeDuelExtra").val()
+//				},
+//				{	
+//					'name': 'countQuestionDuel',
+//					'value':  $("#countQuestionDuel").val()
+//				},
+//				{	
+//					'name': 'countQuestionDuelExtra',
+//					'value':  $("#countQuestionDuelExtra").val()
+//				},
+//				{	
+//					'name': 'questionPoints',
+//					'value':  $("#questionPoints").val()
+//				},
+//				{	
+//					'name': 'questionPointsHelp',
+//					'value':  $("#questionPointsHelp").val()
+//				},
+//				{	
+//					'name': 'gamePoints',
+//					'value':  $("#gamePoints").val()
+//				},
+//				{	
+//					'name': 'pointExtraDuel',
+//					'value':  $("#pointExtraDuel").val()
+//				},
+//			];
+//
+//			for (i = 0; i < 13; i++){
+//				
+//				var sdata = data[i];
+//				
+//				var parameters = {
+//							type: "POST", 
+//							data: JSON.stringify(sdata),
+//						    //url: "params",
+//							url: "home/parameters/",
+//					        contentType: 'application/json',
+//					        dataType: "json",
+//					        success: function(){
+//					        	alert("Parametros guardados exitosamente");
+//					        },
+//					        error: function(e){
+//					        	console.log(e)
+//					        	
+//					        	
+//					        	
+//					        },
+//						};
+//			            
+//				$.ajax(parameters);
+//				
+//			}
+		           
+//		    }
+//		    else {
+//				alert("Uno o varios campos no cumplen con el formato")
+//		    }
 		});
 	},
 	
@@ -4141,7 +4563,11 @@ var routerManager = Backbone.Router.extend({
 				$(document.body).append(modal);
 				modal.modal("show");							  
 
+<<<<<<< HEAD
 				me.socket = io.connect('http://10.102.1.22:3000');    
+=======
+				me.socket = io.connect('http://104.130.28.12:27000');
+>>>>>>> 80574c842ff02a7ff141fca6e79404b20b2c87bf
 
 				_.each(data.questions, function(question){
 
@@ -4379,9 +4805,14 @@ var routerManager = Backbone.Router.extend({
 							buttonTwo.css({'background': 'none', 'color': '#008000'});												
 							buttonTwo.addClass('glyphicon glyphicon-ok');
 
+<<<<<<< HEAD
 							//if(question.answers.playerOne.help){
 							if(question.playerOne.useHelp){
 
+=======
+							if(question.playerOne.useHelp){
+								
+>>>>>>> 80574c842ff02a7ff141fca6e79404b20b2c87bf
 								setTimeout(function () {					
 
 									sh = $('#helpTwo'+question['questionId']);									
@@ -4670,19 +5101,27 @@ var routerManager = Backbone.Router.extend({
 		  	Inicio: "",
 		  	'Tiempo Real': "Tiempo Real"
 		});
+<<<<<<< HEAD
 
       me.socket = io.connect('http://10.102.1.22:3000');    
 
+=======
+		
+		me.socket = io.connect('http://104.130.28.12:27000');   
+>>>>>>> 80574c842ff02a7ff141fca6e79404b20b2c87bf
 
         me.socket.on('question', function(question, user){
+        	console.log('question')
         	me.questionPlayer(question, user);
         });
 
         me.socket.on('time', function(time, user){
+        	console.log('time')
         	me.timePlayer(time, user);
         });
 
         me.socket.on('answer', function(answer, user, questionId, pointsForQuestion, answerId){
+        	console.log('answer')
         	me.answerPlayer(answer,user,answerId);
         });
 
@@ -4876,6 +5315,12 @@ var routerManager = Backbone.Router.extend({
 						    	'<button type="button" class="btn btn-primary send-not-duels">Enviar</button>'+
 						    '</div>'+
 						  '</div>'+
+						  '<div class="form-group">'+
+						    '<label  class="col-sm-2 control-label">Notificación a todos los jugadores del torneo</label>'+
+						    '<div class="col-sm-10">'+
+						    	'<button type="button" class="btn btn-primary send-not-players">Enviar</button>'+
+						    '</div>'+
+						  '</div>'+
 					 '</form>');
 
 		container.append(form);
@@ -4998,6 +5443,96 @@ var routerManager = Backbone.Router.extend({
 			        // do something
 			    }
 			});
+		});
+		
+		//Enviar un mensaje a los jugadores
+		form.find(".send-not-players").click(function () {
+			var tournament = form.find('.select-tournament').val();
+			if(!_.isNull(tournament) && tournament != 0)
+			{
+				var modal = $("<div></div>").addClass("modal fade").attr({"tabindex": "-1", "role":"dialog"});
+				var modalDialog = $("<div></div>").addClass("modal-dialog");
+				var modalContent = $("<div></div>").addClass("modal-content");
+				var modalHeader = $("<div></div>").addClass("modal-header");
+				var btnClose = $("<button></button>").attr({"type": "button", "data-dismiss": "modal", "aria-label": "Close"}).addClass("Close.");
+				var spanClose = $("<span></span>").attr("aria-hidden", "true").html("&times;");
+				btnClose.append(spanClose);
+				var titleHeading = $("<h4></h4>").addClass("modal-title").html("Notificar a todos los jugadores");
+				modalHeader.append(titleHeading);
+				var modalBody = $("<div></div>").addClass("modal-body");
+				
+				var formBody = $("<form></form>");
+				
+				var divSubject = $("<div></div>").addClass("form-group");
+				var labelSubject = $("<label></label>").attr({"for": "subjectMessage"}).html("Asunto");
+				var subject = $("<input></input").attr({"type": "text", "placeholder": "Asunto", "id": "subjectMessage"}).addClass("form-control");
+				divSubject.append(labelSubject).append(subject);
+				
+				var divBody = $("<div></div>").addClass("form-group");
+				var labelBody = $("<label></label>").attr({"for": "bodyMessage"}).html("Mensaje");
+				var body = $("<textarea></textarea").attr({"placeholder": "Mensaje", "id": "bodyMessage", "rows": "5"}).addClass("form-control");
+				divBody.append(labelBody).append(body);
+				
+				formBody.append(divSubject).append(divBody);
+				modalBody.append(formBody);
+
+				var modalFooter = $("<div></div>").addClass("modal-footer");
+				var btnCancel = $("<button></button>").addClass("btn btn-default").attr("data-dismiss", "modal").html("Cancelar");
+				var btnSend = $("<button></button>").addClass("btn btn-primary").html("Enviar");
+				modalFooter.append(btnCancel).append(btnSend);
+
+				modal.append(modalDialog.append(modalContent.append(modalHeader).append(modalBody).append(modalFooter)));
+				$(document.body).append(modal);
+				modal.modal("show");
+
+				btnSend.click(function(){
+					var su = subject.val();
+					var bo = body.val();
+					if(!_.isNull(su) && !_.isNull(bo))
+					{
+						$.confirm({
+						    text: "Desea enviar este mensaje a los jugadores ?",
+						    confirm: function(button) {
+
+						    	var data = {
+						    		"tournamentId": tournament,
+						    		"subject": su,
+						    		"message": bo
+						    	}
+			        			parameters = {
+									type: "GET",
+								    url: "home/player/all/notification",
+							        contentType: 'application/json',
+					            	dataType: "json",
+					            	data: data,
+			            	     	statusCode: {
+								      401:function() { 
+								      	window.location = '';
+								      }
+								    },
+							        success: function(data){
+							        	modal.modal("hide");
+							        },
+							        error: function(){}
+								};
+
+								$.ajax(parameters);
+						    },
+						    cancel: function(button) {
+						        // do something
+						    }
+						});
+					}
+					else{
+						alert("Por favor rellene los campos Asunto y Mensaje");
+					}
+					
+				})
+			}
+			else{
+				alert("Por favor seleccione un torneo");
+			}
+			
 		});
 
 		form.submit(function (e) {

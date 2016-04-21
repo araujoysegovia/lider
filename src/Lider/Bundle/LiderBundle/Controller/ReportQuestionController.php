@@ -105,8 +105,10 @@ class ReportQuestionController extends Controller
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
 
-        $questions = $dm->getRepository('LiderBundle:QuestionHistory')->getGeneralCategoryReport();
-        //print_r($questions);
+        $request = $this->get("request");
+        $tournamentId = $request->get("tournament");
+        $questions = $dm->getRepository('LiderBundle:QuestionHistory')->getGeneralCategoryReport($tournamentId);
+        // print_r($questions->toArray());
         
 
         return $this->get("talker")->response(array('total'=>count($questions), 'data'=>$questions->toArray()));

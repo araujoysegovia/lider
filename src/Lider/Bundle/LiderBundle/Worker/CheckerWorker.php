@@ -183,8 +183,11 @@ class CheckerWorker
     {				
 		//$duels = $game->getDuels()->findBy(array("active" => false, "finished" => true));
 		$em = $this->co->get('doctrine')->getManager();
+		
+		$repoParameters = $em->getRepository("LiderBundle:Parameters");
+		
         // $game = $em->getRepository("LiderBundle:Game")->find($gameId);
-		$parameters = $this->co->get('parameters_manager')->getParameters();
+		///$parameters = $this->co->get('parameters_manager')->getParameters();
 		$duels = $em->getRepository('LiderBundle:Duel')->findBy(array("finished" => false, "game" =>$game));
 		echo count($duels);
 		if(count($duels) == 0){
@@ -193,17 +196,25 @@ class CheckerWorker
 			{
 				$team = $em->getRepository('LiderBundle:Team')->find($win);
                 $game->setTeamWinner($team);
-                echo "SUme los puntos del equipo ".$team->getName()." tenia ".$team->getPoints()." y ahora tendra ".($team->getPoints()+$parameters['gamesParameters']['gamePoints'])."\n";
-				$team->setPoints($team->getPoints() + $parameters['gamesParameters']['gamePoints']);
+                ///echo "SUme los puntos del equipo ".$team->getName()." tenia ".$team->getPoints()." y ahora tendra ".($team->getPoints()+$parameters['gamesParameters']['gamePoints'])."\n";
+				///$team->setPoints($team->getPoints() + $parameters['gamesParameters']['gamePoints']);
+                
+                $gamePoints = $repoParameters->findOneBy(array('name'=>'gamePoints'));
+				$gamePoints = $gamePoints->getValue(); 
+				echo "\nSume los puntos del equipo ".$team->getName()." tenia ".$team->getPoints()." y ahora tendra ".($team->getPoints()+$gamePoints)."\n";
+				$team->setPoints($team->getPoints() + $gamePoints);
+				
                 $gameManager = $this->co->get('game_manager');
                 // echo "el juego ".$game->getId(). " se detendra\n";
                 $gameManager->stopGame($game->getId());
                 if($game->getTeamOne()->getId() == $win->getId())
                 {
-                    $game->setPointOne($parameters['gamesParameters']['gamePoints']);
+                    //$game->setPointOne($parameters['gamesParameters']['gamePoints']);
+                	$game->setPointOne($gamePoints);
                 }
                 else{
-                    $game->setPointTwo($parameters['gamesParameters']['gamePoints']);
+                    //$game->setPointTwo($parameters['gamesParameters']['gamePoints']);
+                	$game->setPointTwo($gamePoints);
                 }
                 // $game->setActive(false);
                 // $game->setFinished(true);
@@ -441,13 +452,18 @@ class CheckerWorker
         echo "se va a generar un extra duelo entre ". $team1->getName()." y el equipo ".$team2->getName();
         $gameManager = $this->co->get('game_manager');
         $em = $this->co->get('doctrine')->getManager();
-        $pm = $this->co->get('parameters_manager');
-        $params = $pm->getParameters();
+        
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
+//         $pm = $this->co->get('parameters_manager');
+//         $params = $pm->getParameters();
     	$player1 = $this->selectPlayer($team1, $game);
     	$player2 = $this->selectPlayer($team2, $game);
         $date = new \DateTime();
         $endDate = new \DateTime();
-        $endDate->modify('+'.$params['gamesParameters']['timeDuel'].' day');
+        $pTimeDuel = $repoParameters->findOneBy(array('name'=>'timeDuel'));
+        $pTimeDuel = $pTimeDuel->getValue();
+        //$endDate->modify('+'.$params['gamesParameters']['timeDuel'].' day');
+        $endDate->modify('+'.$pTimeDuel.' day');
     	$duel = new Duel();
     	$duel->setGame($game);
     	$duel->setStartdate($date);
@@ -456,7 +472,10 @@ class CheckerWorker
         $duel->setPlayerTwo($player2);
         $duel->setTournament($game->getTournament());
         $duel->setExtraDuel(true);
-        $countQuestion = $params['gamesParameters']['countQuestionDuelExtra'];
+        //$countQuestion = $params['gamesParameters']['countQuestionDuelExtra'];
+        $countQuestion = $repoParameters->findOneBy(array('name'=>'countQuestionDuelExtra'));
+        $countQuestion = $countQuestion->getValue();
+        
         $gameManager->generateQuestions($countQuestion, $duel);
         $em->persist($duel);
         $em->flush();

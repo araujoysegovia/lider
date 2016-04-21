@@ -165,6 +165,8 @@ class SimulatorWorker
         $questionHistory = $dm->getRepository("LiderBundle:QuestionHistory")
                      ->findOneBy(array("id" => $token));
         
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
+        
         if(!$questionHistory){
             throw new \Exception("Question no found");
         }
@@ -176,9 +178,11 @@ class SimulatorWorker
         $now = new \DateTime();
        // $diffTime = $now->format('U') - $questionHistory->getEntryDate()->format('U');
         
-        $parameters = $this->getContainer()->get('parameters_manager')->getParameters();
-        $maxSec = $parameters['gamesParameters']['timeQuestionDuel'];
-
+        //$parameters = $this->getContainer()->get('parameters_manager')->getParameters();
+        //$maxSec = $parameters['gamesParameters']['timeQuestionDuel'];
+        $maxSec = $repoParameters->findOneBy(array('name'=>'timeQuestionDuel'));
+        $maxSec = $maxSec->getValue();
+        
         $question = $em->getRepository("LiderBundle:Question")
                        ->findOneBy(array("id" =>$questionId, "deleted" => false));
 
@@ -214,19 +218,30 @@ class SimulatorWorker
             $questionHistory->setFind(true);                
             $user->setWonGames($wonGames + 1);
 
-            if(($questionHistory->getExtraQuestion() && $parameters['gamesParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
+            $pointExtraDuel = $repoParameters->findOneBy(array('name'=>'pointExtraDuel'));
+            $pointExtraDuel = $pointExtraDuel->getValue();
+            if(($questionHistory->getExtraQuestion() && $pointExtraDuel == 'true') || !$questionHistory->getExtraQuestion())
             {
-                $this->applyPoints($questionHistory, $parameters, $team, $user, $duel);
+          		$this->applyPoints($questionHistory, $parameters, $team, $user, $duel);
             }
+//             if(($questionHistory->getExtraQuestion() && $parameters['gamesParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
+//             {
+//                 $this->applyPoints($questionHistory, $parameters, $team, $user, $duel);
+//             }
 
         }else{
             $res = array();
             $res['success'] = false;
             $res['code'] = '02';   /*Respuesta errada*/
 
-            if($parameters['gamesParameters']['answerShowPractice'] == 'true'){
-                $res['answerOk'] = $questionHistory->getAnswerOk()->getAnswerId();
+            $answerShowPractice = $repoParameters->findOneBy(array('name'=>'answerShowPractice'));
+            $answerShowPractice = $answerShowPractice->getValue();
+            if($answerShowPractice == 'true'){
+            	$res['answerOk'] = $questionHistory->getAnswerOk()->getAnswerId();
             }
+//             if($parameters['gamesParameters']['answerShowPractice'] == 'true'){
+//                 $res['answerOk'] = $questionHistory->getAnswerOk()->getAnswerId();
+//             }
 
             $user->setLostGames($lostGames + 1);
         }
@@ -269,8 +284,11 @@ class SimulatorWorker
     private function applyPoints(&$questionHistory, $parameters, $team, $user, &$duel)
     {
         $em = $this->getContainer()->get('doctrine')->getManager();
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
         if($questionHistory->getUseHelp()){
-            $pointsHelp = $parameters['gamesParameters']['questionPointsHelp'];
+            //$pointsHelp = $parameters['gamesParameters']['questionPointsHelp'];
+        	$pointsHelp = $repoParameters->findOneBy(array('name'=>'questionPointsHelp'));
+        	$pointsHelp = $pointsHelp->getValue();
             $questionHistory->setPoints($pointsHelp);
             $playerPoint = new \Lider\Bundle\LiderBundle\Entity\PlayerPoint();
             $playerPoint->setPoints($pointsHelp);
@@ -279,7 +297,9 @@ class SimulatorWorker
             $playerPoint->setPlayer($user);
             $this->applyPointsToDuel($duel, $user, $pointsHelp);
         }else{
-            $points = $parameters['gamesParameters']['questionPoints'];
+            //$points = $parameters['gamesParameters']['questionPoints'];
+        	$points = $repoParameters->findOneBy(array('name'=>'questionPoints'));
+        	$points = $pointsHelp->getValue();
             $questionHistory->setPoints($points);
             $playerPoint = new \Lider\Bundle\LiderBundle\Entity\PlayerPoint();
             $playerPoint->setPoints($points);

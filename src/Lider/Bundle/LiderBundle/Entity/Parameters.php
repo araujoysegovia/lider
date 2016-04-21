@@ -5,12 +5,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Office class
- * @ORM\Table(name="office")
- * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\OfficeRepository")
+ * Parameters class
+ * @ORM\Table(name="parameters")
+ * @ORM\Entity(repositoryClass="Lider\Bundle\LiderBundle\Repository\MainRepository")
  */
-class Office extends Entity
-{
+class Parameters{
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -19,24 +19,24 @@ class Office extends Entity
     private $id;
 
     /**
+	 * @ORM\Column(type="string", length=1000, unique=true)
+	 * @Assert\NotBlank()
+     * @Assert\Length(max=1000)
+	 */
+	private $name;
+
+	/**
 	 * @ORM\Column(type="string", length=100)
 	 * @Assert\NotBlank()
      * @Assert\Length(max=100)
 	 */
-	private $name;
+	private $value;
 	
-	/**
-	 * @ORM\Column(type="string", length=1000)
-	 * @Assert\NotBlank()
-     * @Assert\Length(max=1000)
-	 */
-	private $city;
-
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -47,7 +47,8 @@ class Office extends Entity
      * Set name
      *
      * @param string $name
-     * @return Office
+     *
+     * @return Parameters
      */
     public function setName($name)
     {
@@ -59,7 +60,7 @@ class Office extends Entity
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -67,25 +68,26 @@ class Office extends Entity
     }
 
     /**
-     * Set city
+     * Set value
      *
-     * @param string $city
-     * @return Office
+     * @param string $value
+     *
+     * @return Parameters
      */
-    public function setCity($city)
+    public function setValue($value)
     {
-        $this->city = $city;
+        $this->value = $value;
 
         return $this;
     }
 
     /**
-     * Get city
+     * Get value
      *
-     * @return string 
+     * @return string
      */
-    public function getCity()
+    public function getValue()
     {
-        return $this->city;
+        return $this->value;
     }
 }

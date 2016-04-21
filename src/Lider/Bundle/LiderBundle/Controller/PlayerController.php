@@ -50,7 +50,7 @@ class PlayerController extends Controller
     
     public function loginWithGoogleAction(Request $request){
 
-    	$em = $this->getDoctrine()->getEntityManager();
+    	$em = $this->getDoctrine()->get0Manager();
     	$dm = $this->get('doctrine_mongodb')->getManager();
     	
     	$atoken = $request->get("access_token");
@@ -129,7 +129,7 @@ class PlayerController extends Controller
 
     private function login($user, $session = null)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $dm = $this->get('doctrine_mongodb')->getManager();
         $request = $this->get("request");
         if(is_null($session))
@@ -208,12 +208,30 @@ class PlayerController extends Controller
         // $arr['user']['gameInfo'] = $playerGameInfo;
         $parameters = $this->get('parameters_manager')->getParameters();
 
+        
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
+        
+        $ptimeQuestionPractice = $repoParameters->findOneBy(array('name'=>'timeQuestionPractice'));
+        $ptimeQuestionDuel = $repoParameters->findOneBy(array('name'=>'timeQuestionDuel'));
+        $ptimeGame = $repoParameters->findOneBy(array('name'=>'timeGame'));
+        $ptimeDuel = $repoParameters->findOneBy(array('name'=>'timeDuel'));
+        //echo "\n".$ptimeQuestionPractice->getValue();
+        
         $arr['config'] = array(
-            "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'] ,
-            "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
-            "timeGame" => $parameters['gamesParameters']['timeGame'],
-            "timeDuel" => $parameters['gamesParameters']['timeDuel']
-        ); 
+        		"timeQuestionPractice" => $ptimeQuestionPractice->getValue(),
+        		"timeQuestionDuel" => $ptimeQuestionDuel->getValue(),
+        		"timeGame" => $ptimeGame->getValue(),
+        		"timeDuel" => $ptimeDuel->getValue()
+        );
+        
+//         $arr['config'] = array(
+//             "timeQuestionPractice" => $parameters['gamesParameters']['timeQuestionPractice'] ,
+//             "timeQuestionDuel" => $parameters['gamesParameters']['timeQuestionDuel'],
+//             "timeGame" => $parameters['gamesParameters']['timeGame'],
+//             "timeDuel" => $parameters['gamesParameters']['timeDuel']
+//         ); 
+
+        
 
         return $arr;
     }
@@ -687,6 +705,57 @@ class PlayerController extends Controller
 
         return $this->get("talker")->response(array('total' => count($rq), 'data' => $rq)); 
 
+    }
+
+    public function notificationAllAction()
+    {
+        $gearman = $this->get('gearman');
+      
+        $request = $this->get("request");
+     
+        $tournament = $request->get('tournamentId');
+        $subject = $request->get("subject");
+        $message = $request->get("message");
+
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmailToPlayersFromTournament', json_encode(array(
+                'tournament' => $tournament,
+                "subject" => $subject,
+                "content" => array(
+                    "title" => "Notificacion del administrador",
+                    "subjectMessage" => $subject,
+                    "body" => $message
+                )
+            )));
+   
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
+    }
+
+    public function notificationPlayerAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repoPlayer = $em->getRepository("LiderBundle:Player");
+        $gearman = $this->get('gearman');
+      
+        $request = $this->get("request");
+     
+        $playerId = $request->get('player');
+        $subject = $request->get("subject");
+        $message = $request->get("message");
+        $template = "LiderBundle:Templates:emailnotification.html.twig";
+        $player = $repoPlayer->find($playerId);
+
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~sendEmail', json_encode(array(
+                "subject" => $subject,
+                "to" => $player->getEmail(),
+                "viewName" => $template,
+                "content" => array(
+                    "title" => "Notificacion del administrador",
+                    "subjectMessage" => $subject,
+                    "body" => $message
+                )
+            )));
+   
+        return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
 
     public function notificationDuelAction()

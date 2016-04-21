@@ -5,6 +5,8 @@ var teamBuilder = function () {
 	}
 
 }
+//var server = 'http://lider.sifinca.net/';
+var server = 'http://www.sifinca.net/lider/web/app.php/';
 
 teamBuilder.prototype = {
 
@@ -231,14 +233,22 @@ teamBuilder.prototype = {
 		_.each(players, function(value, key){			
 
 			if(value){
-				var img = value.image;
-				if(!img){
-					img = 'http://soylider.sifinca.net/bundles/lider/images/avatar.png'
+//				var img = value.image;
+//				if(!img){
+//					img = 'http://172.99.68.200/bundles/lider/images/avatar.png'
+//				}
+				var img = server;
+				if(_.isEmpty(value.image)){
+					img = img + "web/bundles/lider/images/avatar.png";
+				}else{
+					img = img + "web/admin/image/"+value.image;
 				}
+				var imgError = server + 'web/bundles/lider/images/avatar.png';
 				//ondragstart="drag(event)"
 				var panel = $('<div id="player-'+value.id+'" class="panel-player" draggable="true" >'+
 								'<div class="img-player">'+
 									'<img src='+img+'>'+
+									//'<img src='+img+' onerror='+imgError+'>'+
 								'</div>'+
 								'<div class="name-player"><p>'+value.name.toLowerCase() +'</p></div>'+
 							+'</div>');

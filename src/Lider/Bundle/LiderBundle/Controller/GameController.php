@@ -26,8 +26,10 @@ class GameController extends Controller
 
         $data = json_decode($data, true);
 
-        $parameters = $this->get('parameters_manager')->setParameters($data);
 
+        //$parameters = $this->get('parameters_manager')->setParameters($data);
+
+        echo "entro aqui 1";
 		 
 		return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
     }
@@ -36,10 +38,14 @@ class GameController extends Controller
      * Obtener parametros de configuracion desde el archivo .yml
      */    
     public function getParametersAction(){
+    	
+    	echo "entro aqui 2";
+    	
+    	//ECHO AQUIODAOID
+        //$parameters = $this->get('parameters_manager')->getParameters();
 
-        $parameters = $this->get('parameters_manager')->getParameters();
-
-    	return $this->get("talker")->response($parameters);
+    	
+    	//return $this->get("talker")->response($parameters);
     }
 
     /**

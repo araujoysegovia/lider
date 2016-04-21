@@ -54,6 +54,8 @@ class TournamentController extends Controller
         $request = $this->get("request");
         $data = $request->getContent();
         
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
+        
         if(empty($data))
             throw new \Exception("No data");        
 
@@ -69,9 +71,12 @@ class TournamentController extends Controller
         $tournament = $em->getRepository('LiderBundle:Tournament')->find($tournamentId);
         $tournament->setEnabledLevel(true);
         $em->flush();
-        $pm = $this->get('parameters_manager');
-        $params = $pm->getParameters();
-        $interval = $params['gamesParameters']['timeGame'];
+//         $pm = $this->get('parameters_manager');
+//         $params = $pm->getParameters();
+//         $interval = $params['gamesParameters']['timeGame'];
+        $interval = $repoParameters->findOneBy(array('name'=>'timeGame'));
+        $interval = $maxSec->getValue();
+        
         $this->get('game_manager')->generateGame($tournamentId, $interval, $date);
 
         // $this->get('game_manager')->generateGame(3, 7);

@@ -189,6 +189,7 @@ class GroupController extends Controller
     {
         $em = $this->getDoctrine()->getEntityManager();
         $dm = $this->get('doctrine_mongodb')->getManager();
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
         $repo = $em->getRepository("LiderBundle:Group");
         $user = $this->container->get('security.context')->getToken()->getUser();
         if($user->getTeam()){
@@ -277,7 +278,9 @@ class GroupController extends Controller
                         if($game['team_winner']){
                             
                             if($game['team_winner']['id'] == $team->getId()){
-                                $points = $points + $parametersManager['gamesParameters']['gamePoints'];
+                                //$points = $points + $parametersManager['gamesParameters']['gamePoints'];
+                            	$points = $repoParameters->findOneBy(array('name'=>'gamePoints'));
+                            	$points = $points->getValue();
                                 $ls['win']++;
                             }else{
                                 $ls['loose']++;

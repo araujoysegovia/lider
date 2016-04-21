@@ -34,6 +34,9 @@ class QuestionController extends Controller
         $entity->setUser($user);
         $entity->setChecked(true);
         
+        $date =  new \DateTime();
+        $entity->setDateLastChecked($date);
+        
         $em->flush();
         
         return $this->get("talker")->response($this->getAnswer(true, $this->update_successful));
@@ -100,6 +103,8 @@ class QuestionController extends Controller
         
         $em = $this->getDoctrine()->getEntityManager();
         $request = $this->get("request");
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
+                
         $data = $request->getContent();
         
         if(empty($data) || !$data)
@@ -126,8 +131,19 @@ class QuestionController extends Controller
         $now = new \DateTime();
         $diffTime = $now->format('U') - $entity->getEntryDate()->format('U');
         
-        $parameters = $this->get('parameters_manager')->getParameters();
+        //$parameters = $this->get('parameters_manager')->getParameters();
 
+       
+        
+//         $ptimeQuestionPractice = $repoParameters->findOneBy(array('name'=>'timeQuestionPractice'));
+//         $ptimeQuestionDuel = $repoParameters->findOneBy(array('name'=>'timeQuestionDuel'));
+//         $ptimeGame = $repoParameters->findOneBy(array('name'=>'timeGame'));
+//         $ptimeDuel = $repoParameters->findOneBy(array('name'=>'timeDuel'));
+        //echo "\n".$ptimeQuestionPractice->getValue();
+        
+        
+        
+        
         $question = $em->getRepository("LiderBundle:Question")->findOneBy(array("id" =>$questionId, "deleted" => false));
         if(empty($question))
             throw new \Exception("No entity found");  
@@ -146,10 +162,11 @@ class QuestionController extends Controller
             }
         }        
 
-        $parameters = $this->get('parameters_manager')->getParameters();
-        $maxSec = $parameters['gamesParameters']['timeQuestionPractice'];
-
-        if($diffTime >= $maxSec || $answerId=="no-answer"){
+        //$parameters = $this->get('parameters_manager')->getParameters();
+        //$maxSec = $parameters['gamesParameters']['timeQuestionPractice'];
+        $maxSec = $repoParameters->findOneBy(array('name'=>'timeQuestionPractice'));
+        $maxSec = $maxSec->getValue();
+        if($diffTime >= $maxSec || $questionId=="no-answer"){
             $res = array();
             $res['success'] = false;
             $res['code'] = '01';  /*Tiempo agotado*/
@@ -168,9 +185,14 @@ class QuestionController extends Controller
                 $res['success'] = false;
                 $res['code'] = '02';   /*Respuesta errada*/
 
-                if($parameters['gamesParameters']['answerShowPractice'] == 'true'){
-                    $res['answerOk'] = $entity->getAnswerOk()->getAnswerId();
-                }
+                $panswerShowPractice = $repoParameters->findOneBy(array('name'=>'answerShowPractice'));
+                $panswerShowPractice = $panswerShowPractice->getValue();
+                if($panswerShowPractice == 'true'){
+                	$res['answerOk'] = $entity->getAnswerOk()->getAnswerId();
+               	}
+//                 if($parameters['gamesParameters']['answerShowPractice'] == 'true'){
+//                     $res['answerOk'] = $entity->getAnswerOk()->getAnswerId();
+//                 }
             }
             
 
@@ -353,9 +375,13 @@ class QuestionController extends Controller
         $now = new \DateTime();
         $diffTime = $now->format('U') - $questionHistory->getEntryDate()->format('U');
         
-        $parameters = $this->get('parameters_manager')->getParameters();
-        $maxSec = $parameters['gamesParameters']['timeQuestionDuel'];
-
+        //$parameters = $this->get('parameters_manager')->getParameters();
+        //$maxSec = $parameters['gamesParameters']['timeQuestionDuel'];
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
+        
+        $maxSec = $repoParameters->findOneBy(array('name'=>'timeQuestionDuel'));
+        $maxSec = $maxSec->getValue();
+        
         $question = $em->getRepository("LiderBundle:Question")
                        ->findOneBy(array("id" =>$questionId, "deleted" => false));
 
@@ -408,19 +434,32 @@ class QuestionController extends Controller
                 $questionHistory->setFind(true);                
                 $user->setWonGames($wonGames + 1);
 
-                if(($questionHistory->getExtraQuestion() && $parameters['gamesParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
+                $ppointExtraDuel = $repoParameters->findOneBy(array('name'=>'pointExtraDuel')); 
+                $ppointExtraDuel = $ppointExtraDuel->getValue();
+                
+                if(($questionHistory->getExtraQuestion() && $ppointExtraDuel == 'true') || !$questionHistory->getExtraQuestion())
                 {
-                    $this->applyPoints($questionHistory, $parameters, $team, $user, $duel, $question);
+                	$this->applyPoints($questionHistory, $parameters, $team, $user, $duel, $question);
                 }
+                
+//                 if(($questionHistory->getExtraQuestion() && $parameters['gamesParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
+//                 {
+//                     $this->applyPoints($questionHistory, $parameters, $team, $user, $duel, $question);
+//                 }
 
             }else{
                 $res = array();
                 $res['success'] = false;
                 $res['code'] = '02';   /*Respuesta errada*/
 
-                if($parameters['gamesParameters']['answerShowPractice'] == 'true'){
-                    $res['answerOk'] = $questionHistory->getAnswerOk()->getAnswerId();
+                $panswerShowPractice = $repoParameters->findOneBy(array('name'=>'answerShowPractice')); 
+                $panswerShowPractice = $ppointExtraDuel->getValue();
+                if($panswerShowPractice == 'true'){
+                	$res['answerOk'] = $questionHistory->getAnswerOk()->getAnswerId();
                 }
+//                 if($parameters['gamesParameters']['answerShowPractice'] == 'true'){
+//                     $res['answerOk'] = $questionHistory->getAnswerOk()->getAnswerId();
+//                 }
 
                 $user->setLostGames($lostGames + 1);
             }
@@ -455,11 +494,15 @@ class QuestionController extends Controller
         $res['lastOne'] = $lastOne;
 
         $parameters = $this->get('parameters_manager')->getParameters();
-        $pointsForQuestion = $parameters['gamesParameters']['questionPoints'];
+        //$pointsForQuestion = $parameters['gamesParameters']['questionPoints'];
+        $pointsForQuestion = $repoParameters->findOneBy(array('name'=>'questionPoints'));
+        $pointsForQuestion = $pointsForQuestion->getValue();
 
         $help = $questionHistory->getUseHelp();
         if($help){
-            $pointsForQuestion = $parameters['gamesParameters']['questionPointsHelp'];
+            //$pointsForQuestion = $parameters['gamesParameters']['questionPointsHelp'];
+        	$pointsForQuestion = $repoParameters->findOneBy(array('name'=>'questionPointsHelp'));
+        	$pointsForQuestion = $pointsForQuestion->getValue();
         }
         
 
@@ -499,7 +542,9 @@ class QuestionController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         if($questionHistory->getUseHelp()){
-            $pointsHelp = $parameters['gamesParameters']['questionPointsHelp'];
+            //$pointsHelp = $parameters['gamesParameters']['questionPointsHelp'];
+        	$pointsHelp = $repoParameters->findOneBy(array('name'=>'questionPointsHelp'));
+        	$pointsHelp = $pointsHelp->getValue();
             $questionHistory->setPoints($pointsHelp);
             $playerPoint = new PlayerPoint();                   
             $playerPoint->setPoints($pointsHelp);
@@ -510,7 +555,9 @@ class QuestionController extends Controller
             $playerPoint->setQuestion($question);
             $this->applyPointsToDuel($duel, $user, $pointsHelp);
         }else{
-            $points = $parameters['gamesParameters']['questionPoints'];
+            //$points = $parameters['gamesParameters']['questionPoints'];
+        	$points = $repoParameters->findOneBy(array('name'=>'questionPoints'));
+        	$points = $points->getValue();
             $questionHistory->setPoints($points);
             $playerPoint = new PlayerPoint();                   
             $playerPoint->setPoints($points);

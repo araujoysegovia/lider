@@ -18,3 +18,4 @@ parameters:
     mongo_port: 27017
     gearman_host: 10.102.1.21
     gearman_port: 4730
+    mongo_config: 'admin:ZBRJTuFjZyLX@104.130.28.12:27017'
