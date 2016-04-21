@@ -166,7 +166,7 @@ class NotificationWorker
             'duelId' => base64_encode($duel->getId())
         );
         try{
-            //$send = $notificationService->sendEmail($subject, $this->from, $player->getEmail(), null, "LiderBundle:Templates:duelnotification.html.twig", $content);
+            $send = $notificationService->sendEmail($subject, $this->from, $player->getEmail(), null, "LiderBundle:Templates:duelnotification.html.twig", $content);
             echo "Mensaje Enviado de duelo a ".$player->getEmail();
         }catch(\Exception $e){
             echo $e->getMessage();
@@ -216,7 +216,7 @@ class NotificationWorker
                 }
                 $content['members'] = $members;
                 try{
-                    //$send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
+                    $send = $notificationService->sendEmail($subject, $this->from, $to, null, "LiderBundle:Templates:notificationteam.html.twig", $content);
                     echo "Mensaje Enviado";
                     echo "\n $this->to";
                 }catch(\Exception $e){

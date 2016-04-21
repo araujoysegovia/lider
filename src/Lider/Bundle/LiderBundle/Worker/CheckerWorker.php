@@ -59,11 +59,18 @@ class CheckerWorker
         echo "Cantidad de preguntas del jugador ".$duel->getPlayerTwo()->getname()." = ".count($qhs)."\n";
 		if(count($qhf) == 0 && count($qhs) == 0){
 			echo "entre cuando no hay preguntas\n";
+            echo "\nFinalizar duelo: ".$duel->getId();
 			$this->co->get('game_manager')->stopDuel($duel);
+
+            echo "\nDespues de setear ";
+            echo "\nActive :".$duel->getActive();
+            echo "\nFinished: ".$duel->getFinished();
+
+
             $point1 = $duel->getPointOne();
             $point2 = $duel->getPointTwo();
-            echo "Cantidad de puntos del jugador ".$duel->getPlayerOne()->getname()." = ".$point1." En el equipo ".$duel->getPlayerOne()->getTeam()->getName()."\n";
-            echo "Cantidad de puntos del jugador ".$duel->getPlayerTwo()->getname()." = ".$point2." En el equipo ".$duel->getPlayerTwo()->getTeam()->getName()."\n";
+            echo "\nCantidad de puntos del jugador ".$duel->getPlayerOne()->getname()." = ".$point1." En el equipo ".$duel->getPlayerOne()->getTeam()->getName()."\n";
+            echo "\nCantidad de puntos del jugador ".$duel->getPlayerTwo()->getname()." = ".$point2." En el equipo ".$duel->getPlayerTwo()->getTeam()->getName()."\n";
             if($point1 < $point2)
             {
                 echo "Gano El jugador ".$duel->getPlayerTwo()->getName()." ".$duel->getPlayerTwo()->getLastname()."\n";
@@ -76,7 +83,14 @@ class CheckerWorker
             }
             $duel->setActive(false);
             $duel->setFinished(true);
+
+
             $em->flush();
+
+            
+            echo "\nDespues de setear 2";
+            echo "\nActive :".$duel->getActive();
+            echo "\nFinished: ".$duel->getFinished();
             // $gameId = $duel->getGame()->getId();
             $game = $duel->getGame();
 			$this->checkGame($game);

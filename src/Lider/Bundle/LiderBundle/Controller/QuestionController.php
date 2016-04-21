@@ -149,7 +149,7 @@ class QuestionController extends Controller
         $parameters = $this->get('parameters_manager')->getParameters();
         $maxSec = $parameters['gamesParameters']['timeQuestionPractice'];
 
-        if($diffTime >= $maxSec || $questionId=="no-answer"){
+        if($diffTime >= $maxSec || $answerId=="no-answer"){
             $res = array();
             $res['success'] = false;
             $res['code'] = '01';  /*Tiempo agotado*/
@@ -389,7 +389,8 @@ class QuestionController extends Controller
             throw new \Exception("Duel not found");  
 
 
-        if($diffTime >= $maxSec || $questionId=="no-answer"){
+        if($diffTime >= $maxSec || $answerId=="no-answer"){
+
             $res = array();
             $res['success'] = false;
             $res['code'] = '01';  /*Tiempo agotado*/

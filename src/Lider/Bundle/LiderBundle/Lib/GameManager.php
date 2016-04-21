@@ -711,10 +711,15 @@ class GameManager
 	 */
 	public function stopDuel($duel)
 	{
+
 		$duel->setActive(false);
 		$duel->setFinished(true);
 
 		$this->em->flush();
+
+            echo "\nDespues de setear - GameManager";
+            echo "\nActive :".$duel->getActive();
+            echo "\nFinished: ".$duel->getFinished();
 	}
 
 	public function startDuel($duelId)
