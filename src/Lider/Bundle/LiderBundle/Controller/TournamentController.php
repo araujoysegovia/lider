@@ -71,11 +71,13 @@ class TournamentController extends Controller
         $tournament = $em->getRepository('LiderBundle:Tournament')->find($tournamentId);
         $tournament->setEnabledLevel(true);
         $em->flush();
+        
 //         $pm = $this->get('parameters_manager');
 //         $params = $pm->getParameters();
 //         $interval = $params['gamesParameters']['timeGame'];
         $interval = $repoParameters->findOneBy(array('name'=>'timeGame'));
-        $interval = $maxSec->getValue();
+        $interval = $interval->getValue();
+        
         
         $this->get('game_manager')->generateGame($tournamentId, $interval, $date);
 

@@ -168,7 +168,7 @@ class MainRepository extends EntityRepository
     }
 
 
-    public function getArrayEntityWithOneLevel(array $criteria, $orderBy = null, $sresult = null, $limit = null, array $filter = null, $orderType) {
+    public function getArrayEntityWithOneLevel(array $criteria, $orderBy = null, $sresult = null, $limit = null, array $filter = null, $orderType = null) {
 
         $query = $this->getSQLStructure($criteria, $orderBy, $sresult, $limit, $filter, $orderType);
         $sql = $query->getQuery()->getSQL();

@@ -1,10 +1,10 @@
 var max, min;
 //var server = 'http://162.209.101.142/';
 
-var server = 'http://lider.sifinca.net/'
+var server = 'http://lider.sifinca.net/lider/web/app.php';
 //var server = 'http://www.sifinca.net/lider/web/app.php/';
 //var serverFolder = 'http://www.sifinca.net/lider/';
-var serverFolder = 'http://lider.sifinca.net/';
+var serverFolder = 'http://lider.sifinca.net/lider/';
 var parametros = null;
 	
 
@@ -75,10 +75,6 @@ var routerManager = Backbone.Router.extend({
 			if(!(_.isNull(me.socket))){
 				me.socket.removeListener('question');
 			}
-<<<<<<< HEAD
-			
-=======
->>>>>>> 80574c842ff02a7ff141fca6e79404b20b2c87bf
 		}
 	},  
   
@@ -137,15 +133,14 @@ var routerManager = Backbone.Router.extend({
 					title: "Activar Nivel",
 					width: 140,
 			    	template: function(e){
-			    		
 			    		if(e.enabledLevel == false){
 							return '<button type="button" class="btn btn-success btn-sm btn-enabled-level">Activar</button>';
 						}else{
 							
 							if(e.active){
-								return '<button type="button" class="btn btn-success btn-sm" >Activar</button>';
+								return '<button type="button" class="btn btn-success btn-sm btn-enabled-level" >Activar</button>';
 							}else{
-								return '<button type="button" class="btn btn-success btn-sm" disabled="disabled">Activar</button>';
+								return '<button type="button" class="btn btn-success btn-sm" disabled="disabled">Finalizado</button>';
 							}
 							
 						}
@@ -926,7 +921,7 @@ var routerManager = Backbone.Router.extend({
 							//console.log("adijadjai")
 							//src = src + "/app.php/image/"+e.image;
 							//src = server+"web/admin/image/"+e.image;
-							src = src + "image/"+e.image;
+							src = "image/"+e.image;
 						}
 						var img = "<div class='img-question'>"+
 								     	"<img data-id='"+e.id+"' src='"+src+"' width = '40px' height= '40px'/>"+
@@ -1821,7 +1816,7 @@ var routerManager = Backbone.Router.extend({
 					template: function(e){
 						var src = server;
 						if(_.isEmpty(e.image)){
-							src = srcFolder + "web/bundles/lider/images/team.png";
+							src = serverFolder + "web/bundles/lider/images/team.png";
 						}else{
 							//src = src + "web/admin/image/"+e.image;
 							src = src + "image/"+e.image;
@@ -2584,6 +2579,7 @@ var routerManager = Backbone.Router.extend({
 
 	reportByPractice: function () {
 		
+		alert('WORKING...');
 		this.removeContent();
 		this.buildbreadcrumbs({
 		  	Inicio: "",
@@ -3682,8 +3678,15 @@ var routerManager = Backbone.Router.extend({
 					var tr = $('<tr class="tr-game"></tr>').css('cursor', 'pointer').css('margin-top', '10px');
 					var status = $('<td style="vertical-align: middle;"><div style="width:5px; height: 50px; margin-top:10px; margin-bottom: 10px;" class="div-game"></div></td>').css('width', '15px');
 					tr.append(status);					
-
-					var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+					
+					var src = server;
+					if(_.isEmpty(game.team_one.image)){
+						src = serverFolder + "web/bundles/lider/images/team.png";
+					}else{
+						src = src + "image/"+game.team_one.image;
+					}				
+					
+					var img1 = $('<td style="vertical-align: middle;"><img class="img-circle" src="'+src+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
 					tr.append(img1);
 
 					var name1 = $('<td style="vertical-align: middle;"><span>'+game.team_one.name+'</span></td>');
@@ -3695,7 +3698,14 @@ var routerManager = Backbone.Router.extend({
 					var name2 = $('<td style="vertical-align: middle;"><span>'+game.team_two.name+'</span></td>');
 					tr.append(name2);
 
-					var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
+					var src2 = server;
+					if(_.isEmpty(game.team_two.image)){
+						src2 = serverFolder + "web/bundles/lider/images/team.png";
+					}else{
+						src2 = src2 + "image/"+game.team_two.image;
+					}	
+					
+					var img2 = $('<td style="vertical-align: middle;"><img class="img-circle" src="'+src2+'?width=50&height=50"/></td>').css('width', '70px').css('text-align', 'center');
 					tr.append(img2);
 
 					tr.click(function(){												
@@ -4142,14 +4152,27 @@ var routerManager = Backbone.Router.extend({
 
 				var tableDuels = $('<table></table>').css('width', '100%');
 				
+				var src = server;
+				if(_.isEmpty(game.team_one.image)){
+					src = serverFolder + "web/bundles/lider/images/team.png";
+				}else{
+					src = sr2 + "image/"+game.team_one.image;
+				}
+				var src2 = server;
+				if(_.isEmpty(game.team_two.image)){
+					src2 = serverFolder + "web/bundles/lider/images/team.png";
+				}else{
+					src2 = src2 + "image/"+game.team_two.image;
+				}
+				
 				var trTeamDuels = $('<thead>'+
 									 '<tr>'+
 									 
-								    	'<td colspan="5" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+game.team_one.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_one.name+'</h4></td>'+
+								    	'<td colspan="5" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="'+src+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_one.name+'</h4></td>'+
 								    	
 								    	'<td style="vertical-align: middle; width: 50px; text-align: center;"><h4>VS</h4></td>'+
 								    	
-								    	'<td colspan="5" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="image/'+game.team_two.image+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_two.name+'</h4></td>'+
+								    	'<td colspan="5" style="vertical-align: middle; text-align: center;"><img class="img-circle" src="'+src+'?width=50&height=50"/><br/><h4 style="margin-bottom:40px;">'+game.team_two.name+'</h4></td>'+
 
 								    '</tr>'+
 							   '</thead>');
@@ -4563,12 +4586,9 @@ var routerManager = Backbone.Router.extend({
 				$(document.body).append(modal);
 				modal.modal("show");							  
 
-<<<<<<< HEAD
-				me.socket = io.connect('http://10.102.1.22:3000');    
-=======
+				//me.socket = io.connect('http://10.102.1.22:3000');    
 				me.socket = io.connect('http://104.130.28.12:27000');
->>>>>>> 80574c842ff02a7ff141fca6e79404b20b2c87bf
-
+				
 				_.each(data.questions, function(question){
 
 
@@ -4800,26 +4820,24 @@ var routerManager = Backbone.Router.extend({
 							'font-size': me.questionFontSize,						
 						});
 						
+						
+						
 						if(question.answers.playerOne.find){
 							//buttonTwo.addClass('btn-success');	
 							buttonTwo.css({'background': 'none', 'color': '#008000'});												
 							buttonTwo.addClass('glyphicon glyphicon-ok');
+							if(question.playerOne){
+								if(question.playerOne.useHelp){
 
-<<<<<<< HEAD
-							//if(question.answers.playerOne.help){
-							if(question.playerOne.useHelp){
+									setTimeout(function () {					
 
-=======
-							if(question.playerOne.useHelp){
-								
->>>>>>> 80574c842ff02a7ff141fca6e79404b20b2c87bf
-								setTimeout(function () {					
+										sh = $('#helpTwo'+question['questionId']);									
+										sh.css('display', 'block');
 
-									sh = $('#helpTwo'+question['questionId']);									
-									sh.css('display', 'block');
-
-								}, 500);
+									}, 500);
+								}
 							}
+							
 
 						}else {
 							//buttonTwo.addClass('btn-danger');	
@@ -4827,15 +4845,18 @@ var routerManager = Backbone.Router.extend({
 							buttonTwo.addClass('glyphicon glyphicon-remove');
 
 							//if(question.answers.playerOne.help){
-							if(question.playerOne.useHelp){
-								
-								setTimeout(function () {					
+							if(question.playerOne){
+								if(question.playerOne.useHelp){
+									
+									setTimeout(function () {					
 
-									sh = $('#helpTwo'+question['questionId']);									
-									sh.css('display', 'block');
+										sh = $('#helpTwo'+question['questionId']);									
+										sh.css('display', 'block');
 
-								}, 500);
+									}, 500);
+								}
 							}
+							
 						}
 						buttonTwo.click(function(){
 							$.confirm({
@@ -5101,15 +5122,11 @@ var routerManager = Backbone.Router.extend({
 		  	Inicio: "",
 		  	'Tiempo Real': "Tiempo Real"
 		});
-<<<<<<< HEAD
 
-      me.socket = io.connect('http://10.102.1.22:3000');    
+		//me.socket = io.connect('http://10.102.1.22:3000');    
 
-=======
+		me.socket = io.connect('http://104.130.28.12:27000');
 		
-		me.socket = io.connect('http://104.130.28.12:27000');   
->>>>>>> 80574c842ff02a7ff141fca6e79404b20b2c87bf
-
         me.socket.on('question', function(question, user){
         	console.log('question')
         	me.questionPlayer(question, user);

@@ -42,6 +42,7 @@ class GameManager
 	 * Generar juegos
 	 */
 	public function generateGame($tournamentId, $interval, $date = null){
+		
 		$teams = $this->em->getRepository("LiderBundle:Team")
 						  ->findBy(array("tournament" => $tournamentId, "deleted" => false));
 
@@ -507,8 +508,9 @@ class GameManager
 	 */
 	public function generateDuel($game, $interval)
 	{		
+		echo "generando duelo";
 		//$game = $this->em->getRepository("LiderBundle:Game")->findOneBy(array("id" => $gameId, "deleted" => false));
-		$repoParameters = $em->getRepository("LiderBundle:Parameters");
+		$repoParameters = $this->em->getRepository("LiderBundle:Parameters");
 		
 		$teamOne = $game->getTeamOne();
 		$teamTwo = $game->getTeamTwo();
@@ -578,8 +580,8 @@ class GameManager
 			$this->em->persist($duel);
 
 			$this->generateQuestions($countQuestion, $duel);
-			$this->notificationDuel($playerOne, $playerTwo->getTeam(), $playerTwo);
-			$this->notificationDuel($playerTwo, $playerOne->getTeam(), $playerOne);
+			//$this->notificationDuel($playerOne, $playerTwo->getTeam(), $playerTwo);
+			//$this->notificationDuel($playerTwo, $playerOne->getTeam(), $playerOne);
 		}			
 
 		$this->em->flush();
@@ -628,6 +630,7 @@ class GameManager
 		}
 
 		$this->em->flush();
+		
 	}
 
 	/**
@@ -635,23 +638,30 @@ class GameManager
 	 */
 	public function startGames()
 	{
-		$repoParameters = $em->getRepository("LiderBundle:Parameters");
+		//echo "paso 4";
+		$repoParameters =  $this->em->getRepository("LiderBundle:Parameters");
 		
 		$date = new \DateTime();		
-		$games = $this->em->getRepository("LiderBundle:Game")->getGamesToStart($date);
+		$games =  $this->em->getRepository("LiderBundle:Game")->getGamesToStart($date);
+		
+		//echo "\total juegos: ".count($games);
 		if(count($games) > 0)
-		{
+ 		{
+// 			echo "paso 5";
 			//$params = $this->pm->getParameters();
 			//$duelInterval = $params['gamesParameters']['timeDuel'];
 			$duelInterval = $repoParameters->findOneBy(array('name'=>'timeDuel'));
 			$duelInterval = $duelInterval->getValue();
 			
 			$gamesId = array();
+			
+			
 			foreach ($games as $key => $game) {
 				$game->setFinished(false);
 				$game->setActive(true);
 				$this->em->persist($game);
 				$gamesId[] = $game->getId();
+				
 				$this->generateDuel($game, $duelInterval);
 			}
 			$this->em->flush();
@@ -681,6 +691,7 @@ class GameManager
 		}
 
 		$this->em->flush();
+		
 	}
 
 	// private function stopGamesNoHaveActiveDuels($gameId)

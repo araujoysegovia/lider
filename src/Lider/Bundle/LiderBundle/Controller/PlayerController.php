@@ -9,6 +9,7 @@ use Symfony\Component\Yaml\Dumper;
 use Lider\Bundle\LiderBundle\Document\Suggestion;
 use Lider\Bundle\LiderBundle\Entity\Player;
 use Lider\Bundle\LiderBundle\Entity\PlayerPoint;
+use Lider\Bundle\LiderBundle\Entity\Tournament;
 
 class PlayerController extends Controller
 {
@@ -331,9 +332,26 @@ class PlayerController extends Controller
         $repo = $dm->getRepository("LiderBundle:QuestionHistory");
         $user = $this->container->get('security.context')->getToken()->getUser();
         
+        $em = $this->getDoctrine()->getEntityManager();
+        $repoTournament = $em->getRepository("LiderBundle:Tournament");
         if($user->getTeam()){
             $tournamentId = $user->getTeam()->getTournament()->getId();
-        }        
+        } 
+
+        
+        
+        //$questionHistoryList = $repo->findAll();
+         
+        //echo count($questionHistoryList);
+         
+//         foreach ($questionHistoryList as $key => $qh) {
+//         	$qh->setTournamentid('1');
+//         	$dm->flush();
+//         }
+        
+        
+//         $questionHistory->addAnswer($ansD);
+        
 
         $list = $repo->findRangePositionByPractice(intval($tournamentId));
         $list = $list->toArray();
@@ -357,13 +375,25 @@ class PlayerController extends Controller
                 $percentageIncorrect = round($percentageIncorrect);
                 $value['percentageCorrect'] = $percentageCorrect;
                 $value['percentageIncorrect'] = $percentageIncorrect;
+                
+//                 $numeroTorneo = intval($value['tournamentId']);
+//                 echo "\n".$numeroTorneo."\n";
+                
+//                 echo "\n".$value['tournamentId']."\n";
+//                  $t = $repoTournament->find($numeroTorneo);
+//                  if($t){
+//                  	$value['tournament'] = $t->getName();
+//                  }else{
+//                  	$value['tournament'] = 'Sin torneo';
+//                  }
+                
             }            
             $newList[] = $value;
         }
 
         return $this->get("talker")->response(array("total" => count($list), "data" => $newList));
     }    
-
+    
     public function getGeneralStatisticsAction(){
         $dm = $this->get('doctrine_mongodb')->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
@@ -806,14 +836,14 @@ class PlayerController extends Controller
          
         $data = json_decode($data, true);
     	
-    	$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
-    			'subject' => "Error de aplicacion",
-    			'templateData' => array(
-	    			'title' => 'Error en la aplicacion',
-    				'subjectUser' => $data['title'],
-    				'body' => $data['content']
-    			)
-    	)));
+//     	$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotification', json_encode(array(
+//     			'subject' => "Error de aplicacion",
+//     			'templateData' => array(
+// 	    			'title' => 'Error en la aplicacion',
+//     				'subjectUser' => $data['title'],
+//     				'body' => $data['content']
+//     			)
+//     	)));
     	 
     	return $this->get("talker")->response($this->getAnswer(true, $this->save_successful));
     }
@@ -908,6 +938,18 @@ class PlayerController extends Controller
         //print_r($questions);
 
         return $this->get("talker")->response(array('total' => count($qs), 'data' => $qs)); 
+    }
+    
+    public function setTournamentToQuestionHistory($tournamentId = null)
+    {
+    	$dm = $this->get('doctrine_mongodb')->getManager();
+    	$repo = $dm->getRepository("LiderBundle:QuestionHistory");
+    
+    	$questionHistoryList = $repo->findAll();
+    	
+    	echo count($questionHistoryList);
+    	
+    	return $this->get("talker")->response(array("total" => count($list), "data" => $newList));
     }
 
 }

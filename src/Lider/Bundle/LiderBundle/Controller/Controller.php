@@ -162,7 +162,7 @@ abstract class Controller extends SymfonyController {
 		}
 	}
 
-	protected function normalizer($entity){        
+	protected function normalizer($entity, $document){        
         $em = $this->get('doctrine_mongodb')->getManager();
         $md = $em->getClassMetadata($document);
                 

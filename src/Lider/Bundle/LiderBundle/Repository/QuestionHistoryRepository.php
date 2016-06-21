@@ -133,6 +133,7 @@ class QuestionHistoryRepository extends MainMongoRepository
 					}					
 			}')
 			->field('finished')->equals(true)
+			->field('tournamentid')->equals('4')
 			->getQuery()
 			->execute();
 	
@@ -340,6 +341,10 @@ class QuestionHistoryRepository extends MainMongoRepository
 
 	public function getGeneralCategoryReport($tournamentId = null)
 	{
+// 		echo $tournamentId;
+		
+// 		$stringTorneo = 
+		
 		$query = $this->createQueryBuilder('LiderBundle:QuestionHistory')
 		  	->group(array("question.categoryName" => 1, "question.tournament" => 2),
 					  array('win' => 0, 'lost' => 0, 'total' => 0))
@@ -351,14 +356,17 @@ class QuestionHistoryRepository extends MainMongoRepository
 					prev.lost++;
 				}
 			}');
-			// ->getQuery()
-			// ->execute();
+			//->field('tournament')->equals()
+// 			->getQuery()
+// 			->execute();
 			
-		// if(!is_null($tournamentId))
-		// {
-		// 	$query->field("tournament.tournamentId")->equals($tournamentId);
-		// }
+		if(!is_null($tournamentId))
+		{
+			$query->field("tournamentid")->equals($tournamentId);
+		}
+		
 		$query = $query->getQuery()->execute();
+		
 		return $query;
 	}
 

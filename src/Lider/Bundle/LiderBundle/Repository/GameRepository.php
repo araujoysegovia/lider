@@ -55,6 +55,13 @@ class GameRepository extends MainRepository
 
     public function getGamesToStart($date)
     {
+//     	echo "paso por aqui";
+//     	print_r($date);
+    	
+    	$dA = new \DateTime('2016-06-21');	
+    	
+    	//print_r($dA);
+    	
     	$query =  $this->createQueryBuilder('g')
 						->select('g, d')
 						->leftJoin('g.duels', 'd', 'WITH', 'd.deleted = false')		

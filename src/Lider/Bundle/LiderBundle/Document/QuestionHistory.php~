@@ -532,26 +532,4 @@ class QuestionHistory
     {
         return $this->extraQuestion;
     }
-
-    /**
-     * Set tournamentid
-     *
-     * @param string $tournamentid
-     * @return self
-     */
-    public function setTournamentid($tournamentid)
-    {
-        $this->tournamentid = $tournamentid;
-        return $this;
-    }
-
-    /**
-     * Get tournamentid
-     *
-     * @return string $tournamentid
-     */
-    public function getTournamentid()
-    {
-        return $this->tournamentid;
-    }
 }

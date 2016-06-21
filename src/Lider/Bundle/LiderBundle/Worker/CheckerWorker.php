@@ -55,8 +55,8 @@ class CheckerWorker
 						->getMissingQuestionFromDuel($duel, $duel->getPlayerTwo());
 		
 		echo "Voy a comparar la cantidad de preugntas del jugador ".$duel->getPlayerOne()->getname()." ".$duel->getPlayerOne()->getLastname(). " y ".$duel->getPlayerTwo()->getname()." ".$duel->getPlayerTwo()->getLastname()."\n";
-        echo "Cantidad de preguntas del jugador ".$duel->getPlayerOne()->getname()." = ".count($qhf)."\n";
-        echo "Cantidad de preguntas del jugador ".$duel->getPlayerTwo()->getname()." = ".count($qhs)."\n";
+        echo "Cantidad de preguntas del jugador UNO ".$duel->getPlayerOne()->getname()." = ".count($qhf)."\n";
+        echo "Cantidad de preguntas del jugador DOS ".$duel->getPlayerTwo()->getname()." = ".count($qhs)."\n";
 		if(count($qhf) == 0 && count($qhs) == 0){
 			echo "entre cuando no hay preguntas\n";
             echo "\nFinalizar duelo: ".$duel->getId();

@@ -75,6 +75,7 @@ class QuestionController extends Controller
       
         $questionHistory->setEntryDate(new \MongoDate());
 
+        $questionHistory->setTournamentid('4');
          foreach ($q->getAnswers()->toArray() as $key => $value) {
       
             $ansD = new \Lider\Bundle\LiderBundle\Document\Answer();
@@ -439,7 +440,9 @@ class QuestionController extends Controller
                 
                 if(($questionHistory->getExtraQuestion() && $ppointExtraDuel == 'true') || !$questionHistory->getExtraQuestion())
                 {
-                	$this->applyPoints($questionHistory, $parameters, $team, $user, $duel, $question);
+                	
+                	//$this->applyPoints($questionHistory, $parameters, $team, $user, $duel, $question);
+                	$this->applyPoints($questionHistory, null, $team, $user, $duel, $question);
                 }
                 
 //                 if(($questionHistory->getExtraQuestion() && $parameters['gamesParameters']['pointExtraDuel'] == 'true') || !$questionHistory->getExtraQuestion())
@@ -452,6 +455,8 @@ class QuestionController extends Controller
                 $res['success'] = false;
                 $res['code'] = '02';   /*Respuesta errada*/
 
+                $ppointExtraDuel = $repoParameters->findOneBy(array('name'=>'pointExtraDuel'));
+                
                 $panswerShowPractice = $repoParameters->findOneBy(array('name'=>'answerShowPractice')); 
                 $panswerShowPractice = $ppointExtraDuel->getValue();
                 if($panswerShowPractice == 'true'){
@@ -541,6 +546,8 @@ class QuestionController extends Controller
     private function applyPoints(&$questionHistory, $parameters, $team, $user, &$duel, $question)
     {
         $em = $this->getDoctrine()->getManager();
+        $repoParameters = $em->getRepository("LiderBundle:Parameters");
+        
         if($questionHistory->getUseHelp()){
             //$pointsHelp = $parameters['gamesParameters']['questionPointsHelp'];
         	$pointsHelp = $repoParameters->findOneBy(array('name'=>'questionPointsHelp'));
@@ -680,6 +687,8 @@ class QuestionController extends Controller
          
         $user = $this->container->get('security.context')->getToken()->getUser();
         
+        //print_r($data);
+        
         $questionId = $data['questionId'];
         $playerId = $user->getId();
         $reportText = $data['reportText'];        
@@ -704,6 +713,7 @@ class QuestionController extends Controller
         
         $dm->persist($reportQuestion);
         $dm->flush();
+        
         $body = '<p>'.$questionD->getQuestionId().' - '.$questionD->getQuestion().'</p><ul>';
         foreach($q->getAnswers()->toArray() as $value){
             $body .= '<li>'.$value->getAnswer().'</li>';

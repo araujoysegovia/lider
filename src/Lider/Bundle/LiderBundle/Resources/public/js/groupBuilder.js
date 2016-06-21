@@ -7,7 +7,9 @@ var groupBuilder = function () {
 
 //var server = 'http://162.209.101.142/';
 //var server = 'http://lider.sifinca.net/'
-var server = 'http://www.sifinca.net/lider/web/app.php/';
+//var server = 'http://www.sifinca.net/lider/web/app.php/';
+var server = 'http://lider.sifinca.net/lider/web/app.php/';
+var serverFolder = 'http://lider.sifinca.net/lider/';
 
 groupBuilder.prototype = {
 
@@ -104,7 +106,7 @@ groupBuilder.prototype = {
 
 			var img = value.image;
 			if(!img){
-				img = server + 'web/bundles/lider/images/team_default.png'
+				img = serverFolder + 'web/bundles/lider/images/team_default.png'
 			}
 
 			var panel = $('<div id="team-'+value.id+'" class="g-panel-team" draggable="true" >'+
@@ -144,6 +146,19 @@ groupBuilder.prototype = {
 	drag: function(ev,obj) {
 
 		this.dragElement = obj;
+		
+		var parameters = {
+				type: "GET",     
+	            url: "home/tournament/",		            
+	            contentType: 'application/json',
+	            dataType: "json",
+	            success: function(data){
+	            	console.log('Mantener session activa');
+	            },
+	            error: function(){},
+			};
+				
+		$.ajax(parameters);	
 	},
 
 	drop: function(ev, obj) {

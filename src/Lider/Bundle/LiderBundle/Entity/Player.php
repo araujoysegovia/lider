@@ -24,8 +24,8 @@ class Player extends Entity implements AdvancedUserInterface, \Serializable{
 	
 	/**
 	 * @var string
-	 * @ORM\Column(type="string", length=100)
-	 * @Assert\Length(max=100)
+	 * @ORM\Column(type="string", length=500)
+	 * @Assert\Length(max=500)
 	 * @Assert\Email()
 	 */
 	private $email;

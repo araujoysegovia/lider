@@ -1,0 +1,23 @@
+@Worker\service : notificationWorker
+@worker\iterations : 0
+@Worker\#jobs : 8
+@Worker\jobs
+
+    # LiderBundleLiderBundleWorkernotification~sendEmail 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationTeam 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationDuel 
+    # LiderBundleLiderBundleWorkernotification~sendNotificationGroup 
+    # LiderBundleLiderBundleWorkernotification~adminNotification 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationDuels 
+    # LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart 
+    # LiderBundleLiderBundleWorkernotification~sendEmailToPlayersFromTournament 
+
+@worker\servers :
+
+    #localhost - jobserver.sifinca.net:5000
+
+@Worker\description :
+
+    Worker to Send Notifications
+
+[2016-06-11 11:16:22] loaded. Ctrl+C to break

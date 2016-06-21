@@ -6,7 +6,9 @@ var teamBuilder = function () {
 
 }
 //var server = 'http://lider.sifinca.net/';
-var server = 'http://www.sifinca.net/lider/web/app.php/';
+//var server = 'http://www.sifinca.net/lider/web/app.php/';
+var server = 'http://lider.sifinca.net/lider/web/app.php/';
+var serverFolder = 'http://lider.sifinca.net/lider/';
 
 teamBuilder.prototype = {
 
@@ -239,11 +241,11 @@ teamBuilder.prototype = {
 //				}
 				var img = server;
 				if(_.isEmpty(value.image)){
-					img = img + "web/bundles/lider/images/avatar.png";
+					img = serverFolder + "web/bundles/lider/images/avatar.png";
 				}else{
-					img = img + "web/admin/image/"+value.image;
+					img = img + "admin/image/"+value.image;
 				}
-				var imgError = server + 'web/bundles/lider/images/avatar.png';
+				var imgError = serverFolder + 'web/bundles/lider/images/avatar.png';
 				//ondragstart="drag(event)"
 				var panel = $('<div id="player-'+value.id+'" class="panel-player" draggable="true" >'+
 								'<div class="img-player">'+
@@ -282,7 +284,21 @@ teamBuilder.prototype = {
 	
 	drag: function(ev,obj) {
 
+		console.log('drag')
 		this.dragElement = obj;
+					
+		var parameters = {
+			type: "GET",     
+            url: "home/tournament/",		            
+            contentType: 'application/json',
+            dataType: "json",
+            success: function(data){
+            	console.log('Mantener session activa');
+            },
+            error: function(){},
+		};
+			
+		$.ajax(parameters);	
 	},
 
 	/*
@@ -290,6 +306,7 @@ teamBuilder.prototype = {
 	 * */
 	drop: function(ev, obj) {
 
+		console.log('drop')
 	 	var me = this;
 
 	    ev.preventDefault();

@@ -15,9 +15,10 @@ class ReportQuestionController extends Controller
     public function getName(){
     	return "ReportQuestion";
     }
-
+    
 	public function getReportQuestionsAction()
     {
+    	
         $dm = $this->get('doctrine_mongodb')->getManager();
 
         $reportQuestions = $dm->getRepository('LiderBundle:ReportQuestion')->findBy(array("solved" => false));
@@ -28,7 +29,23 @@ class ReportQuestionController extends Controller
             // $arr = $reportQuestions->toArray();
             $array = array();
             foreach ($reportQuestions as $value) {
-               $array[] = $this->normalizer($value, $this->documentNameSpace."ReportQuestion");
+              //$array[] = $this->normalizer($value, $this->documentNameSpace."ReportQuestion");
+
+              $pn = $this->normalizer($value->getPlayer(), $this->documentNameSpace."Player");
+              $qn = $this->normalizer($value->getQuestion(), $this->documentNameSpace."Question");
+              
+              $rq = array(
+               		'id' => $value->getId(),
+               		'causal' => $value->getCausal(),
+               		'description'=> $value->getDescription(),
+              		'question' => $qn,
+               		'player' => $pn,
+               		'reportDate' => $value->getReportDate(),
+               		'reportText'=> $value->getReportText(),
+               		'solved' => $value->getSolved()
+               );
+               
+               $array[] = $rq;
             }
 
             // print_r($arr);
@@ -107,6 +124,8 @@ class ReportQuestionController extends Controller
 
         $request = $this->get("request");
         $tournamentId = $request->get("tournament");
+        
+       
         $questions = $dm->getRepository('LiderBundle:QuestionHistory')->getGeneralCategoryReport($tournamentId);
         // print_r($questions->toArray());
         
