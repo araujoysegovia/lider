@@ -278,6 +278,7 @@ class CheckerWorker
      */
     public function sendNotificationPlayersGameFinish(\GearmanJob $job)
     {
+    	echo "\nEnviando notificaciones de juego finalizado\n";
     	$data = json_decode($job->workload(),true);
     	$gameId = $data['gameId'];
     	$em = $this->co->get('doctrine')->getManager();

@@ -790,7 +790,6 @@ class PlayerController extends Controller
 
     public function notificationDuelAction()
     {
-       
         $gearman = $this->get('gearman');
       
         $request = $this->get("request");

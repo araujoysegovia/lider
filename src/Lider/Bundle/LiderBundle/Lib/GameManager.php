@@ -280,12 +280,13 @@ class GameManager
 		}
 		$this->em->flush();
 
-        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart', json_encode(array(
-            'subject' => 'Juegos generados',
-            'content' => array(
-                'title' => 'Juegos Generados',
-            )
-        )));
+//         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart', json_encode(array(
+//             'subject' => 'Juegos generados',
+//             'content' => array(
+//                 'title' => 'Juegos Generados',
+//             )
+//         )));
+        
 		// Esparcir terceros mejores en caso de que sea necesario
 		// $con = $nextRound - $totalTeams;
 		// if($con > 0)
@@ -666,14 +667,14 @@ class GameManager
 			}
 			$this->em->flush();
 			$gearman = $this->co->get('gearman');
-			$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotificationDuels', json_encode(array(
-	            'subject' => 'Duelos generado',
-	            'template' => 'LiderBundle:Templates:duelsnotificationadmin.html.twig',
-	            'content' => array(
-	                'title' => 'Duelos Generados',
-	                'games' => $gamesId
-	            )
-	        )));
+// 			$result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotificationDuels', json_encode(array(
+// 	            'subject' => 'Duelos generado',
+// 	            'template' => 'LiderBundle:Templates:duelsnotificationadmin.html.twig',
+// 	            'content' => array(
+// 	                'title' => 'Duelos Generados',
+// 	                'games' => $gamesId
+// 	            )
+// 	        )));
 		}
 		
 	}

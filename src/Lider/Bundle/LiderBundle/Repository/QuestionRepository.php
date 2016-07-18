@@ -88,8 +88,10 @@ class QuestionRepository extends MainRepository
 		//echo $query->getSQL();
 
 		if($asArray){
+			//echo "1";
 			return $query->getArrayResult();	
 		}else{
+			//echo "2";
 			return $query->getResult();
 		}
 		

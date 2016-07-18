@@ -187,6 +187,7 @@ class GroupController extends Controller
 
     public function getGroupPositionAction($tournamentId = null)
     {
+    	//echo "aqui";
         $em = $this->getDoctrine()->getEntityManager();
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repoParameters = $em->getRepository("LiderBundle:Parameters");
@@ -198,8 +199,7 @@ class GroupController extends Controller
         	}
             $tournamentId = $user->getTeam()->getTournament()->getId();
          }
-       
-
+        
         $gameRepo = $em->getRepository("LiderBundle:Game");
         $duelRepo = $em->getRepository("LiderBundle:Duel");
         $questionRepo = $dm->getRepository('LiderBundle:QuestionHistory');
@@ -237,8 +237,17 @@ class GroupController extends Controller
                 }
             }
             foreach ($teams as $team) {
+            	
+//             	echo "\n\n\n".$team->getName()." - ".$team->getId()."\n";
                 $games = $gameRepo->getGamesByTeam($team->getId());
+                
+//                 echo "\n game: ".count($games);
+                
                 $duelWin = $duelRepo->getTotalDuelWinnerByTeam($team->getId(), $tournamentId);
+                
+//                 echo "\n duelWin: ";
+//                 print_r($duelWin);
+                
                 $questionWin = $questionRepo->findpercentOfQuestionWinByTeam(intval($team->getId()), intval($tournamentId));
                 
                 // echo $team->getId();
@@ -271,17 +280,21 @@ class GroupController extends Controller
                 );
                 $points = 0;
                 foreach ($games as $game) {
+                	
                     if($game['team_one']['id'] == $team->getId() || $game['team_two']['id'] == $team->getId()){
                         
+                    	//echo "\nteam winner: ".$game['team_winner']['id'];
                         $ls['total']++;
 
                         if($game['team_winner']){
                             
-                            if($game['team_winner']['id'] == $team->getId()){
+                            if($game['team_winner']['id'] == $team->getId()){                        
                                 //$points = $points + $parametersManager['gamesParameters']['gamePoints'];
-                            	$points = $repoParameters->findOneBy(array('name'=>'gamePoints'));
-                            	$points = $points->getValue();
+                            	$pointsParameter = $repoParameters->findOneBy(array('name'=>'gamePoints'));
+                            	$points = $points + $pointsParameter->getValue();
                                 $ls['win']++;
+                                
+                                //echo "\nwin: ".$l['win'];
                             }else{
                                 $ls['loose']++;
                             }
@@ -291,7 +304,9 @@ class GroupController extends Controller
                 $ls['points'] = $points;
                 $g["teams"][] = $ls;
                
+                
             }
+            //return ;
             $l[] = $g;
         }
 

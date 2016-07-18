@@ -101,7 +101,8 @@ class QuestionController extends Controller
      */
     public function checkAnswerAction() {
     	//throw new \Exception("No data");
-        
+
+    	
         $em = $this->getDoctrine()->getEntityManager();
         $request = $this->get("request");
         $repoParameters = $em->getRepository("LiderBundle:Parameters");
@@ -131,7 +132,8 @@ class QuestionController extends Controller
 
         $now = new \DateTime();
         $diffTime = $now->format('U') - $entity->getEntryDate()->format('U');
-        
+
+        //echo $diffTime;
         //$parameters = $this->get('parameters_manager')->getParameters();
 
        
@@ -167,15 +169,21 @@ class QuestionController extends Controller
         //$maxSec = $parameters['gamesParameters']['timeQuestionPractice'];
         $maxSec = $repoParameters->findOneBy(array('name'=>'timeQuestionPractice'));
         $maxSec = $maxSec->getValue();
-        if($diffTime >= $maxSec || $questionId=="no-answer"){
-            $res = array();
-            $res['success'] = false;
-            $res['code'] = '01';  /*Tiempo agotado*/
-            // if($parameters['gamesParameters']['answerShowPractice']){
-            //     $res['answerOk'] = $entity->getAnswerOk()->getAnswerId();
-            // }
-            $entity->setTimeOut(true);
-        }else{
+        
+        $token = $data['token'];
+        
+        //$maxSec = $maxSec + 5;
+        //$diffTime = $data['timeFinished'];
+        //if($diffTime >= $maxSec || $questionId=="no-answer" || $diffTime == 0){
+//         if($diffTime >= $maxSec  || $questionId=="no-answer"){
+//             $res = array();
+//             $res['success'] = false;
+//             $res['code'] = '01';  /*Tiempo agotado*/
+//             // if($parameters['gamesParameters']['answerShowPractice']){
+//             //     $res['answerOk'] = $entity->getAnswerOk()->getAnswerId();
+//             // }
+//             $entity->setTimeOut(true);
+//         }else{
         
             if($isOk){
                 $res['success'] = true;
@@ -196,17 +204,19 @@ class QuestionController extends Controller
 //                 }
             }
             
-
-            $answerSelected = $em->getRepository("LiderBundle:Answer")->findOneBy(array("id" =>$answerId, "deleted" => false));
-            if(empty($answerSelected))
-                throw new \Exception("No entity found");  
-
-            $answerSelectedD = new \Lider\Bundle\LiderBundle\Document\Answer();
-                        $answerSelectedD->getDataFromAnswerEntity($answerSelected);
-               
-            $entity->setSelectedAnswer($answerSelectedD);       
+			if($answerId != 'no-answer'){
+				$answerSelected = $em->getRepository("LiderBundle:Answer")->findOneBy(array("id" =>$answerId, "deleted" => false));
+				if(empty($answerSelected))
+					throw new \Exception("No entity found");
+				
+				$answerSelectedD = new \Lider\Bundle\LiderBundle\Document\Answer();
+				$answerSelectedD->getDataFromAnswerEntity($answerSelected);
+				 
+				$entity->setSelectedAnswer($answerSelectedD);
+			}
+     
             
-        }
+        //}
                 
         $entity->setFinished(true);
         $dm->flush();
