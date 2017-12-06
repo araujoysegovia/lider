@@ -23,6 +23,8 @@ class HeaderAuthenticationProvider implements AuthenticationProviderInterface
 	
 	public function authenticate(TokenInterface $token)
 	{	
+
+		echo "\dos\n";
 		$user = $this->userProvider->loadUserByUsername($token->getUsername());
 		if($user){
 			$atoken = $token->accessToken;			

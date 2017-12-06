@@ -6,7 +6,7 @@ $(document).ready(function () {
 });
 
 function signinCallback(authResult) {
-	
+	debugger
 	  if(authResult['access_token']) {
 		  console.log(authResult)
 		  var formData = new FormData();

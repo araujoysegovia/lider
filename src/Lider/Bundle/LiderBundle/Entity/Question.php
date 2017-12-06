@@ -67,6 +67,11 @@ class Question extends Entity
      */
     private $level = 0;
 
+	/**
+	 * @ORM\Column(type="boolean", nullable=true)
+	 */
+	private $forDuel = false;
+    
     /**
      * Constructor
      */
@@ -301,5 +306,29 @@ class Question extends Entity
     public function getDateLastChecked()
     {
         return $this->dateLastChecked;
+    }
+
+    /**
+     * Set forDuel
+     *
+     * @param boolean $forDuel
+     *
+     * @return Question
+     */
+    public function setForDuel($forDuel)
+    {
+        $this->forDuel = $forDuel;
+
+        return $this;
+    }
+
+    /**
+     * Get forDuel
+     *
+     * @return boolean
+     */
+    public function getForDuel()
+    {
+        return $this->forDuel;
     }
 }

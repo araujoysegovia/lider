@@ -1,21 +1,44 @@
+# This file is auto-generated during the composer install
 parameters:
     database_driver: pdo_pgsql
-    database_host: 10.102.1.21
-    database_port: 5432
+    database_host: 35.196.221.123 
+    database_port: 5433
     database_name: lider
     database_user: postgres
-    database_password: postgres
+    database_password: pWEJGvT4Teuq
     mailer_transport: smtp
-    mailer_host: smtp.sendgrid.net
-    mailer_user: araujoysegovia
+    mailer_host: smtp.mailgun.org
+    mailer_user: postmaster@ays.mailgun.org
     mailer_password: araujo123
     locale: es
     secret: ThisTokenIsNotSoSecretChangeIt
     debug_toolbar: false
     debug_redirects: false
     use_assetic_controller: true
-    mongo_host: 10.102.1.21
+    mongo_host: 104.196.3.250
     mongo_port: 27017
-    gearman_host: 10.102.1.21
+    gearman_host: 35.185.123.217
     gearman_port: 4730
-    mongo_config: 'admin:ZBRJTuFjZyLX@104.130.28.12:27017'
+    mongo_config: 'sifinca:sifinca$Xwk.@104.196.3.250:27017'
+
+# parameters:
+#     database_driver: pdo_pgsql
+#     database_host: 104.196.118.227
+#     database_port: 5432
+#     database_name: lider
+#     database_user: postgres
+#     database_password: ArauJo321*
+#     mailer_transport: smtp
+#     mailer_host: smtp.mailgun.org
+#     mailer_user: postmaster@ays.mailgun.org
+#     mailer_password: araujo123
+#     locale: es
+#     secret: ThisTokenIsNotSoSecretChangeIt
+#     debug_toolbar: false
+#     debug_redirects: false
+#     use_assetic_controller: true
+#     mongo_host: 104.130.28.12
+#     mongo_port: 27017
+#     gearman_host: 104.196.180.183
+#     gearman_port: 4730
+#     mongo_config: 'admin:araujo123@104.196.118.227:27017'

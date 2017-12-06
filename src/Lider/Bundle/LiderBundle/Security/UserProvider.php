@@ -22,6 +22,7 @@ class UserProvider implements UserProviderInterface //implements UserProviderInt
 	
     public function loadUserByUsername($username)
     {
+        echo "tres";
     	$request = $this->cont->get("request");
     	
     	//throw new \Exception('loadByUsername not implemented');

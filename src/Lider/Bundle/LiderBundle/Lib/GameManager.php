@@ -280,12 +280,12 @@ class GameManager
 		}
 		$this->em->flush();
 
-//         $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart', json_encode(array(
-//             'subject' => 'Juegos generados',
-//             'content' => array(
-//                 'title' => 'Juegos Generados',
-//             )
-//         )));
+        $result = $gearman->doBackgroundJob('LiderBundleLiderBundleWorkernotification~adminNotificationGamesDontStart', json_encode(array(
+            'subject' => 'Juegos generados',
+            'content' => array(
+                'title' => 'Juegos Generados',
+            )
+        )));
         
 		// Esparcir terceros mejores en caso de que sea necesario
 		// $con = $nextRound - $totalTeams;

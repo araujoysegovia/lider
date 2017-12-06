@@ -79,7 +79,8 @@ class PlayerController extends Controller
         return $this->get("talker")->response($arr);
     }
 
-    public function loginAction(){        
+    public function loginAction(){  
+    
         $em = $this->getDoctrine()->getEntityManager();
 
         $dm = $this->get('doctrine_mongodb')->getManager();
@@ -92,7 +93,8 @@ class PlayerController extends Controller
 
         if(!is_object($user))
         {
-			
+			print_r($user);
+            
             if(isset($_GET['user']) && isset($_GET['pass'])){
                 $userName = $_GET['user'];
                 $password = $_GET['pass'];
@@ -104,12 +106,12 @@ class PlayerController extends Controller
                 $user = $repo->findOneByEmail($userName);
                 if(!$user || $user->getPassword() != $pass)
                 {
-                    throw new \Exception("User Not Registered", 403);
+                    throw new \Exception("User Not Registered 1", 403);
                 }
             }
             else
             {
-                throw new \Exception("User Not Registered", 403);
+                throw new \Exception("User Not Registered 2", 403);
             }
         }else{
             $userName = $user->getEmail();

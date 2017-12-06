@@ -259,6 +259,9 @@ class QuestionController extends Controller
         return $this->get("talker")->response(array("total" => count($question)));
     }
     
+    /**
+     * Obtner preguntas para duelo
+     */
     public function getQuestionAction($duelId)
     {
 

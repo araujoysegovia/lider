@@ -20,12 +20,6 @@ class QuestionManager {
 		
 	}
 	
-	/**	
-	 * Obtener preguntas para el duelo
-	 * @param int $count, cantidad de preguntas que debe devolver
-	 * @param string $duelId, 
-	 * @return $questions
-	 */
 	function getQuestions($count, $duel = null, $user = null) {
 		
 		$arr = array();
@@ -86,8 +80,12 @@ class QuestionManager {
 			}
 		}
 		//$arr[] = 100; 
+		//print_r($arr);
 		$questionList = $this->em->getRepository("LiderBundle:Question")->getQuestionListNotIn($arr, false);
 
+// 		echo "\npreguntas para el duelo\n";
+// 		print_r($questionList);
+		
 		$c = count($questionList);
 
 		$questions = array();

@@ -11,7 +11,7 @@ class RoutingAdminController extends SymfonyController
 {
     public function indexAction($name)
     {
-        return $this->render('LiderBundle:Default:index.html.twig', array('name' => $name));
+       // return $this->render('LiderBundle:Default:index.html.twig', array('name' => $name));
     }
 
 

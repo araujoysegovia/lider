@@ -58,9 +58,9 @@ class GameRepository extends MainRepository
 //     	echo "paso por aqui";
 //     	print_r($date);
     	
-    	$dA = new \DateTime('2016-06-21');	
+    	$date = new \DateTime('2016-08-23');	
     	
-    	//print_r($dA);
+    	//print_r($date);
     	
     	$query =  $this->createQueryBuilder('g')
 						->select('g, d')

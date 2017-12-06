@@ -19,7 +19,7 @@ class DefaultController extends SymfonyController
 	public function createDefaultDataAction(){
     	$em = $this->getDoctrine()->getEntityManager();
     
-    	$role = $this->createDefaultRole($em);
+    	//$role = $this->createDefaultRole($em);
     	$this->createDefaultUser($em, $role);
     	$em->flush();
     	return new Response("Default data is created");
@@ -31,29 +31,30 @@ class DefaultController extends SymfonyController
     }    
 
     private function createDefaultUser($em, $role){
-    	$user = new Player();
-    	$user->setEmail("dmejia@araujoysegovia.com");
-    	$user->setName("Deiner");
-    	$user->setLastname("Mejia");
-    	$user->addRole($role);
+        echo "\nentre aqui"
+    	// $user = new Player();
+    	// $user->setEmail("dmejia@araujoysegovia.com");
+    	// $user->setName("Deiner");
+    	// $user->setLastname("Mejia");
+    	// $user->addRole($role);
     	
-    	$factory = $this->container->get('security.encoder_factory');
-    	$codificador = $factory->getEncoder($user);
-    	$password = $codificador->encodePassword("araujo123", $user->getSalt());
+    	// $factory = $this->container->get('security.encoder_factory');
+    	// $codificador = $factory->getEncoder($user);
+    	// $password = $codificador->encodePassword("araujo123", $user->getSalt());
     	
-    	$user->setPassword($password);
+    	// $user->setPassword($password);
     	
-    	$em->persist($user);
+    	// $em->persist($user);
     	
     	$user1 = new Player();
-    	$user1->setEmail("lrodriguez@araujoysegovia.com");
+    	$user1->setEmail("lrodriguez@araujoysegovia.net");
     	$user1->setName("Lizeth");
     	$user1->setLastname("Rodriguez");
     	$user1->addRole($role);
     	
     	$factory = $this->container->get('security.encoder_factory');
     	$codificador = $factory->getEncoder($user1);
-    	$password = $codificador->encodePassword("araujo123", $user1->getSalt());
+    	$password = $codificador->encodePassword("roca910622", $user1->getSalt());
     	 
     	$user1->setPassword($password);
 
@@ -119,7 +120,7 @@ class DefaultController extends SymfonyController
         // $subject2 = "Subject desde gearman";
         // $message = "Mensaje a enviar";
         // $message2 = "Mensaje a enviar desde gearman";
-        // $title = "Titulo del Email";
+        // $title = "pTitulo del Email";
         // $body = "CUerpo del mensaje";
         // $from = "eescallon@araujoysegovia.com";
         // $to = "eduard.escallon@gmail.com";

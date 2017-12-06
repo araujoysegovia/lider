@@ -21,7 +21,7 @@ class QuestionRepository extends MainRepository
 	}
 
 	/**
-	 * 
+	 * Generar preguntas del duelo
 	 */
 	public function getQuestionListNotIn(array $listId = array(), $asArray = true) {
 		
@@ -29,7 +29,7 @@ class QuestionRepository extends MainRepository
 						->select('q, r, c')
 						->join('q.answers', 'r', 'WITH','r.deleted = false')
 						->join('q.category', 'c', 'WITH','c.deleted = false')
-						->where('q.deleted = false AND q.checked = true');
+						->where('q.deleted = false AND q.checked = true AND q.forDuel = true');
 							
 		if(!count($listId)==0) {		
 			$query->andWhere('q.id NOT IN (:ids)')
@@ -47,8 +47,11 @@ class QuestionRepository extends MainRepository
 		
 	}
 
-
+	/**
+	 * Obtner preguntas en modo practica
+	 */
 	public function getQuestionList($asArray = true) {
+		
 		
 		$query =  $this->createQueryBuilder('q')
 						->select('q, r, c')
@@ -66,6 +69,9 @@ class QuestionRepository extends MainRepository
 		
 	}
 
+	/**
+	 * Obtener preguntas del duelo
+	 */
 	public function getQuestionListFromDuel(array $listId = array(), $duel, $asArray = true) {
 		
 		$repo = $this->getEntityManager()->getRepository('LiderBundle:DuelQuestion');

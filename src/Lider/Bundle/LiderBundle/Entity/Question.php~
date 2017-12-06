@@ -67,6 +67,11 @@ class Question extends Entity
      */
     private $level = 0;
 
+	/**
+	 * @ORM\Column(type="boolean", nullable=true)
+	 */
+	private $forDuel = false;
+    
     /**
      * Constructor
      */
