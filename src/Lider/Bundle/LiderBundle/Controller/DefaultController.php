@@ -31,7 +31,7 @@ class DefaultController extends SymfonyController
     }    
 
     private function createDefaultUser($em, $role){
-        echo "\nentre aqui"
+ 
     	// $user = new Player();
     	// $user->setEmail("dmejia@araujoysegovia.com");
     	// $user->setName("Deiner");
@@ -58,7 +58,7 @@ class DefaultController extends SymfonyController
     	 
     	$user1->setPassword($password);
 
-    	$em->persist($user1);
+    	//$em->persist($user1);
 
 
 
