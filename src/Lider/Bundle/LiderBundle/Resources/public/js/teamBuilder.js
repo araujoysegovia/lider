@@ -7,8 +7,11 @@ var teamBuilder = function () {
 }
 //var server = 'http://lider.sifinca.net/';
 //var server = 'http://www.sifinca.net/lider/web/app.php/';
-var server = 'http://lider.sifinca.net/lider/web/app.php/';
-var serverFolder = 'http://lider.sifinca.net/lider/';
+// var server = 'http://lider.sifinca.net/lider/web/app.php/';
+// var serverFolder = 'http://lider.sifinca.net/lider/';
+
+var server = 'http://35.185.123.217/lider/web/app.php/';
+var serverFolder = 'http://35.185.123.217/lider/';
 
 teamBuilder.prototype = {
 

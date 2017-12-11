@@ -8,8 +8,11 @@ var groupBuilder = function () {
 //var server = 'http://162.209.101.142/';
 //var server = 'http://lider.sifinca.net/'
 //var server = 'http://www.sifinca.net/lider/web/app.php/';
-var server = 'http://lider.sifinca.net/lider/web/app.php/';
-var serverFolder = 'http://lider.sifinca.net/lider/';
+// var server = 'http://lider.sifinca.net/lider/web/app.php/';
+// var serverFolder = 'http://lider.sifinca.net/lider/';
+
+var server = 'http://35.185.123.217/lider/web/app.php/';
+var serverFolder = 'http://35.185.123.217/lider/';
 
 groupBuilder.prototype = {
 

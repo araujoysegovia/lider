@@ -1,10 +1,14 @@
 var max, min;
 //var server = 'http://162.209.101.142/';
 
-var server = 'http://lider.sifinca.net/lider/web/app.php';
-//var server = 'http://www.sifinca.net/lider/web/app.php/';
-//var serverFolder = 'http://www.sifinca.net/lider/';
-var serverFolder = 'http://lider.sifinca.net/lider/';
+// var server = 'http://lider.sifinca.net/lider/web/app.php';
+// //var server = 'http://www.sifinca.net/lider/web/app.php/';
+// //var serverFolder = 'http://www.sifinca.net/lider/';
+// var serverFolder = 'http://lider.sifinca.net/lider/';
+
+var server = 'http://35.185.123.217/lider/web/app.php/';
+var serverFolder = 'http://35.185.123.217/lider/';
+
 var parametros = null;
 	
 
