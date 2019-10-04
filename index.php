@@ -1,2 +1,2 @@
 <?php       
-header ("Location: web/app_dev.php/admin/");
+header ("Location: web/app.php/admin/");
