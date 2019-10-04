@@ -111,7 +111,7 @@ class CheckerWorker
         {
 //             echo "puntos del equipo ".$duel[->getPlayerOne()]->getTeam()->getName()." ".$duel->getPointOne()."\n";
 //             echo "puntos del equipo ".$duel->getPlayerTwo()->getTeam()->getName()." ".$duel->getPointTwo()."\n";
-			print_r($duel['player_one']);
+//			print_r($duel['player_one']);
             if($duel['point_one'] > $duel['point_two'])
             {
             	foreach($team1->getPlayers() as $player)

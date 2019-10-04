@@ -93,7 +93,7 @@ class PlayerController extends Controller
 
         if(!is_object($user))
         {
-			print_r($user);
+//			print_r($user);
             
             if(isset($_GET['user']) && isset($_GET['pass'])){
                 $userName = $_GET['user'];
